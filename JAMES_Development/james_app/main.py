@@ -37,6 +37,26 @@ def api_get_catalog():
     return get_catalog()
 
 
+@app.get("/catalog", response_class=HTMLResponse)
+def get_catalog_studio_view(request: Request):
+    """Render the full Master Catalog Studio UI for parts management and CRUD."""
+    return templates.TemplateResponse(
+        request=request,
+        name="catalog_studio.html",
+        context={
+            "master_catalog_items": get_master_catalog().get_all_items(),
+            "manufacturers": get_master_catalog().get_manufacturers(),
+            "stats": get_master_catalog().get_catalog_stats()
+        }
+    )
+
+
+@app.get("/api/catalog/stats")
+def api_get_catalog_stats():
+    """Return summary statistics across all catalog equipment."""
+    return get_master_catalog().get_catalog_stats()
+
+
 @app.get("/api/catalog/manufacturers")
 def api_get_catalog_manufacturers(domain: Optional[str] = None, type_tag: Optional[str] = None):
     """Retrieve manufacturers filtered by domain and/or type_tag."""
@@ -47,13 +67,15 @@ def api_get_catalog_manufacturers(domain: Optional[str] = None, type_tag: Option
 def api_get_catalog_items(
     manufacturer: Optional[str] = None,
     domain: Optional[str] = None,
-    type_tag: Optional[str] = None
+    type_tag: Optional[str] = None,
+    q: Optional[str] = None
 ):
-    """Retrieve catalog items filtered by manufacturer, domain, and/or type_tag."""
+    """Retrieve catalog items filtered by manufacturer, domain, type_tag, or query."""
     return get_master_catalog().filter_items(
         manufacturer=manufacturer,
         domain=domain,
-        type_tag=type_tag
+        type_tag=type_tag,
+        query=q
     )
 
 
@@ -66,8 +88,114 @@ def api_get_catalog_item(part_number: str):
     return item
 
 
+@app.post("/api/catalog/items")
+async def api_create_catalog_item(request: Request):
+    """Create a new item in the Master Catalog and persist to manufacturer JSON."""
+    data = await request.json()
+    try:
+        created = get_master_catalog().add_item(data)
+        return {"status": "success", "item": created}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create catalog item: {e}")
+
+
+@app.put("/api/catalog/items/{part_number}")
+async def api_update_catalog_item(part_number: str, request: Request):
+    """Update an existing catalog item and persist changes to disk."""
+    data = await request.json()
+    try:
+        updated = get_master_catalog().update_item(part_number, data)
+        return {"status": "success", "item": updated}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update catalog item: {e}")
+
+
+@app.delete("/api/catalog/items/{part_number}")
+def api_delete_catalog_item(part_number: str):
+    """Delete an item from the Master Catalog and update disk."""
+    deleted = get_master_catalog().delete_item(part_number)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Part '{part_number}' not found.")
+    return {"status": "success", "message": f"Part '{part_number}' deleted."}
+
+
+@app.post("/api/catalog/clone/{part_number}")
+async def api_clone_catalog_item(part_number: str, request: Request):
+    """Clone an existing catalog item with a new part number and optional overrides."""
+    data = await request.json()
+    new_pn = data.get("new_part_number")
+    if not new_pn:
+        raise HTTPException(status_code=400, detail="Missing 'new_part_number' in request payload.")
+
+    overrides = data.get("overrides", {})
+    try:
+        cloned = get_master_catalog().clone_item(part_number, new_pn, overrides)
+        return {"status": "success", "item": cloned}
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to clone catalog item: {e}")
+
+
+@app.post("/api/catalog/import")
+async def api_import_catalog_items(request: Request):
+    """Bulk import items from JSON payload."""
+    data = await request.json()
+    items = data.get("items", [])
+    if not isinstance(items, list):
+        raise HTTPException(status_code=400, detail="'items' array is required.")
+
+    overwrite = data.get("overwrite", True)
+    result = get_master_catalog().import_items(items, overwrite=overwrite)
+    return {"status": "success", "result": result}
+
+
+@app.get("/api/catalog/export")
+def api_export_catalog_items(
+    domain: Optional[str] = None,
+    manufacturer: Optional[str] = None,
+    format: str = "json"
+):
+    """Export catalog items as JSON or CSV."""
+    items = get_master_catalog().export_items(domain=domain, manufacturer=manufacturer)
+    if format.lower() == "csv":
+        import io
+        import csv
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow([
+            "Part Number", "Manufacturer", "Series", "Domain", "Type Tag",
+            "Type Name", "Description", "Voltage", "Amps", "AIC", "kVA", "Slots", "UPC"
+        ])
+        for it in items:
+            sp = it.get("specs", {})
+            dc = it.get("docs", {})
+            writer.writerow([
+                it.get("part_number", ""),
+                it.get("manufacturer", ""),
+                it.get("series", ""),
+                it.get("domain", ""),
+                it.get("type_tag", ""),
+                it.get("type_name", ""),
+                it.get("description", ""),
+                sp.get("voltage", ""),
+                sp.get("amps", ""),
+                sp.get("aic", ""),
+                sp.get("kva", ""),
+                sp.get("total_slots", sp.get("slots", "")),
+                dc.get("upc", "")
+            ])
+        return PlainTextResponse(content=output.getvalue(), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=master_catalog_export.csv"})
+    
+    return JSONResponse(content={"manufacturer": manufacturer or "All", "items": items})
+
+
 @app.get("/api/catalog/search")
-def api_search_catalog(q: str = "", limit: int = 50):
+def api_search_catalog(q: str = "", limit: int = 100):
     """Search catalog items by query string."""
     return get_master_catalog().search(query=q, limit=limit)
 

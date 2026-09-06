@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JAMES Master Catalog Studio • Jemby Digital Twin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    [x-cloak] { display: none !important; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none"
+      x-data="catalogStudio()"
+      x-init="initData()">
+
+  <!-- 1. TOP NAVIGATION & GLOBAL TOOLBAR -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between z-30 shrink-0 shadow-md">
+    <!-- Brand & Section -->
+    <div class="flex items-center space-x-3">
+      <a href="/cockpit" class="flex items-center space-x-2 group" title="Return to Cockpit Workbench">
+        <span class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-black text-sm group-hover:bg-emerald-500/30 transition">
+          <i class="fa-solid fa-bolt"></i>
+        </span>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">JEMBY JAMES</div>
+          <div class="text-sm font-black text-white flex items-center gap-1.5">
+            Master Catalog Studio
+            <span class="text-[10px] px-1.5 py-0.2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded font-mono font-normal">v1.2</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="h-6 w-[1px] bg-slate-800 mx-2"></div>
+
+      <!-- Quick Metrics Pills -->
+      <div class="hidden md:flex items-center gap-2 text-xs">
+        <div class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/60 rounded-md text-slate-300 flex items-center gap-1.5 font-mono">
+          <i class="fa-solid fa-boxes-stacked text-emerald-400"></i>
+          <span class="font-bold text-white" x-text="items.length">280</span> <span class="text-slate-400">Items</span>
+        </div>
+        <div class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/60 rounded-md text-slate-300 flex items-center gap-1.5 font-mono">
+          <i class="fa-solid fa-industry text-cyan-400"></i>
+          <span class="font-bold text-white" x-text="manufacturers.length">9</span> <span class="text-slate-400">Brands</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Search Bar -->
+    <div class="flex-1 max-w-md mx-4">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text"
+               x-model="searchQuery"
+               placeholder="Search Part #, Model, Manufacturer, UPC, Description..."
+               class="w-full pl-9 pr-8 py-1.5 bg-slate-950 border border-slate-700/80 rounded-lg text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
+        <button x-show="searchQuery"
+                @click="searchQuery = ''"
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center space-x-2">
+      <button @click="openCreateDrawer()"
+              class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-sm transition">
+        <i class="fa-solid fa-plus"></i>
+        <span>Add Part</span>
+      </button>
+
+      <button @click="showImportModal = true"
+              class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center gap-1.5 transition">
+        <i class="fa-solid fa-file-import text-cyan-400"></i>
+        <span>Import</span>
+      </button>
+
+      <div class="relative" x-data="{ exportOpen: false }">
+        <button @click="exportOpen = !exportOpen"
+                @click.away="exportOpen = false"
+                class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-file-export text-amber-400"></i>
+          <span>Export</span>
+          <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+        </button>
+        <div x-show="exportOpen"
+             x-cloak
+             class="absolute right-0 mt-1 w-36 bg-slate-900 border border-slate-700 rounded-lg shadow-xl py-1 z-40 text-xs">
+          <a href="/api/catalog/export?format=csv" target="_blank"
+             class="block px-3 py-1.5 hover:bg-slate-800 text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-file-csv text-emerald-400"></i> Export CSV
+          </a>
+          <a href="/api/catalog/export?format=json" target="_blank"
+             class="block px-3 py-1.5 hover:bg-slate-800 text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-file-code text-cyan-400"></i> Export JSON
+          </a>
+        </div>
+      </div>
+
+      <a href="/cockpit"
+         class="px-3 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 text-xs font-bold rounded-lg flex items-center gap-1.5 transition ml-1">
+        <i class="fa-solid fa-network-wired"></i>
+        <span>Cockpit</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 2. MAIN 2-COLUMN LAYOUT -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- LEFT SIDEBAR: FILTERS & BRANDS -->
+    <aside class="w-64 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0 overflow-y-auto">
+      
+      <!-- Domain Filter -->
+      <div class="p-3 border-b border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+          <span>Domain</span>
+          <span class="text-[10px] text-slate-500" x-text="selectedDomain || 'All'"></span>
+        </div>
+        <div class="space-y-1 text-xs">
+          <button @click="selectedDomain = ''"
+                  :class="!selectedDomain ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+                  class="w-full text-left px-2.5 py-1.5 rounded-md border flex items-center justify-between transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-layer-group text-slate-400"></i> All Domains</span>
+            <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="items.length"></span>
+          </button>
+          
+          <template x-for="(count, dom) in domainCounts" :key="dom">
+            <button @click="selectedDomain = dom"
+                    :class="selectedDomain === dom ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+                    class="w-full text-left px-2.5 py-1.5 rounded-md border flex items-center justify-between transition">
+              <span class="capitalize flex items-center gap-2" x-text="dom.replace('_', ' ')"></span>
+              <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="count"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <!-- Equipment Archetype Filter -->
+      <div class="p-3 border-b border-slate-800">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Equipment Type</div>
+        <select x-model="selectedTypeTag"
+                class="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-xs text-slate-200 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+          <option value="">All Equipment Types</option>
+          <template x-for="(count, typeTag) in typeCounts" :key="typeTag">
+            <option :value="typeTag" x-text="typeTag + ' (' + count + ')'"></option>
+          </template>
+        </select>
+      </div>
+
+      <!-- Manufacturers List -->
+      <div class="p-3 flex-1">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+          <span>Manufacturers</span>
+          <button x-show="selectedManufacturer"
+                  @click="selectedManufacturer = ''"
+                  class="text-[10px] text-emerald-400 hover:underline">Clear</button>
+        </div>
+        <div class="space-y-1 text-xs">
+          <button @click="selectedManufacturer = ''"
+                  :class="!selectedManufacturer ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+                  class="w-full text-left px-2.5 py-1.5 rounded-md border flex items-center justify-between transition">
+            <span>All Manufacturers</span>
+            <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="items.length"></span>
+          </button>
+          
+          <template x-for="mfg in manufacturers" :key="mfg.name">
+            <button @click="selectedManufacturer = mfg.name"
+                    :class="selectedManufacturer === mfg.name ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+                    class="w-full text-left px-2.5 py-1.5 rounded-md border flex items-center justify-between transition">
+              <span class="truncate pr-1" x-text="mfg.name"></span>
+              <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="mfgCounts[mfg.name] || 0"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DATA TABLE -->
+    <main class="flex-1 bg-slate-950 flex flex-col overflow-hidden">
+      
+      <!-- Table Header Status -->
+      <div class="px-4 py-2 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-xs text-slate-400 shrink-0">
+        <div class="flex items-center gap-2">
+          <span>Showing <strong class="text-white font-mono" x-text="filteredItems.length"></strong> catalog items</span>
+          <template x-if="selectedManufacturer">
+            <span class="px-2 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-md font-mono flex items-center gap-1">
+              <span x-text="selectedManufacturer"></span>
+              <button @click="selectedManufacturer = ''" class="hover:text-cyan-200"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            </span>
+          </template>
+          <template x-if="selectedDomain">
+            <span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md font-mono flex items-center gap-1">
+              <span x-text="selectedDomain"></span>
+              <button @click="selectedDomain = ''" class="hover:text-emerald-200"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+            </span>
+          </template>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-1.5 text-slate-400 text-xs">
+            <span>Per page:</span>
+            <select x-model.number="pageSize" class="bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-xs text-slate-200">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </label>
+          <div class="font-mono text-slate-400">
+            Page <span class="text-white font-bold" x-text="currentPage"></span> of <span class="text-white" x-text="totalPages"></span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button @click="currentPage = Math.max(1, currentPage - 1)" :disabled="currentPage === 1"
+                    class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-30 rounded border border-slate-700 text-slate-200">
+              <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+            <button @click="currentPage = Math.min(totalPages, currentPage + 1)" :disabled="currentPage >= totalPages"
+                    class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-30 rounded border border-slate-700 text-slate-200">
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrollable Grid Table -->
+      <div class="flex-1 overflow-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead class="sticky top-0 bg-slate-900/95 border-b border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400 z-10 backdrop-blur-sm">
+            <tr>
+              <th class="py-2.5 px-3">Part / Model #</th>
+              <th class="py-2.5 px-3">Manufacturer</th>
+              <th class="py-2.5 px-3">Archetype</th>
+              <th class="py-2.5 px-3">Description</th>
+              <th class="py-2.5 px-3">Rating Specs</th>
+              <th class="py-2.5 px-3">UPC / Barcode</th>
+              <th class="py-2.5 px-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 font-sans">
+            <template x-for="item in paginatedItems" :key="item.part_number">
+              <tr class="hover:bg-slate-900/70 transition group">
+                <!-- Part Number & Series -->
+                <td class="py-2 px-3">
+                  <div class="font-mono font-bold text-white flex items-center gap-1.5">
+                    <span x-text="item.part_number"></span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 font-mono" x-text="item.series || item.type_name"></div>
+                </td>
+
+                <!-- Manufacturer -->
+                <td class="py-2 px-3 text-cyan-300 font-medium whitespace-nowrap">
+                  <span x-text="item.manufacturer"></span>
+                </td>
+
+                <!-- Archetype -->
+                <td class="py-2 px-3 whitespace-nowrap">
+                  <span class="px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 rounded font-mono text-[10px] font-bold"
+                        x-text="item.type_tag || 'GEN'"></span>
+                  <div class="text-[10px] text-slate-500 capitalize" x-text="item.domain"></div>
+                </td>
+
+                <!-- Description -->
+                <td class="py-2 px-3 text-slate-300 max-w-xs truncate" :title="item.description">
+                  <span x-text="item.description || '-'"></span>
+                </td>
+
+                <!-- Rating Specs -->
+                <td class="py-2 px-3 font-mono text-[11px] text-slate-300 whitespace-nowrap">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <template x-if="item.specs && item.specs.voltage">
+                      <span class="px-1.5 py-0.2 bg-emerald-500/10 text-emerald-400 rounded text-[10px]" x-text="item.specs.voltage"></span>
+                    </template>
+                    <template x-if="item.specs && item.specs.amps">
+                      <span class="px-1.5 py-0.2 bg-indigo-500/10 text-indigo-300 rounded text-[10px]" x-text="item.specs.amps + 'A'"></span>
+                    </template>
+                    <template x-if="item.specs && item.specs.kva">
+                      <span class="px-1.5 py-0.2 bg-amber-500/10 text-amber-300 rounded text-[10px]" x-text="item.specs.kva + ' kVA'"></span>
+                    </template>
+                    <template x-if="item.specs && item.specs.aic">
+                      <span class="px-1.5 py-0.2 bg-rose-500/10 text-rose-300 rounded text-[10px]" x-text="item.specs.aic + 'kA'"></span>
+                    </template>
+                    <template x-if="item.specs && (item.specs.total_slots || item.specs.slots)">
+                      <span class="px-1.5 py-0.2 bg-blue-500/10 text-blue-300 rounded text-[10px]" x-text="(item.specs.total_slots || item.specs.slots) + ' S'"></span>
+                    </template>
+                  </div>
+                </td>
+
+                <!-- UPC -->
+                <td class="py-2 px-3 font-mono text-[10px] text-slate-400 whitespace-nowrap">
+                  <template x-if="item.docs && item.docs.upc">
+                    <span class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-300" x-text="item.docs.upc"></span>
+                  </template>
+                  <template x-if="!item.docs || !item.docs.upc">
+                    <span class="text-slate-600">-</span>
+                  </template>
+                </td>
+
+                <!-- Actions -->
+                <td class="py-2 px-3 text-right whitespace-nowrap">
+                  <div class="flex items-center justify-end space-x-1">
+                    <button @click="openEditDrawer(item)"
+                            title="Edit Item Specs"
+                            class="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 rounded transition">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button @click="openCloneModal(item)"
+                            title="Duplicate / Clone Part"
+                            class="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded transition">
+                      <i class="fa-solid fa-copy"></i>
+                    </button>
+                    <button @click="deleteItem(item.part_number)"
+                            title="Delete Part"
+                            class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded transition">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+
+        <!-- Empty State -->
+        <template x-if="filteredItems.length === 0">
+          <div class="text-center py-16 text-slate-500">
+            <i class="fa-solid fa-box-open text-4xl mb-3 text-slate-600"></i>
+            <div class="text-sm font-bold text-slate-400">No equipment items found</div>
+            <div class="text-xs text-slate-500 mt-1">Try adjusting your search query or domain filters.</div>
+          </div>
+        </template>
+      </div>
+    </main>
+  </div>
+
+  <!-- 3. SLIDE-OVER SPEC DRAWER (CREATE & EDIT) -->
+  <div x-show="drawerOpen"
+       x-cloak
+       class="fixed inset-0 z-50 overflow-hidden"
+       role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+         @click="drawerOpen = false"></div>
+
+    <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+      <div class="pointer-events-auto w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl flex flex-col">
+        
+        <!-- Drawer Header -->
+        <div class="px-5 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+              <i :class="isEditMode ? 'fa-solid fa-pen' : 'fa-solid fa-plus'"></i>
+            </span>
+            <div>
+              <div class="text-xs font-bold text-white uppercase tracking-wider" x-text="isEditMode ? 'Edit Catalog Part' : 'Add New Catalog Part'"></div>
+              <div class="text-[10px] text-slate-400 font-mono" x-text="formData.part_number || 'New Equipment Definition'"></div>
+            </div>
+          </div>
+          <button @click="drawerOpen = false" class="text-slate-400 hover:text-white text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Drawer Form Body -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
+          
+          <!-- General Specs -->
+          <div class="space-y-3">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 border-b border-slate-800 pb-1 flex items-center gap-1.5">
+              <i class="fa-solid fa-tag"></i> General Information
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Part / Model Number <span class="text-rose-400">*</span></label>
+              <input type="text" x-model="formData.part_number" required
+                     placeholder="e.g. PDG23G0150TFAN"
+                     class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Manufacturer <span class="text-rose-400">*</span></label>
+                <input type="text" x-model="formData.manufacturer" required list="mfg_datalist"
+                       placeholder="e.g. Eaton, Square D"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                <datalist id="mfg_datalist">
+                  <template x-for="m in manufacturers" :key="m.name">
+                    <option :value="m.name"></option>
+                  </template>
+                </datalist>
+              </div>
+
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Series / Product Family</label>
+                <input type="text" x-model="formData.series"
+                       placeholder="e.g. Power Defense Frame 2"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Domain</label>
+                <select x-model="formData.domain" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                  <option value="power_distribution">Power Distribution</option>
+                  <option value="transformers">Transformers</option>
+                  <option value="sources">Power Sources & Backup</option>
+                  <option value="switches">Switches & Disconnects</option>
+                  <option value="mechanical">Mechanical / HVAC</option>
+                  <option value="lighting">Lighting</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Archetype Type Tag</label>
+                <input type="text" x-model="formData.type_tag" placeholder="e.g. MCCB, XFMR, MDP, ATS"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono uppercase focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Description</label>
+              <textarea x-model="formData.description" rows="2"
+                        placeholder="Detailed engineering specifications and capabilities..."
+                        class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+            </div>
+          </div>
+
+          <!-- Electrical Specs -->
+          <div class="space-y-3 pt-2">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-cyan-400 border-b border-slate-800 pb-1 flex items-center gap-1.5">
+              <i class="fa-solid fa-bolt"></i> Electrical & Physical Ratings
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Voltage Rating</label>
+                <input type="text" x-model="formData.specs.voltage" placeholder="e.g. 480V, 208Y/120V"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Amperage (A)</label>
+                <input type="number" step="any" x-model.number="formData.specs.amps" placeholder="e.g. 150"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Interrupting AIC (kA)</label>
+                <input type="number" step="any" x-model.number="formData.specs.aic" placeholder="e.g. 35 or 65"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">kVA Rating</label>
+                <input type="number" step="any" x-model.number="formData.specs.kva" placeholder="e.g. 45 or 75"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Poles / Phase</label>
+                <input type="text" x-model="formData.specs.poles" placeholder="e.g. 3P or 3Ø"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Slot Count (Panels)</label>
+                <input type="number" x-model.number="formData.specs.total_slots" placeholder="e.g. 42"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Enclosure (NEMA)</label>
+                <input type="text" x-model="formData.specs.nema_rating" placeholder="e.g. NEMA 1, NEMA 3R"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">UPC / Barcode</label>
+                <input type="text" x-model="formData.docs.upc" placeholder="e.g. 786679234812"
+                       class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Documentation -->
+          <div class="space-y-3 pt-2">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 border-b border-slate-800 pb-1 flex items-center gap-1.5">
+              <i class="fa-solid fa-file-pdf"></i> Cut-sheet & Online Specs
+            </div>
+
+            <div>
+              <label class="block text-slate-300 font-medium mb-1">Cut-sheet PDF URL</label>
+              <input type="text" x-model="formData.docs.cut_sheet" placeholder="https://..."
+                     class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-amber-500 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="px-5 py-3.5 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
+          <button @click="drawerOpen = false" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-md transition">
+            Cancel
+          </button>
+          <button @click="saveItem()"
+                  :disabled="!formData.part_number || !formData.manufacturer"
+                  class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold rounded-md flex items-center gap-1.5 shadow transition">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save Part</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CLONE / DUPLICATE MODAL -->
+  <div x-show="showCloneModal"
+       x-cloak
+       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+          <i class="fa-solid fa-copy"></i>
+          <span>Clone Catalog Part</span>
+        </div>
+        <button @click="showCloneModal = false" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1">Source Part Number</label>
+          <input type="text" :value="cloneSourceItem?.part_number" readonly class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-400 font-mono">
+        </div>
+
+        <div>
+          <label class="block text-slate-200 font-bold mb-1">New Part Number <span class="text-rose-400">*</span></label>
+          <input type="text" x-model="cloneNewPartNumber" placeholder="e.g. PDG23G0200TFAN"
+                 class="w-full px-3 py-1.5 bg-slate-950 border border-cyan-500/80 rounded text-white font-mono focus:ring-1 focus:ring-cyan-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">Adjust Amperage (A)</label>
+            <input type="number" x-model.number="cloneOverrideAmps" placeholder="e.g. 200"
+                   class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded text-white font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">Adjust kVA</label>
+            <input type="number" x-model.number="cloneOverrideKva" placeholder="e.g. 75"
+                   class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded text-white font-mono">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
+        <button @click="showCloneModal = false" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">Cancel</button>
+        <button @click="submitClone()" :disabled="!cloneNewPartNumber"
+                class="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 text-white font-bold rounded text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-clone"></i> Clone Part
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. IMPORT MODAL -->
+  <div x-show="showImportModal"
+       x-cloak
+       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+          <i class="fa-solid fa-file-import"></i>
+          <span>Import Master Catalog Items</span>
+        </div>
+        <button @click="showImportModal = false" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <p class="text-slate-400 leading-relaxed">
+          Paste a JSON array of catalog item objects or drop a JSON file below to bulk ingest into the Master Catalog.
+        </p>
+
+        <textarea x-model="importJsonText" rows="6" placeholder='[ { "part_number": "...", "manufacturer": "Eaton", ... } ]'
+                  class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-md text-white font-mono text-[11px] focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 text-slate-300">
+            <input type="checkbox" x-model="importOverwrite" class="rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-0">
+            <span>Overwrite existing parts</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
+        <button @click="showImportModal = false" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">Cancel</button>
+        <button @click="submitImport()" :disabled="!importJsonText"
+                class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold rounded text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-upload"></i> Execute Import
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    function catalogStudio() {
+      return {
+        items: {{ master_catalog_items | tojson | safe }},
+        manufacturers: {{ manufacturers | tojson | safe }},
+        searchQuery: '',
+        selectedDomain: '',
+        selectedTypeTag: '',
+        selectedManufacturer: '',
+        currentPage: 1,
+        pageSize: 50,
+
+        // Drawer state
+        drawerOpen: false,
+        isEditMode: false,
+        formData: {
+          part_number: '',
+          manufacturer: '',
+          series: '',
+          domain: 'power_distribution',
+          type_tag: '',
+          type_name: '',
+          description: '',
+          specs: {},
+          docs: { cut_sheet: '', upc: null }
+        },
+
+        // Clone state
+        showCloneModal: false,
+        cloneSourceItem: null,
+        cloneNewPartNumber: '',
+        cloneOverrideAmps: null,
+        cloneOverrideKva: null,
+
+        // Import state
+        showImportModal: false,
+        importJsonText: '',
+        importOverwrite: true,
+
+        initData() {
+          this.$watch('searchQuery', () => { this.currentPage = 1; });
+          this.$watch('selectedDomain', () => { this.currentPage = 1; });
+          this.$watch('selectedTypeTag', () => { this.currentPage = 1; });
+          this.$watch('selectedManufacturer', () => { this.currentPage = 1; });
+        },
+
+        get domainCounts() {
+          const counts = {};
+          this.items.forEach(it => {
+            const d = it.domain || 'generic';
+            counts[d] = (counts[d] || 0) + 1;
+          });
+          return counts;
+        },
+
+        get typeCounts() {
+          const counts = {};
+          this.items.forEach(it => {
+            const t = it.type_tag || 'GEN';
+            counts[t] = (counts[t] || 0) + 1;
+          });
+          return counts;
+        },
+
+        get mfgCounts() {
+          const counts = {};
+          this.items.forEach(it => {
+            const m = it.manufacturer || 'Other';
+            counts[m] = (counts[m] || 0) + 1;
+          });
+          return counts;
+        },
+
+        get filteredItems() {
+          let list = this.items;
+
+          if (this.selectedDomain) {
+            list = list.filter(i => (i.domain || '').toLowerCase() === this.selectedDomain.toLowerCase());
+          }
+
+          if (this.selectedTypeTag) {
+            list = list.filter(i => (i.type_tag || '').toUpperCase() === this.selectedTypeTag.toUpperCase());
+          }
+
+          if (this.selectedManufacturer) {
+            list = list.filter(i => (i.manufacturer || '').toLowerCase() === this.selectedManufacturer.toLowerCase());
+          }
+
+          if (this.searchQuery.trim()) {
+            const q = this.searchQuery.toLowerCase().trim();
+            list = list.filter(i => 
+              (i.part_number || '').toLowerCase().includes(q) ||
+              (i.description || '').toLowerCase().includes(q) ||
+              (i.series || '').toLowerCase().includes(q) ||
+              (i.manufacturer || '').toLowerCase().includes(q) ||
+              String(i.docs?.upc || '').includes(q)
+            );
+          }
+
+          return list;
+        },
+
+        get totalPages() {
+          return Math.max(1, Math.ceil(this.filteredItems.length / this.pageSize));
+        },
+
+        get paginatedItems() {
+          const start = (this.currentPage - 1) * this.pageSize;
+          return this.filteredItems.slice(start, start + this.pageSize);
+        },
+
+        openCreateDrawer() {
+          this.isEditMode = false;
+          this.formData = {
+            part_number: '',
+            manufacturer: this.selectedManufacturer || '',
+            series: '',
+            domain: this.selectedDomain || 'power_distribution',
+            type_tag: this.selectedTypeTag || '',
+            type_name: '',
+            description: '',
+            specs: { voltage: '', amps: null, aic: null, kva: null, poles: '', total_slots: null, nema_rating: '' },
+            docs: { cut_sheet: '', upc: null }
+          };
+          this.drawerOpen = true;
+        },
+
+        openEditDrawer(item) {
+          this.isEditMode = true;
+          this.formData = JSON.parse(JSON.stringify(item));
+          if (!this.formData.specs) this.formData.specs = {};
+          if (!this.formData.docs) this.formData.docs = { cut_sheet: '', upc: null };
+          this.drawerOpen = true;
+        },
+
+        async saveItem() {
+          const pn = this.formData.part_number.trim().toUpperCase();
+          if (!pn || !this.formData.manufacturer) {
+            alert('Part number and manufacturer are required.');
+            return;
+          }
+
+          const url = this.isEditMode ? `/api/catalog/items/${encodeURIComponent(pn)}` : '/api/catalog/items';
+          const method = this.isEditMode ? 'PUT' : 'POST';
+
+          try {
+            const res = await fetch(url, {
+              method: method,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.formData)
+            });
+
+            if (!res.ok) {
+              const err = await res.json();
+              throw new Error(err.detail || 'Failed to save item');
+            }
+
+            const data = await res.json();
+            const savedItem = data.item;
+
+            // Update in-memory items array
+            const idx = this.items.findIndex(i => i.part_number.toUpperCase() === pn);
+            if (idx >= 0) {
+              this.items[idx] = savedItem;
+            } else {
+              this.items.unshift(savedItem);
+            }
+
+            this.drawerOpen = false;
+          } catch (e) {
+            alert('Error: ' + e.message);
+          }
+        },
+
+        openCloneModal(item) {
+          this.cloneSourceItem = item;
+          this.cloneNewPartNumber = item.part_number + '-CLONE';
+          this.cloneOverrideAmps = item.specs?.amps || null;
+          this.cloneOverrideKva = item.specs?.kva || null;
+          this.showCloneModal = true;
+        },
+
+        async submitClone() {
+          if (!this.cloneSourceItem || !this.cloneNewPartNumber) return;
+
+          const overrides = { specs: {} };
+          if (this.cloneOverrideAmps !== null) overrides.specs.amps = this.cloneOverrideAmps;
+          if (this.cloneOverrideKva !== null) overrides.specs.kva = this.cloneOverrideKva;
+
+          try {
+            const res = await fetch(`/api/catalog/clone/${encodeURIComponent(this.cloneSourceItem.part_number)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                new_part_number: this.cloneNewPartNumber.trim().toUpperCase(),
+                overrides: overrides
+              })
+            });
+
+            if (!res.ok) {
+              const err = await res.json();
+              throw new Error(err.detail || 'Failed to clone item');
+            }
+
+            const data = await res.json();
+            this.items.unshift(data.item);
+            this.showCloneModal = false;
+            this.searchQuery = data.item.part_number;
+          } catch (e) {
+            alert('Error: ' + e.message);
+          }
+        },
+
+        async deleteItem(partNumber) {
+          if (!confirm(`Are you sure you want to delete part "${partNumber}" from the Master Catalog?`)) {
+            return;
+          }
+
+          try {
+            const res = await fetch(`/api/catalog/items/${encodeURIComponent(partNumber)}`, {
+              method: 'DELETE'
+            });
+
+            if (!res.ok) {
+              const err = await res.json();
+              throw new Error(err.detail || 'Failed to delete item');
+            }
+
+            this.items = this.items.filter(i => i.part_number.toUpperCase() !== partNumber.toUpperCase());
+          } catch (e) {
+            alert('Error: ' + e.message);
+          }
+        },
+
+        async submitImport() {
+          let parsed;
+          try {
+            parsed = JSON.parse(this.importJsonText);
+            if (!Array.isArray(parsed)) throw new Error('Expected a JSON array of items.');
+          } catch (e) {
+            alert('Invalid JSON: ' + e.message);
+            return;
+          }
+
+          try {
+            const res = await fetch('/api/catalog/import', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: parsed, overwrite: this.importOverwrite })
+            });
+
+            if (!res.ok) {
+              const err = await res.json();
+              throw new Error(err.detail || 'Import failed');
+            }
+
+            const data = await res.json();
+            alert(`Import completed! Ingested: ${data.result.imported}, Skipped: ${data.result.skipped}`);
+            
+            // Reload all items from server
+            const itemsRes = await fetch('/api/catalog/items');
+            this.items = await itemsRes.json();
+            this.showImportModal = false;
+            this.importJsonText = '';
+          } catch (e) {
+            alert('Error: ' + e.message);
+          }
+        }
+      };
+    }
+  </script>
+</body>
+</html>
