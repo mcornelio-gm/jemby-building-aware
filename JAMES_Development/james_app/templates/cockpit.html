@@ -1,0 +1,3626 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" style="color-scheme: dark;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JEMBY Digital Twin - Field Collector (Jinja2 + Tailwind + Alpine.js + HTMX + SQLite)</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+  <!-- HTMX CDN -->
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+  <!-- Early Theme Sync Script (FOUC Prevention) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('james-theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    /* Resizer handles styling */
+    .resizer-bar {
+      width: 4px;
+      cursor: col-resize;
+      transition: background 0.15s ease;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+    .resizer-bar:hover, .resizer-bar.active-resizing {
+      background-color: #6366f1 !important;
+      width: 4px;
+    }
+    [x-cloak] { display: none !important; }
+  </style>
+  <script>
+    window.__COCKPIT_CONFIG__ = {
+      client: "{{ client_id }}",
+      facility: "{{ facility_id }}",
+      initialStack: {{ initial_nodes | tojson }},
+      masterCatalog: {{ master_catalog_items | tojson if master_catalog_items else "[]" }}
+    };
+  </script>
+</head>
+
+<body 
+  class="bg-slate-100 dark:bg-[#070B14] text-slate-900 dark:text-slate-100 h-screen flex flex-col overflow-hidden select-none font-sans"
+  x-data="cockpitApp(window.__COCKPIT_CONFIG__)"
+>
+
+  <!-- Hidden Photo File Inputs (Camera Snap & Gallery Multi-Upload) -->
+  <input 
+    type="file" 
+    id="cockpit-camera-input"
+    x-ref="cameraInput" 
+    accept="image/*" 
+    capture="environment" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'staged')"
+  >
+  <input 
+    type="file" 
+    id="cockpit-gallery-input"
+    x-ref="galleryInput" 
+    accept="image/*" 
+    multiple 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'staged')"
+  >
+  <input 
+    type="file" 
+    id="cockpit-nameplate-camera-input"
+    x-ref="nameplateCameraInput" 
+    accept="image/*" 
+    capture="environment" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'nameplate')"
+  >
+  <input 
+    type="file" 
+    id="cockpit-nameplate-gallery-input"
+    x-ref="nameplateGalleryInput" 
+    accept="image/*" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'nameplate')"
+  >
+  <input 
+    type="file" 
+    id="cockpit-edit-camera-input"
+    x-ref="editCameraInput" 
+    accept="image/*" 
+    capture="environment" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'editing', editingNoteIndex)"
+  >
+  <input 
+    type="file" 
+    id="cockpit-edit-gallery-input"
+    x-ref="editGalleryInput" 
+    accept="image/*" 
+    multiple 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'editing', editingNoteIndex)"
+  >
+
+  <!-- Top Master Control Bar -->
+  <header class="h-14 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-5 shrink-0 z-50 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-indigo-500/30">
+        J
+      </div>
+      <span class="font-bold text-slate-900 dark:text-white tracking-tight text-sm">JEMBY JAMES</span>
+      
+      <!-- Multi-Tenant Client Pill -->
+      <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300">
+        <span>🏢</span>
+        <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
+        <span class="text-[10px] px-1.5 py-0.2 bg-indigo-200 dark:bg-indigo-900 rounded text-indigo-900 dark:text-indigo-200 font-mono">Field Survey</span>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Counts -->
+    <div class="hidden md:flex items-center gap-4 text-xs">
+      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 font-mono">
+        <span class="text-slate-500 dark:text-slate-400">Total Stack:</span>
+        <span class="font-bold text-slate-900 dark:text-white" x-text="stack.length + ' Assets'">{{ initial_nodes | length }} Assets</span>
+      </div>
+      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 font-mono">
+        <span class="text-slate-500 dark:text-slate-400">Total Mains:</span>
+        <span class="font-bold text-cyan-600 dark:text-cyan-400" x-text="totalAmps.toLocaleString() + ' A'">3,225 A</span>
+      </div>
+      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 font-mono">
+        <span class="text-slate-500 dark:text-slate-400">Status:</span>
+        <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Auto-Saved</span>
+      </div>
+    </div>
+
+    <!-- Action Controls -->
+    <div class="flex items-center gap-2.5">
+      <!-- Show / Hide Catalog Sidebar Toggle -->
+      <button 
+        type="button"
+        @click="toggleCatalog()" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition shadow-sm cursor-pointer select-none flex items-center gap-1.5"
+        :class="showCatalog ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700' : 'border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 font-bold'"
+        title="Toggle Equipment Catalog"
+      >
+        <span x-show="showCatalog" class="flex items-center gap-1">
+          <span>◀</span>
+          <span>Hide Catalog</span>
+        </span>
+        <span x-show="!showCatalog" class="flex items-center gap-1" x-cloak>
+          <span>▶</span>
+          <span>Show Catalog</span>
+        </span>
+      </button>
+
+      <!-- Field Guide & Help Modal Toggle -->
+      <button 
+        type="button"
+        @click="showHelpModal = true" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 flex items-center gap-1.5 transition shadow-sm cursor-pointer select-none"
+        title="Field Workflow & Usage Guide (Press ?)"
+      >
+        <span>📖</span>
+        <span>Field Guide</span>
+      </button>
+
+      <!-- Dark / Light Theme Toggle -->
+      <button 
+        type="button"
+        @click="toggleTheme()" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2 transition shadow-sm cursor-pointer select-none"
+        title="Toggle Theme"
+      >
+        <span x-show="isDark" class="flex items-center gap-1.5 text-indigo-400">
+          <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+          <span>🌙 Dark Mode</span>
+        </span>
+        <span x-show="!isDark" class="flex items-center gap-1.5 text-amber-600" x-cloak>
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span>☀️ Light Mode</span>
+        </span>
+      </button>
+
+      <!-- Export JSONL -->
+      <button 
+        @click="exportJsonl()" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center gap-1.5 transition cursor-pointer"
+      >
+        <span>📋 Export JSONL</span>
+      </button>
+
+      <!-- Generate Single Line -->
+      <a 
+        :href="'/clients/' + client + '/facilities/' + facility + '/sld'"
+        class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-sm shadow-indigo-500/30 flex items-center gap-1.5 transition text-center cursor-pointer"
+      >
+        <span>⚡ View SLD Diagram</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 4-Column Full-Page Cockpit Workspace -->
+  <main class="flex-1 flex overflow-hidden relative">
+
+    <!-- COLUMN 1: Equipment Domains (Pure Standalone Assets) -->
+    <section 
+      x-show="showCatalog" 
+      x-cloak 
+      :style="`width: ${col1Width}px;`" 
+      class="shrink-0 flex flex-col bg-slate-50 dark:bg-[#0E1626]/70 border-r border-slate-200 dark:border-slate-800 transition-all duration-150"
+    >
+      <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span>Domains</span>
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="domains.length">10</span>
+        </div>
+        <button 
+          type="button" 
+          @click="toggleCatalog()" 
+          title="Collapse Catalog" 
+          class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs cursor-pointer"
+        >
+          ◀
+        </button>
+      </div>
+      
+      <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+        <input 
+          type="text" 
+          x-model="domainSearch" 
+          placeholder="Filter domains..." 
+          class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+        >
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-2 space-y-1">
+        <template x-for="(dom, idx) in filteredDomains" :key="dom.id">
+          <div 
+            @click="requestSelectDomain(dom)"
+            :class="selectedDomain.id === dom.id 
+              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold' 
+              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/80'"
+            class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-xs select-none"
+          >
+            <div class="flex items-center gap-2 truncate">
+              <span x-text="dom.icon"></span>
+              <span x-text="dom.name" class="truncate"></span>
+            </div>
+            <span class="text-[10px] opacity-70">›</span>
+          </div>
+        </template>
+      </div>
+    </section>
+
+    <!-- Resizer 1 -->
+    <div 
+      x-show="showCatalog" 
+      x-cloak 
+      class="resizer-bar bg-slate-200 dark:bg-slate-800" 
+      @mousedown="startResize($event, 1)"
+    ></div>
+
+    <!-- COLUMN 2: Equipment Types -->
+    <section 
+      x-show="showCatalog" 
+      x-cloak 
+      :style="`width: ${col2Width}px;`" 
+      class="shrink-0 flex flex-col bg-slate-100/70 dark:bg-[#0B1220]/80 border-r border-slate-200 dark:border-slate-800 transition-all duration-150"
+    >
+      <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span>Equipment Types</span>
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="filteredTypes.length">0</span>
+        </div>
+      </div>
+
+      <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+        <input 
+          type="text" 
+          x-model="typeSearch" 
+          placeholder="Search equipment types..." 
+          class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+        >
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-2 space-y-1.5">
+        <template x-for="type in filteredTypes" :key="type.tag">
+          <div 
+            @click="requestSelectType(type)"
+            :class="selectedType.tag === type.tag 
+              ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
+              : 'bg-white dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
+            class="flex flex-col p-2.5 rounded-lg cursor-pointer transition text-xs select-none gap-0.5"
+          >
+            <div class="flex items-start justify-between gap-1.5">
+              <span class="font-semibold text-xs leading-snug" :class="selectedType.tag === type.tag ? 'text-white' : 'text-slate-900 dark:text-white'" x-text="type.name"></span>
+              <span 
+                class="px-1.5 py-0.5 rounded font-mono text-[10px] shrink-0 font-bold"
+                :class="selectedType.tag === type.tag ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'"
+                x-text="type.tag"
+              ></span>
+            </div>
+            <p class="text-[11px] opacity-75 line-clamp-2" x-text="type.desc"></p>
+          </div>
+        </template>
+      </div>
+    </section>
+
+    <!-- Resizer 2 -->
+    <div 
+      x-show="showCatalog" 
+      x-cloak 
+      class="resizer-bar bg-slate-200 dark:bg-slate-800" 
+      @mousedown="startResize($event, 2)"
+    ></div>
+
+    <!-- COLUMN 3: Active Equipment Form, Calculations & Embedded Panel Schedule -->
+    <section class="flex-1 flex flex-col bg-white dark:bg-[#070B14] border-r border-slate-200 dark:border-slate-800 min-w-[360px] overflow-hidden">
+      <!-- Top Form Header -->
+      <div class="h-11 px-4 bg-slate-50 dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <!-- Quick Show Catalog Button when Catalog is Hidden -->
+          <button 
+            type="button"
+            x-show="!showCatalog" 
+            x-cloak
+            @click="toggleCatalog()"
+            class="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center gap-1 transition cursor-pointer"
+            title="Open Equipment Catalog"
+          >
+            <span>➕ Catalog</span>
+          </button>
+
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nameplate Form</span>
+          <span 
+            x-show="editingId" 
+            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+          >
+            EDITING: <span x-text="form.tag"></span>
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button"
+            @click="cancelEdit()"
+            class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            @click="saveAsset()" 
+            :disabled="isDuplicateTag"
+            :class="isDuplicateTag ? 'opacity-50 cursor-not-allowed bg-slate-400 dark:bg-slate-700' : 'bg-indigo-600 hover:bg-indigo-500 shadow-sm shadow-indigo-600/30'"
+            class="px-3.5 py-1 rounded-lg text-xs font-bold text-white transition flex items-center gap-1 cursor-pointer"
+          >
+            <span x-text="editingId ? 'Update' : 'Save'">Save</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Body -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-4">
+        
+        <!-- Active Equipment Identity Banner -->
+        <div class="p-3.5 rounded-xl bg-gradient-to-r from-indigo-500/10 via-sky-500/10 to-transparent border border-indigo-200 dark:border-indigo-900/50 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-600/30 font-mono" x-text="selectedType.tag || 'EQ'">
+              ATS
+            </div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white" x-text="selectedType.name || 'Equipment'">Automatic Transfer Switch</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="'Domain: ' + selectedDomain.name"></p>
+            </div>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full font-semibold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" x-text="isPanelEquipment() ? 'Panelboard / Distribution' : 'Stand-Alone Asset'"></span>
+        </div>
+
+        <!-- Primary Form Fields Grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Equipment Tag -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Equipment Tag</label>
+              <template x-if="isDuplicateTag">
+                <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-800 rounded px-1.5 py-0.5 animate-pulse">
+                  ⚠️ Tag in use
+                </span>
+              </template>
+            </div>
+            <input 
+              type="text" 
+              x-model="form.tag" 
+              :class="isDuplicateTag ? 'border-amber-500 dark:border-amber-500 ring-1 ring-amber-500 bg-amber-500/5' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900'"
+              class="w-full h-9 px-3 text-xs font-mono font-bold rounded-lg border focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+            >
+            <template x-if="isDuplicateTag">
+              <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium">Tag already exists in facility. Please use a unique tag.</p>
+            </template>
+          </div>
+
+          <!-- Room Location -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Room / Location</label>
+            <input 
+              type="text" 
+              x-model="form.room" 
+              class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+            >
+          </div>
+
+          <!-- Description / Equipment Name -->
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Equipment Name / Description</label>
+            <input 
+              type="text" 
+              x-model="form.name" 
+              class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+            >
+          </div>
+
+          <!-- Fed From Upstream Asset -->
+          <div class="col-span-2">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Fed From (Upstream Source)</label>
+              <template x-if="selectedDomain && selectedDomain.id === 'sources'">
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 italic">Primary Source (No Upstream)</span>
+              </template>
+            </div>
+            <select 
+              x-model="form.fed_from" 
+              :disabled="selectedDomain && selectedDomain.id === 'sources'"
+              class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white font-mono disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">-- None / Service Entrance --</option>
+              <template x-for="item in eligibleUpstreamEquipment" :key="item.id">
+                <option :value="item.tag" x-text="item.tag + ' — ' + item.name + ' (' + (item.room || 'Main Electrical Room') + ')'"></option>
+              </template>
+            </select>
+          </div>
+
+          <!-- Voltage -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Voltage</label>
+            <select 
+              x-model="form.voltage" 
+              class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+            >
+              <option value="480Y/277V 3Ø 4W">480Y/277V 3Ø 4W</option>
+              <option value="208Y/120V 3Ø 4W">208Y/120V 3Ø 4W</option>
+              <option value="480V 3Ø 3W">480V 3Ø 3W</option>
+              <option value="120/240V 1Ø 3W">120/240V 1Ø 3W</option>
+              <option value="4160V 3Ø">4160V Medium Voltage</option>
+              <option value="13800V 3Ø">13.8 kV Primary</option>
+            </select>
+          </div>
+
+          <!-- Continuous Current (Amps) -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bus Rating (Amps)</label>
+            <input 
+              type="number" 
+              x-model.number="form.amps" 
+              class="w-full h-9 px-3 text-xs font-mono font-bold rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+            >
+          </div>
+
+          <!-- Short Circuit AIC -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">AIC Withstand Rating (kA)</label>
+            <input 
+              type="number" 
+              x-model.number="form.aic" 
+              class="w-full h-9 px-3 text-xs font-mono rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+            >
+          </div>
+
+          <!-- Enclosure NEMA -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Enclosure Rating</label>
+            <select 
+              x-model="form.enclosure" 
+              class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+            >
+              <option value="NEMA 1">NEMA 1 (Indoor General)</option>
+              <option value="NEMA 3R">NEMA 3R (Outdoor Rainproof)</option>
+              <option value="NEMA 4X">NEMA 4X (Stainless Washdown)</option>
+              <option value="NEMA 12">NEMA 12 (Industrial Dusttight)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- NAMEPLATE, OEM & ASSET TRACKING SECTION -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <span>🏷️</span>
+              <span>Nameplate, OEM & Asset Registry</span>
+            </span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+              Master Catalog Linked
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <!-- Manufacturer / Brand Cascading Dropdown -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">Manufacturer / OEM</label>
+                <span x-show="catalogManufacturers.length > 0" class="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 font-bold">
+                  <span x-text="catalogManufacturers.length"></span> OEMs
+                </span>
+              </div>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  x-model="form.manufacturer" 
+                  @change="onCatalogManufacturerChange()"
+                  list="mfr-presets" 
+                  placeholder="Select or enter OEM..." 
+                  class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                >
+                <datalist id="mfr-presets">
+                  <template x-for="mfg in catalogManufacturers" :key="mfg">
+                    <option :value="mfg"></option>
+                  </template>
+                </datalist>
+              </div>
+            </div>
+
+            <!-- Model / Catalog # with Cascading Autocomplete -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">Catalog / Model #</label>
+                <span x-show="isCatalogItemActive" class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                  <span>⚡</span><span>Catalog Verified</span>
+                </span>
+              </div>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  x-model="form.model_no" 
+                  @change="onCatalogModelSelect(form.model_no)"
+                  list="catalog-models-list" 
+                  placeholder="Select or enter part #..." 
+                  class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono font-semibold"
+                >
+                <datalist id="catalog-models-list">
+                  <template x-for="item in catalogModels" :key="item.part_number">
+                    <option :value="item.part_number" :label="item.part_number + (item.description ? ' (' + item.description.substring(0, 40) + ')' : '')"></option>
+                  </template>
+                </datalist>
+              </div>
+            </div>
+
+            <!-- Client Asset Tag / Barcode -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Client Asset Tag</label>
+              <input 
+                type="text" 
+                x-model="form.asset_tag" 
+                placeholder="e.g. AST-0042, QR-8910..." 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono font-semibold"
+              >
+            </div>
+
+            <!-- Quick Catalog Model Selector Pill (when catalog parts exist for current selection) -->
+            <div class="col-span-3 -mt-1" x-show="catalogModels.length > 0">
+              <div class="flex items-center gap-2 p-2 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-xs">
+                <span class="text-indigo-600 dark:text-indigo-400 font-bold shrink-0 flex items-center gap-1">
+                  <span>⚡</span><span>Master Catalog:</span>
+                </span>
+                <select 
+                  @change="if ($event.target.value) { onCatalogModelSelect($event.target.value); $event.target.value = ''; }"
+                  class="flex-1 h-6 px-2 text-[11px] rounded bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+                >
+                  <option value="">-- Quick Select from <span x-text="catalogModels.length"></span> Verified OEM Parts --</option>
+                  <template x-for="item in catalogModels" :key="item.part_number">
+                    <option :value="item.part_number" x-text="item.part_number + ' • ' + (item.description || item.series)"></option>
+                  </template>
+                </select>
+              </div>
+            </div>
+
+            <!-- Serial Number -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Serial Number (Optional)</label>
+              <input 
+                type="text" 
+                x-model="form.serial_no" 
+                placeholder="e.g. SN-894021..." 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+              >
+            </div>
+
+            <!-- Year Installed / Commissioned -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Year Commissioned</label>
+              <input 
+                type="number" 
+                x-model.number="form.year_installed" 
+                placeholder="e.g. 2018" 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+              >
+            </div>
+
+            <!-- Enclosure Mounting Reference -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Mounting Environment</label>
+              <select 
+                x-model="form.mounting" 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+              >
+                <option value="Surface">Surface Wall Mount</option>
+                <option value="Flush">Flush Recessed</option>
+                <option value="Freestanding">Free-Standing Pad</option>
+                <option value="Skid">Skid / Unit Substation</option>
+              </select>
+            </div>
+
+            <!-- Dedicated Nameplate Photo Slot -->
+            <div 
+              class="col-span-3 pt-2.5 border-t border-slate-200 dark:border-slate-800 space-y-2"
+              @dragover.prevent
+              @drop.prevent="handlePhotoDrop($event, 'nameplate')"
+            >
+              <div class="flex items-center justify-between">
+                <label class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span>📸</span>
+                  <span>Equipment Nameplate Photo</span>
+                  <span class="text-[10px] text-slate-400 font-normal">(Drag & drop or snap)</span>
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <label 
+                    for="cockpit-nameplate-camera-input"
+                    title="Snap Nameplate Photo with Camera"
+                    class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 cursor-pointer transition"
+                  >
+                    <span>📷 Camera</span>
+                  </label>
+                  <label 
+                    for="cockpit-nameplate-gallery-input"
+                    title="Upload Nameplate Photo from Device"
+                    class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 cursor-pointer transition font-bold"
+                  >
+                    <span>➕ File</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Nameplate Photo Preview Card (if present) -->
+              <template x-if="form.nameplate_photo && form.nameplate_photo.dataUrl">
+                <div class="relative group/nameplate flex items-center gap-3 p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 shadow-sm">
+                  <div class="w-16 h-12 rounded overflow-hidden bg-black/20 shrink-0 border border-indigo-200 dark:border-indigo-700">
+                    <img 
+                      :src="form.nameplate_photo.dataUrl" 
+                      :alt="form.nameplate_photo.name || 'Nameplate Photo'"
+                      @click="openLightbox(form.nameplate_photo, 'Nameplate Photo: ' + form.tag)" 
+                      class="w-full h-full object-cover cursor-pointer hover:scale-105 transition"
+                    >
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" x-text="form.nameplate_photo.name || 'Nameplate Image'"></p>
+                    <p class="text-[10px] text-slate-400 font-mono" x-text="'Captured ' + (form.nameplate_photo.timestamp || 'Today')"></p>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button 
+                      type="button" 
+                      @click="openLightbox(form.nameplate_photo, 'Nameplate Photo: ' + form.tag)"
+                      class="px-2 py-1 rounded text-[10px] font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:text-indigo-600 cursor-pointer"
+                    >
+                      🔍 View
+                    </button>
+                    <button 
+                      type="button" 
+                      @click="form.nameplate_photo = null; notify('Nameplate photo removed')"
+                      class="w-6 h-6 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs font-bold cursor-pointer"
+                      title="Remove nameplate photo"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- SPECIALIZED EQUIPMENT ATTRIBUTES & DYNAMIC SLOTS -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <span>⚙️</span>
+              <span>Dynamic Equipment Specifications</span>
+            </span>
+            <button 
+              type="button" 
+              @click="addCustomAttr()" 
+              class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-950 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 flex items-center gap-1 cursor-pointer transition"
+            >
+              <span>➕ Add Field Attribute</span>
+            </button>
+          </div>
+
+          <!-- 1. Generator Specifics -->
+          <template x-if="selectedType && selectedType.tag === 'GEN'">
+            <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20">
+              <div>
+                <label class="block text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-1">Fuel Type</label>
+                <select x-model="form.vendor_attrs.fuel_type" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="Diesel #2">Diesel #2</option>
+                  <option value="Natural Gas">Natural Gas</option>
+                  <option value="Propane (LP)">Propane (LP)</option>
+                  <option value="Dual Fuel">Dual Fuel</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-1">Standby/Prime kW</label>
+                <input type="number" x-model.number="form.vendor_attrs.kw_rating" placeholder="750" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-1">Engine Controller</label>
+                <input type="text" x-model="form.vendor_attrs.controller" placeholder="EMCP 4.2B" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+              </div>
+            </div>
+          </template>
+
+          <!-- 2. Transformer Specifics -->
+          <template x-if="selectedDomain && selectedDomain.id === 'transformers'">
+            <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-purple-500/5 border border-purple-500/20">
+              <div>
+                <label class="block text-[10px] font-bold text-purple-700 dark:text-purple-300 mb-1">Impedance (%Z)</label>
+                <input type="text" x-model="form.vendor_attrs.impedance_z" placeholder="5.75%" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-purple-700 dark:text-purple-300 mb-1">Temp Rise</label>
+                <select x-model="form.vendor_attrs.temp_rise" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="150°C">150°C Rise</option>
+                  <option value="115°C">115°C Rise (Energy Efficient)</option>
+                  <option value="80°C">80°C Rise (Low Loss)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-purple-700 dark:text-purple-300 mb-1">Cooling Class</label>
+                <select x-model="form.vendor_attrs.cooling_class" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="AA">AA (Dry-type Natural Air)</option>
+                  <option value="FA">FA (Forced Air Fans)</option>
+                  <option value="ONAN">ONAN (Liquid-Filled)</option>
+                </select>
+              </div>
+            </div>
+          </template>
+
+          <!-- 3. ATS / Switch Specifics -->
+          <template x-if="selectedType && ['ATS', 'MTS'].includes(selectedType.tag)">
+            <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20">
+              <div>
+                <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Transition Mode</label>
+                <select x-model="form.vendor_attrs.transition" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="Open Transition">Open Transition</option>
+                  <option value="Closed Transition">Closed Transition (Soft Load)</option>
+                  <option value="Delayed Transition">Delayed Transition</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Bypass Isolation</label>
+                <select x-model="form.vendor_attrs.bypass_isolation" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="No">No Bypass</option>
+                  <option value="Yes (Dual Drawout)">Yes (Dual Drawout)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Controller Logic</label>
+                <input type="text" x-model="form.vendor_attrs.controller" placeholder="e.g. Group G Controller" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+              </div>
+            </div>
+          </template>
+
+          <!-- 4. Fused Switch Specifics -->
+          <template x-if="selectedType && selectedType.tag === 'DISC'">
+            <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20">
+              <div>
+                <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Fuse Class</label>
+                <select x-model="form.vendor_attrs.fuse_class" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="Class J">Class J (High Speed)</option>
+                  <option value="Class R">Class R (RK1 / RK5)</option>
+                  <option value="Class T">Class T (Compact)</option>
+                  <option value="Class L">Class L (>600A)</option>
+                  <option value="Class CC">Class CC</option>
+                  <option value="Non-Fused">Non-Fused Disconnect</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Installed Fuse (A)</label>
+                <input type="number" x-model.number="form.vendor_attrs.fuse_amps" placeholder="100" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Blown Indicator</label>
+                <select x-model="form.vendor_attrs.blown_indicators" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="Yes">Yes (LED / Flag)</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </template>
+
+          <!-- 5. Ad-Hoc Key-Value Dynamic Attribute Rows -->
+          <template x-if="customAttrsList.length > 0">
+            <div class="space-y-1.5 pt-1">
+              <span class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Custom Nameplate Tags</span>
+              <template x-for="(attr, aIdx) in customAttrsList" :key="aIdx">
+                <div class="flex items-center gap-2">
+                  <input type="text" x-model="attr.key" placeholder="Parameter Name (e.g. Full Load RPM)" class="flex-1 h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-semibold">
+                  <input type="text" x-model="attr.val" placeholder="Value (e.g. 1760 RPM)" class="flex-1 h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <button type="button" @click="removeCustomAttr(aIdx)" class="w-7 h-7 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs cursor-pointer font-bold">✕</button>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+
+        <!-- OPERATIONS, CONDITION & LIFECYCLE TELEMETRY (CEO SPEC) -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <span>🩺</span>
+              <span>Asset Health, Condition & Inspection</span>
+            </span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold" x-text="form.operational_status || 'Active'"></span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <!-- Criticality Rating -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Criticality</label>
+              <select x-model="form.criticality" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+                <option value="High">High (Mission-Critical)</option>
+                <option value="Medium">Medium (Standard Distribution)</option>
+                <option value="Low">Low (Non-Essential Branch)</option>
+              </select>
+            </div>
+
+            <!-- Condition Assessment -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Condition Rating</label>
+              <select x-model="form.condition" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+                <option value="1">1 - Good (No Defects)</option>
+                <option value="2">2 - Fair (Minor Wear / Dust)</option>
+                <option value="3">3 - Poor (Immediate Service Needed)</option>
+              </select>
+            </div>
+
+            <!-- Operating Environment -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Environment</label>
+              <select x-model="form.environment" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+                <option value="Clean">Clean (Conditioned)</option>
+                <option value="Dusty">Dusty / Industrial</option>
+                <option value="Wet">Wet / Washdown</option>
+                <option value="Corrosive">Corrosive / Chemical</option>
+              </select>
+            </div>
+
+            <!-- Operating Status -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Status</label>
+              <select x-model="form.operational_status" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+                <option value="Active">Active (Energized)</option>
+                <option value="Locked Out">Locked Out / Tagged Out</option>
+                <option value="Standby">Standby (De-Energized)</option>
+                <option value="Retired">Retired / Out of Service</option>
+              </select>
+            </div>
+
+            <!-- Inspection Frequency -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Inspection Frequency</label>
+              <select x-model="form.inspection_freq" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Semi-Annual">Semi-Annual</option>
+                <option value="Annual">Annual</option>
+                <option value="5-Year">5-Year</option>
+              </select>
+            </div>
+
+            <!-- Next Inspection Date -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Next Inspection Date</label>
+              <input type="date" x-model="form.next_inspection" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+            </div>
+
+            <!-- Testing Telemetry: Arc Flash, Infrared, Torque -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Arc Flash Label Date</label>
+              <input type="date" x-model="form.arc_flash_date" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Last Infrared Scan</label>
+              <input type="date" x-model="form.infrared_date" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Torque Check Date</label>
+              <input type="date" x-model="form.torque_check_date" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel-Specific Attributes & Dynamic Slots Configuration -->
+        <template x-if="isPanelEquipment()">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-indigo-200 dark:border-indigo-900/40 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+                <span>🗄️</span>
+                <span>Panel Bus & Physical Configuration</span>
+              </span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold" x-text="form.slots + ' Physical Slots'">
+                42 Slots
+              </span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <!-- # of Slots Dropdown -->
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1"># of Slots</label>
+                <select 
+                  x-model.number="form.slots" 
+                  @change="updateSlotCount()"
+                  class="w-full h-8 px-2.5 text-xs font-mono font-bold rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option :value="12">12 Slots</option>
+                  <option :value="18">18 Slots</option>
+                  <option :value="24">24 Slots</option>
+                  <option :value="30">30 Slots</option>
+                  <option :value="42">42 Slots</option>
+                  <option :value="54">54 Slots</option>
+                  <option :value="72">72 Slots</option>
+                  <option :value="84">84 Slots</option>
+                </select>
+              </div>
+
+              <!-- Main Type (MCB vs MLO) -->
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Main Device</label>
+                <select 
+                  x-model="form.main_type" 
+                  class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option value="MCB">MCB (Main Breaker)</option>
+                  <option value="MLO">MLO (Main Lug Only)</option>
+                </select>
+              </div>
+
+              <!-- Mounting -->
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Mounting</label>
+                <select 
+                  x-model="form.mounting" 
+                  class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option value="Surface">Surface Mount</option>
+                  <option value="Flush">Flush Mount</option>
+                  <option value="Freestanding">Free Standing</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Live Electrical Rules & Engineering Telemetry -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Live NEC Calculations</span>
+            </span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 font-bold">
+              Continuous Load (125%)
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-1 font-mono text-xs">
+            <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Calculated FLA:</span>
+              <span class="font-bold text-slate-900 dark:text-white" x-text="(form.amps || 0) + ' A'">400 A</span>
+            </div>
+            <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block">125% OCPD Min:</span>
+              <span class="font-bold text-amber-600 dark:text-amber-400" x-text="Math.ceil((form.amps || 0) * 1.25) + ' A'">500 A</span>
+            </div>
+            <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Min Cu Conductor:</span>
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 truncate block" x-text="getConductor(form.amps || 0)">500 kcmil Cu</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMBEDDED PANEL SCHEDULE & CIRCUIT BREAKERS MATRIX (Column 3 Bottom) -->
+        <template x-if="isPanelEquipment()">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+            <!-- Matrix Header & Stats -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <span>⚡</span>
+                  <span>Panel Slot Schedule</span>
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" x-text="occupiedSlotsCount + ' / ' + form.slots + ' Used'">
+                  18 / 42 Used
+                </span>
+              </div>
+
+              <!-- Phase Color Legend -->
+              <div class="flex items-center gap-3 text-[10px] font-mono">
+                <span class="flex items-center gap-1 text-red-500 font-bold"><span class="w-2 h-2 rounded-full bg-red-500"></span> Ph A</span>
+                <span class="flex items-center gap-1 text-blue-500 font-bold"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Ph B</span>
+                <span class="flex items-center gap-1 text-emerald-500 font-bold"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Ph C</span>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              💡 Click any slot to insert or edit circuit breakers, multi-pole ganging, trip ratings, and downstream loads.
+            </p>
+
+            <!-- Embedded Interactive Slots Table -->
+            <div class="border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-950 text-xs font-mono">
+              <table class="w-full border-collapse text-left">
+                <thead>
+                  <tr class="bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[10px]">
+                    <th class="p-1.5 text-center w-8 border-r border-slate-200 dark:border-slate-800">#</th>
+                    <th class="p-1.5 border-r border-slate-200 dark:border-slate-800">Left Breaker / Circuit</th>
+                    <th class="p-1.5 text-center w-12 border-r border-slate-200 dark:border-slate-800">Trip</th>
+                    <th class="p-1.5 text-center w-8 border-r border-slate-200 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-900">Ph</th>
+                    <th class="p-1.5 text-center w-12 border-r border-slate-200 dark:border-slate-800">Trip</th>
+                    <th class="p-1.5 border-r border-slate-200 dark:border-slate-800">Right Breaker / Circuit</th>
+                    <th class="p-1.5 text-center w-8">#</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-900">
+                  <template x-for="(row, rIdx) in scheduleRows" :key="row.leftSlot">
+                    <tr class="hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition group">
+                      
+                      <!-- Left Slot Number -->
+                      <td class="p-1.5 text-center font-bold text-slate-400 border-r border-slate-200/70 dark:border-slate-800/70 text-[11px]" x-text="row.leftSlot"></td>
+
+                      <!-- Left Slot Card (Clickable) -->
+                      <td 
+                        @click="openBreakerInspector(row, 'left', rIdx)"
+                        class="p-1.5 border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-sans"
+                        :class="row.leftTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic'"
+                      >
+                        <div class="flex items-center justify-between gap-1">
+                          <span class="truncate text-xs" :class="row.leftTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400'" x-text="row.leftDesc || '+ Space / Spare'"></span>
+                          <div class="flex items-center gap-1 shrink-0" x-show="row.leftTrip">
+                            <span x-show="row.leftPoles > 1" class="px-1 py-0.2 rounded text-[9px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-mono" x-text="row.leftPoles + 'P'"></span>
+                            <span x-show="row.leftType && row.leftType !== 'MCCB'" class="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono" x-text="row.leftType"></span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <!-- Left Trip Rating -->
+                      <td 
+                        @click="openBreakerInspector(row, 'left', rIdx)"
+                        class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-bold text-xs"
+                        :class="row.leftTrip ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'"
+                        x-text="row.leftTrip ? (row.leftTrip + 'A') : '—'"
+                      ></td>
+
+                      <!-- Phase Marker -->
+                      <td class="p-1.5 text-center font-bold text-xs border-r border-slate-200/70 dark:border-slate-800/70 bg-slate-100/40 dark:bg-slate-900/50" :class="row.phaseColor" x-text="row.phase"></td>
+
+                      <!-- Right Trip Rating -->
+                      <td 
+                        @click="openBreakerInspector(row, 'right', rIdx)"
+                        class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-bold text-xs"
+                        :class="row.rightTrip ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'"
+                        x-text="row.rightTrip ? (row.rightTrip + 'A') : '—'"
+                      ></td>
+
+                      <!-- Right Slot Card (Clickable) -->
+                      <td 
+                        @click="openBreakerInspector(row, 'right', rIdx)"
+                        class="p-1.5 border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-sans"
+                        :class="row.rightTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic'"
+                      >
+                        <div class="flex items-center justify-between gap-1">
+                          <span class="truncate text-xs" :class="row.rightTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400'" x-text="row.rightDesc || '+ Space / Spare'"></span>
+                          <div class="flex items-center gap-1 shrink-0" x-show="row.rightTrip">
+                            <span x-show="row.rightPoles > 1" class="px-1 py-0.2 rounded text-[9px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-mono" x-text="row.rightPoles + 'P'"></span>
+                            <span x-show="row.rightType && row.rightType !== 'MCCB'" class="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono" x-text="row.rightType"></span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <!-- Right Slot Number -->
+                      <td class="p-1.5 text-center font-bold text-slate-400 text-[11px]" x-text="row.rightSlot"></td>
+
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
+
+        <!-- FIELD NOTES & OBSERVATIONS WITH PHOTO CAPTURE & THUMBNAILS -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <span>📝</span>
+                <span>Field Notes & Observations</span>
+              </span>
+              <span class="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" x-text="(form.notes || []).length">0</span>
+            </div>
+            <span class="text-[10px] text-slate-400">Photos & survey logs</span>
+          </div>
+
+          <!-- Add New Note Input & Action Bar -->
+          <div class="space-y-2">
+            <div class="flex items-center gap-1.5">
+              <input 
+                type="text" 
+                x-model="newNoteText" 
+                @keydown.enter.prevent="addNote()" 
+                placeholder="Add observation (e.g. Nameplate photo attached, tested FLA 185A)..." 
+                class="flex-1 h-8 px-3 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+              >
+
+              <!-- Take Photo (Camera) Button -->
+              <button 
+                type="button" 
+                @click="$refs.cameraInput.click()" 
+                title="Snap Photo with Camera"
+                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition cursor-pointer text-sm shrink-0"
+              >
+                📷
+              </button>
+
+              <!-- Upload Photo(s) (+ Sign / Gallery) Button -->
+              <button 
+                type="button" 
+                @click="$refs.galleryInput.click()" 
+                title="Add Photo(s) from Device"
+                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition cursor-pointer text-sm shrink-0 font-bold"
+              >
+                ➕
+              </button>
+
+              <!-- Add Note Button -->
+              <button 
+                type="button"
+                @click="addNote()" 
+                :disabled="!newNoteText.trim() && stagedPhotos.length === 0"
+                class="px-3 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-sm shadow-indigo-600/30 transition flex items-center gap-1 shrink-0 cursor-pointer"
+              >
+                <span>Add</span>
+              </button>
+            </div>
+
+            <!-- Staged Photos Thumbnail Strip (Before saving note) -->
+            <template x-if="stagedPhotos.length > 0">
+              <div class="p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/80 space-y-1.5">
+                <div class="flex items-center justify-between text-[10px] text-indigo-700 dark:text-indigo-300 font-semibold font-mono">
+                  <span>Attached Photo(s) (<span x-text="stagedPhotos.length"></span>)</span>
+                  <button type="button" @click="stagedPhotos = []" class="text-rose-500 hover:underline cursor-pointer">Clear all</button>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <template x-for="(photo, pIdx) in stagedPhotos" :key="photo.id || pIdx">
+                    <div class="relative group/photo w-14 h-14 rounded-lg overflow-hidden border border-indigo-300 dark:border-indigo-700 bg-black/10 shadow-sm shrink-0">
+                      <img 
+                        :src="photo.dataUrl" 
+                        :alt="photo.name" 
+                        @click="openLightbox(photo, 'Staged Observation Photo')"
+                        class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-150"
+                      >
+                      <!-- Delete Photo 'x' Badge -->
+                      <button 
+                        type="button" 
+                        @click.stop="removeStagedPhoto(pIdx)" 
+                        title="Remove photo"
+                        class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center shadow-md hover:bg-rose-700 cursor-pointer transition opacity-90 group-hover/photo:opacity-100"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Notes List -->
+          <div class="space-y-2 max-h-52 overflow-y-auto">
+            <template x-for="(note, nIdx) in (form.notes || [])" :key="note.id || nIdx">
+              <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col gap-2 group">
+                
+                <div class="flex items-start justify-between gap-2">
+                  <!-- Note Content / Inline Edit -->
+                  <div class="flex-1 min-w-0">
+                    <div x-show="editingNoteId !== note.id">
+                      <p class="text-xs text-slate-800 dark:text-slate-200 leading-snug break-words font-sans" x-text="note.text"></p>
+                      <div class="mt-1 flex items-center gap-2 text-[10px] text-slate-400 font-mono">
+                        <span x-text="note.date || 'Just now'"></span>
+                        <span x-show="note.author" x-text="'• ' + note.author"></span>
+                        <span x-show="note.photos && note.photos.length" class="text-indigo-600 dark:text-indigo-400 font-semibold" x-text="'• 📷 ' + note.photos.length + ' photo(s)'"></span>
+                      </div>
+                    </div>
+
+                    <!-- Inline Text & Photo Editing Mode -->
+                    <div x-show="editingNoteId === note.id" class="space-y-2">
+                      <input 
+                        type="text" 
+                        x-model="editingNoteText" 
+                        @keydown.enter.prevent="saveNoteEdit(nIdx)"
+                        class="w-full h-7 px-2 text-xs rounded bg-slate-100 dark:bg-slate-900 border border-indigo-500 text-slate-900 dark:text-white focus:outline-none"
+                      >
+                      
+                      <!-- Add More Photos during Edit -->
+                      <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5">
+                          <button 
+                            type="button" 
+                            @click="editingNoteIndex = nIdx; $refs.editCameraInput.click()" 
+                            class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>📷 Snap</span>
+                          </button>
+                          <button 
+                            type="button" 
+                            @click="editingNoteIndex = nIdx; $refs.editGalleryInput.click()" 
+                            class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>➕ Photo</span>
+                          </button>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                          <button type="button" @click="saveNoteEdit(nIdx)" class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600 text-white cursor-pointer">Save</button>
+                          <button type="button" @click="editingNoteId = null" class="px-2 py-0.5 rounded text-[10px] text-slate-400 hover:text-slate-200 cursor-pointer">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Note Top Actions (Edit / Delete Confirmation) -->
+                  <div class="flex items-center gap-1 shrink-0" x-show="editingNoteId !== note.id">
+                    <button 
+                      type="button" 
+                      @click="startEditNote(note, nIdx)" 
+                      title="Edit note" 
+                      class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs cursor-pointer"
+                    >
+                      ✏️
+                    </button>
+                    <button 
+                      type="button" 
+                      @click="promptDeleteNote(nIdx, note)" 
+                      title="Delete note" 
+                      class="w-6 h-6 rounded flex items-center justify-center text-rose-400 hover:text-rose-600 text-xs cursor-pointer"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Attached Photos Thumbnail Strip (Click to open full view / delete) -->
+                <template x-if="note.photos && note.photos.length > 0">
+                  <div class="pt-1 flex items-center gap-2 flex-wrap border-t border-slate-100 dark:border-slate-700/60">
+                    <template x-for="(photo, pIdx) in note.photos" :key="photo.id || pIdx">
+                      <div class="relative group/thumb w-12 h-12 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-black/10 shrink-0">
+                        <img 
+                          :src="photo.dataUrl" 
+                          :alt="photo.name || 'Field observation photo'" 
+                          @click="openLightbox(photo, note.text)"
+                          class="w-full h-full object-cover cursor-pointer hover:opacity-90 transition duration-150"
+                        >
+                        <!-- Delete Photo 'x' Badge (Active when editing note) -->
+                        <button 
+                          type="button" 
+                          x-show="editingNoteId === note.id"
+                          @click.stop="removeNotePhoto(nIdx, pIdx)" 
+                          title="Delete this photo"
+                          class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center shadow-md hover:bg-rose-700 cursor-pointer transition"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+
+              </div>
+            </template>
+
+            <template x-if="!(form.notes && form.notes.length)">
+              <div class="py-2 text-center text-xs text-slate-400 italic">
+                No field notes or photos recorded for this asset yet.
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Submit & Save Actions: [Cancel] [Save] or [Cancel] [Update] -->
+        <div class="pt-2 flex items-center gap-3">
+          <button 
+            type="button"
+            @click="cancelEdit()" 
+            class="w-28 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200 dark:border-slate-700"
+          >
+            <span>Cancel</span>
+          </button>
+          <button 
+            type="button"
+            @click="saveAsset()" 
+            :disabled="isDuplicateTag"
+            :class="isDuplicateTag ? 'opacity-50 cursor-not-allowed bg-slate-400 dark:bg-slate-700' : 'bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 hover:from-indigo-500 hover:to-indigo-700 shadow-md shadow-indigo-600/30'"
+            class="flex-1 h-10 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+          >
+            <span>💾</span>
+            <span x-text="editingId ? 'Update' : 'Save'">Save</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Resizer 3 -->
+    <div 
+      class="resizer-bar bg-slate-200 dark:bg-slate-800" 
+      @mousedown="startResize($event, 3)"
+    ></div>
+
+    <!-- COLUMN 4: Project Stack Inventory -->
+    <section :style="`width: ${col4Width}px;`" class="shrink-0 flex flex-col bg-slate-100/50 dark:bg-[#090E1A] min-w-[320px]">
+      
+      <!-- Top Stack Header & Grouping Filters -->
+      <div class="h-11 px-4 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Facility Stack</span>
+          <span class="px-2 py-0.5 rounded-full text-xs font-bold font-mono bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" x-text="stack.length">9</span>
+        </div>
+
+        <!-- View Grouping Dropdown / Buttons -->
+        <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">
+          <button 
+            @click="groupMode = 'room'" 
+            :class="groupMode === 'room' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400'"
+            class="px-2 py-1 rounded transition cursor-pointer"
+          >
+            Room
+          </button>
+          <button 
+            @click="groupMode = 'tree'" 
+            :class="groupMode === 'tree' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400'"
+            class="px-2 py-1 rounded transition cursor-pointer"
+          >
+            Tree
+          </button>
+          <button 
+            @click="groupMode = 'type'" 
+            :class="groupMode === 'type' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400'"
+            class="px-2 py-1 rounded transition cursor-pointer"
+          >
+            Type
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Stack Filter -->
+      <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+        <input 
+          type="text" 
+          x-model="stackSearch" 
+          placeholder="Search stacked assets..." 
+          class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+        >
+      </div>
+
+      <!-- Grouped Stack List -->
+      <div class="flex-1 overflow-y-auto p-3 space-y-4">
+        
+        <template x-for="grp in groupedStack" :key="grp.title">
+          <div class="space-y-2">
+            <!-- Group Header -->
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300 pb-1 border-b border-slate-200 dark:border-slate-800">
+              <span x-text="grp.title"></span>
+              <span class="text-[10px] font-mono text-slate-500" x-text="grp.items.length + ' items'"></span>
+            </div>
+
+            <!-- Group Item Cards -->
+            <div class="space-y-2">
+              <template x-for="item in grp.items" :key="item.id">
+                <div 
+                  class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/90 shadow-sm hover:border-indigo-400 dark:hover:border-indigo-600 transition group relative"
+                  :class="editingId === item.id ? 'ring-2 ring-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20' : ''"
+                >
+                  <!-- Card Header -->
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="w-7 h-7 rounded-lg font-mono font-bold text-xs flex items-center justify-center border shadow-xs transition" :class="getDomainBadgeClass(item.domain)" x-text="item.type_tag || 'EQ'"></span>
+                      <div>
+                        <h4 class="font-bold text-xs text-slate-900 dark:text-white" x-text="item.tag"></h4>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400" x-text="item.name"></p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-1.5">
+                      <span 
+                        x-show="item.is_panel"
+                        class="text-[9px] font-mono px-1.5 py-0.5 rounded font-semibold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800"
+                        x-text="(item.slots || 42) + ' Slots'"
+                      ></span>
+                      <span 
+                        class="text-[10px] font-mono px-2 py-0.5 rounded font-bold"
+                        :class="item.amps >= 800 ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
+                        x-text="item.amps + ' A'"
+                      ></span>
+                    </div>
+                  </div>
+
+                  <!-- Details Metadata -->
+                  <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-1.5 text-[11px] font-mono text-slate-600 dark:text-slate-400">
+                    <div>⚡ <span x-text="item.voltage"></span></div>
+                    <div>🛡️ <span x-text="(item.aic || 65) + ' kA AIC'"></span></div>
+                    <div class="col-span-2 text-[10px] text-slate-500 dark:text-slate-500 truncate" x-show="item.fed_from">
+                      ↳ Fed from: <span class="text-indigo-600 dark:text-indigo-400 font-bold" x-text="item.fed_from"></span>
+                    </div>
+                    <!-- OEM / Model / Asset Tag Pills -->
+                    <div class="col-span-2 flex flex-wrap items-center gap-1 text-[10px] pt-1" x-show="(item.attributes && (item.attributes.manufacturer || item.attributes.asset_tag || item.attributes.model_no)) || item.asset_tag || item.manufacturer">
+                      <span x-show="(item.attributes && item.attributes.manufacturer) || item.manufacturer" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold truncate max-w-[150px]" x-text="'🏷️ ' + ((item.attributes && item.attributes.manufacturer) || item.manufacturer)"></span>
+                      <span x-show="(item.attributes && item.attributes.model_no) || item.model_no" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono truncate max-w-[120px]" x-text="((item.attributes && item.attributes.model_no) || item.model_no)"></span>
+                      <span x-show="(item.attributes && item.attributes.asset_tag) || item.asset_tag" class="px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-mono font-bold" x-text="'Asset: ' + ((item.attributes && item.attributes.asset_tag) || item.asset_tag)"></span>
+                    </div>
+                  </div>
+
+                  <!-- Field Notes Summary Preview (if notes exist) -->
+                  <template x-if="(item.attributes && item.attributes.notes && item.attributes.notes.length > 0) || (item.notes && item.notes.length > 0)">
+                    <div class="mt-2 p-1.5 rounded-md bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 text-[10px] text-slate-600 dark:text-slate-400">
+                      <div class="flex items-center justify-between font-semibold text-indigo-600 dark:text-indigo-400 mb-0.5">
+                        <div class="flex items-center gap-1">
+                          <span>📝</span>
+                          <span x-text="((item.attributes && item.attributes.notes) || item.notes || []).length + ' Field Note(s)'"></span>
+                        </div>
+                        <span x-show="getAssetPhotoCount(item) > 0" class="text-[9px] px-1 py-0.2 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-mono" x-text="'📷 ' + getAssetPhotoCount(item) + ' Photo(s)'"></span>
+                      </div>
+                      <p class="truncate italic" x-text="((item.attributes && item.attributes.notes) || item.notes || [])[0].text"></p>
+                    </div>
+                  </template>
+
+                  <!-- Action Bar (Edit, Duplicate, Delete) -->
+                  <div class="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-1.5">
+                    <button 
+                      @click="requestEditAsset(item)"
+                      class="px-2.5 py-1 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 transition cursor-pointer flex items-center gap-1"
+                    >
+                      <span>✏️</span>
+                      <span x-text="item.is_panel ? 'Edit & Schedule' : 'Edit'">Edit</span>
+                    </button>
+
+                    <!-- Duplicate & Delete -->
+                    <div class="flex items-center gap-1">
+                      <button 
+                        @click="duplicateAsset(item)"
+                        title="Duplicate"
+                        class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs cursor-pointer"
+                      >
+                        📑
+                      </button>
+                      <button 
+                        @click="promptDeleteAsset(item)"
+                        title="Delete"
+                        class="w-6 h-6 rounded flex items-center justify-center text-rose-400 hover:text-rose-600 text-xs cursor-pointer"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Unsaved Changes Safety Confirmation Modal -->
+  <div 
+    x-show="showUnsavedModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="handleCancelSwitch()"
+  >
+    <div 
+      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4"
+      @click.away="handleCancelSwitch()"
+    >
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg shrink-0 border border-amber-200 dark:border-amber-900">
+          ⚠️
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-sm text-slate-900 dark:text-white">Unsaved Changes</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            You have unsaved edits on <span class="font-bold font-mono text-slate-900 dark:text-white" x-text="form.tag"></span> (<span x-text="form.name"></span>).
+          </p>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 font-semibold pt-1">What would you like to do before switching?</p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex items-center justify-end gap-2.5">
+        <button 
+          type="button" 
+          @click="handleCancelSwitch()" 
+          class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer"
+        >
+          Keep Editing
+        </button>
+        <button 
+          type="button" 
+          @click="handleDiscardAndSwitch()" 
+          class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/80 text-rose-600 dark:text-rose-400 transition cursor-pointer"
+        >
+          Discard
+        </button>
+        <button 
+          type="button" 
+          @click="handleSaveAndSwitch()" 
+          class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30 transition cursor-pointer flex items-center gap-1.5"
+        >
+          <span>💾 Save & Switch</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Asset Confirmation Modal -->
+  <div 
+    x-show="showDeleteConfirmModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showDeleteConfirmModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4"
+      @click.away="showDeleteConfirmModal = false"
+    >
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-lg shrink-0 border border-rose-200 dark:border-rose-900">
+          ⚠️
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-sm text-slate-900 dark:text-white">Delete Equipment Asset?</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Are you sure you want to delete <span class="font-bold font-mono text-slate-900 dark:text-white" x-text="itemToDelete ? itemToDelete.tag : ''"></span> (<span x-text="itemToDelete ? itemToDelete.name : ''"></span>) from <span x-text="itemToDelete ? itemToDelete.room : ''"></span>?
+          </p>
+          <p class="text-[11px] text-rose-500 font-semibold pt-1">This will permanently remove this asset and its internal schedules from the facility stack.</p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex items-center justify-end gap-2.5">
+        <button 
+          type="button" 
+          @click="showDeleteConfirmModal = false" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          @click="confirmDeleteAsset()" 
+          class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-md shadow-rose-600/30 transition cursor-pointer flex items-center gap-1.5"
+        >
+          <span>🗑️ Delete Equipment</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Field Note Confirmation Modal -->
+  <div 
+    x-show="showDeleteNoteModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showDeleteNoteModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4"
+      @click.away="showDeleteNoteModal = false"
+    >
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-lg shrink-0 border border-rose-200 dark:border-rose-900">
+          📝
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-bold text-sm text-slate-900 dark:text-white">Delete Field Note?</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Are you sure you want to remove this observation?
+          </p>
+          <div class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 italic break-words" x-text="noteToDelete ? noteToDelete.text : ''"></div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex items-center justify-end gap-2.5">
+        <button 
+          type="button" 
+          @click="showDeleteNoteModal = false" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          @click="confirmDeleteNote()" 
+          class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-md shadow-rose-600/30 transition cursor-pointer flex items-center gap-1.5"
+        >
+          <span>🗑️ Delete Note</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Breaker Create / Edit Inspector Modal -->
+  <div 
+    x-show="showBreakerModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showBreakerModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col"
+      @click.away="showBreakerModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="h-12 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-indigo-600 text-white font-mono font-bold text-xs flex items-center justify-center" x-text="activeBreaker ? ('#' + activeBreaker.slot) : ''"></span>
+          <h3 class="font-bold text-xs text-slate-900 dark:text-white" x-text="activeBreaker && activeBreaker.isOccupied ? 'Edit Circuit Breaker' : 'Insert Circuit Breaker'"></h3>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold" :class="activeBreaker ? activeBreaker.phaseColor : ''" x-text="activeBreaker ? ('Phase ' + activeBreaker.phase) : ''"></span>
+        </div>
+        <button @click="showBreakerModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-sm cursor-pointer">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-4 text-xs">
+        
+        <!-- Master Catalog Breaker Selector (Eaton Power Defense) -->
+        <div class="p-2.5 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 space-y-1.5" x-show="catalogBreakers.length > 0">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-indigo-700 dark:text-indigo-300 text-[11px] flex items-center gap-1">
+              <span>⚡</span><span>Master Catalog Breaker Picker</span>
+            </span>
+            <span class="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 font-bold" x-text="catalogBreakers.length + ' Available'"></span>
+          </div>
+          <select 
+            x-model="activeBreaker.part_no" 
+            @change="onBreakerCatalogSelect(activeBreaker.part_no)"
+            class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+          >
+            <option value="">-- Custom / Pick from Power Defense Catalog --</option>
+            <template x-for="b in catalogBreakers" :key="b.part_number">
+              <option :value="b.part_number" x-text="b.part_number + ' • ' + b.specs.poles + 'P ' + b.specs.amps + 'A (' + b.specs.frame + ')'"></option>
+            </template>
+          </select>
+        </div>
+
+        <!-- Circuit Description / Load Tag -->
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Circuit / Load Description</label>
+          <input 
+            type="text" 
+            x-model="activeBreaker.desc" 
+            placeholder="e.g. Receptacles RM 102, Server Rack 1A, Lighting L-1..." 
+            class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+          >
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Trip Rating -->
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Trip Rating (Amps)</label>
+            <select 
+              x-model="activeBreaker.trip" 
+              @change="activeBreaker.wire = getConductor(Number(activeBreaker.trip) || 20)"
+              class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold cursor-pointer"
+            >
+              <option value="15">15 A</option>
+              <option value="20">20 A (Standard Branch)</option>
+              <option value="30">30 A</option>
+              <option value="40">40 A</option>
+              <option value="50">50 A</option>
+              <option value="60">60 A</option>
+              <option value="70">70 A</option>
+              <option value="80">80 A</option>
+              <option value="100">100 A</option>
+              <option value="125">125 A</option>
+              <option value="150">150 A</option>
+              <option value="200">200 A</option>
+              <option value="225">225 A</option>
+            </select>
+          </div>
+
+          <!-- Poles & Multi-Slot Ganging -->
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Poles & Gang Configuration</label>
+            <select x-model.number="activeBreaker.poles" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer">
+              <option :value="1">1-Pole (1 Slot • 120V/277V)</option>
+              <option :value="2">2-Pole (2 Slots • 208V/480V)</option>
+              <option :value="3">3-Pole (3 Slots • 3Ø 208V/480V)</option>
+            </select>
+          </div>
+
+          <!-- Breaker Protection Type -->
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Breaker Protection Type</label>
+            <select x-model="activeBreaker.type" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer">
+              <option value="MCCB">Thermal-Magnetic (MCCB)</option>
+              <option value="AFCI">AFCI (Arc-Fault)</option>
+              <option value="GFCI">GFCI (Ground-Fault Class A)</option>
+              <option value="DF">Dual Function (AFCI + GFCI)</option>
+              <option value="MCP">Motor Circuit Protector (MCP)</option>
+              <option value="LSI">Electronic Trip (LSI/LSIG)</option>
+            </select>
+          </div>
+
+          <!-- Conductor Wire Sizing -->
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Conductor Wire Sizing</label>
+            <input type="text" x-model="activeBreaker.wire" placeholder="e.g. 12 AWG Cu" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+          </div>
+        </div>
+
+        <!-- Target Downstream Asset Link -->
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Downstream Equipment / Load (Optional)</label>
+          <select x-model="activeBreaker.targetLoad" class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer">
+            <option value="">-- No Specific Downstream Asset Linked --</option>
+            <template x-for="item in eligibleDownstreamEquipment" :key="item.id">
+              <option :value="item.tag" x-text="item.tag + ' — ' + item.name + ' (' + (item.room || 'Room') + ')'"></option>
+            </template>
+          </select>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="h-14 px-5 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shrink-0">
+        <div>
+          <button 
+            type="button" 
+            x-show="activeBreaker && activeBreaker.isOccupied"
+            @click="removeBreakerFromSlot()" 
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer flex items-center gap-1"
+          >
+            <span>🗑️ Remove / Make Space</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            @click="showBreakerModal = false" 
+            class="px-3.5 py-1.5 rounded-lg text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            @click="saveBreakerAttributes()" 
+            class="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm shadow-indigo-600/30 transition cursor-pointer flex items-center gap-1"
+          >
+            <span>💾 Save Breaker</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN PHOTO LIGHTBOX MODAL -->
+  <div 
+    x-show="showLightboxModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+    @keydown.escape.window="showLightboxModal = false"
+  >
+    <div 
+      class="relative flex flex-col items-center max-w-5xl max-h-[95vh] w-full"
+      @click.away="showLightboxModal = false"
+    >
+      <!-- Lightbox Header Controls -->
+      <div class="w-full flex items-center justify-between pb-3 text-white">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-sm">📷</span>
+          <span class="font-bold text-xs truncate" x-text="activeLightboxPhoto ? activeLightboxPhoto.name : 'Field Observation Photo'"></span>
+          <span class="text-[11px] text-slate-400 font-mono" x-text="activeLightboxPhoto ? ('• ' + activeLightboxPhoto.timestamp) : ''"></span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <!-- Download Photo -->
+          <a 
+            :href="activeLightboxPhoto ? activeLightboxPhoto.dataUrl : '#'" 
+            :download="(activeLightboxPhoto ? activeLightboxPhoto.name : 'field_photo') + '.png'"
+            class="px-3 py-1 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition flex items-center gap-1 cursor-pointer"
+          >
+            <span>⬇️ Download</span>
+          </a>
+
+          <!-- Close Modal -->
+          <button 
+            type="button" 
+            @click="showLightboxModal = false" 
+            class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Centered Full Resolution Image View -->
+      <div class="relative flex items-center justify-center rounded-2xl overflow-hidden bg-black/50 border border-white/10 shadow-2xl p-1">
+        <img 
+          :src="activeLightboxPhoto ? activeLightboxPhoto.dataUrl : ''" 
+          :alt="activeLightboxPhoto ? activeLightboxPhoto.name : ''" 
+          class="max-h-[80vh] max-w-full object-contain rounded-xl select-auto"
+        >
+      </div>
+
+      <!-- Caption Subtitle -->
+      <p class="pt-2.5 text-xs text-slate-400 text-center font-sans max-w-2xl truncate" x-text="lightboxCaption || 'Field observation photo'"></p>
+    </div>
+  </div>
+
+  <!-- COMPREHENSIVE FIELD GUIDE & WORKFLOW HELP MODAL -->
+  <div 
+    x-show="showHelpModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 sm:p-6"
+    @keydown.escape.window="showHelpModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+      @click.away="showHelpModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0B1220] shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl font-bold border border-indigo-600/20">
+            📖
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>JAMES Field Collector Workflow & Field Guide</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-semibold">Digital Twin Guide</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Step-by-step instructions for physical field surveys, panel schedules, photo notes, and hierarchy mapping.</p>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          @click="showHelpModal = false" 
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="px-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-[#0E1626] flex gap-1 overflow-x-auto shrink-0 py-2">
+        <button 
+          type="button"
+          @click="activeHelpTab = 'flow'"
+          :class="activeHelpTab === 'flow' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>🚀</span>
+          <span>Survey Flow</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'panels'"
+          :class="activeHelpTab === 'panels' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>🗄️</span>
+          <span>Panel Schedules & Breakers</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'photos'"
+          :class="activeHelpTab === 'photos' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>📷</span>
+          <span>Notes & Photos</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'stack'"
+          :class="activeHelpTab === 'stack' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>🏢</span>
+          <span>Facility Stack & Re-Editing</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'diagram'"
+          :class="activeHelpTab === 'diagram' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>⚡</span>
+          <span>Single-Line Diagram</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'tips'"
+          :class="activeHelpTab === 'tips' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>📱</span>
+          <span>iPad & Field Tips</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="p-6 overflow-y-auto flex-1 space-y-5 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+        
+        <!-- TAB 1: SURVEY FLOW -->
+        <div x-show="activeHelpTab === 'flow'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 flex items-start gap-3">
+            <span class="text-xl">🗺️</span>
+            <div>
+              <h4 class="font-bold text-indigo-950 dark:text-indigo-200 text-xs">The 6-Step Field Data Collection Process</h4>
+              <p class="text-indigo-800/80 dark:text-indigo-300/80 mt-0.5">
+                The Workbench is optimized for rapid walk-through electrical surveys on mobile tablets and iPads, seamlessly converting physical nameplates and breaker panels into a connected Digital Twin.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+            <!-- Step 1 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">1</span>
+                <span class="font-bold text-slate-900 dark:text-white">Select Domain & Equipment Type</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                In <strong>Column 1</strong>, tap the domain (e.g. <em>Transformers, Switches, Panels, Sources</em>). In <strong>Column 2</strong>, choose the archetype (e.g. <em>LP, MDP, MCC</em>). JAMES auto-increments tag numbers (e.g. <code class="font-mono text-indigo-600 dark:text-indigo-400">LP-1 → LP-2</code>).
+              </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">2</span>
+                <span class="font-bold text-slate-900 dark:text-white">Fill Nameplate & Location</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                In <strong>Column 3</strong>, specify the unique tag, voltage, amperes, AIC, and Room. A real-time <code class="text-amber-600 dark:text-amber-400 font-bold">⚠️ Tag in use</code> guard prevents duplicate tags in the facility stack.
+              </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">3</span>
+                <span class="font-bold text-slate-900 dark:text-white">Link Upstream Source ("Fed From")</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Select the upstream parent in <strong>Fed From</strong>. Dropdown options automatically filter by electrical hierarchy (primary sources have no upstream, and terminal loads never feed upstream).
+              </p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">4</span>
+                <span class="font-bold text-slate-900 dark:text-white">Populate Embedded Breaker Schedule</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                For panels or MCCs, scroll down in Column 3 to the live slot matrix. Click any slot to configure 1P/2P/3P breakers, trip ratings, and link downstream loads (excluding upstream ancestors).
+              </p>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">5</span>
+                <span class="font-bold text-slate-900 dark:text-white">Attach Observations & Camera Photos</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Type field observations and use <code class="text-indigo-600 dark:text-indigo-400">📷 Snap Photo</code> (iPad camera) or <code class="text-indigo-600 dark:text-indigo-400">➕ Add Photos</code> to attach nameplate & condition photos directly to the record.
+              </p>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">6</span>
+                <span class="font-bold text-slate-900 dark:text-white">Save to Facility Stack & View SLD</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Click <strong>Save</strong> to append the asset to <strong>Column 4 (Facility Stack)</strong>. Then click <strong class="text-indigo-600 dark:text-indigo-400">⚡ View SLD Diagram</strong> in the header to view the compiled Single-Line schematic.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: PANEL SCHEDULES & BREAKERS -->
+        <div x-show="activeHelpTab === 'panels'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-sky-50/70 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/60">
+            <h4 class="font-bold text-sky-950 dark:text-sky-200 text-xs flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Physical Bus Stab & Phase Matching (NEMA / UL 67 Standard)</span>
+            </h4>
+            <p class="text-sky-800/80 dark:text-sky-300/80 mt-1">
+              In standard North American panelboards, bus stabs run vertically down the center. Odd-numbered slots are on the left, even-numbered slots are on the right, and rows alternate phases:
+            </p>
+            <div class="mt-2.5 grid grid-cols-3 gap-2 font-mono text-[11px]">
+              <div class="p-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 font-bold text-center">
+                🔴 Row 1 (Slots 1, 2) → Phase A
+              </div>
+              <div class="p-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-bold text-center">
+                🔵 Row 2 (Slots 3, 4) → Phase B
+              </div>
+              <div class="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold text-center">
+                🟢 Row 3 (Slots 5, 6) → Phase C
+              </div>
+            </div>
+            <p class="text-sky-800/80 dark:text-sky-300/80 mt-2 text-[11px]">
+              The sequence repeats continuously (Row 4 = A, Row 5 = B, Row 6 = C) down the panel.
+            </p>
+          </div>
+
+          <div class="space-y-2.5">
+            <h4 class="font-bold text-slate-900 dark:text-white text-xs">Circuit Breaker Inspector Features</h4>
+            
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">1. Multi-Pole Ganging (1P / 2P / 3P)</div>
+              <ul class="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
+                <li><strong>1-Pole (120V / 277V L-N)</strong>: Occupies 1 slot on a single phase (e.g. Slot 1 = Phase A).</li>
+                <li><strong>2-Pole (208V / 480V L-L)</strong>: Spans 2 consecutive slots on the same side, connecting across two alternating phases (e.g. Slots 1 & 3 = Phase A-B).</li>
+                <li><strong>3-Pole (208V / 480V 3Ø)</strong>: Spans 3 consecutive vertical slots on the same side, connecting across all three phases (e.g. Slots 1, 3, 5 = Phase A-B-C).</li>
+              </ul>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">2. Breaker Trip Ratings & Archetypes</div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Select standard trip ratings (15A, 20A, 30A, 40A, 50A, 60A, 70A, 80A, 100A, 125A, 150A, 175A, 200A, 225A). Choose from <strong>MCCB</strong> (Thermal-Magnetic), <strong>AFCI</strong> (Arc Fault), <strong>GFCI</strong> (Ground Fault), <strong>DF</strong> (Dual Function), <strong>MCP</strong> (Motor Circuit Protector), or <strong>LSI</strong> (Electronic Trip Unit).
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">3. Downstream Equipment Linking</div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                In the breaker inspector modal, specify the <strong>Fed Equipment Tag</strong> (e.g. <code class="font-mono text-indigo-600 dark:text-indigo-400">CH-1</code> or <code class="font-mono text-indigo-600 dark:text-indigo-400">PUMP-1</code>). This associates the branch breaker directly with downstream equipment in the single-line diagram.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">4. Making Spares & Spaces</div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                To clear a populated breaker and turn the slot back into an unassigned spare space, open the slot inspector and click <strong class="text-rose-600 dark:text-rose-400">🗑️ Remove / Make Space</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: NOTES & PHOTOS -->
+        <div x-show="activeHelpTab === 'photos'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60">
+            <h4 class="font-bold text-emerald-950 dark:text-emerald-200 text-xs flex items-center gap-1.5">
+              <span>📷</span>
+              <span>Field Photo Documentation & Portable Storage</span>
+            </h4>
+            <p class="text-emerald-800/80 dark:text-emerald-300/80 mt-1">
+              All field notes and photos are stored directly in SQLite (<code class="font-mono">model.db</code>) and the companion <code class="font-mono">model.jsonl</code> as self-contained Base64 Data URLs. No external image servers or complex file syncing required.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+              <span class="text-lg">📸</span>
+              <div class="space-y-1">
+                <span class="font-bold text-slate-900 dark:text-white">Snap Photo (Camera Direct)</span>
+                <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                  Tapping <strong class="text-indigo-600 dark:text-indigo-400">📷 Snap Photo</strong> triggers the native rear camera hardware on iPads, iPhones, and Android tablets, letting you snap nameplates, damage, and conductor conduit entries with zero extra taps.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+              <span class="text-lg">🖼️</span>
+              <div class="space-y-1">
+                <span class="font-bold text-slate-900 dark:text-white">Add Multiple Photos from Gallery</span>
+                <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                  Tapping <strong class="text-slate-700 dark:text-slate-300">➕ Add Photos</strong> opens the device photo library to select multiple existing photos at once.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+              <span class="text-lg">🔍</span>
+              <div class="space-y-1">
+                <span class="font-bold text-slate-900 dark:text-white">Fullscreen Lightbox & Quick Deletion</span>
+                <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                  Click any thumbnail to open the fullscreen <strong>Photo Lightbox</strong> for inspection and one-click downloading. Use the red <span class="text-rose-500 font-bold">✕</span> corner button on thumbnails to delete unwanted photos.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: FACILITY STACK & RE-EDITING -->
+        <div x-show="activeHelpTab === 'stack'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60">
+            <h4 class="font-bold text-amber-950 dark:text-amber-200 text-xs flex items-center gap-1.5">
+              <span>🛡️</span>
+              <span>Unsaved Changes Protection Guard</span>
+            </h4>
+            <p class="text-amber-800/80 dark:text-amber-300/80 mt-1">
+              JAMES automatically tracks form modifications. If you modify nameplate specs, breaker schedules, or attach photos and click another equipment domain or stack asset without saving, an safety modal gives you 3 options:
+            </p>
+            <div class="mt-2 flex gap-2 text-[11px]">
+              <span class="px-2 py-1 bg-indigo-600 text-white rounded font-bold">💾 Save & Switch</span>
+              <span class="px-2 py-1 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded font-semibold">🗑️ Discard & Switch</span>
+              <span class="px-2 py-1 border border-slate-300 dark:border-slate-600 rounded">Keep Editing</span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">Facility Stack Grouping Views (Column 4)</div>
+              <ul class="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
+                <li><strong>📍 By Room</strong>: Groups assets by physical rooms/closets — ideal for walking surveys room-by-room.</li>
+                <li><strong>⚡ Power Tree</strong>: Visualizes upstream-to-downstream distribution hierarchy.</li>
+                <li><strong>📦 By Type</strong>: Organizes equipment by class (Transformers, Panels, Switches, Loads).</li>
+              </ul>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="font-semibold text-slate-800 dark:text-slate-200">Re-Editing, Duplicating & Deleting</div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Click any equipment card in Column 4 to load it into Column 3 with an <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold font-mono">EDITING: TAG</span> badge. Use <strong>📋 Duplicate</strong> to clone repetitive assets, or <strong>🗑️ Delete</strong> with safety confirmation.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: SINGLE-LINE DIAGRAM -->
+        <div x-show="activeHelpTab === 'diagram'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60">
+            <h4 class="font-bold text-indigo-950 dark:text-indigo-200 text-xs flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Real-Time SLD Single-Line Diagram Engine</span>
+            </h4>
+            <p class="text-indigo-800/80 dark:text-indigo-300/80 mt-1">
+              JAMES compiles your physical survey model directly into an engineering Single-Line Diagram using the embedded Graphviz renderer.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <span class="font-bold text-slate-900 dark:text-white">⚡ View SLD Diagram</span>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Click the top right button to open the interactive Graphviz diagram showing main distribution nodes, transformers, ATS switches, and branch circuits.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <span class="font-bold text-slate-900 dark:text-white">📋 Export JSONL File</span>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Export your facility twin as a clean, standardized JSON Lines file (<code class="font-mono">model.jsonl</code>) ready for Git versioning, CAD integration, and analytical processing.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: IPAD & FIELD TIPS -->
+        <div x-show="activeHelpTab === 'tips'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/60">
+            <h4 class="font-bold text-purple-950 dark:text-purple-200 text-xs flex items-center gap-1.5">
+              <span>💡</span>
+              <span>Pro-Tips for iPad & Mobile Field Surveys</span>
+            </h4>
+            <p class="text-purple-800/80 dark:text-purple-300/80 mt-1">
+              Make the most of tablet real estate and quick keyboard shortcuts during walk-throughs.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px]">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <span class="font-bold text-slate-900 dark:text-white">🏷️ Auto-Incrementing Unique Tags</span>
+              <p class="text-slate-600 dark:text-slate-400">
+                Clicking an archetype automatically finds the next unused number (e.g. <code class="font-mono text-indigo-600 dark:text-indigo-400">LP-1 → LP-2</code>). Duplicate tags are automatically flagged and blocked.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <span class="font-bold text-slate-900 dark:text-white">◀ Hide / Show Catalog Sidebar</span>
+              <p class="text-slate-600 dark:text-slate-400">
+                Once you know the equipment you are surveying, tap <strong class="text-indigo-600 dark:text-indigo-400">◀ Hide Catalog</strong> to expand the Breaker Matrix and Stack to 100% full width.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <span class="font-bold text-slate-900 dark:text-white">↔️ Draggable Column Resizers</span>
+              <p class="text-slate-600 dark:text-slate-400">
+                Drag the vertical border bars between columns to customize width proportions for any screen size or orientation.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <span class="font-bold text-slate-900 dark:text-white">⌨️ Keyboard Shortcuts</span>
+              <p class="text-slate-600 dark:text-slate-400">
+                Press <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono">?</kbd> to open this Field Guide anytime. Press <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono">Esc</kbd> to dismiss any modal or photo lightbox.
+              </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1 sm:col-span-2">
+              <span class="font-bold text-slate-900 dark:text-white">🌙 Dark / Light Mode</span>
+              <p class="text-slate-600 dark:text-slate-400">
+                Toggle between dark theme (for low-light electrical rooms) and high-contrast light theme (for bright outdoor switchyards).
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0B1220] flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+          <span>Tip: Press</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[10px]">?</kbd>
+          <span>to open /</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[10px]">Esc</kbd>
+          <span>to close</span>
+        </div>
+        <button 
+          type="button" 
+          @click="showHelpModal = false" 
+          class="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm transition cursor-pointer"
+        >
+          Got it, Close Guide
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div 
+    x-show="toastShow" 
+    x-cloak 
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 translate-y-2"
+    class="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold shadow-2xl border border-slate-700 dark:border-slate-200"
+  >
+    <span>⚡</span>
+    <span x-text="toastMessage"></span>
+  </div>
+
+  <!-- Alpine.js Application Logic -->
+  <script>
+    function cockpitApp(config) {
+      return {
+        client: config.client,
+        facility: config.facility,
+        stack: config.initialStack || [],
+        masterCatalog: config.masterCatalog || [],
+        
+        // Help Modal State
+        showHelpModal: false,
+        activeHelpTab: 'flow',
+
+        // Form & Editing State
+        editingId: null,
+        editingNoteId: null,
+        editingNoteIndex: null,
+        editingNoteText: '',
+        newNoteText: '',
+        stagedPhotos: [], // Photos attached to current note draft
+        formSnapshot: '', // Used for detecting unsaved changes
+        showCatalog: true, // Collapsible Catalog Sidebar
+        customAttrsList: [], // Dynamic ad-hoc key-value pairs
+        form: {
+          tag: 'LP-1',
+          name: 'Lighting Branch Panel (LP)',
+          room: 'Electrical Room 101',
+          fed_from: '',
+          voltage: '208Y/120V 3Ø 4W',
+          amps: 225,
+          aic: 22,
+          enclosure: 'NEMA 1',
+          is_panel: 1,
+          slots: 42,
+          main_type: 'MCB',
+          mounting: 'Surface',
+          manufacturer: 'Square D / Schneider Electric',
+          model_no: 'NQ442L225',
+          asset_tag: '',
+          serial_no: '',
+          year_installed: null,
+          criticality: 'Medium',
+          condition: '1',
+          environment: 'Clean',
+          operational_status: 'Active',
+          inspection_freq: 'Annual',
+          last_inspection: '',
+          next_inspection: '',
+          arc_flash_date: '',
+          infrared_date: '',
+          torque_check_date: '',
+          megger_phase_a: '',
+          megger_phase_b: '',
+          megger_phase_c: '',
+          vendor_attrs: {},
+          notes: []
+        },
+
+        // Confirmation & Inspection Modal States
+        showDeleteConfirmModal: false,
+        itemToDelete: null,
+        showDeleteNoteModal: false,
+        noteToDelete: null,
+
+        // Unsaved Changes Safety State
+        showUnsavedModal: false,
+        pendingNavigation: null,
+
+        // Photo Lightbox Modal State
+        showLightboxModal: false,
+        activeLightboxPhoto: null,
+        lightboxCaption: '',
+
+        // Breaker Inspector Modal State
+        showBreakerModal: false,
+        activeBreaker: {
+          rowIdx: 0,
+          side: 'left',
+          slot: 1,
+          desc: '',
+          trip: '20',
+          poles: 1,
+          type: 'MCCB',
+          wire: '12 AWG Cu',
+          targetLoad: '',
+          part_no: '',
+          phase: 'A',
+          phaseColor: 'text-red-500',
+          isOccupied: false
+        },
+
+        // UI State
+        isDark: true,
+        domainSearch: '',
+        typeSearch: '',
+        stackSearch: '',
+        groupMode: 'room', // 'room' | 'tree' | 'type'
+        toastShow: false,
+        toastMessage: '',
+
+        // Resizable Column Widths (px)
+        col1Width: 230,
+        col2Width: 280,
+        col4Width: 380,
+
+        // Equipment Domains (Breakers live inside Panels)
+        domains: [
+          { id: 'sources', name: 'Power Sources', icon: '⚡' },
+          { id: 'transformers', name: 'Transformers', icon: '🔄' },
+          { id: 'switches', name: 'Switches & ATS', icon: '🔀' },
+          { id: 'panels', name: 'Panelboards & MCC', icon: '🗄️' },
+          { id: 'power_quality', name: 'Power Quality & UPS', icon: '🔋' },
+          { id: 'loads', name: 'Electrical Loads', icon: '⚙️' },
+          { id: 'cables', name: 'Conductors & Feeders', icon: '🔌' },
+          { id: 'metering', name: 'Meters & Monitors', icon: '📊' },
+          { id: 'renewables', name: 'Solar & Renewables', icon: '☀️' },
+          { id: 'generic', name: 'Generic / Unclassified', icon: '📦' },
+        ],
+
+        // Equipment Types Catalog
+        typesCatalog: {
+          sources: [
+            { tag: 'UTIL', name: 'Utility Service Entrance', desc: 'Primary electric utility service termination', volts: '480Y/277V 3Ø 4W', amps: 2500, aic: 100, defaultTag: 'UTIL-1' },
+            { tag: 'GEN', name: 'Emergency Diesel Generator', desc: 'On-site standby emergency generator', volts: '480Y/277V', amps: 1200, aic: 35, defaultTag: 'GEN-1' },
+            { tag: 'PV', name: 'Solar PV Inverter', desc: 'Commercial solar photovoltaic inverter array', volts: '480V 3Ø', amps: 200, aic: 22, defaultTag: 'PV-1' },
+          ],
+          switches: [
+            { tag: 'ATS', name: 'Automatic Transfer Switch (ATS)', desc: 'Automatic switching between Normal & Emergency sources', volts: '480Y/277V', amps: 400, aic: 65, defaultTag: 'ATS-1' },
+            { tag: 'MTS', name: 'Manual Transfer Switch (MTS)', desc: 'Manual breaker/switch interlock transfer', volts: '480Y/277V', amps: 200, aic: 35, defaultTag: 'MTS-1' },
+            { tag: 'DISC', name: 'Safety Disconnect Switch', desc: 'Heavy duty fused/non-fused disconnect', volts: '480V 3Ø', amps: 100, aic: 200, defaultTag: 'DS-1' },
+          ],
+          panels: [
+            { tag: 'LP', name: 'Lighting Branch Panel (LP)', desc: '42-slot 208Y/120V lighting & receptacle panel', volts: '208Y/120V 3Ø 4W', amps: 225, aic: 22, is_panel: 1, defaultSlots: 42, defaultTag: 'LP-1' },
+            { tag: 'MDP', name: 'Main Distribution Panel (MDP)', desc: 'Central service entrance switchboard / panel', volts: '480Y/277V 3Ø 4W', amps: 1200, aic: 65, is_panel: 1, defaultSlots: 42, defaultTag: 'MDP-1' },
+            { tag: 'MCC', name: 'Motor Control Center (MCC)', desc: 'Grouped motor starters and VFD buckets', volts: '480V 3Ø 3W', amps: 800, aic: 65, is_panel: 1, defaultSlots: 30, defaultTag: 'MCC-1' },
+            { tag: 'PP', name: 'Power Distribution Panel (PP)', desc: 'Dedicated mechanical power distribution panel', volts: '480Y/277V', amps: 400, aic: 35, is_panel: 1, defaultSlots: 30, defaultTag: 'PP-1' },
+            { tag: 'REC', name: 'Residential Loadcenter (REC)', desc: '24-slot residential/light commercial loadcenter', volts: '120/240V 1Ø 3W', amps: 200, aic: 22, is_panel: 1, defaultSlots: 24, defaultTag: 'REC-1' },
+          ],
+          transformers: [
+            { tag: 'XFMR', name: 'Dry-Type Step-Down Transformer', desc: '480V to 208Y/120V distribution transformer', volts: '480V : 208Y/120V', amps: 208, aic: 22, defaultTag: 'T-1' },
+            { tag: 'PAD', name: 'Liquid-Filled Padmount Transformer', desc: 'Utility outdoor oil-filled step-down unit', volts: '13.8kV : 480V', amps: 1200, aic: 65, defaultTag: 'XFMR-PAD' },
+          ],
+          power_quality: [
+            { tag: 'UPS', name: 'Double-Conversion Static UPS', desc: 'Uninterruptible power supply system with battery bank', volts: '480V 3Ø', amps: 300, aic: 65, defaultTag: 'UPS-1' },
+            { tag: 'PDU', name: 'Power Distribution Unit (PDU)', desc: 'Data center cabinet power distribution unit', volts: '208Y/120V', amps: 150, aic: 22, is_panel: 1, defaultSlots: 42, defaultTag: 'PDU-1' },
+          ],
+          loads: [
+            { tag: 'HVAC', name: 'Packaged Chiller / RTU', desc: 'Central cooling plant / rooftop HVAC package', volts: '480V 3Ø', amps: 285, aic: 65, defaultTag: 'CH-1' },
+            { tag: 'MOTOR', name: 'Process Pump / Motor', desc: '3-phase induction motor across-the-line or VFD', volts: '480V 3Ø', amps: 65, aic: 35, defaultTag: 'PUMP-1' },
+            { tag: 'EV', name: 'EV Fast Charging Station', desc: 'Level 2 or DC Fast Charger', volts: '480V 3Ø', amps: 100, aic: 35, defaultTag: 'EV-1' },
+          ],
+          cables: [
+            { tag: 'CABLE', name: 'Low Voltage Feeder Run', desc: 'Copper THHN/XHHW in EMT/RMC Conduit', volts: '480V', amps: 400, aic: 65, defaultTag: 'FEEDER-1' },
+          ],
+          metering: [
+            { tag: 'METER', name: 'Digital Power Meter', desc: 'Multifunction power quality & energy monitor', volts: '480V', amps: 5, aic: 100, defaultTag: 'MTR-1' },
+          ],
+          renewables: [
+            { tag: 'BESS', name: 'Battery Energy Storage (BESS)', desc: 'Grid-tied battery energy storage system', volts: '480V 3Ø', amps: 500, aic: 65, defaultTag: 'BESS-1' },
+          ],
+          generic: [
+            { tag: 'GENERIC', name: 'Unclassified Asset', desc: 'Custom facility asset or junction enclosure', volts: '480V', amps: 100, aic: 22, defaultTag: 'EQ-1' },
+          ]
+        },
+
+        selectedDomain: null,
+        selectedType: null,
+        scheduleRows: [],
+
+        init() {
+          const savedTheme = localStorage.getItem('james-theme');
+          this.isDark = (savedTheme !== 'light');
+          if (this.isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+
+          const savedCatalog = localStorage.getItem('james-show-catalog');
+          if (savedCatalog !== null) {
+            this.showCatalog = (savedCatalog === '1');
+          }
+
+          this.selectedDomain = this.domains[3]; // Panelboards
+          this.selectedType = this.typesCatalog.panels[0]; // LP
+          this.form.slots = this.selectedType.defaultSlots || 42;
+          this.initScheduleRows();
+          this.takeSnapshot();
+
+          if (!this.stack || this.stack.length === 0) {
+            this.fetchStackFromBackend();
+          }
+
+          window.addEventListener('beforeunload', (e) => {
+            if (this.hasUnsavedChanges()) {
+              e.preventDefault();
+              e.returnValue = '';
+            }
+          });
+
+          window.addEventListener('keydown', (e) => {
+            if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+              this.showHelpModal = !this.showHelpModal;
+            }
+          });
+        },
+
+        toggleCatalog() {
+          this.showCatalog = !this.showCatalog;
+          localStorage.setItem('james-show-catalog', this.showCatalog ? '1' : '0');
+        },
+
+        isPanelEquipment() {
+          return (this.selectedType && this.selectedType.is_panel === 1) || 
+                 (this.form && this.form.is_panel === 1) || 
+                 (this.selectedDomain && this.selectedDomain.id === 'panels');
+        },
+
+        get occupiedSlotsCount() {
+          let count = 0;
+          this.scheduleRows.forEach(r => {
+            if (r.leftTrip) count += (r.leftPoles || 1);
+            if (r.rightTrip) count += (r.rightPoles || 1);
+          });
+          return Math.min(count, this.form.slots || 42);
+        },
+
+        getAssetPhotoCount(item) {
+          const notes = (item.attributes && item.attributes.notes) || item.notes || [];
+          return notes.reduce((sum, n) => sum + ((n.photos && n.photos.length) || 0), 0);
+        },
+
+        addCustomAttr() {
+          this.customAttrsList.push({ key: '', val: '' });
+        },
+
+        removeCustomAttr(idx) {
+          this.customAttrsList.splice(idx, 1);
+        },
+
+        takeSnapshot() {
+          this.formSnapshot = JSON.stringify({
+            form: this.form,
+            scheduleRows: this.scheduleRows,
+            stagedPhotos: this.stagedPhotos,
+            customAttrsList: this.customAttrsList,
+            editingId: this.editingId
+          });
+        },
+
+        hasUnsavedChanges() {
+          if (!this.formSnapshot) return false;
+          if (this.stagedPhotos.length > 0 || this.newNoteText.trim().length > 0) return true;
+          const current = JSON.stringify({
+            form: this.form,
+            scheduleRows: this.scheduleRows,
+            stagedPhotos: this.stagedPhotos,
+            customAttrsList: this.customAttrsList,
+            editingId: this.editingId
+          });
+          return current !== this.formSnapshot;
+        },
+
+        requestSelectDomain(dom) {
+          if (this.selectedDomain && this.selectedDomain.id === dom.id) return;
+          if (this.hasUnsavedChanges()) {
+            this.pendingNavigation = { action: 'domain', target: dom };
+            this.showUnsavedModal = true;
+          } else {
+            this.selectDomain(dom);
+          }
+        },
+
+        requestSelectType(type) {
+          if (this.selectedType && this.selectedType.tag === type.tag && !this.editingId) return;
+          if (this.hasUnsavedChanges()) {
+            this.pendingNavigation = { action: 'type', target: type };
+            this.showUnsavedModal = true;
+          } else {
+            this.selectType(type);
+          }
+        },
+
+        requestEditAsset(item) {
+          if (this.editingId === item.id) return;
+          if (this.hasUnsavedChanges()) {
+            this.pendingNavigation = { action: 'edit', target: item };
+            this.showUnsavedModal = true;
+          } else {
+            this.editAsset(item);
+          }
+        },
+
+        async handleSaveAndSwitch() {
+          await this.saveAsset();
+          this.showUnsavedModal = false;
+          this.executePendingNavigation();
+        },
+
+        handleDiscardAndSwitch() {
+          this.showUnsavedModal = false;
+          this.executePendingNavigation();
+        },
+
+        handleCancelSwitch() {
+          this.showUnsavedModal = false;
+          this.pendingNavigation = null;
+        },
+
+        executePendingNavigation() {
+          if (!this.pendingNavigation) return;
+          const { action, target } = this.pendingNavigation;
+          this.pendingNavigation = null;
+          if (action === 'domain') {
+            this.selectDomain(target);
+          } else if (action === 'type') {
+            this.selectType(target);
+          } else if (action === 'edit') {
+            this.editAsset(target);
+          }
+        },
+
+        initScheduleRows() {
+          const slotCount = this.form.slots || 42;
+          const phases = ['A', 'B', 'C'];
+          const phaseColors = ['text-red-500', 'text-blue-500', 'text-emerald-500'];
+          const rows = [];
+          for (let i = 1; i <= slotCount; i += 2) {
+            const phaseIdx = Math.floor((i - 1) / 2) % 3;
+            rows.push({
+              leftSlot: i,
+              leftDesc: i === 1 ? 'Server Rack 1A' : (i === 3 ? 'Server Rack 1B' : (i === 5 ? 'Lighting West' : '')),
+              leftTrip: (i === 1 || i === 3) ? '50' : (i === 5 ? '20' : ''),
+              leftPoles: (i === 1 || i === 3) ? 2 : 1,
+              leftType: 'MCCB',
+              leftWire: '10 AWG Cu',
+              leftTargetLoad: '',
+              phase: phases[phaseIdx],
+              phaseColor: phaseColors[phaseIdx],
+              rightSlot: i + 1,
+              rightDesc: i === 1 ? 'HVAC Fan 1' : (i === 3 ? 'Exhaust Fan 2' : ''),
+              rightTrip: (i === 1 || i === 3) ? '20' : '',
+              rightPoles: 1,
+              rightType: 'MCCB',
+              rightWire: '12 AWG Cu',
+              rightTargetLoad: ''
+            });
+          }
+          this.scheduleRows = rows;
+        },
+
+        updateSlotCount() {
+          const newSlotCount = Number(this.form.slots) || 42;
+          const phases = ['A', 'B', 'C'];
+          const phaseColors = ['text-red-500', 'text-blue-500', 'text-emerald-500'];
+          const newRows = [];
+          const existingMap = {};
+          this.scheduleRows.forEach(r => {
+            existingMap[r.leftSlot] = r;
+          });
+
+          for (let i = 1; i <= newSlotCount; i += 2) {
+            const phaseIdx = Math.floor((i - 1) / 2) % 3;
+            if (existingMap[i]) {
+              newRows.push(existingMap[i]);
+            } else {
+              newRows.push({
+                leftSlot: i,
+                leftDesc: '',
+                leftTrip: '',
+                leftPoles: 1,
+                leftType: 'MCCB',
+                leftWire: '12 AWG Cu',
+                leftTargetLoad: '',
+                phase: phases[phaseIdx],
+                phaseColor: phaseColors[phaseIdx],
+                rightSlot: i + 1,
+                rightDesc: '',
+                rightTrip: '',
+                rightPoles: 1,
+                rightType: 'MCCB',
+                rightWire: '12 AWG Cu',
+                rightTargetLoad: ''
+              });
+            }
+          }
+          this.scheduleRows = newRows;
+          this.notify(`Adjusted panel schedule to ${newSlotCount} slots`);
+        },
+
+        openBreakerInspector(row, side, rIdx) {
+          const slotNum = side === 'left' ? row.leftSlot : row.rightSlot;
+          const desc = side === 'left' ? row.leftDesc : row.rightDesc;
+          const trip = side === 'left' ? row.leftTrip : row.rightTrip;
+          const poles = (side === 'left' ? row.leftPoles : row.rightPoles) || 1;
+          const type = (side === 'left' ? row.leftType : row.rightType) || 'MCCB';
+          const wire = (side === 'left' ? row.leftWire : row.rightWire) || this.getConductor(Number(trip) || 20);
+          const targetLoad = (side === 'left' ? row.leftTargetLoad : row.rightTargetLoad) || '';
+
+          this.activeBreaker = {
+            rowIdx: rIdx,
+            side: side,
+            slot: slotNum,
+            desc: desc || '',
+            trip: trip || '20',
+            poles: poles,
+            type: type,
+            wire: wire,
+            targetLoad: targetLoad,
+            phase: row.phase,
+            phaseColor: row.phaseColor,
+            isOccupied: Boolean(trip && trip.trim())
+          };
+          this.showBreakerModal = true;
+        },
+
+        saveBreakerAttributes() {
+          const b = this.activeBreaker;
+          const row = this.scheduleRows[b.rowIdx];
+          if (row) {
+            if (b.side === 'left') {
+              row.leftDesc = b.desc.trim() || `Circuit #${b.slot}`;
+              row.leftTrip = b.trip;
+              row.leftPoles = b.poles;
+              row.leftType = b.type;
+              row.leftWire = b.wire;
+              row.leftTargetLoad = b.targetLoad;
+            } else {
+              row.rightDesc = b.desc.trim() || `Circuit #${b.slot}`;
+              row.rightTrip = b.trip;
+              row.rightPoles = b.poles;
+              row.rightType = b.type;
+              row.rightWire = b.wire;
+              row.rightTargetLoad = b.targetLoad;
+            }
+            this.notify(`Saved Breaker at Slot #${b.slot} (${b.trip}A ${b.poles}P)`);
+          }
+          this.showBreakerModal = false;
+        },
+
+        removeBreakerFromSlot() {
+          const b = this.activeBreaker;
+          const row = this.scheduleRows[b.rowIdx];
+          if (row) {
+            if (b.side === 'left') {
+              row.leftDesc = '';
+              row.leftTrip = '';
+              row.leftPoles = 1;
+              row.leftType = 'MCCB';
+              row.leftWire = '12 AWG Cu';
+              row.leftTargetLoad = '';
+            } else {
+              row.rightDesc = '';
+              row.rightTrip = '';
+              row.rightPoles = 1;
+              row.rightType = 'MCCB';
+              row.rightWire = '12 AWG Cu';
+              row.rightTargetLoad = '';
+            }
+            this.notify(`Cleared Slot #${b.slot} (Converted to Space)`);
+          }
+          this.showBreakerModal = false;
+        },
+
+        // Photo Upload, Drag & Drop, Clipboard Paste & Processing
+        processPhotoFiles(files, target = 'staged', noteIdx = null) {
+          if (!files || files.length === 0) return;
+          Array.from(files).forEach(file => {
+            if (!file.type || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const photoObj = {
+                id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                name: file.name || 'Field Photo',
+                dataUrl: ev.target.result,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              };
+              if (target === 'nameplate') {
+                this.form.nameplate_photo = photoObj;
+                this.notify('📸 Nameplate photo attached!');
+              } else if (target === 'staged') {
+                this.stagedPhotos = [...this.stagedPhotos, photoObj];
+                this.notify('📷 Observation photo attached!');
+              } else if (target === 'editing' && noteIdx !== null && this.form.notes[noteIdx]) {
+                const currentPhotos = this.form.notes[noteIdx].photos || [];
+                this.form.notes[noteIdx].photos = [...currentPhotos, photoObj];
+                this.notify('📷 Photo added to note!');
+              }
+            };
+            reader.readAsDataURL(file);
+          });
+        },
+
+        handlePhotoUpload(e, target = 'staged', noteIdx = null) {
+          const files = e.target.files;
+          this.processPhotoFiles(files, target, noteIdx);
+          e.target.value = '';
+        },
+
+        handlePhotoDrop(e, target = 'staged', noteIdx = null) {
+          const files = e.dataTransfer ? e.dataTransfer.files : null;
+          if (files && files.length > 0) {
+            this.processPhotoFiles(files, target, noteIdx);
+          }
+        },
+
+        handlePhotoPaste(e, target = 'staged', noteIdx = null) {
+          const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+          if (!items) return;
+          const files = [];
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') === 0) {
+              const file = items[i].getAsFile();
+              if (file) files.push(file);
+            }
+          }
+          if (files.length > 0) {
+            this.processPhotoFiles(files, target, noteIdx);
+          }
+        },
+
+        removeStagedPhoto(pIdx) {
+          this.stagedPhotos = this.stagedPhotos.filter((_, idx) => idx !== pIdx);
+        },
+
+        removeNotePhoto(nIdx, pIdx) {
+          if (this.form.notes && this.form.notes[nIdx] && this.form.notes[nIdx].photos) {
+            this.form.notes[nIdx].photos = this.form.notes[nIdx].photos.filter((_, idx) => idx !== pIdx);
+            this.notify('Photo removed from note');
+          }
+        },
+
+        openLightbox(photo, caption = '') {
+          this.activeLightboxPhoto = photo;
+          this.lightboxCaption = caption;
+          this.showLightboxModal = true;
+        },
+
+        // Note Management with Photos & Deletion Confirmation
+        addNote() {
+          const txt = this.newNoteText.trim();
+          if (!txt && this.stagedPhotos.length === 0) return;
+          if (!this.form.notes) this.form.notes = [];
+          const now = new Date();
+          const dateStr = (now.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                          now.getDate().toString().padStart(2, '0') + ' ' + 
+                          now.getHours().toString().padStart(2, '0') + ':' + 
+                          now.getMinutes().toString().padStart(2, '0');
+          this.form.notes.push({
+            id: 'note_' + Date.now(),
+            text: txt || (this.stagedPhotos.length > 0 ? `Field Photo Observation (${this.stagedPhotos.length} photo(s))` : ''),
+            date: dateStr,
+            author: 'Field Survey',
+            photos: [...this.stagedPhotos]
+          });
+          this.newNoteText = '';
+          this.stagedPhotos = [];
+          this.notify('Added field note with photo(s)');
+        },
+
+        startEditNote(note, nIdx) {
+          this.editingNoteId = note.id;
+          this.editingNoteIndex = nIdx;
+          this.editingNoteText = note.text;
+        },
+
+        saveNoteEdit(nIdx) {
+          if (!this.editingNoteText.trim()) return;
+          if (this.form.notes && this.form.notes[nIdx]) {
+            this.form.notes[nIdx].text = this.editingNoteText.trim();
+          }
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.editingNoteText = '';
+          this.notify('Updated note');
+        },
+
+        promptDeleteNote(nIdx, note) {
+          this.noteToDelete = { index: nIdx, text: note.text };
+          this.showDeleteNoteModal = true;
+        },
+
+        confirmDeleteNote() {
+          if (this.noteToDelete && this.form.notes) {
+            this.form.notes.splice(this.noteToDelete.index, 1);
+            this.notify('Deleted field note');
+          }
+          this.noteToDelete = null;
+          this.showDeleteNoteModal = false;
+        },
+
+        // Equipment Domain Styling Palette (Unified with SLD compiler)
+        getDomainBadgeClass(domain) {
+          switch (domain) {
+            case 'sources':
+              return 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700';
+            case 'transformers':
+              return 'bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-700';
+            case 'switches':
+              return 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700';
+            case 'panels':
+              return 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700';
+            case 'power_quality':
+              return 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700';
+            case 'loads':
+              return 'bg-teal-100 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300 border-teal-300 dark:border-teal-700';
+            case 'cables':
+              return 'bg-orange-100 dark:bg-orange-950/80 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-700';
+            case 'metering':
+              return 'bg-sky-100 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 border-sky-300 dark:border-sky-700';
+            case 'renewables':
+              return 'bg-yellow-100 dark:bg-yellow-950/80 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700';
+            default:
+              return 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border-slate-300 dark:border-slate-700';
+          }
+        },
+
+        // Equipment Selection & Editing
+        get filteredDomains() {
+          if (!this.domainSearch) return this.domains;
+          return this.domains.filter(d => d.name.toLowerCase().includes(this.domainSearch.toLowerCase()));
+        },
+
+        get filteredTypes() {
+          if (!this.selectedDomain) return [];
+          const list = this.typesCatalog[this.selectedDomain.id] || [];
+          if (!this.typeSearch) return list;
+          return list.filter(t => t.name.toLowerCase().includes(this.typeSearch.toLowerCase()) || t.tag.toLowerCase().includes(this.typeSearch.toLowerCase()));
+        },
+
+        get totalAmps() {
+          return this.stack.reduce((acc, curr) => acc + (Number(curr.amps) || 0), 0);
+        },
+
+        get groupedStack() {
+          const q = (this.stackSearch || '').trim().toLowerCase();
+          const filterItem = (i) => {
+            if (!q) return true;
+            const tag = (i.tag || '').toLowerCase();
+            const name = (i.name || '').toLowerCase();
+            const room = (i.room || '').toLowerCase();
+            const mfr = ((i.attributes && i.attributes.manufacturer) || i.manufacturer || '').toLowerCase();
+            const model = ((i.attributes && i.attributes.model_no) || i.model_no || '').toLowerCase();
+            const assetTag = ((i.attributes && i.attributes.asset_tag) || i.asset_tag || '').toLowerCase();
+            const serial = ((i.attributes && i.attributes.serial_no) || i.serial_no || '').toLowerCase();
+            return tag.includes(q) || name.includes(q) || room.includes(q) || mfr.includes(q) || model.includes(q) || assetTag.includes(q) || serial.includes(q);
+          };
+
+          const filtered = (this.stack || []).filter(filterItem);
+
+          if (this.groupMode === 'room') {
+            const rooms = {};
+            filtered.forEach(i => {
+              const r = i.room || 'Unassigned Room';
+              if (!rooms[r]) rooms[r] = [];
+              rooms[r].push(i);
+            });
+            return Object.entries(rooms).map(([title, items]) => ({ title: '🏢 ' + title, items }));
+          } else if (this.groupMode === 'type') {
+            const types = {};
+            filtered.forEach(i => {
+              const t = i.type_name || i.type_tag;
+              if (!types[t]) types[t] = [];
+              types[t].push(i);
+            });
+            return Object.entries(types).map(([title, items]) => ({ title: '📦 ' + title, items }));
+          } else {
+            return [{ title: '⚡ Upstream Power Flow Tree', items: filtered }];
+          }
+        },
+
+        get isDuplicateTag() {
+          if (!this.form || !this.form.tag || !this.form.tag.trim()) return false;
+          const currentTag = this.form.tag.trim().toUpperCase();
+          return (this.stack || []).some(i => 
+            i.tag && i.tag.trim().toUpperCase() === currentTag && i.id !== this.editingId
+          );
+        },
+
+        get eligibleUpstreamEquipment() {
+          const currentDomain = this.selectedDomain ? this.selectedDomain.id : '';
+
+          // Primary sources (Utility, Generator, Solar PV) don't have upstream feeders
+          if (currentDomain === 'sources') {
+            return [];
+          }
+
+          // Collect all downstream descendant tags if editing to prevent electrical cycles
+          const descendantTags = new Set();
+          if (this.editingId && this.form.tag) {
+            const findDescendants = (parentTag) => {
+              (this.stack || []).forEach(item => {
+                if (item.fed_from && item.fed_from.trim().toUpperCase() === parentTag.trim().toUpperCase()) {
+                  if (!descendantTags.has(item.tag)) {
+                    descendantTags.add(item.tag);
+                    findDescendants(item.tag);
+                  }
+                }
+              });
+            };
+            findDescendants(this.form.tag);
+          }
+
+          return (this.stack || []).filter(item => {
+            // 1. Exclude self
+            if (this.editingId && item.id === this.editingId) return false;
+            if (this.form.tag && item.tag && item.tag.trim().toUpperCase() === this.form.tag.trim().toUpperCase()) return false;
+
+            // 2. Exclude downstream descendants (cycle prevention)
+            if (descendantTags.has(item.tag)) return false;
+
+            // 3. Exclude terminal loads and meters - loads can never feed anything upstream
+            if (item.domain === 'loads') return false;
+            if (item.type_tag === 'METER') return false;
+
+            // 4. Domain-specific physical upstream rules:
+            if (currentDomain === 'switches') {
+              return ['sources', 'transformers', 'panels', 'power_quality', 'switches'].includes(item.domain);
+            }
+            if (currentDomain === 'transformers') {
+              return ['sources', 'switches', 'panels', 'transformers', 'power_quality'].includes(item.domain);
+            }
+            if (currentDomain === 'panels') {
+              return ['sources', 'switches', 'transformers', 'panels', 'power_quality'].includes(item.domain);
+            }
+            if (currentDomain === 'power_quality') {
+              return ['sources', 'switches', 'transformers', 'panels'].includes(item.domain);
+            }
+            if (currentDomain === 'loads') {
+              return ['panels', 'transformers', 'switches', 'power_quality', 'sources'].includes(item.domain);
+            }
+            return true;
+          });
+        },
+
+        get eligibleDownstreamEquipment() {
+          const hostPanelTag = this.form.tag ? this.form.tag.trim().toUpperCase() : '';
+          const hostPanelId = this.editingId || '';
+
+          // Collect all upstream feeding ancestor tags of this panel to prevent back-feeding cycles
+          const ancestorTags = new Set();
+          let currentParentTag = this.form.fed_from;
+          while (currentParentTag) {
+            const parentTagUpper = currentParentTag.trim().toUpperCase();
+            ancestorTags.add(parentTagUpper);
+            const parentItem = (this.stack || []).find(i => i.tag && i.tag.trim().toUpperCase() === parentTagUpper);
+            currentParentTag = (parentItem && parentItem.fed_from) ? parentItem.fed_from : null;
+            if (ancestorTags.has(currentParentTag ? currentParentTag.trim().toUpperCase() : '')) break; // prevent infinite loops
+          }
+
+          return (this.stack || []).filter(item => {
+            // 1. Exclude self
+            if (item.id === hostPanelId) return false;
+            if (item.tag && item.tag.trim().toUpperCase() === hostPanelTag) return false;
+
+            // 2. Exclude upstream feeding ancestors
+            if (item.tag && ancestorTags.has(item.tag.trim().toUpperCase())) return false;
+
+            // 3. Exclude primary utility grid entrances and generators (they are sources, not downstream loads)
+            if (item.domain === 'sources' && (item.type_tag === 'UTIL' || item.type_tag === 'GEN')) return false;
+
+            // 4. Equipment can be downstream: subpanels, transformers, loads (HVAC, pumps, motors, chillers, EV), switches, meters, power quality
+            return true;
+          });
+        },
+
+        // Master Catalog Getters & Handlers
+        get masterCatalogList() {
+          return this.masterCatalog || [];
+        },
+
+        get catalogManufacturers() {
+          const currentDomain = this.selectedDomain ? this.selectedDomain.id : '';
+          const currentType = this.selectedType ? this.selectedType.tag : '';
+          const list = this.masterCatalogList;
+          const mfgs = new Set();
+          
+          list.forEach(item => {
+            const domMatch = !currentDomain || item.domain === currentDomain;
+            const typeMatch = !currentType || item.type_tag === currentType;
+            if (domMatch || typeMatch) {
+              if (item.manufacturer) mfgs.add(item.manufacturer);
+            }
+          });
+
+          // Standard preset OEMs
+          const defaultOems = [
+            'Square D / Schneider Electric', 'Eaton', 'Siemens', 'ABB',
+            'Generac Power Systems', 'Bussmann (Eaton)', 'Leviton',
+            'Southwire / Encore', 'Allied Tube & Conduit / Atkore',
+            'Cooper Lighting / Acuity Brands', 'ASCO Power Technologies',
+            'Caterpillar', 'Cummins Power Generation', 'Kohler Power'
+          ];
+          defaultOems.forEach(m => mfgs.add(m));
+
+          return Array.from(mfgs).sort();
+        },
+
+        get catalogModels() {
+          const currentMfr = (this.form.manufacturer || '').toLowerCase().trim();
+          const currentDomain = this.selectedDomain ? this.selectedDomain.id : '';
+          const currentType = this.selectedType ? this.selectedType.tag : '';
+          const list = this.masterCatalogList;
+
+          return list.filter(item => {
+            const mfrMatch = !currentMfr || (item.manufacturer || '').toLowerCase().includes(currentMfr) || currentMfr.includes((item.manufacturer || '').toLowerCase());
+            const domMatch = !currentDomain || item.domain === currentDomain;
+            const typeMatch = !currentType || item.type_tag === currentType;
+            return mfrMatch && (domMatch || typeMatch);
+          });
+        },
+
+        get catalogBreakers() {
+          const list = this.masterCatalogList.filter(item => item.domain === 'breakers' || item.type_tag === 'CB');
+          if (!this.activeBreaker) return list;
+          const targetPoles = Number(this.activeBreaker.poles) || 1;
+          
+          return list.filter(item => {
+            const p = (item.specs && item.specs.poles) || 1;
+            return p === targetPoles;
+          });
+        },
+
+        get isCatalogItemActive() {
+          if (!this.form || !this.form.model_no) return false;
+          const modelUpper = this.form.model_no.trim().toUpperCase();
+          return this.masterCatalogList.some(item => item.part_number && item.part_number.toUpperCase() === modelUpper);
+        },
+
+        onCatalogManufacturerChange() {
+          // If the newly selected manufacturer has catalog models for this domain, keep or pick
+        },
+
+        onCatalogModelSelect(partNo) {
+          if (!partNo) return;
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === partNo.trim().toUpperCase());
+          if (!item) return;
+
+          this.form.model_no = item.part_number;
+          if (item.manufacturer) this.form.manufacturer = item.manufacturer;
+
+          const specs = item.specs || {};
+          if (specs.voltage) this.form.voltage = specs.voltage;
+          if (specs.amps) this.form.amps = specs.amps;
+          if (specs.aic) this.form.aic = specs.aic;
+          if (specs.slots) this.form.slots = specs.slots;
+          if (specs.nema_rating) this.form.enclosure = specs.nema_rating;
+
+          if (specs.kva) this.form.vendor_attrs.kva = specs.kva;
+          if (specs.impedance_z) this.form.vendor_attrs.impedance_z = `${specs.impedance_z}%`;
+          if (specs.hp) this.form.vendor_attrs.hp = specs.hp;
+          if (specs.kw) this.form.vendor_attrs.kw_rating = specs.kw;
+          if (specs.fuse_style) this.form.vendor_attrs.fuse_class = specs.fuse_style;
+
+          if (item.docs && item.docs.upc) {
+            this.form.vendor_attrs.upc = item.docs.upc;
+          }
+
+          if (this.form.is_panel) {
+            this.updateSlotCount();
+          }
+
+          this.notify(`⚡ Auto-filled specs from Master Catalog: ${item.part_number} (${item.manufacturer})`);
+        },
+
+        onBreakerCatalogSelect(partNo) {
+          if (!partNo || !this.activeBreaker) return;
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === partNo.trim().toUpperCase());
+          if (!item) return;
+
+          this.activeBreaker.part_no = item.part_number;
+          const specs = item.specs || {};
+          if (specs.amps) {
+            this.activeBreaker.trip = String(Math.round(specs.amps));
+            this.activeBreaker.wire = this.getConductor(Number(specs.amps));
+          }
+          if (specs.poles) this.activeBreaker.poles = specs.poles;
+          if (specs.trip_type) this.activeBreaker.type = specs.trip_type.includes('Electronic') ? 'LSI' : 'MCCB';
+          if (!this.activeBreaker.desc) {
+            this.activeBreaker.desc = item.description || `Circuit ${this.activeBreaker.slot}`;
+          }
+
+          this.notify(`⚡ Breaker specs loaded: ${item.part_number} (${specs.poles}P ${specs.amps}A)`);
+        },
+
+        getNextAvailableTag(defaultTag) {
+          if (!defaultTag) defaultTag = 'EQ-1';
+          const match = defaultTag.match(/^(.*?)(?:-(\d+))?$/);
+          const prefix = match ? match[1] : defaultTag;
+          const startNum = match && match[2] ? parseInt(match[2], 10) : 1;
+
+          const regex = new RegExp(`^${prefix}(?:-(\\d+))?$`, 'i');
+          const usedNumbers = new Set();
+          let baseTagUsed = false;
+
+          (this.stack || []).forEach(item => {
+            if (!item.tag) return;
+            const t = item.tag.trim();
+            if (t.toUpperCase() === defaultTag.toUpperCase()) {
+              baseTagUsed = true;
+            }
+            const m = t.match(regex);
+            if (m) {
+              if (m[1]) {
+                usedNumbers.add(parseInt(m[1], 10));
+              } else {
+                usedNumbers.add(1);
+              }
+            }
+          });
+
+          if (!baseTagUsed && !usedNumbers.has(startNum)) {
+            return defaultTag;
+          }
+
+          let nextNum = startNum;
+          while (usedNumbers.has(nextNum) || (this.stack || []).some(i => i.tag && i.tag.trim().toUpperCase() === `${prefix}-${nextNum}`.toUpperCase())) {
+            nextNum++;
+          }
+          return `${prefix}-${nextNum}`;
+        },
+
+        selectDomain(dom) {
+          this.selectedDomain = dom;
+          const types = this.typesCatalog[dom.id] || [];
+          if (types.length > 0) {
+            this.selectType(types[0]);
+          }
+          if (dom.id === 'sources') {
+            this.form.fed_from = '';
+          }
+        },
+
+        selectType(t) {
+          this.selectedType = t;
+          this.editingId = null;
+          this.form.tag = this.getNextAvailableTag(t.defaultTag || 'EQ-1');
+          this.form.name = t.name;
+          this.form.voltage = t.volts || '480Y/277V 3Ø 4W';
+          this.form.amps = t.amps || 225;
+          this.form.aic = t.aic || 65;
+          this.form.is_panel = t.is_panel || 0;
+          this.form.slots = t.defaultSlots || 42;
+          this.form.main_type = 'MCB';
+          this.form.mounting = 'Surface';
+          this.form.fed_from = (this.selectedDomain && this.selectedDomain.id === 'sources') ? '' : (this.form.fed_from || '');
+
+          // Smart OEM defaults by equipment archetype
+          let defaultMfr = 'Square D / Schneider Electric';
+          let defaultModel = '';
+          const vAttrs = {};
+
+          if (t.tag === 'GEN') {
+            defaultMfr = 'Caterpillar';
+            defaultModel = '3516B';
+            vAttrs.fuel_type = 'Diesel #2';
+            vAttrs.kw_rating = 750;
+            vAttrs.controller = 'EMCP 4.2B';
+          } else if (t.tag === 'ATS') {
+            defaultMfr = 'ASCO Power Technologies';
+            defaultModel = '7000 Series';
+            vAttrs.transition = 'Open Transition';
+            vAttrs.bypass_isolation = 'No';
+            vAttrs.controller = 'Group G Controller';
+          } else if (t.tag === 'DISC') {
+            defaultMfr = 'Eaton';
+            defaultModel = 'DG323NRB';
+            vAttrs.fuse_class = 'Class R';
+            vAttrs.fuse_amps = t.amps || 100;
+            vAttrs.blown_indicators = 'No';
+          } else if (this.selectedDomain && this.selectedDomain.id === 'transformers') {
+            defaultMfr = 'Square D / Schneider Electric';
+            defaultModel = 'EE75T3H';
+            vAttrs.impedance_z = '4.5%';
+            vAttrs.temp_rise = '150°C';
+            vAttrs.cooling_class = 'AA';
+          } else if (t.tag === 'UPS') {
+            defaultMfr = 'Vertiv / Liebert';
+            defaultModel = 'EXL S1';
+          } else if (t.is_panel) {
+            defaultMfr = 'Square D / Schneider Electric';
+            defaultModel = t.tag === 'MDP' ? 'QED-2' : 'NQ442L225';
+          }
+
+          this.form.manufacturer = defaultMfr;
+          this.form.model_no = defaultModel;
+          this.form.asset_tag = '';
+          this.form.serial_no = '';
+          this.form.year_installed = null;
+          this.form.criticality = 'Medium';
+          this.form.condition = '1';
+          this.form.environment = 'Clean';
+          this.form.operational_status = 'Active';
+          this.form.inspection_freq = 'Annual';
+          this.form.last_inspection = '';
+          this.form.next_inspection = '';
+          this.form.arc_flash_date = '';
+          this.form.infrared_date = '';
+          this.form.torque_check_date = '';
+          this.form.megger_phase_a = '';
+          this.form.megger_phase_b = '';
+          this.form.megger_phase_c = '';
+          this.form.vendor_attrs = vAttrs;
+          this.customAttrsList = [];
+
+          this.form.notes = [];
+          this.stagedPhotos = [];
+          this.newNoteText = '';
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.initScheduleRows();
+          this.takeSnapshot();
+        },
+
+        editAsset(item) {
+          this.editingId = item.id;
+          const rawNotes = (item.attributes && item.attributes.notes) || item.notes || [];
+          const rawAttrs = item.attributes || {};
+          const vAttrs = rawAttrs.vendor_attrs || item.vendor_attrs || {};
+
+          // Extract standard vs custom dynamic attributes
+          const standardKeys = new Set([
+            'fuel_type', 'kw_rating', 'controller', 
+            'impedance_z', 'temp_rise', 'cooling_class', 
+            'transition', 'bypass_isolation', 
+            'fuse_class', 'fuse_amps', 'blown_indicators', 'upc', 'kva', 'hp'
+          ]);
+
+          this.customAttrsList = Object.entries(vAttrs)
+            .filter(([k]) => !standardKeys.has(k))
+            .map(([key, val]) => ({ key, val: String(val) }));
+
+          this.form = {
+            ...item,
+            slots: item.slots || rawAttrs.slots || 42,
+            main_type: rawAttrs.main_type || 'MCB',
+            mounting: rawAttrs.mounting || 'Surface',
+            manufacturer: rawAttrs.manufacturer || item.manufacturer || '',
+            model_no: rawAttrs.model_no || item.model_no || '',
+            asset_tag: rawAttrs.asset_tag || item.asset_tag || '',
+            serial_no: rawAttrs.serial_no || item.serial_no || '',
+            year_installed: rawAttrs.year_installed || item.year_installed || null,
+            criticality: rawAttrs.criticality || item.criticality || 'Medium',
+            condition: rawAttrs.condition || item.condition || '1',
+            environment: rawAttrs.environment || item.environment || 'Clean',
+            operational_status: rawAttrs.operational_status || item.operational_status || 'Active',
+            inspection_freq: rawAttrs.inspection_freq || item.inspection_freq || 'Annual',
+            last_inspection: rawAttrs.last_inspection || item.last_inspection || '',
+            next_inspection: rawAttrs.next_inspection || item.next_inspection || '',
+            arc_flash_date: rawAttrs.arc_flash_date || item.arc_flash_date || '',
+            infrared_date: rawAttrs.infrared_date || item.infrared_date || '',
+            torque_check_date: rawAttrs.torque_check_date || item.torque_check_date || '',
+            megger_phase_a: rawAttrs.megger_phase_a || item.megger_phase_a || '',
+            megger_phase_b: rawAttrs.megger_phase_b || item.megger_phase_b || '',
+            megger_phase_c: rawAttrs.megger_phase_c || item.megger_phase_c || '',
+            vendor_attrs: { ...vAttrs },
+            notes: Array.isArray(rawNotes) ? JSON.parse(JSON.stringify(rawNotes)) : []
+          };
+          this.stagedPhotos = [];
+          this.newNoteText = '';
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+
+          const dom = this.domains.find(d => d.id === item.domain) || this.domains[3];
+          this.selectedDomain = dom;
+          const types = this.typesCatalog[dom.id] || [];
+          this.selectedType = types.find(t => t.tag === item.type_tag) || types[0] || this.selectedType;
+
+          if (rawAttrs.schedule && Array.isArray(rawAttrs.schedule)) {
+            this.scheduleRows = JSON.parse(JSON.stringify(rawAttrs.schedule));
+          } else {
+            this.initScheduleRows();
+          }
+
+          this.takeSnapshot();
+          this.notify(`Loaded [${item.tag}] into Column 3`);
+        },
+
+        cancelEdit() {
+          this.editingId = null;
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.newNoteText = '';
+          this.stagedPhotos = [];
+          this.customAttrsList = [];
+          this.selectType(this.selectedType);
+        },
+
+        async fetchStackFromBackend() {
+          try {
+            const res = await fetch(`/api/clients/${this.client}/facilities/${this.facility}/nodes`);
+            if (res.ok) {
+              this.stack = await res.json();
+            }
+          } catch (e) {
+            console.warn('Using local stack state', e);
+          }
+        },
+
+        async saveAsset() {
+          if (this.isDuplicateTag) {
+            this.notify(`⚠️ Tag [${this.form.tag}] already exists in facility! Please specify a unique tag.`);
+            return;
+          }
+          if (!this.form.tag || !this.form.tag.trim()) {
+            this.notify('⚠️ Equipment tag is required!');
+            return;
+          }
+
+          // Auto-flush any staged photos or draft note text directly into notes before saving
+          if (this.stagedPhotos.length > 0 || (this.newNoteText && this.newNoteText.trim())) {
+            this.addNote();
+          }
+
+          const isPanel = this.isPanelEquipment() ? 1 : 0;
+          
+          // Merge custom dynamic key-value pairs into vendor_attrs
+          const mergedVendorAttrs = { ...(this.form.vendor_attrs || {}) };
+          this.customAttrsList.forEach(attr => {
+            if (attr.key && attr.key.trim()) {
+              mergedVendorAttrs[attr.key.trim()] = attr.val;
+            }
+          });
+
+          const itemData = {
+            id: this.editingId || ('s_' + Date.now()),
+            tag: this.form.tag.trim(),
+            name: this.form.name,
+            domain: this.selectedDomain.id,
+            object_class: this.selectedDomain.id === 'switches' ? 'AutomaticTransferSwitchObject' : (isPanel ? 'LightingBranchPanelObject' : 'GenericElectricalObject'),
+            type_tag: this.selectedType.tag,
+            type_name: this.selectedType.name,
+            room: this.form.room,
+            fed_from: (this.selectedDomain.id === 'sources') ? null : (this.form.fed_from || null),
+            voltage: this.form.voltage,
+            amps: this.form.amps,
+            aic: this.form.aic,
+            is_panel: isPanel,
+            slots: isPanel ? (Number(this.form.slots) || 42) : 0,
+            survey_sequence: this.editingId ? (this.form.survey_sequence || this.stack.length) : (this.stack.length + 1),
+            attributes: { 
+              ...this.form,
+              tag: this.form.tag.trim(),
+              slots: isPanel ? (Number(this.form.slots) || 42) : 0,
+              schedule: isPanel ? this.scheduleRows : [],
+              manufacturer: this.form.manufacturer || '',
+              model_no: this.form.model_no || '',
+              asset_tag: this.form.asset_tag || '',
+              serial_no: this.form.serial_no || '',
+              year_installed: this.form.year_installed || null,
+              mounting: this.form.mounting || 'Surface',
+              criticality: this.form.criticality || 'Medium',
+              condition: this.form.condition || '1',
+              environment: this.form.environment || 'Clean',
+              operational_status: this.form.operational_status || 'Active',
+              inspection_freq: this.form.inspection_freq || 'Annual',
+              last_inspection: this.form.last_inspection || '',
+              next_inspection: this.form.next_inspection || '',
+              arc_flash_date: this.form.arc_flash_date || '',
+              infrared_date: this.form.infrared_date || '',
+              torque_check_date: this.form.torque_check_date || '',
+              megger_phase_a: this.form.megger_phase_a || '',
+              megger_phase_b: this.form.megger_phase_b || '',
+              megger_phase_c: this.form.megger_phase_c || '',
+              nameplate_photo: this.form.nameplate_photo || null,
+              vendor_attrs: mergedVendorAttrs,
+              notes: this.form.notes || []
+            },
+            notes: this.form.notes || []
+          };
+
+          try {
+            const res = await fetch(`/api/clients/${this.client}/facilities/${this.facility}/nodes`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(itemData)
+            });
+            if (!res.ok) {
+              const err = await res.json();
+              this.notify(`❌ ${err.message || 'Failed to save asset'}`);
+              return;
+            }
+          } catch (e) {
+            console.warn('Backend sync warning', e);
+          }
+
+          if (this.editingId) {
+            const idx = this.stack.findIndex(i => i.id === this.editingId);
+            if (idx >= 0) this.stack[idx] = { ...itemData };
+            this.notify(`Updated [${itemData.tag}]!`);
+            this.editingId = null;
+          } else {
+            this.stack.push(itemData);
+            this.notify(`Saved [${itemData.tag}]!`);
+          }
+
+          this.takeSnapshot();
+          this.selectType(this.selectedType);
+        },
+
+        promptDeleteAsset(item) {
+          this.itemToDelete = item;
+          this.showDeleteConfirmModal = true;
+        },
+
+        async confirmDeleteAsset() {
+          const item = this.itemToDelete;
+          this.showDeleteConfirmModal = false;
+          if (this.editingId === item.id) this.cancelEdit();
+          this.stack = this.stack.filter(i => i.id !== item.id);
+          try {
+            await fetch(`/api/clients/${this.client}/facilities/${this.facility}/nodes/${item.id}`, { method: 'DELETE' });
+          } catch (e) {}
+          this.notify(`Deleted [${item.tag}]`);
+          this.itemToDelete = null;
+        },
+
+        duplicateAsset(item) {
+          const nextTag = this.getNextAvailableTag(item.tag);
+          const copy = { 
+            ...item, 
+            id: 's_' + Date.now(), 
+            tag: nextTag,
+            name: item.name + ' (Copy)'
+          };
+          if (copy.attributes) {
+            copy.attributes = { ...copy.attributes, tag: nextTag, name: copy.name };
+          }
+          this.stack.push(copy);
+          this.notify(`Duplicated as [${copy.tag}]`);
+        },
+
+        exportJsonl() {
+          const jsonlText = this.stack.map(i => JSON.stringify(i)).join('\n');
+          const blob = new Blob([jsonlText], { type: 'application/x-ndjson' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${this.client}_${this.facility}_model_${Date.now()}.jsonl`;
+          a.click();
+          URL.revokeObjectURL(url);
+          this.notify('Exported companion JSONL file!');
+        },
+
+        toggleTheme() {
+          const isCurrentlyDark = document.documentElement.classList.contains('dark');
+          if (isCurrentlyDark) {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+            localStorage.setItem('james-theme', 'light');
+            this.isDark = false;
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+            localStorage.setItem('james-theme', 'dark');
+            this.isDark = true;
+          }
+        },
+
+        getConductor(amps) {
+          if (amps <= 20) return '12 AWG Cu';
+          if (amps <= 30) return '10 AWG Cu';
+          if (amps <= 60) return '4 AWG Cu';
+          if (amps <= 100) return '3 AWG Cu';
+          if (amps <= 225) return '4/0 AWG Cu';
+          if (amps <= 400) return '500 kcmil Cu';
+          if (amps <= 800) return '2x 500 kcmil Cu';
+          return '4x 500 kcmil Cu';
+        },
+
+        notify(msg) {
+          this.toastMessage = msg;
+          this.toastShow = true;
+          setTimeout(() => { this.toastShow = false; }, 3000);
+        },
+
+        startResize(e, colNum) {
+          const startX = e.clientX;
+          const startW1 = this.col1Width;
+          const startW2 = this.col2Width;
+          const startW4 = this.col4Width;
+          const target = e.target;
+          target.classList.add('active-resizing');
+
+          const onMove = (moveEv) => {
+            const dx = moveEv.clientX - startX;
+            if (colNum === 1) this.col1Width = Math.max(180, Math.min(360, startW1 + dx));
+            if (colNum === 2) this.col2Width = Math.max(220, Math.min(450, startW2 + dx));
+            if (colNum === 3) this.col4Width = Math.max(300, Math.min(600, startW4 - dx));
+          };
+
+          const onUp = () => {
+            target.classList.remove('active-resizing');
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+          };
+
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        }
+
+      };
+    }
+  </script>
+</body>
+</html>

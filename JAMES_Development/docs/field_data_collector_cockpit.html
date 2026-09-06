@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JEMBY Digital Twin - Field Data Collector Cockpit</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Early Theme Sync Script (Prevents FOUC) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('james-theme') || 'dark';
+        if (theme === 'light') {
+          document.documentElement.classList.add('light-theme');
+          document.documentElement.style.colorScheme = 'light';
+        } else {
+          document.documentElement.classList.remove('light-theme');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-base: #070B14;
+      --bg-surface: #0E1626;
+      --bg-surface-elevated: #182338;
+      --bg-surface-highlight: #243452;
+      --border-subtle: #1C2B44;
+      --border-strong: #2D4369;
+      --border-focus: #6366F1;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --accent-indigo: #6366F1;
+      --accent-cyan: #06B6D4;
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --accent-rose: #F43F5E;
+      --accent-purple: #A855F7;
+      --phase-a: #EF4444; /* Red */
+      --phase-b: #3B82F6; /* Blue */
+      --phase-c: #10B981; /* Green */
+    }
+
+    html.light-theme {
+      --bg-base: #E2E8F0;
+      --bg-surface: #FFFFFF;
+      --bg-surface-elevated: #FFFFFF;
+      --bg-surface-highlight: #F1F5F9;
+      --border-subtle: #CBD5E1;
+      --border-strong: #94A3B8;
+      --border-focus: #4338CA;
+      --text-primary: #0F172A;
+      --text-secondary: #334155;
+      --text-muted: #475569;
+      --accent-indigo: #4338CA;
+      --accent-cyan: #0284C7;
+      --accent-emerald: #059669;
+      --accent-amber: #D97706;
+      --accent-rose: #DC2626;
+      --accent-purple: #7E22CE;
+      --phase-a: #DC2626;
+      --phase-b: #1D4ED8;
+      --phase-c: #047857;
+    }
+
+    /* Light Theme Specific Contrast Overrides */
+    html.light-theme .top-bar {
+      background: #FFFFFF;
+      border-bottom: 1px solid #CBD5E1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    html.light-theme .brand-title {
+      color: #0F172A;
+    }
+    html.light-theme .project-pill {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      color: #4338CA;
+      font-weight: 700;
+    }
+    html.light-theme .stat-badge {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      color: #475569;
+    }
+    html.light-theme .stat-badge span {
+      color: #0F172A !important;
+      font-weight: 800;
+    }
+    html.light-theme .btn-top {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      color: #334155;
+    }
+    html.light-theme .btn-top:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+      border-color: #94A3B8;
+    }
+    html.light-theme .col-header {
+      background: #F8FAFC;
+      border-bottom: 1px solid #CBD5E1;
+    }
+    html.light-theme .col-title {
+      color: #334155;
+      font-weight: 800;
+    }
+    html.light-theme .control-select {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #1E293B;
+      font-weight: 600;
+    }
+    html.light-theme .badge-count {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      color: #4338CA;
+      font-weight: 800;
+    }
+    html.light-theme .col-1-domains {
+      background: #F8FAFC;
+    }
+    html.light-theme .col-2-types {
+      background: #F1F5F9;
+    }
+    html.light-theme .col-3-form {
+      background: #FFFFFF;
+    }
+    html.light-theme .col-4-stack {
+      background: #F8FAFC;
+    }
+    html.light-theme .col-search-box {
+      background: #F8FAFC;
+      border-bottom: 1px solid #CBD5E1;
+    }
+
+    /* Column 1: Domain Selection Contrast */
+    html.light-theme .domain-item {
+      color: #334155;
+    }
+    html.light-theme .domain-item:hover {
+      background: #E2E8F0;
+      color: #0F172A;
+    }
+    html.light-theme .domain-item.active {
+      background: linear-gradient(135deg, #4338CA 0%, #3730A3 100%) !important;
+      border-color: #312E81 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 3px 10px rgba(67, 56, 202, 0.4) !important;
+    }
+    html.light-theme .domain-item.active * {
+      color: #FFFFFF !important;
+    }
+
+    /* Column 2: Equipment Type Selection Contrast */
+    html.light-theme .type-card {
+      color: #334155;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+    }
+    html.light-theme .type-card:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+    html.light-theme .type-card.active {
+      background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
+      border-color: #075985 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.4) !important;
+    }
+    html.light-theme .type-card.active .type-title {
+      color: #FFFFFF !important;
+      font-weight: 700;
+    }
+    html.light-theme .type-card.active .type-subtitle {
+      color: #F0F9FF !important;
+    }
+    html.light-theme .type-card.active .type-pill {
+      background: rgba(255, 255, 255, 0.3) !important;
+      color: #FFFFFF !important;
+      font-weight: 700;
+    }
+
+    /* Column 3: Data Entry Form */
+    html.light-theme .form-hero-header {
+      border-bottom: 1px solid #CBD5E1;
+    }
+    html.light-theme .form-hero-title {
+      color: #0F172A;
+    }
+    html.light-theme .form-hero-sub {
+      color: #0284C7;
+      font-weight: 600;
+    }
+    html.light-theme .form-sec-title {
+      color: #0369A1;
+    }
+    html.light-theme .field-label {
+      color: #334155;
+      font-weight: 700;
+    }
+    html.light-theme .field-input, html.light-theme .field-select, html.light-theme .col-search-input {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #0F172A;
+      font-weight: 500;
+    }
+    html.light-theme .field-input:focus, html.light-theme .field-select:focus, html.light-theme .col-search-input:focus {
+      background: #FFFFFF;
+      border-color: #4338CA;
+      box-shadow: 0 0 0 2px rgba(67, 56, 202, 0.2);
+    }
+    html.light-theme .form-calc-card {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+    }
+    html.light-theme .calc-card-head {
+      color: #0369A1;
+    }
+    html.light-theme .calc-stat-label {
+      color: #64748B;
+      font-weight: 600;
+    }
+    html.light-theme .calc-stat-val {
+      color: #0284C7;
+      font-weight: 800;
+    }
+    html.light-theme .form-action-bar {
+      background: #F8FAFC;
+      border-top: 1px solid #CBD5E1;
+    }
+
+    /* Column 4: Stack & Inventory */
+    html.light-theme .stack-group-toggle-bar {
+      background: #E2E8F0;
+      border-bottom: 1px solid #CBD5E1;
+    }
+    html.light-theme .group-pill-btn {
+      color: #475569;
+    }
+    html.light-theme .group-pill-btn:hover {
+      background: #F1F5F9;
+      color: #0F172A;
+    }
+    html.light-theme .group-pill-btn.active {
+      background: #FFFFFF;
+      border-color: #CBD5E1;
+      color: #0F172A;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    html.light-theme .stack-group-header {
+      background: #E2E8F0;
+      color: #0F172A;
+      border-left: 3px solid #4338CA;
+    }
+    html.light-theme .stack-item-card {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    html.light-theme .stack-item-card:hover {
+      border-color: #94A3B8;
+      background: #F8FAFC;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    html.light-theme .stack-item-tag {
+      color: #0369A1;
+      font-weight: 800;
+    }
+    html.light-theme .stack-item-pill {
+      background: #F1F5F9;
+      color: #334155;
+      border: 1px solid #CBD5E1;
+      font-weight: 600;
+    }
+
+    /* High Contrast "Edit Breakers" Button in Light Mode */
+    html.light-theme .btn-edit-breakers {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      border: 1.5px solid #D97706;
+      color: #92400E !important;
+      font-weight: 800;
+      box-shadow: 0 1px 2px rgba(217, 119, 6, 0.15);
+    }
+    html.light-theme .btn-edit-breakers:hover {
+      background: linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%);
+      border-color: #B45309;
+      color: #78350F !important;
+      box-shadow: 0 2px 6px rgba(217, 119, 6, 0.25);
+    }
+
+    /* Panel Schedule Modal Light Mode */
+    html.light-theme .schedule-modal {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+    }
+    html.light-theme .schedule-header, html.light-theme .schedule-footer {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+    html.light-theme .schedule-title-box h3 {
+      color: #0F172A;
+    }
+    html.light-theme .schedule-phase-bar {
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+      color: #334155;
+    }
+    html.light-theme .schedule-phase-bar strong {
+      color: #0F172A !important;
+    }
+    html.light-theme .schedule-grid-table th {
+      background: #F1F5F9;
+      color: #1E293B;
+      font-weight: 800;
+      border: 1px solid #CBD5E1;
+    }
+    html.light-theme .schedule-grid-table td {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+    }
+    html.light-theme .slot-num {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-weight: 800;
+    }
+    html.light-theme .desc-cell input {
+      color: #0F172A;
+    }
+    html.light-theme .desc-cell input:focus {
+      background: #F8FAFC;
+    }
+    html.light-theme .trip-select {
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: #0369A1;
+      font-weight: 800;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Top Master Control Bar */
+    .top-bar {
+      height: 56px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #6366F1 0%, #06B6D4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+    }
+
+    .project-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #A5B4FC;
+    }
+
+    .top-center-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface-elevated);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #38BDF8;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-top {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-top:hover {
+      background: var(--bg-surface-highlight);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .btn-top-primary {
+      background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-top-primary:hover {
+      background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+    }
+
+    /* 4-Column Cockpit Body */
+    .cockpit-container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cockpit-col {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      min-width: 200px;
+    }
+
+    /* Column Sizing Default Widths */
+    .col-1-domains {
+      width: 220px;
+      flex-shrink: 0;
+      background: rgba(14, 22, 38, 0.6);
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .col-2-types {
+      width: 290px;
+      flex-shrink: 0;
+      background: rgba(11, 18, 32, 0.7);
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .col-3-form {
+      flex: 1.1;
+      min-width: 380px;
+      background: rgba(14, 22, 38, 0.4);
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .col-4-stack {
+      flex: 1.2;
+      min-width: 380px;
+      background: rgba(9, 14, 25, 0.8);
+    }
+
+    /* Draggable Resizer Dividers */
+    .resizer {
+      width: 5px;
+      cursor: col-resize;
+      background: var(--border-subtle);
+      transition: background 0.15s ease, width 0.15s ease;
+      z-index: 20;
+      flex-shrink: 0;
+    }
+
+    .resizer:hover, .resizer.resizing {
+      background: var(--accent-indigo);
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
+    }
+
+    /* Column Headers */
+    .col-header {
+      padding: 10px 14px;
+      height: 44px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .col-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-count {
+      background: var(--bg-surface-elevated);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .control-select {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 10.5px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .control-select:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    /* Search Boxes */
+    .col-search-box {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(14, 22, 38, 0.4);
+    }
+
+    .col-search-input {
+      width: 100%;
+      height: 32px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0 10px;
+      color: var(--text-primary);
+      font-size: 12px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .col-search-input:focus {
+      border-color: var(--accent-indigo);
+      background: #151F33;
+    }
+
+    /* Scrollable Column Lists */
+    .col-scroll-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .col-scroll-list::-webkit-scrollbar, .form-body-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .col-scroll-list::-webkit-scrollbar-thumb, .form-body-scroll::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 3px;
+    }
+
+    /* Col 1: Domain Nav Items */
+    .domain-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .domain-item:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    .domain-item.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: #FFFFFF;
+    }
+
+    .domain-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    /* Col 2: Equipment Subclass Cards */
+    .type-card {
+      display: flex;
+      flex-direction: column;
+      padding: 9px 12px;
+      border-radius: 9px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      gap: 3px;
+    }
+
+    .type-card:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    .type-card.active {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(6, 182, 212, 0.35);
+      color: #FFFFFF;
+    }
+
+    .type-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .type-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .type-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .type-card.active .type-pill {
+      background: rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+    }
+
+    .type-subtitle {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* Col 3: Data Entry Form */
+    .form-body-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .form-hero-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .form-hero-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--accent-cyan);
+      margin-top: 2px;
+    }
+
+    .form-group-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-sec-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .field-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .field-input, .field-select {
+      height: 34px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 7px;
+      padding: 0 10px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 12.5px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .field-input:focus, .field-select:focus {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+      background: #141E30;
+    }
+
+    .field-select option {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .form-calc-card {
+      background: linear-gradient(135deg, rgba(24, 35, 56, 0.8) 0%, rgba(14, 22, 38, 0.95) 100%);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .calc-card-head {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .calc-stat-label {
+      font-size: 9.5px;
+      color: var(--text-muted);
+    }
+
+    .calc-stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #38BDF8;
+    }
+
+    .form-action-bar {
+      padding: 12px 20px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn-add-stack {
+      flex: 1;
+      height: 38px;
+      background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      transition: all 0.15s ease;
+    }
+
+    .btn-add-stack:hover {
+      background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+      transform: translateY(-1px);
+    }
+
+    /* Col 4: Project Equipment Stack & Inventory */
+    .stack-group-toggle-bar {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: rgba(14, 22, 38, 0.6);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .group-pill-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .group-pill-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-surface-elevated);
+    }
+
+    .group-pill-btn.active {
+      background: var(--bg-surface-highlight);
+      border-color: var(--border-strong);
+      color: #FFFFFF;
+    }
+
+    .stack-scroll-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Stack Grouping Headers */
+    .stack-group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #E2E8F0;
+      padding: 4px 8px;
+      background: var(--bg-surface);
+      border-radius: 6px;
+      border-left: 3px solid var(--accent-indigo);
+      margin-top: 4px;
+    }
+
+    .stack-group-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .stack-item-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .stack-item-card:hover {
+      border-color: var(--border-strong);
+      background: #1B273E;
+    }
+
+    .stack-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .stack-item-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #38BDF8;
+    }
+
+    .stack-item-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .stack-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .stack-item-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .stack-item-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-edit-breakers {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #FCD34D;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-edit-breakers:hover {
+      background: rgba(245, 158, 11, 0.25);
+      color: #FFFBEB;
+      transform: scale(1.02);
+    }
+
+    .stack-btn-sm {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .stack-btn-sm:hover {
+      color: var(--text-primary);
+      background: var(--bg-surface-highlight);
+    }
+
+    .stack-btn-sm.delete:hover {
+      color: var(--accent-rose);
+    }
+
+    /* Modal Dialog: Panel Schedule / Breaker Matrix */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .schedule-modal {
+      width: 100%;
+      max-width: 1080px;
+      height: 840px;
+      max-height: 90vh;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .schedule-header {
+      padding: 16px 20px;
+      background: #0B1120;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .schedule-title-box h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .schedule-phase-bar {
+      padding: 10px 20px;
+      background: rgba(15, 23, 42, 0.7);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      font-size: 12px;
+    }
+
+    .phase-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phase-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .phase-dot.a { background: var(--phase-a); }
+    .phase-dot.b { background: var(--phase-b); }
+    .phase-dot.c { background: var(--phase-c); }
+
+    .schedule-table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+    }
+
+    .schedule-grid-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .schedule-grid-table th {
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 8px 6px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .schedule-grid-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 6px 8px;
+      text-align: center;
+      background: rgba(14, 22, 38, 0.4);
+    }
+
+    .slot-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      width: 32px;
+      color: #FFFFFF;
+      background: var(--bg-surface-elevated);
+    }
+
+    .phase-indicator {
+      width: 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+    }
+
+    .phase-indicator.a { color: var(--phase-a); }
+    .phase-indicator.b { color: var(--phase-b); }
+    .phase-indicator.c { color: var(--phase-c); }
+
+    .desc-cell input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      font-size: 11.5px;
+      padding: 4px;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+
+    .desc-cell input:focus {
+      background: var(--bg-surface-elevated);
+      border-color: var(--accent-indigo);
+      outline: none;
+    }
+
+    .trip-select {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: #38BDF8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
+      padding: 2px 4px;
+      outline: none;
+    }
+
+    .schedule-footer {
+      padding: 12px 20px;
+      background: #0B1120;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      border: 1px solid var(--accent-emerald);
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.25s ease;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Master Bar -->
+  <header class="top-bar">
+    <div class="brand-section">
+      <div class="brand-logo">J</div>
+      <span class="brand-title">JEMBY JAMES</span>
+      <div class="project-pill">🏢 Zoetis B4 Facility</div>
+    </div>
+
+    <div class="top-center-stats">
+      <div class="stat-badge">📦 Total Stack: <span id="stackTotalCount" style="color:#FFF; margin-left:4px;">9 Assets</span></div>
+      <div class="stat-badge">⚡ Total Mains: <span id="stackTotalMains" style="color:#38BDF8; margin-left:4px;">3,225 A</span></div>
+      <div class="stat-badge">📍 Survey Zone: <span style="color:#34D399; margin-left:4px;">Building 4 Main</span></div>
+    </div>
+
+    <div class="top-actions">
+      <button id="themeToggleBtn" class="btn-top" title="Toggle Light / Dark Theme">
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark</span>
+      </button>
+      <button id="exportJsonBtn" class="btn-top">📋 Export JSON</button>
+      <button id="viewSldBtn" class="btn-top btn-top-primary">⚡ Generate Single-Line</button>
+    </div>
+  </header>
+
+  <!-- 4-Column Full-Page Cockpit Workspace -->
+  <main class="cockpit-container">
+    
+    <!-- COLUMN 1: Equipment Domains -->
+    <section id="col1Domains" class="cockpit-col col-1-domains">
+      <div class="col-header">
+        <div class="col-title">
+          <span>Domains</span>
+          <span id="domainCountBadge" class="badge-count">11</span>
+        </div>
+        <select id="domainSort" class="control-select" title="Sort domains">
+          <option value="power_flow">⚡ Power Flow</option>
+          <option value="az">🔤 A to Z</option>
+        </select>
+      </div>
+      <div class="col-search-box">
+        <input type="text" id="domainSearchInput" class="col-search-input" placeholder="Filter domains...">
+      </div>
+      <div id="domainList" class="col-scroll-list"></div>
+    </section>
+
+    <!-- Resizer 1 -->
+    <div id="resizer1" class="resizer" title="Drag to resize"></div>
+
+    <!-- COLUMN 2: Equipment Types -->
+    <section id="col2Types" class="cockpit-col col-2-types">
+      <div class="col-header">
+        <div class="col-title">
+          <span>Equipment Types</span>
+          <span id="typeCountBadge" class="badge-count">0</span>
+        </div>
+        <select id="typeSort" class="control-select" title="Sort types">
+          <option value="default">⚡ Hierarchy</option>
+          <option value="az">🔤 A to Z</option>
+        </select>
+      </div>
+      <div class="col-search-box">
+        <input type="text" id="typeSearchInput" class="col-search-input" placeholder="Search equipment types...">
+      </div>
+      <div id="typeList" class="col-scroll-list"></div>
+    </section>
+
+    <!-- Resizer 2 -->
+    <div id="resizer2" class="resizer" title="Drag to resize"></div>
+
+    <!-- COLUMN 3: Active Data Entry Form -->
+    <section id="col3Form" class="cockpit-col col-3-form">
+      <div class="col-header">
+        <div class="col-title">
+          <span>Equipment Nameplate & Parameters</span>
+        </div>
+        <span id="activeClassTag" class="badge-count" style="color:var(--accent-cyan);">MDP</span>
+      </div>
+
+      <div class="form-body-scroll" id="formBody">
+        <!-- Dynamically generated fields for selected equipment class -->
+      </div>
+
+      <div class="form-action-bar">
+        <button id="addToStackBtn" class="btn-add-stack">
+          <span>➕ Add Equipment to Project Stack</span>
+          <span style="font-family:'JetBrains Mono'; font-size:11px; opacity:0.8;">[Enter]</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Resizer 3 -->
+    <div id="resizer3" class="resizer" title="Drag to resize"></div>
+
+    <!-- COLUMN 4: Project Equipment Stack & Inventory -->
+    <section id="col4Stack" class="cockpit-col col-4-stack">
+      <div class="col-header">
+        <div class="col-title">
+          <span>Project Stack / Surveyed Assets</span>
+          <span id="stackCountBadge" class="badge-count">9</span>
+        </div>
+      </div>
+
+      <!-- 4 Grouping View Modes Toggle -->
+      <div class="stack-group-toggle-bar">
+        <button class="group-pill-btn active" data-group="room">📍 Floor / Room</button>
+        <button class="group-pill-btn" data-group="tree">⚡ Connected Tree</button>
+        <button class="group-pill-btn" data-group="type">📦 Type</button>
+        <button class="group-pill-btn" data-group="recent">🕒 Recent</button>
+      </div>
+
+      <div id="stackContainer" class="stack-scroll-list">
+        <!-- Rendered Stack Cards -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Panel Schedule / Breaker Matrix Modal -->
+  <div id="scheduleModal" class="modal-overlay">
+    <div class="schedule-modal">
+      <div class="schedule-header">
+        <div class="schedule-title-box">
+          <h3 id="schedPanelTag">⚡ MDP-1 Panelboard Schedule</h3>
+          <p id="schedPanelMeta" style="font-size:12px; color:var(--text-muted); margin-top:2px;">480Y/277V 3Ø 4W • 1200A Bus • 42 Slots • Main Electrical Room 101</p>
+        </div>
+        <button id="closeScheduleBtn" class="btn-top">✕ Close</button>
+      </div>
+
+      <div class="schedule-phase-bar">
+        <div class="phase-stat">
+          <div class="phase-dot a"></div>
+          <span>Phase A: <strong id="phaseAKva" style="color:#FFF;">142.5 kVA</strong> (297 A)</span>
+        </div>
+        <div class="phase-stat">
+          <div class="phase-dot b"></div>
+          <span>Phase B: <strong id="phaseBKva" style="color:#FFF;">138.0 kVA</strong> (288 A)</span>
+        </div>
+        <div class="phase-stat">
+          <div class="phase-dot c"></div>
+          <span>Phase C: <strong id="phaseCKva" style="color:#FFF;">145.2 kVA</strong> (303 A)</span>
+        </div>
+        <div class="phase-stat">
+          <span style="color:var(--text-muted);">Phase Imbalance: <strong style="color:#34D399;">2.4% (Optimal)</strong></span>
+        </div>
+      </div>
+
+      <div class="schedule-table-wrap">
+        <table class="schedule-grid-table">
+          <thead>
+            <tr>
+              <th colspan="4" style="background:#0F1A2E; color:#93C5FD;">LEFT (ODD CIRCUITS)</th>
+              <th rowspan="2" style="width:30px; background:#0B1120;">BUS</th>
+              <th colspan="4" style="background:#0F1A2E; color:#93C5FD;">RIGHT (EVEN CIRCUITS)</th>
+            </tr>
+            <tr>
+              <th style="width:32px;">Trip</th>
+              <th style="width:28px;">P</th>
+              <th>Circuit Description</th>
+              <th style="width:32px;">Slot</th>
+              <th style="width:32px;">Slot</th>
+              <th>Circuit Description</th>
+              <th style="width:28px;">P</th>
+              <th style="width:32px;">Trip</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleTableBody">
+            <!-- 42-slot matrix rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="schedule-footer">
+        <button id="saveScheduleBtn" class="btn-top btn-top-primary">💾 Save Panel Schedule Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span style="color:var(--accent-emerald);">✓</span>
+    <span id="toastMsg">Added to Project Stack!</span>
+  </div>
+
+  <script>
+    // Master Taxonomy Data
+    const TAXONOMY = [
+      {
+        id: "panels",
+        name: "Panelboards & Enclosures",
+        icon: "⚡",
+        types: [
+          { tag: "MDP", name: "Main Distribution Panel (MDP)", sub: "400A-4000A • I-Line / CDP", defaultTag: "MDP-2", volts: "480Y/277V 3Ø 4W", amps: 1200, aic: 65, slots: 42, isPanel: true },
+          { tag: "LP", name: "Lighting Branch Panel", sub: "100A-400A • Bolt-on MCB/MLO", defaultTag: "LP-1B", volts: "208Y/120V 3Ø 4W", amps: 225, aic: 22, slots: 42, isPanel: true },
+          { tag: "MCC", name: "Motor Control Center (MCC)", sub: "600A-2500A Lineups", defaultTag: "MCC-2", volts: "480V 3Ø 3W", amps: 800, aic: 65, slots: 20, isPanel: true },
+          { tag: "EP", name: "Emergency Life Safety Panel", sub: "NEC 700 • Dedicated Red Trim", defaultTag: "EP-2", volts: "480Y/277V 3Ø 4W", amps: 225, aic: 65, slots: 30, isPanel: true },
+          { tag: "CPP", name: "Critical Power & IT Panel", sub: "Isolated Ground • TVSS", defaultTag: "CPP-2", volts: "208Y/120V 3Ø 4W", amps: 225, aic: 22, slots: 42, isPanel: true },
+          { tag: "SP", name: "Secondary Subpanel", sub: "60A-225A Area Distribution", defaultTag: "SP-2", volts: "120/240V 1Ø 3W", amps: 125, aic: 10, slots: 24, isPanel: true },
+          { tag: "LC", name: "Residential Loadcenter", sub: "Plug-on Neutral • 100A-200A", defaultTag: "LC-2", volts: "120/240V 1Ø 3W", amps: 200, aic: 10, slots: 30, isPanel: true }
+        ]
+      },
+      {
+        id: "transformers",
+        name: "Transformers & Substations",
+        icon: "🔄",
+        types: [
+          { tag: "XFMR", name: "Dry-Type Step-Down Transformer", sub: "480V to 208Y/120V • 15-500 kVA", defaultTag: "T-2", volts: "480V : 208Y/120V", kva: 75, primV: 480, secV: 208 },
+          { tag: "PAD", name: "Liquid Padmount Substation", sub: "12.47kV to 480V • 500-5000 kVA", defaultTag: "PM-2", volts: "12.47kV : 480Y/277V", kva: 1500, primV: 12470, secV: 480 },
+          { tag: "ISO", name: "Clean Power Isolation XFMR", sub: "K-13 / K-20 Shielded SDS", defaultTag: "ITX-2", volts: "480V : 208Y/120V", kva: 45, primV: 480, secV: 208 },
+          { tag: "BBT", name: "Buck-Boost Autotransformer", sub: "5% - 20% Voltage Trim", defaultTag: "BBT-2", volts: "208V : 240V", kva: 5, primV: 208, secV: 240 }
+        ]
+      },
+      {
+        id: "breakers",
+        name: "Protective Circuit Breakers",
+        icon: "🛡️",
+        types: [
+          { tag: "MCCB", name: "Molded Case Feeder Breaker", sub: "70A-800A • Thermal-Mag/LSI", defaultTag: "BKR-2", volts: "480V", amps: 225, poles: 3, aic: 65 },
+          { tag: "MCB", name: "Miniature Branch Breaker", sub: "15A-60A • 1P/2P/3P", defaultTag: "BKR-12", volts: "120/208V", amps: 20, poles: 1, aic: 10 },
+          { tag: "AFCI", name: "Dual AFCI / GFCI Breaker", sub: "Arc & Ground Fault Safety", defaultTag: "BKR-AF2", volts: "120V", amps: 20, poles: 1, aic: 10 },
+          { tag: "MCP", name: "Motor Circuit Protector (MCP)", sub: "Magnetic Only Motor Starter", defaultTag: "MCP-2", volts: "480V", amps: 50, poles: 3, aic: 65 },
+          { tag: "LVPCB", name: "Drawout Power Air Breaker", sub: "800A-6000A Switchgear", defaultTag: "PCB-2", volts: "480V", amps: 3200, poles: 3, aic: 100 }
+        ]
+      },
+      {
+        id: "switches",
+        name: "Switches, Disconnects & ATS",
+        icon: "🔌",
+        types: [
+          { tag: "DS", name: "Fused Disconnect Safety Switch", sub: "30A-1200A • Class R/J/T", defaultTag: "DS-2", volts: "480V 3Ø", amps: 200, aic: 200 },
+          { tag: "NF", name: "Non-Fused Isolation Switch", sub: "Motor In-Sight Disconnect", defaultTag: "NF-2", volts: "480V 3Ø", amps: 60, aic: 10 },
+          { tag: "ATS", name: "Automatic Transfer Switch (ATS)", sub: "Normal/Emergency 100A-4000A", defaultTag: "ATS-2", volts: "480Y/277V", amps: 400, aic: 65 },
+          { tag: "BYP", name: "Bypass-Isolation Transfer Switch", sub: "Dual Drawout ATS + Manual Bypass", defaultTag: "ATS-BYP-2", volts: "480Y/277V", amps: 800, aic: 65 },
+          { tag: "MTS", name: "Manual Transfer Switch (MTS)", sub: "Portable Cam-Lock Inlet", defaultTag: "MTS-2", volts: "480Y/277V", amps: 400, aic: 65 }
+        ]
+      },
+      {
+        id: "sources",
+        name: "Power Generation & Sources",
+        icon: "⚡",
+        types: [
+          { tag: "UTIL", name: "Utility Grid Service Entrance", sub: "PCC Connection & CT Metering", defaultTag: "UTIL-2", volts: "480Y/277V 3Ø 4W", faultMva: 250 },
+          { tag: "GEN", name: "Emergency Diesel Generator", sub: "100 kW - 2500 kW Standby", defaultTag: "GEN-2", volts: "480Y/277V", kw: 750, kva: 937.5 },
+          { tag: "PV", name: "Solar Photovoltaic Array (PV)", sub: "Rooftop Inverter Array", defaultTag: "PV-2", volts: "480V 3Ø", kw: 250 },
+          { tag: "BESS", name: "Battery Energy Storage (BESS)", sub: "Peak Shaving & Islanding", defaultTag: "BESS-2", volts: "480V 3Ø", kwh: 1000, kw: 250 }
+        ]
+      },
+      {
+        id: "loads",
+        name: "Electrical Loads & Motors",
+        icon: "⚙️",
+        types: [
+          { tag: "MTR", name: "AC Induction Motor", sub: "1 HP to 500 HP • NEC Table 430", defaultTag: "MTR-102", volts: "460V 3Ø", hp: 50, pf: 0.88 },
+          { tag: "VFD", name: "Variable Frequency Drive (VFD)", sub: "PWM Inverter + Bypass", defaultTag: "VFD-2", volts: "480V 3Ø", hp: 75 },
+          { tag: "HVAC", name: "Packaged Chiller / RTU", sub: "MCA / MOCP Rating NEC 440", defaultTag: "CH-2", volts: "480V 3Ø", mca: 285, mocp: 400 },
+          { tag: "EV", name: "EV Charging Station (EVSE)", sub: "Level 2 / Level 3 Fast Charger", defaultTag: "EV-2", volts: "208V", amps: 80 }
+        ]
+      },
+      {
+        id: "power_quality",
+        name: "Power Quality, UPS & PDUs",
+        icon: "🔋",
+        types: [
+          { tag: "UPS", name: "Double-Conversion Static UPS", sub: "Online Clean Power • Static Bypass", defaultTag: "UPS-2", volts: "480V 3Ø", kva: 250, kw: 250 },
+          { tag: "SPD", name: "Surge Protective Device (TVSS)", sub: "50 kA - 300 kA per phase", defaultTag: "SPD-2", volts: "480Y/277V", kA: 200 },
+          { tag: "PDU", name: "Floor Power Distribution Unit", sub: "K-13 XFMR + Branch Monitoring", defaultTag: "PDU-2", volts: "480V : 208Y/120V", kva: 150 },
+          { tag: "PFC", name: "Capacitor Bank (Power Factor)", sub: "Automatic Multi-Step Detuned", defaultTag: "PFC-2", volts: "480V 3Ø", kvar: 300 }
+        ]
+      }
+    ];
+
+    // Pre-Populated Realistic Sample Project Stack
+    let PROJECT_STACK = [
+      { id: "s1", tag: "UTIL-1", name: "Utility Grid Service Entrance", domain: "sources", typeTag: "UTIL", typeName: "Utility Grid Service Entrance", room: "Level 1 - Main Electric Room 101", fedFrom: null, voltage: "480Y/277V 3Ø 4W", amps: 2500, aic: 100, isPanel: false },
+      { id: "s2", tag: "GEN-1", name: "750 kW Standby Diesel Generator", domain: "sources", typeTag: "GEN", typeName: "Emergency Diesel Generator", room: "Yard - Generator Pad", fedFrom: null, voltage: "480Y/277V", amps: 1128, aic: 35, isPanel: false },
+      { id: "s3", tag: "ATS-1", name: "400A Life Safety Transfer Switch", domain: "switches", typeTag: "ATS", typeName: "Automatic Transfer Switch (ATS)", room: "Level 1 - Main Electric Room 101", fedFrom: "UTIL-1", voltage: "480Y/277V", amps: 400, aic: 65, isPanel: false },
+      { id: "s4", tag: "MDP-1", name: "Main Distribution Switchboard", domain: "panels", typeTag: "MDP", typeName: "Main Distribution Panel (MDP)", room: "Level 1 - Main Electric Room 101", fedFrom: "ATS-1", voltage: "480Y/277V 3Ø 4W", amps: 1200, aic: 65, isPanel: true, slots: 42 },
+      { id: "s5", tag: "T-1", name: "75 kVA Step-Down Transformer", domain: "transformers", typeTag: "XFMR", typeName: "Dry-Type Step-Down Transformer", room: "Level 1 - Main Electric Room 101", fedFrom: "MDP-1", voltage: "480V : 208Y/120V", kva: 75, amps: 208, aic: 22, isPanel: false },
+      { id: "s6", tag: "LP-1A", name: "Floor 1 Lighting & Receptacle Panel", domain: "panels", typeTag: "LP", typeName: "Lighting Branch Panel", room: "Level 1 - Electrical Closet 102", fedFrom: "T-1", voltage: "208Y/120V 3Ø 4W", amps: 225, aic: 22, isPanel: true, slots: 42 },
+      { id: "s7", tag: "MCC-1", name: "Process Motor Control Center", domain: "panels", typeTag: "MCC", typeName: "Motor Control Center (MCC)", room: "Penthouse - Mechanical Room", fedFrom: "MDP-1", voltage: "480V 3Ø 3W", amps: 800, aic: 65, isPanel: true, slots: 24 },
+      { id: "s8", tag: "CH-1", name: "Central Plant Water Chiller", domain: "loads", typeTag: "HVAC", typeName: "Packaged Chiller / RTU", room: "Penthouse - Mechanical Room", fedFrom: "MCC-1", voltage: "480V 3Ø", amps: 285, aic: 65, isPanel: false },
+      { id: "s9", tag: "UPS-1", name: "250 kVA Data Center UPS", domain: "power_quality", typeTag: "UPS", typeName: "Double-Conversion Static UPS", room: "Level 1 - Main Electric Room 101", fedFrom: "MDP-1", voltage: "480V 3Ø", amps: 300, aic: 65, isPanel: false }
+    ];
+
+    // State Variables
+    let selectedDomainIdx = 0;
+    let selectedTypeIdx = 0;
+    let stackGroupingMode = "room"; // 'room', 'tree', 'type', 'recent'
+    let editingItemId = null; // ID of item currently being edited in Column 3
+
+    // DOM Elements
+    const domainList = document.getElementById("domainList");
+    const typeList = document.getElementById("typeList");
+    const formBody = document.getElementById("formBody");
+    const stackContainer = document.getElementById("stackContainer");
+    const activeClassTag = document.getElementById("activeClassTag");
+    const addToStackBtn = document.getElementById("addToStackBtn");
+    const stackTotalCount = document.getElementById("stackTotalCount");
+    const stackTotalMains = document.getElementById("stackTotalMains");
+    const stackCountBadge = document.getElementById("stackCountBadge");
+    const typeCountBadge = document.getElementById("typeCountBadge");
+    const domainSearchInput = document.getElementById("domainSearchInput");
+    const typeSearchInput = document.getElementById("typeSearchInput");
+    const scheduleModal = document.getElementById("scheduleModal");
+    const closeScheduleBtn = document.getElementById("closeScheduleBtn");
+    const saveScheduleBtn = document.getElementById("saveScheduleBtn");
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+
+    // Resizable Splitters Logic
+    function initResizers() {
+      const makeColResizable = (resizer, leftCol, minW, maxW) => {
+        let startX, startW;
+        resizer.addEventListener("mousedown", (e) => {
+          startX = e.clientX;
+          startW = leftCol.getBoundingClientRect().width;
+          resizer.classList.add("resizing");
+          document.body.style.cursor = "col-resize";
+
+          function onMouseMove(e) {
+            const w = Math.max(minW, Math.min(maxW, startW + (e.clientX - startX)));
+            leftCol.style.width = w + "px";
+          }
+          function onMouseUp() {
+            resizer.classList.remove("resizing");
+            document.body.style.cursor = "";
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          }
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        });
+      };
+
+      makeColResizable(document.getElementById("resizer1"), document.getElementById("col1Domains"), 180, 320);
+      makeColResizable(document.getElementById("resizer2"), document.getElementById("col2Types"), 220, 420);
+      makeColResizable(document.getElementById("resizer3"), document.getElementById("col3Form"), 300, 600);
+    }
+
+    // Render Column 1: Domains
+    function renderDomains() {
+      const q = domainSearchInput.value.trim().toLowerCase();
+      domainList.innerHTML = "";
+
+      const filtered = TAXONOMY.filter(d => !q || d.name.toLowerCase().includes(q));
+      filtered.forEach((dom, idx) => {
+        const actualIdx = TAXONOMY.indexOf(dom);
+        const item = document.createElement("div");
+        item.className = `domain-item ${actualIdx === selectedDomainIdx ? 'active' : ''}`;
+        item.innerHTML = `
+          <div class="domain-item-left">
+            <span>${dom.icon}</span>
+            <span>${dom.name}</span>
+          </div>
+          <span style="font-size:10px; opacity:0.6;">›</span>
+        `;
+        item.addEventListener("click", () => {
+          selectedDomainIdx = actualIdx;
+          selectedTypeIdx = 0;
+          renderDomains();
+          renderTypes();
+          renderForm();
+        });
+        domainList.appendChild(item);
+      });
+    }
+
+    // Render Column 2: Types
+    function renderTypes() {
+      const q = typeSearchInput.value.trim().toLowerCase();
+      typeList.innerHTML = "";
+      const currentDom = TAXONOMY[selectedDomainIdx];
+      if (!currentDom) return;
+
+      const filtered = currentDom.types.filter(t => !q || t.name.toLowerCase().includes(q) || t.tag.toLowerCase().includes(q));
+      typeCountBadge.textContent = filtered.length;
+
+      filtered.forEach((type, idx) => {
+        const actualIdx = currentDom.types.indexOf(type);
+        const card = document.createElement("div");
+        card.className = `type-card ${actualIdx === selectedTypeIdx ? 'active' : ''}`;
+        card.innerHTML = `
+          <div class="type-card-top">
+            <span class="type-title">${type.name}</span>
+            <span class="type-pill">${type.tag}</span>
+          </div>
+          <div class="type-subtitle">${type.sub}</div>
+        `;
+        card.addEventListener("click", () => {
+          selectedTypeIdx = actualIdx;
+          renderTypes();
+          renderForm();
+        });
+        typeList.appendChild(card);
+      });
+    }
+
+    // Render Column 3: Active Data Entry Form
+    function renderForm() {
+      const currentDom = TAXONOMY[selectedDomainIdx];
+      const currentType = currentDom && currentDom.types[selectedTypeIdx];
+      if (!currentType) return;
+
+      const editItemData = editingItemId ? PROJECT_STACK.find(i => i.id === editingItemId) : null;
+
+      activeClassTag.textContent = editItemData ? editItemData.typeTag : currentType.tag;
+
+      // Populate Upstream options from stack (excluding self)
+      const upstreamOptions = PROJECT_STACK
+        .filter(s => !editItemData || s.id !== editItemData.id)
+        .map(s => `<option value="${s.tag}" ${editItemData && editItemData.fedFrom === s.tag ? 'selected' : ''}>${s.tag} (${s.name})</option>`)
+        .join("");
+
+      const initialTag = editItemData ? editItemData.tag : (currentType.defaultTag || 'EQ-1');
+      const initialName = editItemData ? editItemData.name : currentType.name;
+      const initialRoom = editItemData ? editItemData.room : 'Level 1 - Main Electric Room 101';
+      const initialVolts = editItemData ? editItemData.voltage : (currentType.volts || '480Y/277V 3Ø 4W');
+      const initialAmps = editItemData ? editItemData.amps : (currentType.amps || 225);
+      const initialAic = editItemData ? editItemData.aic : (currentType.aic || 65);
+      const initialMfr = editItemData ? (editItemData.mfr || 'Square D') : 'Square D';
+      const initialNema = editItemData ? (editItemData.nema || 'NEMA 1') : 'NEMA 1';
+
+      const editingBanner = editItemData ? `
+        <div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:11.5px; font-weight:700; color:#FCD34D;">✏️ Editing Asset: [${editItemData.tag}]</span>
+          <button onclick="cancelEdit()" class="stack-btn-sm" style="color:#FCD34D; border:1px solid rgba(245,158,11,0.3); border-radius:4px; font-weight:600;">✕ Cancel</button>
+        </div>
+      ` : '';
+
+      formBody.innerHTML = `
+        ${editingBanner}
+
+        <div class="form-hero-header">
+          <div>
+            <h2 class="form-hero-title">${editItemData ? editItemData.name : currentType.name}</h2>
+            <p class="form-hero-sub">${currentType.sub}</p>
+          </div>
+          <span class="badge-count" style="background:rgba(99,102,241,0.2); color:#A5B4FC;">${editItemData ? editItemData.typeTag : currentType.tag}</span>
+        </div>
+
+        <!-- Section 1: Identification -->
+        <div class="form-group-section">
+          <div class="form-sec-title">🏷️ Identification & Connectivity</div>
+          <div class="form-row-3">
+            <div class="field-box">
+              <label class="field-label">Equipment Tag</label>
+              <input type="text" id="fTag" class="field-input" value="${initialTag}" style="font-family:'JetBrains Mono'; font-weight:700; color:#38BDF8;">
+            </div>
+            <div class="field-box" style="grid-column: span 2;">
+              <label class="field-label">Equipment Description</label>
+              <input type="text" id="fName" class="field-input" value="${initialName}">
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="field-box">
+              <label class="field-label">Floor / Room Location</label>
+              <input type="text" id="fRoom" class="field-input" value="${initialRoom}">
+            </div>
+            <div class="field-box">
+              <label class="field-label">⚡ Upstream Fed From</label>
+              <select id="fFedFrom" class="field-select">
+                <option value="">-- Main Incoming Service --</option>
+                ${upstreamOptions}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Ratings -->
+        <div class="form-group-section">
+          <div class="form-sec-title">⚡ Electrical Ratings</div>
+          <div class="form-row-3">
+            <div class="field-box">
+              <label class="field-label">System Voltage</label>
+              <select id="fVoltage" class="field-select">
+                <option value="480Y/277V 3Ø 4W" ${initialVolts && initialVolts.includes("480Y") ? "selected" : ""}>480Y/277V 3Ø 4W</option>
+                <option value="208Y/120V 3Ø 4W" ${initialVolts && initialVolts.includes("208Y") ? "selected" : ""}>208Y/120V 3Ø 4W</option>
+                <option value="120/240V 1Ø 3W" ${initialVolts && initialVolts.includes("120/240") ? "selected" : ""}>120/240V 1Ø 3W</option>
+                <option value="480V 3Ø 3W" ${initialVolts && initialVolts.includes("480V") ? "selected" : ""}>480V 3Ø 3W</option>
+                <option value="12.47kV 3Ø" ${initialVolts && initialVolts.includes("12.47") ? "selected" : ""}>12.47 kV 3Ø</option>
+              </select>
+            </div>
+            <div class="field-box">
+              <label class="field-label">Bus / Trip Amps (A)</label>
+              <input type="number" id="fAmps" class="field-input" value="${initialAmps}" min="15" step="25">
+            </div>
+            <div class="field-box">
+              <label class="field-label">Short-Circuit AIC (kA)</label>
+              <select id="fAic" class="field-select">
+                <option value="10" ${initialAic === 10 ? "selected" : ""}>10 kA AIC</option>
+                <option value="22" ${initialAic === 22 ? "selected" : ""}>22 kA AIC</option>
+                <option value="42" ${initialAic === 42 ? "selected" : ""}>42 kA AIC</option>
+                <option value="65" ${initialAic === 65 ? "selected" : ""}>65 kA AIC</option>
+                <option value="100" ${initialAic === 100 ? "selected" : ""}>100 kA AIC</option>
+                <option value="200" ${initialAic === 200 ? "selected" : ""}>200 kA AIC</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="field-box">
+              <label class="field-label">Manufacturer / Brand</label>
+              <select id="fMfr" class="field-select">
+                <option value="Square D" ${initialMfr === "Square D" ? "selected" : ""}>Square D / Schneider Electric</option>
+                <option value="Eaton" ${initialMfr === "Eaton" ? "selected" : ""}>Eaton / Cutler-Hammer</option>
+                <option value="Siemens" ${initialMfr === "Siemens" ? "selected" : ""}>Siemens</option>
+                <option value="ABB" ${initialMfr === "ABB" ? "selected" : ""}>ABB / GE</option>
+                <option value="ASCO" ${initialMfr === "ASCO" ? "selected" : ""}>ASCO Power</option>
+              </select>
+            </div>
+            <div class="field-box">
+              <label class="field-label">Enclosure / NEMA</label>
+              <select id="fNema" class="field-select">
+                <option value="NEMA 1" ${initialNema === "NEMA 1" ? "selected" : ""}>NEMA 1 (Indoor)</option>
+                <option value="NEMA 3R" ${initialNema === "NEMA 3R" ? "selected" : ""}>NEMA 3R (Outdoor)</option>
+                <option value="NEMA 4X" ${initialNema === "NEMA 4X" ? "selected" : ""}>NEMA 4X (Stainless)</option>
+                <option value="NEMA 12" ${initialNema === "NEMA 12" ? "selected" : ""}>NEMA 12 (Industrial)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Live Calculations -->
+        <div class="form-calc-card">
+          <div class="calc-card-head">
+            <span>Live Digital Twin Sizing</span>
+            <span>NEC 2023 Rules</span>
+          </div>
+          <div class="calc-grid">
+            <div>
+              <div class="calc-stat-label">Full-Load Current (FLA)</div>
+              <div id="calcFla" class="calc-stat-val">${parseFloat(initialAmps).toFixed(1)} A</div>
+            </div>
+            <div>
+              <div class="calc-stat-label">Continuous 125% OCPD</div>
+              <div id="calcOcpd" class="calc-stat-val">${Math.round(parseFloat(initialAmps) * 1.25)} A</div>
+            </div>
+            <div>
+              <div class="calc-stat-label">Recommended Conductor</div>
+              <div class="calc-stat-val" style="color:#34D399;">${getConductorSizing(parseFloat(initialAmps))}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Update submit button text
+      addToStackBtn.innerHTML = editItemData ? `
+        <span>💾 Update [${editItemData.tag}] in Project Stack</span>
+        <span style="font-family:'JetBrains Mono'; font-size:11px; opacity:0.8;">[Enter]</span>
+      ` : `
+        <span>➕ Add Equipment to Project Stack</span>
+        <span style="font-family:'JetBrains Mono'; font-size:11px; opacity:0.8;">[Enter]</span>
+      `;
+
+      // Live Calculation listener
+      const ampsInput = document.getElementById("fAmps");
+      if (ampsInput) {
+        ampsInput.addEventListener("input", (e) => {
+          const val = parseFloat(e.target.value) || 0;
+          document.getElementById("calcFla").textContent = `${val.toFixed(1)} A`;
+          document.getElementById("calcOcpd").textContent = `${Math.round(val * 1.25)} A`;
+        });
+      }
+    }
+
+    function getConductorSizing(amps) {
+      if (amps <= 20) return "12 AWG Cu";
+      if (amps <= 30) return "10 AWG Cu";
+      if (amps <= 60) return "4 AWG Cu";
+      if (amps <= 100) return "3 AWG Cu";
+      if (amps <= 150) return "1/0 AWG Cu";
+      if (amps <= 200) return "3/0 AWG Cu";
+      if (amps <= 225) return "4/0 AWG Cu";
+      if (amps <= 400) return "500 kcmil Cu (or 2x 3/0)";
+      if (amps <= 800) return "2x 500 kcmil Cu";
+      return "4x 500 kcmil Cu";
+    }
+
+    // Render Column 4: Project Equipment Stack
+    function renderStack() {
+      stackContainer.innerHTML = "";
+      stackCountBadge.textContent = PROJECT_STACK.length;
+      stackTotalCount.textContent = `${PROJECT_STACK.length} Assets`;
+
+      let totalAmps = PROJECT_STACK.reduce((acc, cur) => acc + (cur.amps || 0), 0);
+      stackTotalMains.textContent = `${totalAmps.toLocaleString()} A`;
+
+      if (PROJECT_STACK.length === 0) {
+        stackContainer.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">No equipment staged. Use Column 3 to add assets.</div>';
+        return;
+      }
+
+      if (stackGroupingMode === "room") {
+        renderStackByRoom();
+      } else if (stackGroupingMode === "tree") {
+        renderStackByTree();
+      } else if (stackGroupingMode === "type") {
+        renderStackByType();
+      } else {
+        renderStackRecent();
+      }
+    }
+
+    // 1. Group By Room
+    function renderStackByRoom() {
+      const rooms = {};
+      PROJECT_STACK.forEach(item => {
+        const r = item.room || "Unassigned Location";
+        if (!rooms[r]) rooms[r] = [];
+        rooms[r].push(item);
+      });
+
+      Object.entries(rooms).forEach(([roomName, items]) => {
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "stack-group-header";
+        groupHeader.innerHTML = `
+          <span>📍 ${roomName}</span>
+          <span class="stack-group-count">${items.length} items</span>
+        `;
+        stackContainer.appendChild(groupHeader);
+
+        items.forEach(item => {
+          stackContainer.appendChild(createStackCardElement(item));
+        });
+      });
+    }
+
+    // 2. Group By Tree (Upstream -> Downstream)
+    function renderStackByTree() {
+      // Find roots (no fedFrom or not in stack)
+      const roots = PROJECT_STACK.filter(i => !i.fedFrom || !PROJECT_STACK.some(x => x.tag === i.fedFrom));
+
+      function renderNode(node, depth = 0) {
+        const card = createStackCardElement(node);
+        card.style.marginLeft = `${depth * 20}px`;
+        if (depth > 0) {
+          card.style.borderLeft = "2px solid var(--accent-indigo)";
+        }
+        stackContainer.appendChild(card);
+
+        // Find children
+        const children = PROJECT_STACK.filter(i => i.fedFrom === node.tag);
+        children.forEach(child => renderNode(child, depth + 1));
+      }
+
+      const treeHeader = document.createElement("div");
+      treeHeader.className = "stack-group-header";
+      treeHeader.innerHTML = `<span>⚡ Upstream Power Flow Tree</span>`;
+      stackContainer.appendChild(treeHeader);
+
+      roots.forEach(root => renderNode(root, 0));
+    }
+
+    // 3. Group By Type
+    function renderStackByType() {
+      const types = {};
+      PROJECT_STACK.forEach(item => {
+        const t = item.typeName || item.typeTag;
+        if (!types[t]) types[t] = [];
+        types[t].push(item);
+      });
+
+      Object.entries(types).forEach(([typeName, items]) => {
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "stack-group-header";
+        groupHeader.innerHTML = `
+          <span>📦 ${typeName}</span>
+          <span class="stack-group-count">${items.length} units</span>
+        `;
+        stackContainer.appendChild(groupHeader);
+
+        items.forEach(item => {
+          stackContainer.appendChild(createStackCardElement(item));
+        });
+      });
+    }
+
+    // 4. Group Recent (Chronological)
+    function renderStackRecent() {
+      const groupHeader = document.createElement("div");
+      groupHeader.className = "stack-group-header";
+      groupHeader.innerHTML = `<span>🕒 Survey Inventory (Most Recent First)</span>`;
+      stackContainer.appendChild(groupHeader);
+
+      [...PROJECT_STACK].reverse().forEach(item => {
+        stackContainer.appendChild(createStackCardElement(item));
+      });
+    }
+
+    // Helper: Create Stack Item Card Element with Edit Trigger
+    function createStackCardElement(item) {
+      const card = document.createElement("div");
+      card.className = `stack-item-card ${editingItemId === item.id ? 'active-editing' : ''}`;
+      if (editingItemId === item.id) {
+        card.style.borderColor = "var(--accent-amber)";
+        card.style.background = "rgba(245, 158, 11, 0.08)";
+      }
+
+      const editBreakersHtml = item.isPanel ? `
+        <button class="btn-edit-breakers" onclick="openPanelSchedule('${item.tag}')">
+          <span>⚡ Edit Breakers</span>
+        </button>
+      ` : `<span></span>`;
+
+      card.innerHTML = `
+        <div class="stack-item-top" onclick="editItem('${item.id}')" style="cursor:pointer;" title="Click to edit in Column 3">
+          <div>
+            <div class="stack-item-tag">[${item.tag}]</div>
+            <div class="stack-item-name">${item.name}</div>
+          </div>
+          <span class="stack-item-pill" style="color:#A5B4FC;">${item.typeTag}</span>
+        </div>
+        <div class="stack-item-meta">
+          <span class="stack-item-pill">${item.voltage || '480V'}</span>
+          <span class="stack-item-pill">${item.amps ? item.amps + 'A' : (item.kva ? item.kva + ' kVA' : '')}</span>
+          <span class="stack-item-pill">Fed: ${item.fedFrom || 'None (Source)'}</span>
+        </div>
+        <div class="stack-item-actions">
+          ${editBreakersHtml}
+          <div>
+            <button class="stack-btn-sm" onclick="editItem('${item.id}')" title="Edit asset in Column 3" style="color:#FCD34D;">✏️</button>
+            <button class="stack-btn-sm" onclick="duplicateItem('${item.id}')" title="Duplicate item">📑</button>
+            <button class="stack-btn-sm delete" onclick="deleteItem('${item.id}')" title="Delete item">🗑️</button>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    // Grouping Mode Buttons
+    document.querySelectorAll(".group-pill-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        document.querySelectorAll(".group-pill-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        stackGroupingMode = btn.getAttribute("data-group");
+        renderStack();
+      });
+    });
+
+    // Re-Edit Existing Item from Column 4
+    window.editItem = function(id) {
+      const item = PROJECT_STACK.find(i => i.id === id);
+      if (!item) return;
+
+      editingItemId = id;
+
+      // Find matching domain and type in taxonomy
+      const domainIdx = TAXONOMY.findIndex(d => d.id === item.domain);
+      if (domainIdx >= 0) {
+        selectedDomainIdx = domainIdx;
+        const typeIdx = TAXONOMY[domainIdx].types.findIndex(t => t.tag === item.typeTag || t.name === item.typeName);
+        if (typeIdx >= 0) {
+          selectedTypeIdx = typeIdx;
+        }
+      }
+
+      renderDomains();
+      renderTypes();
+      renderForm();
+      renderStack();
+
+      toastMsg.textContent = `Loaded [${item.tag}] into Column 3 for editing!`;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    };
+
+    window.cancelEdit = function() {
+      editingItemId = null;
+      renderForm();
+      renderStack();
+    };
+
+    // Add or Update Stack Button Handler
+    addToStackBtn.addEventListener("click", () => {
+      const fTag = document.getElementById("fTag").value.trim();
+      const fName = document.getElementById("fName").value.trim();
+      const fRoom = document.getElementById("fRoom").value.trim();
+      const fFedFrom = document.getElementById("fFedFrom").value;
+      const fVoltage = document.getElementById("fVoltage").value;
+      const fAmps = parseFloat(document.getElementById("fAmps").value) || 225;
+      const fAic = parseFloat(document.getElementById("fAic").value) || 65;
+      const fMfr = document.getElementById("fMfr") ? document.getElementById("fMfr").value : "Square D";
+      const fNema = document.getElementById("fNema") ? document.getElementById("fNema").value : "NEMA 1";
+
+      const currentDom = TAXONOMY[selectedDomainIdx];
+      const currentType = currentDom.types[selectedTypeIdx];
+
+      if (editingItemId) {
+        // Update existing item in place
+        const itemIdx = PROJECT_STACK.findIndex(i => i.id === editingItemId);
+        if (itemIdx >= 0) {
+          PROJECT_STACK[itemIdx] = {
+            ...PROJECT_STACK[itemIdx],
+            tag: fTag || PROJECT_STACK[itemIdx].tag,
+            name: fName || PROJECT_STACK[itemIdx].name,
+            room: fRoom,
+            fedFrom: fFedFrom || null,
+            voltage: fVoltage,
+            amps: fAmps,
+            aic: fAic,
+            mfr: fMfr,
+            nema: fNema
+          };
+          toastMsg.textContent = `Updated [${PROJECT_STACK[itemIdx].tag}] in Project Stack!`;
+        }
+        editingItemId = null;
+      } else {
+        // Create new item
+        const newItem = {
+          id: "s_" + Date.now(),
+          tag: fTag || currentType.defaultTag,
+          name: fName || currentType.name,
+          domain: currentDom.id,
+          typeTag: currentType.tag,
+          typeName: currentType.name,
+          room: fRoom,
+          fedFrom: fFedFrom || null,
+          voltage: fVoltage,
+          amps: fAmps,
+          aic: fAic,
+          mfr: fMfr,
+          nema: fNema,
+          isPanel: !!currentType.isPanel,
+          slots: currentType.slots || 42
+        };
+        PROJECT_STACK.push(newItem);
+        toastMsg.textContent = `Added [${newItem.tag}] ${newItem.name} to Project Stack!`;
+      }
+
+      renderStack();
+      renderForm();
+
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    });
+
+    // Stack Actions
+    window.deleteItem = function(id) {
+      if (editingItemId === id) editingItemId = null;
+      PROJECT_STACK = PROJECT_STACK.filter(i => i.id !== id);
+      renderStack();
+      renderForm();
+    };
+
+    window.duplicateItem = function(id) {
+      const target = PROJECT_STACK.find(i => i.id === id);
+      if (target) {
+        const copy = { ...target, id: "s_" + Date.now(), tag: target.tag + "-COPY" };
+        PROJECT_STACK.push(copy);
+        renderStack();
+      }
+    };
+
+    // Open Panel Schedule Modal
+    window.openPanelSchedule = function(panelTag) {
+      const panel = PROJECT_STACK.find(p => p.tag === panelTag) || { tag: panelTag, name: "Panelboard", slots: 42, voltage: "480Y/277V", amps: 1200, room: "Electrical Room" };
+      document.getElementById("schedPanelTag").textContent = `⚡ ${panel.tag} Panel Schedule`;
+      document.getElementById("schedPanelMeta").textContent = `${panel.voltage} • ${panel.amps}A Bus • ${panel.slots || 42} Slots • ${panel.room}`;
+
+      renderScheduleGrid(panel.slots || 42);
+      scheduleModal.classList.add("active");
+    };
+
+    closeScheduleBtn.addEventListener("click", () => scheduleModal.classList.remove("active"));
+    saveScheduleBtn.addEventListener("click", () => {
+      scheduleModal.classList.remove("active");
+      toastMsg.textContent = "Panel Schedule successfully updated & balanced!";
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    });
+
+    // Render 42-Slot Alternating Phase Breaker Schedule Matrix
+    function renderScheduleGrid(slots = 42) {
+      const tbody = document.getElementById("scheduleTableBody");
+      tbody.innerHTML = "";
+
+      const phases = ["A", "B", "C"];
+      const defaultLoads = [
+        "Main Server Rack 1A", "Server Rack 1B", "HVAC Condenser Fan 1", "HVAC Condenser Fan 2",
+        "Hallway Emergency Lighting", "Corridor Outlets Zone 1", "Chilled Water Pump VFD", "Cooling Tower Fan",
+        "Air Handling Unit 101", "Air Handling Unit 102", "Lab Receptacles Bench A", "Lab Receptacles Bench B",
+        "Spare 20A / 1P", "Spare 20A / 1P", "Space for Future", "Space for Future"
+      ];
+
+      for (let i = 1; i <= slots; i += 2) {
+        const leftSlot = i;
+        const rightSlot = i + 1;
+        const phaseIdx = Math.floor((leftSlot - 1) / 2) % 3;
+        const phaseLetter = phases[phaseIdx];
+        const loadLeft = defaultLoads[(leftSlot - 1) % defaultLoads.length] || "General Branch";
+        const loadRight = defaultLoads[rightSlot % defaultLoads.length] || "Spare 20A";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <!-- Left Circuit -->
+          <td>
+            <select class="trip-select">
+              <option value="20">20A</option>
+              <option value="30" ${leftSlot === 7 ? 'selected' : ''}>30A</option>
+              <option value="50" ${leftSlot === 1 ? 'selected' : ''}>50A</option>
+              <option value="100">100A</option>
+            </select>
+          </td>
+          <td style="font-family:'JetBrains Mono'; font-size:11px;">1P</td>
+          <td class="desc-cell"><input type="text" value="${loadLeft}"></td>
+          <td class="slot-num">${leftSlot}</td>
+
+          <!-- Center Phase Busbar -->
+          <td class="phase-indicator ${phaseLetter.toLowerCase()}">${phaseLetter}</td>
+
+          <!-- Right Circuit -->
+          <td class="slot-num">${rightSlot}</td>
+          <td class="desc-cell"><input type="text" value="${loadRight}"></td>
+          <td style="font-family:'JetBrains Mono'; font-size:11px;">1P</td>
+          <td>
+            <select class="trip-select">
+              <option value="20" selected>20A</option>
+              <option value="30">30A</option>
+              <option value="50">50A</option>
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Keyboard Shortcuts (Enter to add to stack)
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !scheduleModal.classList.contains("active") && document.activeElement.tagName !== "TEXTAREA") {
+        addToStackBtn.click();
+      }
+    });
+
+    // Search input listeners
+    domainSearchInput.addEventListener("input", renderDomains);
+    typeSearchInput.addEventListener("input", renderTypes);
+
+    // Theme Toggle Handler
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeLabel = document.getElementById("themeLabel");
+
+    function updateThemeUI() {
+      const isLight = document.documentElement.classList.contains("light-theme");
+      themeIcon.textContent = isLight ? "☀️" : "🌙";
+      themeLabel.textContent = isLight ? "Light" : "Dark";
+    }
+
+    themeToggleBtn.addEventListener("click", () => {
+      const isLight = document.documentElement.classList.toggle("light-theme");
+      document.documentElement.style.colorScheme = isLight ? "light" : "dark";
+      localStorage.setItem("james-theme", isLight ? "light" : "dark");
+      updateThemeUI();
+    });
+
+    updateThemeUI();
+
+    // Export JSON Handler
+    document.getElementById("exportJsonBtn").addEventListener("click", () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(PROJECT_STACK, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `zoetis_b4_equipment_stack_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      toastMsg.textContent = "Exported Equipment Stack JSON!";
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    });
+
+    // Initialize Everything on Load
+    initResizers();
+    renderDomains();
+    renderTypes();
+    renderForm();
+    renderStack();
+  </script>
+</body>
+</html>

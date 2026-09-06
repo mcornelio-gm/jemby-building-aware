@@ -1,0 +1,752 @@
+{
+  "project_id": "zoetis_b4",
+  "name": "Zoetis Building 4 - Power Distribution",
+  "nodes": {
+    "XFMR_PGE": {
+      "type": "XFMR",
+      "label": "XFMR-PG&E",
+      "data": {
+        "kva": 750,
+        "primary_v": 12000,
+        "secondary_v": 480
+      }
+    },
+    "SWBD_MSA": {
+      "type": "SWBD",
+      "label": "SWBD-MSA-UPDATED",
+      "data": {
+        "bus_amps": 2500,
+        "voltage": "480/277V"
+      }
+    },
+    "ATS_1": {
+      "type": "ATS",
+      "label": "ATS-1",
+      "data": {
+        "ampacity": 600,
+        "voltage": "480V"
+      }
+    },
+    "SWBD_MSB2": {
+      "type": "SWBD",
+      "label": "SWBD-MSB-2",
+      "data": {
+        "bus_amps": 1200,
+        "voltage": "480V"
+      }
+    },
+    "PNL_M1": {
+      "type": "PNL",
+      "label": "PNL-M1",
+      "data": {
+        "bus_amps": 400,
+        "voltage": "480V",
+        "sccr_ka": 35.0,
+        "mcb_or_mlo": "MCB"
+      }
+    },
+    "UTIL_6": {
+      "type": "UTIL",
+      "label": "UTIL-PG&E Main",
+      "data": {
+        "voltage": "12kV",
+        "duty_ka": 3.32
+      }
+    },
+    "SWBD_7": {
+      "type": "SWBD",
+      "label": "SWBD-SWBD_7",
+      "data": {
+        "bus_amps": 1200,
+        "sccr_ka": 65.0,
+        "neutral_rating_pct": 100
+      }
+    },
+    "FEEDER_BREAKER_8": {
+      "type": "FEEDER_BREAKER",
+      "label": "CB-FEEDER_BREAKER_8",
+      "data": {
+        "frame_a": 250,
+        "trip_a": 200,
+        "cable_size": "4/0 Cu",
+        "conductors_per_phase": 1,
+        "length_ft": 50
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "edge_xfmr_msa",
+      "from_node": "XFMR_PGE",
+      "from_port": "out",
+      "to_node": "SWBD_MSA",
+      "to_port": "in",
+      "data": {
+        "breaker": "CB-MAIN-MSA (2000A)"
+      }
+    },
+    {
+      "id": "edge_msa_ats",
+      "from_node": "SWBD_MSA",
+      "from_port": "p1",
+      "to_node": "ATS_1",
+      "to_port": "norm",
+      "data": {
+        "breaker": "CB-SWBD-MSB-2 (1000A)",
+        "cable": "3x (3-400kcmil)"
+      }
+    },
+    {
+      "id": "edge_msb2_pnlm1",
+      "from_node": "SWBD_MSB2",
+      "from_port": "p2",
+      "to_node": "PNL_M1",
+      "to_port": "in",
+      "data": {
+        "breaker": "CB-PNL-M1 (400A)",
+        "cable": "2x (3-4/0 Cu)",
+        "length_ft": 2
+      }
+    },
+    {
+      "id": "edge_util_ats_1_b995",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_4a23",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_343c",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_1e93",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_672a",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_6f5e",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_4c25",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_2520",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7936",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_92a8",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7916",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e822",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e2e6",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_868d",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_99ae",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_502e",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_324a",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e251",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_4e6c",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_45cb",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e798",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_a871",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_050e",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_2a5d",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_16b9",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7247",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_f43b",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_8f28",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_ba9e",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_c973",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_ee44",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_b6a6",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7c8a",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_ab3b",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_335d",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_9aa3",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_54b2",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e48f",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_3257",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7727",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_d13d",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_1375",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_c6be",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_01f9",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_3734",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_99d7",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_60f1",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_d176",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_0590",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e122",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_bba0",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_ff6b",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_6312",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_e683",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_6ab7",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_6941",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_4d6f",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_0596",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_5ccc",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7ae7",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_7d01",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_322c",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_6dd2",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    },
+    {
+      "id": "edge_util_ats_1_c5c8",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
+    }
+  ]
+}

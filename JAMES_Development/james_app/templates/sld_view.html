@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-300">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ client_id | upper }} / {{ facility_id | upper }} - Electrical Single-Line Diagram</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- D3.js & Graphviz WebAssembly Engine -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm/index.min.js"></script>
+  <script src="https://unpkg.com/d3-graphviz@5.1.0/build/d3-graphviz.min.js"></script>
+
+  <style>
+    #graph-container svg {
+      width: 100% !important;
+      height: 100% !important;
+      background-color: #CBD5E1 !important;
+    }
+    .node {
+      cursor: pointer;
+      transition: filter 0.15s ease-in-out;
+    }
+    .node:hover {
+      filter: drop-shadow(0 4px 12px rgba(15, 23, 42, 0.35));
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans bg-[#CBD5E1] text-slate-900 overflow-hidden select-none">
+
+  <!-- Top Navigation Bar -->
+  <header class="h-14 px-5 bg-slate-900 border-b border-slate-700/80 flex items-center justify-between shrink-0 shadow-sm z-10 text-white">
+    <div class="flex items-center gap-3">
+      <a 
+        href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition shadow-xs"
+      >
+        <span>◀</span>
+        <span>Back to Data Collector</span>
+      </a>
+
+      <div class="h-5 w-px bg-slate-700"></div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-bold text-white flex items-center gap-1.5">
+          <span>⚡</span>
+          <span>Single-Line Diagram (SLD)</span>
+        </span>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-950 border border-indigo-700 text-indigo-200 font-mono">
+          {{ client_id | upper }} / {{ facility_id | upper }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Viewer Controls -->
+    <div class="flex items-center gap-2">
+      <button 
+        onclick="zoomIn()" 
+        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+        title="Zoom In"
+      >
+        🔍+
+      </button>
+      <button 
+        onclick="zoomOut()" 
+        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+        title="Zoom Out"
+      >
+        🔍-
+      </button>
+      <button 
+        onclick="resetFit()" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+        title="Fit to Screen"
+      >
+        Fit View
+      </button>
+
+      <div class="h-5 w-px bg-slate-700"></div>
+
+      <button 
+        onclick="toggleDotModal()" 
+        class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5"
+      >
+        <span>📝</span>
+        <span>Raw DOT</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Graph Viewport Area (Silver Drafting Canvas) -->
+  <main class="flex-1 relative overflow-hidden bg-[#CBD5E1]" style="background-color: #CBD5E1; background-image: radial-gradient(#94A3B8 1.2px, transparent 1.2px); background-size: 24px 24px;">
+    <!-- Loading Spinner -->
+    <div id="loading" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#CBD5E1] z-20 transition-opacity duration-300">
+      <div class="w-8 h-8 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
+      <span class="text-xs font-mono text-slate-800 font-bold">Compiling Graphviz Single-Line Diagram...</span>
+    </div>
+
+    <!-- Container for D3-Graphviz SVG -->
+    <div id="graph-container" class="w-full h-full"></div>
+
+    <!-- Domain Color Legend Bar -->
+    <div id="legend-bar" class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-2xl flex items-center gap-1.5 overflow-x-auto max-w-[96vw] text-[11px] select-none text-white">
+      <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider pl-1 mr-1 flex items-center gap-1">
+        <span>⚡</span>
+        <span>Domains:</span>
+      </span>
+
+      <!-- Dynamic Domain Pills Container -->
+      <div id="domain-legend-pills" class="flex items-center gap-1.5"></div>
+
+      <!-- Clear Filter Button (Visible when filtered) -->
+      <button 
+        id="btn-clear-filter"
+        onclick="clearDomainHighlight()"
+        class="hidden ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-900/80 hover:bg-rose-800 text-rose-200 border border-rose-700 transition flex items-center gap-1 shadow-sm cursor-pointer"
+        title="Show All Equipment"
+      >
+        <span>✕</span>
+        <span>Show All</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Raw DOT Code Modal -->
+  <div id="dot-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between">
+        <span class="text-xs font-bold text-white font-mono">Graphviz DOT Source</span>
+        <button onclick="toggleDotModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <div class="p-4 flex-1 overflow-y-auto">
+        <pre id="dot-code" class="text-xs font-mono text-indigo-300 bg-slate-950 p-4 rounded-xl border border-slate-800/80 overflow-x-auto select-text"></pre>
+      </div>
+      <div class="px-5 py-3 border-t border-slate-800 flex justify-end gap-2">
+        <button onclick="copyDot()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+          📋 Copy DOT
+        </button>
+        <button onclick="toggleDotModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DOMAIN_DEFS = [
+      { id: 'sources', name: 'Sources', icon: '⚡', bg: '#FEF3C7', border: '#D97706', text: '#0F172A', glow: 'rgba(217, 119, 6, 0.9)' },
+      { id: 'transformers', name: 'Transformers', icon: '🔄', bg: '#F3E8FF', border: '#9333EA', text: '#0F172A', glow: 'rgba(147, 51, 234, 0.9)' },
+      { id: 'switches', name: 'Switches', icon: '🔀', bg: '#DBEAFE', border: '#2563EB', text: '#0F172A', glow: 'rgba(37, 99, 235, 0.9)' },
+      { id: 'panels', name: 'Panels', icon: '🗄️', bg: '#F1F5F9', border: '#475569', text: '#0F172A', glow: 'rgba(71, 85, 105, 0.9)' },
+      { id: 'power_quality', name: 'Power Quality', icon: '🔋', bg: '#D1FAE5', border: '#059669', text: '#0F172A', glow: 'rgba(5, 150, 105, 0.9)' },
+      { id: 'loads', name: 'Loads', icon: '⚙️', bg: '#CCFBF1', border: '#0D9488', text: '#0F172A', glow: 'rgba(13, 148, 136, 0.9)' },
+      { id: 'cables', name: 'Feeders', icon: '🔌', bg: '#FFEDD5', border: '#EA580C', text: '#0F172A', glow: 'rgba(234, 88, 12, 0.9)' },
+      { id: 'metering', name: 'Meters', icon: '📊', bg: '#E0F2FE', border: '#0284C7', text: '#0F172A', glow: 'rgba(2, 132, 199, 0.9)' },
+      { id: 'renewables', name: 'Renewables', icon: '☀️', bg: '#FEF9C3', border: '#CA8A04', text: '#0F172A', glow: 'rgba(202, 138, 4, 0.9)' },
+      { id: 'generic', name: 'Generic', icon: '📦', bg: '#F8FAFC', border: '#64748B', text: '#0F172A', glow: 'rgba(100, 116, 139, 0.9)' }
+    ];
+
+    let rawDotString = "";
+    let graphvizInstance = null;
+    let facilityNodes = [];
+    let nodeIdToDomain = {};
+    let activeHighlightDomain = null;
+
+    function sanitizeId(identifier) {
+      let clean = String(identifier || 'node').replace(/[^a-zA-Z0-9_]/g, '_');
+      if (clean && /^[0-9]/.test(clean)) {
+        clean = 'n_' + clean;
+      }
+      return clean;
+    }
+
+    function inferDomain(typeTag) {
+      const tag = String(typeTag || '').toUpperCase();
+      if (['UTIL', 'GEN', 'PV'].includes(tag)) return 'sources';
+      if (['XFMR', 'PAD'].includes(tag)) return 'transformers';
+      if (['ATS', 'MTS', 'DISC'].includes(tag)) return 'switches';
+      if (['LP', 'MDP', 'MCC', 'PP', 'REC', 'PDU'].includes(tag)) return 'panels';
+      if (['UPS'].includes(tag)) return 'power_quality';
+      if (['HVAC', 'MOTOR', 'EV', 'PUMP'].includes(tag)) return 'loads';
+      if (['CABLE', 'FEEDER'].includes(tag)) return 'cables';
+      if (['METER', 'MTR'].includes(tag)) return 'metering';
+      if (['BESS', 'SOLAR'].includes(tag)) return 'renewables';
+      return 'generic';
+    }
+
+    async function initSLD() {
+      const clientId = "{{ client_id }}";
+      const facilityId = "{{ facility_id }}";
+      const loading = document.getElementById("loading");
+
+      try {
+        // 1. Fetch DOT and Nodes in parallel
+        const [dotRes, nodesRes] = await Promise.all([
+          fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot`),
+          fetch(`/api/clients/${clientId}/facilities/${facilityId}/nodes`)
+        ]);
+
+        if (!dotRes.ok) throw new Error("Failed to load DOT graph");
+        rawDotString = await dotRes.text();
+        document.getElementById("dot-code").innerText = rawDotString;
+
+        if (nodesRes.ok) {
+          facilityNodes = await nodesRes.json();
+          buildNodeDomainMap(facilityNodes);
+          renderDomainLegend(facilityNodes);
+        }
+
+        // 2. Render Graph with D3 Graphviz
+        graphvizInstance = d3.select("#graph-container")
+          .graphviz({ useWorker: false })
+          .fit(true)
+          .zoom(true)
+          .renderDot(rawDotString, () => {
+            loading.classList.add("opacity-0", "pointer-events-none");
+            setTimeout(() => { loading.style.display = "none"; }, 300);
+            attachCanvasClickListeners();
+          });
+      } catch (err) {
+        console.error("Error initializing SLD:", err);
+        loading.innerHTML = `
+          <div class="text-center p-6 text-rose-400">
+            <p class="font-bold text-sm">Failed to render Single-Line Diagram</p>
+            <p class="text-xs text-slate-400 mt-1">${err.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function buildNodeDomainMap(nodes) {
+      nodeIdToDomain = {};
+      nodes.forEach(n => {
+        const d = n.domain || inferDomain(n.type_tag);
+        const sid1 = sanitizeId(n.id);
+        const sid2 = sanitizeId(n.tag);
+        nodeIdToDomain[sid1] = d;
+        nodeIdToDomain[sid2] = d;
+        if (n.id) nodeIdToDomain[n.id] = d;
+        if (n.tag) nodeIdToDomain[n.tag] = d;
+      });
+    }
+
+    function renderDomainLegend(nodes) {
+      const container = document.getElementById("domain-legend-pills");
+      if (!container) return;
+
+      // Count equipment per domain
+      const counts = {};
+      DOMAIN_DEFS.forEach(d => counts[d.id] = 0);
+      nodes.forEach(n => {
+        const dom = n.domain || inferDomain(n.type_tag);
+        if (counts[dom] !== undefined) counts[dom]++;
+        else counts['generic']++;
+      });
+
+      container.innerHTML = "";
+
+      DOMAIN_DEFS.forEach(dom => {
+        const count = counts[dom.id] || 0;
+        const btn = document.createElement("button");
+        btn.id = `legend-btn-${dom.id}`;
+        btn.className = `px-2.5 py-0.5 rounded-full flex items-center gap-1.5 font-semibold text-[10.5px] shadow-sm whitespace-nowrap transition-all duration-200 select-none ${
+          count === 0 ? 'opacity-35 cursor-not-allowed' : 'cursor-pointer hover:scale-105 active:scale-95'
+        }`;
+        btn.style.backgroundColor = dom.bg;
+        btn.style.border = `1.5px solid ${dom.border}`;
+        btn.style.color = dom.text;
+
+        btn.innerHTML = `
+          <span>${dom.icon}</span>
+          <span>${dom.name}</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-slate-900/80 text-white min-w-[14px] text-center">${count}</span>
+        `;
+
+        if (count > 0) {
+          btn.onclick = () => toggleDomainHighlight(dom.id);
+        }
+
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleDomainHighlight(domainId) {
+      if (activeHighlightDomain === domainId) {
+        clearDomainHighlight();
+      } else {
+        applyDomainHighlight(domainId);
+      }
+    }
+
+    function applyDomainHighlight(domainId) {
+      activeHighlightDomain = domainId;
+      const domDef = DOMAIN_DEFS.find(d => d.id === domainId);
+      const clearBtn = document.getElementById("btn-clear-filter");
+      if (clearBtn) clearBtn.classList.remove("hidden");
+
+      // Update button visual ring
+      DOMAIN_DEFS.forEach(d => {
+        const btn = document.getElementById(`legend-btn-${d.id}`);
+        if (!btn) return;
+        if (d.id === domainId) {
+          btn.classList.add("ring-2", "ring-indigo-500", "scale-105", "shadow-lg");
+          btn.style.borderWidth = "2px";
+        } else {
+          btn.classList.remove("ring-2", "ring-indigo-500", "scale-105", "shadow-lg");
+          btn.style.borderWidth = "1.5px";
+        }
+      });
+
+      // Filter SVG Clusters & Nodes
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return;
+
+      // 1. Clusters
+      svg.selectAll("g.cluster").each(function() {
+        const el = d3.select(this);
+        const titleText = el.select("title").text().trim();
+        const clusterId = titleText.replace(/^cluster_/, '');
+        const clusterDomain = nodeIdToDomain[clusterId] || '';
+
+        if (clusterDomain === domainId) {
+          el.transition().duration(250)
+            .style("opacity", 1.0)
+            .style("filter", `drop-shadow(0 0 16px ${domDef ? domDef.glow : 'rgba(99,102,241,0.9)'})`);
+          
+          el.selectAll("polygon, path, rect")
+            .transition().duration(250)
+            .style("stroke-width", "3.2px")
+            .style("stroke", domDef ? domDef.border : "#2563EB");
+        } else {
+          el.transition().duration(250)
+            .style("opacity", 0.18)
+            .style("filter", "none");
+          el.selectAll("polygon, path, rect")
+            .transition().duration(250)
+            .style("stroke-width", "1.8px");
+        }
+      });
+
+      // 2. Individual Nodes
+      svg.selectAll("g.node").each(function() {
+        const el = d3.select(this);
+        const titleText = el.select("title").text().trim();
+        let matches = false;
+
+        // Check if node is part of matching cluster ID
+        for (const [nid, dom] of Object.entries(nodeIdToDomain)) {
+          if (dom === domainId && (titleText.startsWith(nid + '_') || titleText === nid)) {
+            matches = true;
+            break;
+          }
+        }
+
+        if (matches) {
+          el.transition().duration(250)
+            .style("opacity", 1.0)
+            .style("filter", "drop-shadow(0 2px 6px rgba(15,23,42,0.4))");
+        } else {
+          el.transition().duration(250)
+            .style("opacity", 0.18)
+            .style("filter", "none");
+        }
+      });
+
+      // 3. Edges
+      svg.selectAll("g.edge").transition().duration(250)
+        .style("opacity", 0.12);
+    }
+
+    function clearDomainHighlight() {
+      activeHighlightDomain = null;
+      const clearBtn = document.getElementById("btn-clear-filter");
+      if (clearBtn) clearBtn.classList.add("hidden");
+
+      // Reset button styles
+      DOMAIN_DEFS.forEach(d => {
+        const btn = document.getElementById(`legend-btn-${d.id}`);
+        if (btn) {
+          btn.classList.remove("ring-2", "ring-indigo-500", "scale-105", "shadow-lg");
+          btn.style.borderWidth = "1.5px";
+        }
+      });
+
+      // Reset SVG Clusters, Nodes, and Edges
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return;
+
+      svg.selectAll("g.cluster")
+        .transition().duration(250)
+        .style("opacity", 1.0)
+        .style("filter", "none")
+        .selectAll("polygon, path, rect")
+        .style("stroke-width", "1.8px");
+
+      svg.selectAll("g.node")
+        .transition().duration(250)
+        .style("opacity", 1.0)
+        .style("filter", "none");
+
+      svg.selectAll("g.edge")
+        .transition().duration(250)
+        .style("opacity", 1.0);
+    }
+
+    function attachCanvasClickListeners() {
+      const svg = d3.select("#graph-container svg");
+      if (!svg.empty()) {
+        svg.on("click", (e) => {
+          // If user clicked background canvas (not a node/cluster)
+          if (e.target.tagName === 'svg' || e.target.id === 'graph0' || (e.target.tagName === 'polygon' && d3.select(e.target.parentNode).attr('id') === 'graph0')) {
+            if (activeHighlightDomain) {
+              clearDomainHighlight();
+            }
+          }
+        });
+      }
+    }
+
+    function zoomIn() {
+      if (!graphvizInstance) return;
+      try {
+        const zb = graphvizInstance.zoomBehavior();
+        const zs = graphvizInstance.zoomSelection();
+        if (zb && zs) {
+          zs.transition().duration(250).call(zb.scaleBy, 1.35);
+        } else {
+          const svg = d3.select("#graph-container svg");
+          if (!svg.empty()) {
+            svg.transition().duration(250).call(d3.zoom().scaleBy, 1.35);
+          }
+        }
+      } catch (e) {
+        console.error("Zoom In Error:", e);
+      }
+    }
+
+    function zoomOut() {
+      if (!graphvizInstance) return;
+      try {
+        const zb = graphvizInstance.zoomBehavior();
+        const zs = graphvizInstance.zoomSelection();
+        if (zb && zs) {
+          zs.transition().duration(250).call(zb.scaleBy, 0.74);
+        } else {
+          const svg = d3.select("#graph-container svg");
+          if (!svg.empty()) {
+            svg.transition().duration(250).call(d3.zoom().scaleBy, 0.74);
+          }
+        }
+      } catch (e) {
+        console.error("Zoom Out Error:", e);
+      }
+    }
+
+    function resetFit() {
+      if (!graphvizInstance) return;
+      try {
+        graphvizInstance.resetZoom(d3.transition().duration(300));
+      } catch (e) {
+        console.warn("resetZoom fallback", e);
+        try {
+          const zb = graphvizInstance.zoomBehavior();
+          const zs = graphvizInstance.zoomSelection();
+          if (zb && zs) {
+            zs.transition().duration(300).call(zb.transform, d3.zoomIdentity);
+          }
+        } catch (err) {
+          console.error("Fit View Error:", err);
+        }
+      }
+    }
+
+    function toggleDotModal() {
+      const modal = document.getElementById("dot-modal");
+      modal.classList.toggle("hidden");
+    }
+
+    function copyDot() {
+      navigator.clipboard.writeText(rawDotString);
+      alert("Graphviz DOT copied to clipboard!");
+    }
+
+    // Keyboard Shortcuts for SLD Navigation (+ / - / 0 / r / Esc)
+    window.addEventListener("keydown", (e) => {
+      if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+      if (e.key === "+" || e.key === "=") {
+        e.preventDefault();
+        zoomIn();
+      } else if (e.key === "-" || e.key === "_") {
+        e.preventDefault();
+        zoomOut();
+      } else if (e.key === "0" || e.key.toLowerCase() === "r") {
+        e.preventDefault();
+        resetFit();
+      } else if (e.key === "Escape") {
+        if (activeHighlightDomain) {
+          clearDomainHighlight();
+        }
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", initSLD);
+  </script>
+</body>
+</html>

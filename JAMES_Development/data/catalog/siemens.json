@@ -1,0 +1,71 @@
+{
+  "manufacturer": "Siemens",
+  "items": [
+    {
+      "part_number": "T1F10075A5RXXM",
+      "series": "Standard Ventilated Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Siemens 75 kVA Distribution Transformer (Aluminum windings, catalog format)",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 5.0,
+        "winding": "Aluminum",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "T1F10150A5RXXM",
+      "series": "Standard Ventilated Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Siemens 150 kVA Distribution Transformer (Ventilated dry-type)",
+      "specs": {
+        "kva": 150.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 5.0,
+        "winding": "Aluminum",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "T1F10200A5RXXM",
+      "series": "Standard Ventilated Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Siemens 200 kVA Distribution Transformer (Standard ventilated size)",
+      "specs": {
+        "kva": 200.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 5.0,
+        "winding": "Aluminum",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    }
+  ]
+}

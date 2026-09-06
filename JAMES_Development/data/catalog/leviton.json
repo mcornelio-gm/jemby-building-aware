@@ -1,0 +1,107 @@
+{
+  "manufacturer": "Leviton",
+  "items": [
+    {
+      "part_number": "5362-W",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "loads",
+      "type_tag": "REC",
+      "type_name": "Commercial Receptacle",
+      "description": "Leviton 20A 125V Commercial Specification Grade Duplex Receptacle (White)",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 20.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": "078477819814"
+      }
+    },
+    {
+      "part_number": "5262-W",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "loads",
+      "type_tag": "REC",
+      "type_name": "Commercial Receptacle",
+      "description": "Leviton 15A 125V Extra Heavy-Duty Industrial Spec Grade Duplex Receptacle",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 15.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": "078477809495"
+      }
+    },
+    {
+      "part_number": "8300-W",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "loads",
+      "type_tag": "REC",
+      "type_name": "Commercial Receptacle",
+      "description": "Leviton Hospital Grade 20A 125V Extra Heavy-Duty Duplex Receptacle",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 20.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": "078477901908"
+      }
+    },
+    {
+      "part_number": "5266-C",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "wiring",
+      "type_tag": "PLUG",
+      "type_name": "Industrial Plug",
+      "description": "Leviton 15A 125V Industrial Grade Straight Blade Plug (Black & White)",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 15.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": "078477901717"
+      }
+    },
+    {
+      "part_number": "5366-C",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "wiring",
+      "type_tag": "PLUG",
+      "type_name": "Industrial Plug",
+      "description": "Leviton 20A 125V Industrial Grade Straight Blade Plug",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 20.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": "078477808450"
+      }
+    },
+    {
+      "part_number": "L520-P",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "wiring",
+      "type_tag": "PLUG",
+      "type_name": "Industrial Plug",
+      "description": "Leviton 20A 125V NEMA L5-20P Industrial Locking Plug",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 20.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": "078477795200"
+      }
+    }
+  ]
+}

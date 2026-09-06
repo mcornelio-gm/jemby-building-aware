@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEMBY Digital Twin - Focused Panel View</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    
+    <!-- D3 and D3-Graphviz for WebAssembly Graphviz rendering -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@2.16.1/dist/graphviz.umd.js"></script>
+    <script src="https://unpkg.com/d3-graphviz@5.4.0/build/d3-graphviz.min.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        #graph-viewport svg {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 550px;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-100 antialiased overflow-hidden" x-data="{ activeTab: 'diagram', rawJson: false }">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-950 border-b border-slate-800 px-6 py-3 flex items-center justify-between shrink-0 shadow-md">
+        <div class="flex items-center space-x-4">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center font-black text-white text-lg tracking-wider shadow">
+                J
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="text-base font-bold text-white tracking-tight">{{ panel.name }}</h1>
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
+                        {{ panel.total_spaces }} Spaces
+                    </span>
+                    <span class="px-2 py-0.5 text-xs font-semibold rounded bg-slate-800 text-slate-300 border border-slate-700">
+                        {{ panel.mains_rating_amps }}A {{ panel.mains_type.value }}
+                    </span>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">{{ panel.system_type.value }} &bull; Digital Twin Focused View</p>
+            </div>
+        </div>
+
+        <!-- Quick Switcher & Actions -->
+        <div class="flex items-center space-x-3">
+            <div class="flex rounded-md bg-slate-900 p-1 border border-slate-800">
+                <a href="/panels/empty_42" class="px-3 py-1 text-xs font-medium rounded transition {% if panel.panel_id == 'empty_42' %}bg-indigo-600 text-white shadow{% else %}text-slate-400 hover:text-white{% endif %}">
+                    Empty (42 Spares)
+                </a>
+                <a href="/panels/demo_populated" class="px-3 py-1 text-xs font-medium rounded transition {% if panel.panel_id == 'demo_populated' %}bg-indigo-600 text-white shadow{% else %}text-slate-400 hover:text-white{% endif %}">
+                    Populated (1P/2P/3P)
+                </a>
+            </div>
+
+            <button id="btn-reset-zoom" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-md font-medium transition flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                <span>Reset View</span>
+            </button>
+            <a href="/projects/zoetis_b4" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-md font-medium transition">
+                &larr; Global SLD
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- SVG Canvas Viewport -->
+        <main class="flex-1 bg-[#CBD5E1] relative flex items-center justify-center p-4" style="background-color: #CBD5E1; background-image: radial-gradient(#94A3B8 1.2px, transparent 1.2px); background-size: 24px 24px;">
+            <div id="graph-viewport" class="w-full h-full rounded-xl bg-[#CBD5E1]/90 border border-slate-400 shadow-inner flex items-center justify-center overflow-hidden">
+                <!-- D3-Graphviz renders here -->
+            </div>
+
+            <div class="absolute bottom-6 left-6 pointer-events-none bg-slate-900/90 backdrop-blur border border-slate-700 text-slate-200 text-xs px-3 py-2 rounded-md shadow-lg">
+                Scroll to Zoom &bull; Drag to Pan &bull; Click Breakers to Inspect
+            </div>
+        </main>
+
+        <!-- Right Side: Object Inspector / Digital Twin JSON Model -->
+        <aside class="w-96 bg-slate-950 border-l border-slate-800 flex flex-col shrink-0 shadow-2xl">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>Digital Twin Inspector</span>
+                </h3>
+                <span class="text-xs text-slate-500 font-mono">ID: {{ panel.panel_id }}</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+                <!-- Panel Physical Card -->
+                <div class="bg-slate-900/90 rounded-lg p-3.5 border border-slate-800 space-y-2.5">
+                    <div class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Enclosure Specs</div>
+                    <div class="grid grid-cols-2 gap-2 text-slate-300">
+                        <div class="bg-slate-950 p-2 rounded border border-slate-800/60">
+                            <span class="text-slate-500 block text-[10px]">Spaces</span>
+                            <span class="font-bold text-white text-sm">{{ panel.total_spaces }}</span>
+                        </div>
+                        <div class="bg-slate-950 p-2 rounded border border-slate-800/60">
+                            <span class="text-slate-500 block text-[10px]">Bus Rating</span>
+                            <span class="font-bold text-white text-sm">{{ panel.bus_amps }}A</span>
+                        </div>
+                        <div class="bg-slate-950 p-2 rounded border border-slate-800/60">
+                            <span class="text-slate-500 block text-[10px]">Mains Type</span>
+                            <span class="font-semibold text-cyan-400">{{ panel.mains_type.value }}</span>
+                        </div>
+                        <div class="bg-slate-950 p-2 rounded border border-slate-800/60">
+                            <span class="text-slate-500 block text-[10px]">Phase Config</span>
+                            <span class="font-semibold text-indigo-300 truncate block">{{ panel.system_type.value }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase Stabs Table Sample -->
+                <div class="bg-slate-900/90 rounded-lg p-3.5 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Deterministic Rules</span>
+                        <span class="text-[10px] text-emerald-400 font-medium">Active (A-B-C)</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Slots alternate rows $(A, A) \to (B, B) \to (C, C)$ across the two columns. Multi-pole loads span vertically using <code class="text-cyan-400 bg-slate-950 px-1 py-0.5 rounded">ROWSPAN</code> with all numeric slots preserved.
+                    </p>
+                </div>
+
+                <!-- Digital Twin Raw JSON Accordion -->
+                <div class="bg-slate-900/90 rounded-lg p-3.5 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Live JSON Payload</span>
+                        <a href="/api/panels/{{ panel.panel_id }}/dot" target="_blank" class="text-[10px] text-indigo-400 hover:text-indigo-300 underline">View Raw DOT</a>
+                    </div>
+                    <pre class="bg-slate-950 p-2.5 rounded border border-slate-800 font-mono text-[10px] text-slate-300 overflow-x-auto max-h-56 leading-tight">{{ panel.model_dump_json(indent=2) }}</pre>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Live Graphviz Script -->
+    <script>
+        const panelId = "{{ panel.panel_id }}";
+        let graphvizInstance = null;
+
+        function initGraphviz() {
+            graphvizInstance = d3.select("#graph-viewport")
+                .graphviz({ useWorker: false })
+                .zoom(true)
+                .fit(true);
+
+            fetch(`/api/panels/${panelId}/dot`)
+                .then(res => res.text())
+                .then(dot => {
+                    graphvizInstance.renderDot(dot);
+                })
+                .catch(err => console.error("Error loading panel DOT:", err));
+        }
+
+        document.getElementById("btn-reset-zoom")?.addEventListener("click", () => {
+            if (graphvizInstance) {
+                graphvizInstance.resetZoom();
+            }
+        });
+
+        window.addEventListener("DOMContentLoaded", initGraphviz);
+    </script>
+</body>
+</html>

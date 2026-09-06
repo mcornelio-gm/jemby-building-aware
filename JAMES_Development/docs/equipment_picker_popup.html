@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JEMBY Digital Twin - Field Data Collector & Equipment Selector</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #090D16;
+      --bg-surface: #0F172A;
+      --bg-surface-elevated: #1E293B;
+      --bg-surface-highlight: #334155;
+      --border-subtle: #1E293B;
+      --border-strong: #334155;
+      --border-focus: #6366F1;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --accent-indigo: #6366F1;
+      --accent-cyan: #06B6D4;
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --accent-rose: #F43F5E;
+      --accent-purple: #A855F7;
+      --glass-bg: rgba(15, 23, 42, 0.92);
+      --glass-border: rgba(255, 255, 255, 0.10);
+      --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    }
+
+    /* Trigger Hub Header */
+    .app-header {
+      text-align: center;
+      margin-bottom: 32px;
+      max-width: 720px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+      margin-bottom: 12px;
+    }
+
+    .app-title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .app-subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .trigger-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .trigger-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+    }
+
+    .kbd-shortcut {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(4, 7, 15, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Modal Dialog Container */
+    .cascading-modal {
+      width: 100%;
+      max-width: 1240px;
+      height: 820px;
+      max-height: 92vh;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.96) translateY(12px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active .cascading-modal {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Modal Header & Search */
+    .modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .breadcrumb-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      transition: color 0.15s ease;
+    }
+
+    .breadcrumb-item.active {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .breadcrumb-sep {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .close-btn:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    /* Search & Global Controls */
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0 16px 0 42px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      background: #172033;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Cascading Columns Container with Resizable Dividers */
+    .cascading-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      background: rgba(11, 17, 32, 0.5);
+      position: relative;
+    }
+
+    /* Column Styles */
+    .cascade-col {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+      min-width: 180px;
+    }
+
+    .col-domains {
+      width: 280px;
+      flex-shrink: 0;
+    }
+
+    .col-equipment {
+      width: 340px;
+      flex-shrink: 0;
+    }
+
+    .col-data-panel {
+      flex: 1;
+      min-width: 360px;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    /* Resizer Bar */
+    .column-resizer {
+      width: 6px;
+      cursor: col-resize;
+      background: var(--border-subtle);
+      transition: background 0.15s ease, width 0.15s ease;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .column-resizer:hover, .column-resizer.resizing {
+      background: var(--accent-indigo);
+      width: 6px;
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.6);
+    }
+
+    .col-header {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.85);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .col-header-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .col-count {
+      background: var(--bg-surface-elevated);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    /* Sort Control Dropdown / Button */
+    .sort-control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .sort-control:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    .col-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Custom Scrollbars */
+    .col-list::-webkit-scrollbar, .spec-preview-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .col-list::-webkit-scrollbar-thumb, .spec-preview-panel::-webkit-scrollbar-thumb {
+      background: var(--border-subtle);
+      border-radius: 3px;
+    }
+
+    .col-list::-webkit-scrollbar-thumb:hover, .spec-preview-panel::-webkit-scrollbar-thumb:hover {
+      background: var(--border-strong);
+    }
+
+    /* Navigation Items (Domains) */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 10px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #FFFFFF;
+    }
+
+    .nav-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .category-icon-box {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .nav-item:hover .category-icon-box {
+      transform: scale(1.05);
+    }
+
+    .nav-item.active .category-icon-box {
+      background: var(--accent-indigo);
+      border-color: #818CF8;
+      color: #FFFFFF;
+    }
+
+    .item-title-group {
+      min-width: 0;
+    }
+
+    .item-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-desc {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .chevron {
+      color: var(--text-muted);
+      font-size: 11px;
+      transition: transform 0.15s ease;
+    }
+
+    .nav-item.active .chevron {
+      color: var(--accent-indigo);
+      transform: translateX(2px);
+    }
+
+    /* Subclass Item Styles (User-Friendly Equipment Cards) */
+    .subclass-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      gap: 4px;
+    }
+
+    .subclass-item:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+    }
+
+    .subclass-item.active {
+      background: rgba(6, 182, 212, 0.12);
+      border-color: rgba(6, 182, 212, 0.35);
+      color: #FFFFFF;
+    }
+
+    .subclass-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .subclass-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .subclass-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .subclass-item.active .subclass-tag {
+      background: rgba(6, 182, 212, 0.2);
+      color: var(--accent-cyan);
+    }
+
+    .subclass-summary {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Right Panel Container & Tab Navigation */
+    .spec-preview-panel {
+      padding: 20px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      height: 100%;
+    }
+
+    .panel-tabs-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn-group {
+      display: inline-flex;
+      background: var(--bg-surface-elevated);
+      padding: 3px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .tab-btn {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-indigo);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+
+    .spec-header-compact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .spec-class-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+
+    .spec-module-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent-cyan);
+      margin-top: 2px;
+    }
+
+    .spec-badge-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: rgba(99, 102, 241, 0.2);
+      color: #A5B4FC;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    /* Form Data Entry Controls */
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-section-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-input, .form-select {
+      height: 36px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0 10px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+      background: #172033;
+    }
+
+    .form-select option {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    /* Calculation & Live Telemetry Card */
+    .telemetry-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .telemetry-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .telemetry-stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .telemetry-stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #38BDF8;
+    }
+
+    /* Specs Tab Styles */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .spec-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .spec-card-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .spec-card-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    .code-preview-box {
+      background: #0B1120;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #93C5FD;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Action Footer */
+    .modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-left-info {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-surface-highlight);
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+      background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+      transform: translateY(-1px);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0F172A;
+      border: 1px solid var(--accent-emerald);
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.25s ease;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .toast-icon {
+      color: var(--accent-emerald);
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Demo Hub -->
+  <header class="app-header">
+    <div class="badge">⚡ JEMBY Digital Twin Architecture</div>
+    <h1 class="app-title">Field Equipment Collector</h1>
+    <p class="app-subtitle">Select any electrical asset across 11 domains, adjust layout widths, enter nameplate attributes, and add directly to the single-line diagram.</p>
+    <div style="margin-top: 24px;">
+      <button id="openModalBtn" class="trigger-button">
+        <span>⚡ Open Equipment Selector</span>
+        <span class="kbd-shortcut">⌘K</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Cascading Modal Dialog -->
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="cascading-modal" role="dialog" aria-modal="true">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="header-top">
+          <div class="breadcrumbs">
+            <span class="breadcrumb-item">JEMBY Twin</span>
+            <span class="breadcrumb-sep">/</span>
+            <span id="bcCategory" class="breadcrumb-item">Equipment Domain</span>
+            <span class="breadcrumb-sep">/</span>
+            <span id="bcSubclass" class="breadcrumb-item active">Select Equipment</span>
+          </div>
+          <button id="closeModalBtn" class="close-btn" aria-label="Close modal">✕</button>
+        </div>
+
+        <div class="search-row">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search equipment by name, tag, rating (e.g. 'MDP', 'ATS', '480V', 'Transformer', 'MCC')...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Resizable Cascading Body -->
+      <div id="cascadingBody" class="cascading-body">
+        
+        <!-- Column 1: Domain Categories -->
+        <div id="colDomains" class="cascade-col col-domains">
+          <div class="col-header">
+            <div class="col-header-left">
+              <span>Domains</span>
+              <span id="categoryCount" class="col-count">11</span>
+            </div>
+            <select id="domainSortSelect" class="sort-control" title="Sort domains">
+              <option value="power_flow">⚡ Power Flow</option>
+              <option value="az">🔤 A to Z</option>
+              <option value="favorites">⭐ Most Common</option>
+            </select>
+          </div>
+          <div id="categoryList" class="col-list"></div>
+        </div>
+
+        <!-- Resizer Handle 1 -->
+        <div id="resizer1" class="column-resizer" title="Drag to resize columns"></div>
+
+        <!-- Column 2: Equipment Types (User-Friendly Names) -->
+        <div id="colEquipment" class="cascade-col col-equipment">
+          <div class="col-header">
+            <div class="col-header-left">
+              <span>Equipment Types</span>
+              <span id="subclassCount" class="col-count">0</span>
+            </div>
+            <select id="equipSortSelect" class="sort-control" title="Sort equipment">
+              <option value="default">⚡ Hierarchy</option>
+              <option value="az">🔤 A to Z</option>
+              <option value="capacity">📈 Capacity</option>
+            </select>
+          </div>
+          <div id="subclassList" class="col-list"></div>
+        </div>
+
+        <!-- Resizer Handle 2 -->
+        <div id="resizer2" class="column-resizer" title="Drag to resize columns"></div>
+
+        <!-- Column 3: Active Data Entry Form & Specs -->
+        <div id="colDataPanel" class="cascade-col col-data-panel">
+          <div class="spec-preview-panel" id="specPanel">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="footer-left-info">
+          <span style="color: var(--accent-emerald);">●</span>
+          <span>Double-check ratings against physical nameplate photo</span>
+        </div>
+        <div class="btn-group">
+          <button id="cancelBtn" class="btn-secondary">Close</button>
+          <button id="instantiateBtn" class="btn-primary">
+            <span>💾 Save & Add to Single-Line</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span class="toast-icon">✓</span>
+    <span id="toastMsg">Equipment added successfully!</span>
+  </div>
+
+  <script>
+    // Master Domain Taxonomy with User-Friendly Names & Sizing Specs
+    const TAXONOMY_DATA = [
+      {
+        id: "panels",
+        name: "Panelboards & Enclosures",
+        icon: "⚡",
+        desc: "Branch lighting, power panels, MCCs & residential loadcenters",
+        orderPowerFlow: 3,
+        subclasses: [
+          {
+            displayName: "Main Distribution Panel (MDP)",
+            subTitle: "Bulk distribution • 400A - 4000A • I-Line / CDP",
+            className: "MainDistributionPanelObject",
+            tag: "MDP / Switchboard",
+            module: "james_app.core.panels.main_distribution",
+            defaultTag: "MDP-1",
+            summary: "Heavy 3-phase central feeder distribution panel with integrated surge protection and metering.",
+            specs: {
+              "Mains Rating": "400A, 800A, 1200A, 2000A, 4000A",
+              "Voltages": "480Y/277V or 208Y/120V (3Ø 4W)",
+              "Short-Circuit (AIC)": "65 kA - 200 kA Interrupting",
+              "Bus Material": "Tin-Plated Copper / Aluminum"
+            },
+            rules: ["Mains overcurrent protection sized per NEC 408.36", "Minimum 20% spare capacity reserved"],
+            pythonSample: `mdp = MainDistributionPanelObject(
+    id="mdp_1", tag="MDP-1", name="Main Switchboard",
+    bus_rating_a=1200.0, voltage="480Y/277V", aic_rating_ka=65.0
+)`
+          },
+          {
+            displayName: "Lighting & Appliance Branch Panel",
+            subTitle: "Standard branch circuits • 100A - 400A • Bolt-on MCB/MLO",
+            className: "LightingBranchPanelObject",
+            tag: "LP / RP Panel",
+            module: "james_app.core.panels.lighting_branch",
+            defaultTag: "LP-1A",
+            summary: "Standard branch panelboard for 120V lighting, receptacle circuits, and small appliance branch feeds.",
+            specs: {
+              "Mains Rating": "100A, 225A, 400A",
+              "Voltages": "208Y/120V or 480Y/277V (3Ø 4W)",
+              "Slot Capacity": "18, 30, 42, 54, 72, 84 Slots",
+              "Breaker Type": "Bolt-on (NQ / NF / BAB)"
+            },
+            rules: ["Maximum 42 overcurrent devices per lighting panelboard section (historic NEC rule)", "Phase alternation A-B-C verified"],
+            pythonSample: `lp = LightingBranchPanelObject(
+    id="lp_1", tag="LP-1A", name="Level 1 Lighting Panel",
+    bus_rating_a=225.0, voltage="208Y/120V", total_slots=42
+)`
+          },
+          {
+            displayName: "Motor Control Center (MCC)",
+            subTitle: "Industrial combination starter lineup • 600A - 2500A",
+            className: "MotorControlCenterObject",
+            tag: "MCC Lineup",
+            module: "james_app.core.panels.motor_control",
+            defaultTag: "MCC-1",
+            summary: "Grouped motor starter assembly with modular bucket units, disconnects, VFDs, and overload protection.",
+            specs: {
+              "Main Bus": "600A, 800A, 1200A, 2000A, 2500A",
+              "Voltages": "480V 3-Phase (3-Wire / 4-Wire)",
+              "Structure": "NEMA Class I/II, Type B/C Wiring",
+              "Bucket Sizes": "Size 1 to Size 6 Starters"
+            },
+            rules: ["Motor branch-circuit protection sized per NEC 430.52", "Individual isolation disconnect per bucket"],
+            pythonSample: `mcc = MotorControlCenterObject(
+    id="mcc_1", tag="MCC-1", name="Process Area Motor Control Center",
+    bus_rating_a=800.0, voltage="480V 3Ø", aic_rating_ka=65.0
+)`
+          },
+          {
+            displayName: "Emergency / Life Safety Panel",
+            subTitle: "Dedicated critical branch • NEC 700 / 701 • Red Trim",
+            className: "EmergencyPanelObject",
+            tag: "EM Panel",
+            module: "james_app.core.panels.emergency_panel",
+            defaultTag: "EP-1",
+            summary: "Dedicated emergency panelboard fed exclusively from emergency/standby transfer switch sources.",
+            specs: {
+              "Mains Rating": "100A, 225A, 400A",
+              "Classification": "NEC 700 (Emergency) / NEC 701 (Legally Required)",
+              "Color Coding": "Safety Red Enclosure Trim",
+              "Selective Coord": "Mandatory 0.1s to instantaneous"
+            },
+            rules: ["Strict separation from standard wiring (NEC 700.10)", "Fully selective coordination required"],
+            pythonSample: `ep = EmergencyPanelObject(
+    id="ep_1", tag="EP-1", name="Emergency Life Safety Panel",
+    bus_rating_a=225.0, voltage="480Y/277V", selective_coordination_required=True
+)`
+          },
+          {
+            displayName: "Critical Power & IT Panel",
+            subTitle: "Clean computer power • Isolated Ground • TVSS",
+            className: "CriticalPowerPanelObject",
+            tag: "CP Panel",
+            module: "james_app.core.panels.critical_power",
+            defaultTag: "CPP-1",
+            summary: "Clean power distribution for server rooms and healthcare labs with dedicated transient suppression.",
+            specs: {
+              "Mains Rating": "100A, 225A, 400A",
+              "Grounding": "Isolated Ground (IG) Busbar",
+              "Protection": "Integrated Type 2 SPD / TVSS",
+              "Harmonic Sizing": "200% Neutral Busbar"
+            },
+            rules: ["Dedicated isolated ground conductor (NEC 250.146(D))", "Oversized neutral for harmonic cancellation"],
+            pythonSample: `cp = CriticalPowerPanelObject(
+    id="cp_1", tag="CPP-1", name="Data Center Distribution Panel",
+    bus_rating_a=225.0, voltage="208Y/120V", isolated_ground=True
+)`
+          },
+          {
+            displayName: "Secondary Subpanel",
+            subTitle: "Area distribution • 60A - 225A • MLO / MCB",
+            className: "SubpanelObject",
+            tag: "Subpanel",
+            module: "james_app.core.panels.subpanel",
+            defaultTag: "SP-1",
+            summary: "Downstream subpanel fed from an upstream feeder, isolating local branch circuits.",
+            specs: {
+              "Mains Rating": "60A, 100A, 125A, 200A, 225A",
+              "Main Type": "Main Lug Only (MLO) or Main Circuit Breaker (MCB)",
+              "Grounding": "Separated Neutral and Equipment Ground bars"
+            },
+            rules: ["Neutral and Ground must NOT be bonded in subpanels (NEC 250.24(A)(5))"],
+            pythonSample: `sp = SubpanelObject(
+    id="sp_1", tag="SP-1", name="Workshop Subpanel",
+    bus_rating_a=125.0, voltage="120/240V", main_breaker_present=False
+)`
+          },
+          {
+            displayName: "Residential Loadcenter",
+            subTitle: "Dwelling split-phase • 100A - 200A • Plug-on Neutral",
+            className: "ResidentialLoadcenterObject",
+            tag: "Loadcenter",
+            module: "james_app.core.panels.residential",
+            defaultTag: "LC-1",
+            summary: "Single-phase dwelling loadcenter featuring Plug-on Neutral (PoN) for AFCI/GFCI breakers.",
+            specs: {
+              "Mains Rating": "100A, 125A, 150A, 200A",
+              "Voltages": "120/240V (1Ø 3-Wire)",
+              "Neutral Bar": "Plug-on Neutral (PoN) Rails",
+              "Enclosure": "NEMA 1 Indoor / NEMA 3R Outdoor"
+            },
+            rules: ["AFCI protection required on all 120V 15A/20A dwelling branch circuits (NEC 210.12)"],
+            pythonSample: `lc = ResidentialLoadcenterObject(
+    id="lc_1", tag="LC-1", name="Main House Loadcenter",
+    bus_rating_a=200.0, voltage="120/240V", plug_on_neutral=True
+)`
+          }
+        ]
+      },
+      {
+        id: "transformers",
+        name: "Transformers & Substations",
+        icon: "🔄",
+        desc: "Dry-type, liquid padmount, isolation & buck-boost units",
+        orderPowerFlow: 2,
+        subclasses: [
+          {
+            displayName: "Dry-Type Step-Down Transformer",
+            subTitle: "480V to 208Y/120V • 15 kVA - 500 kVA • Indoor Ventilated",
+            className: "DryTypeStepDownTransformerObject",
+            tag: "Dry Transformer",
+            module: "james_app.core.transformers.dry_type",
+            defaultTag: "T-1",
+            summary: "Indoor ventilated step-down transformer converting 480V distribution to 208Y/120V utility power with DOE 2016 efficiency.",
+            specs: {
+              "Standard kVA": "15, 30, 45, 75, 112.5, 150, 225, 300, 500 kVA",
+              "Primary / Secondary": "480V Delta → 208Y/120V Wye",
+              "Winding Material": "Copper (Cu) or Aluminum (Al)",
+              "Impedance (%Z)": "3.5% - 5.75% Typical"
+            },
+            rules: ["Secondary full-load current FLA = kVA * 1000 / (sqrt(3) * 208)", "Primary protection max 125% - 250% per NEC 450.3"],
+            pythonSample: `tx = DryTypeStepDownTransformerObject(
+    id="tx_1", tag="T-1", name="Floor 1 Step-Down Transformer",
+    kva=75.0, primary_voltage=480.0, secondary_voltage=208.0, impedance_pct=4.5
+)`
+          },
+          {
+            displayName: "Liquid-Filled Padmount Transformer",
+            subTitle: "Medium voltage substation • 12.47kV to 480V • 500 - 5000 kVA",
+            className: "LiquidFilledPadmountTransformerObject",
+            tag: "Padmount Substation",
+            module: "james_app.core.transformers.liquid_filled",
+            defaultTag: "PM-1",
+            summary: "Outdoor tamper-resistant compartmental substation transformer with FR3 natural ester dielectric fluid.",
+            specs: {
+              "Standard kVA": "500, 750, 1000, 1500, 2000, 2500, 3750, 5000 kVA",
+              "Primary Voltage": "4.16 kV, 12.47 kV, 13.8 kV, 34.5 kV",
+              "Secondary Voltage": "480Y/277V (3Ø 4W)",
+              "Dielectric Coolant": "FR3 Fire-Resistant Biodegradable Fluid"
+            },
+            rules: ["Outdoor separation from building openings per NEC 450.27", "Bay-O-Net and current-limiting backup fusing"],
+            pythonSample: `pad = LiquidFilledPadmountTransformerObject(
+    id="pad_1", tag="PM-1", name="Outdoor Facility Padmount Substation",
+    kva=1500.0, primary_voltage=12470.0, secondary_voltage=480.0, fluid_type="FR3"
+)`
+          },
+          {
+            displayName: "Clean Power Isolation Transformer",
+            subTitle: "Electrostatic shield • K-13 / K-20 • Separately Derived System",
+            className: "IsolationTransformerObject",
+            tag: "Isolation XFMR",
+            module: "james_app.core.transformers.isolation",
+            defaultTag: "ITX-1",
+            summary: "Harmonic mitigating isolation transformer establishing a clean Separately Derived System (SDS).",
+            specs: {
+              "K-Factor": "K-4, K-13, K-20 Non-linear Load Tolerant",
+              "Shielding": "Double Electrostatic Copper Shield",
+              "Voltage Ratio": "480V : 480Y/277V or 208V : 208Y/120V"
+            },
+            rules: ["Separately Derived System bonding jumper at transformer per NEC 250.30"],
+            pythonSample: `itx = IsolationTransformerObject(
+    id="itx_1", tag="ITX-1", name="Data Lab Clean Power Isolation XFMR",
+    kva=45.0, primary_voltage=480.0, secondary_voltage=208.0, k_factor=13
+)`
+          },
+          {
+            displayName: "Buck-Boost Autotransformer",
+            subTitle: "Voltage correction • 5% to 20% trim • High Efficiency",
+            className: "BuckBoostTransformerObject",
+            tag: "Buck-Boost",
+            module: "james_app.core.transformers.buck_boost",
+            defaultTag: "BBT-1",
+            summary: "Single or three-phase autotransformer for adjusting nominal voltages (e.g. 208V to 230V/240V).",
+            specs: {
+              "Capacity": "1 kVA - 15 kVA (Loads up to 100 kVA)",
+              "Trim Range": "±5%, ±10%, ±13.3%, ±20% Boost or Buck",
+              "Connection": "Autotransformer Winding Interconnect"
+            },
+            rules: ["Autotransformer connection prohibited for creating ungrounded systems without neutral (NEC 210.9)"],
+            pythonSample: `bbt = BuckBoostTransformerObject(
+    id="bbt_1", tag="BBT-1", name="Line Voltage Booster",
+    kva=5.0, input_voltage=208.0, output_voltage=240.0
+)`
+          }
+        ]
+      },
+      {
+        id: "breakers",
+        name: "Protective Circuit Breakers",
+        icon: "🛡️",
+        desc: "Molded case, miniature, AFCI/GFCI, motor protectors & drawout air breakers",
+        orderPowerFlow: 4,
+        subclasses: [
+          {
+            displayName: "Molded Case Breaker (MCCB)",
+            subTitle: "Heavy feeder protection • 70A - 800A • Thermal-Mag / Electronic",
+            className: "MoldedCaseBreakerObject",
+            tag: "MCCB Feeder",
+            module: "james_app.core.breakers.molded_case",
+            defaultTag: "BKR-1",
+            summary: "Commercial and industrial molded case breaker for large sub-feeders and equipment branches.",
+            specs: {
+              "Frame Sizes": "100A, 150A, 225A, 400A, 600A, 800A Frames",
+              "Trip Range": "70A to 800A Continuous",
+              "AIC Rating": "25 kA, 35 kA, 65 kA, 100 kA, 200 kA",
+              "Poles": "2-Pole, 3-Pole"
+            },
+            rules: ["Continuous duty derated to 80% unless 100% rated frame", "Short circuit interrupting capacity >= available fault current"],
+            pythonSample: `mccb = MoldedCaseBreakerObject(
+    id="bkr_1", tag="BKR-1", name="Subpanel Feeder Breaker",
+    rated_amps=225.0, poles=3, aic_rating_ka=65.0, frame_size_a=250.0
+)`
+          },
+          {
+            displayName: "Miniature Branch Breaker (MCB)",
+            subTitle: "Branch circuit device • 15A - 60A • Bolt-on / Plug-in",
+            className: "MiniatureBreakerObject",
+            tag: "MCB Branch",
+            module: "james_app.core.breakers.miniature_breaker",
+            defaultTag: "BKR-10",
+            summary: "Standard 1-inch thermal-magnetic branch circuit breaker for lighting, plugs, and small appliances.",
+            specs: {
+              "Trip Ratings": "15A, 20A, 30A, 40A, 50A, 60A",
+              "Poles": "1-Pole (120V/277V), 2-Pole (208V/240V/480V), 3-Pole",
+              "Interrupting": "10 kA, 14 kA, 22 kA AIC"
+            },
+            rules: ["15A on 14 AWG Cu, 20A on 12 AWG Cu, 30A on 10 AWG Cu per NEC 240.4(D)"],
+            pythonSample: `mcb = MiniatureBreakerObject(
+    id="mcb_1", tag="BKR-10", name="Office Receptacles Breaker",
+    rated_amps=20.0, poles=1, mounting_type="Bolt-on"
+)`
+          },
+          {
+            displayName: "Dual-Function AFCI / GFCI Breaker",
+            subTitle: "Arc-fault & ground-fault safety • NEC 210.8 / 210.12",
+            className: "AfciGfciBreakerObject",
+            tag: "AFCI/GFCI",
+            module: "james_app.core.breakers.afci_gfci",
+            defaultTag: "BKR-AF1",
+            summary: "Advanced electronic branch breaker detecting series/parallel arcing and 5mA ground leakage for life safety.",
+            specs: {
+              "Trip Ratings": "15A, 20A",
+              "Protection": "Combination AFCI + Class A GFCI (5mA trip)",
+              "Neutral Connection": "Pigtail or Plug-on Neutral (PoN)"
+            },
+            rules: ["Required for dwelling branch circuits (kitchens, baths, outdoors, bedrooms) per NEC 210.8 & 210.12"],
+            pythonSample: `afci = AfciGfciBreakerObject(
+    id="afci_1", tag="BKR-AF1", name="Living Room AFCI/GFCI",
+    rated_amps=20.0, poles=1, gfci_threshold_ma=5.0
+)`
+          },
+          {
+            displayName: "Motor Circuit Protector (MCP)",
+            subTitle: "Instantaneous magnetic starter breaker • NEC 430.52",
+            className: "MotorCircuitProtectorObject",
+            tag: "MCP Starter",
+            module: "james_app.core.breakers.motor_protector",
+            defaultTag: "MCP-1",
+            summary: "Instantaneous trip (magnetic-only) breaker used exclusively as part of a listed combination motor starter.",
+            specs: {
+              "Magnetic Setting": "Adjustable 3x to 13x Motor FLA",
+              "Trip Range": "3A to 400A Continuous",
+              "UL Listing": "UL 489 Combination Motor Controller Component"
+            },
+            rules: ["Instantaneous trip set up to 800% (or 1300% max) of motor FLA per NEC Table 430.52"],
+            pythonSample: `mcp = MotorCircuitProtectorObject(
+    id="mcp_1", tag="MCP-1", name="Pump Motor Circuit Protector",
+    rated_amps=50.0, poles=3, magnetic_pickup_amps=400.0
+)`
+          },
+          {
+            displayName: "Drawout Power Air Breaker (LVPCB)",
+            subTitle: "Main service switchgear • 800A - 6000A • 30-Cycle Withstand",
+            className: "DrawoutPowerBreakerObject",
+            tag: "LVPCB Air Breaker",
+            module: "james_app.core.breakers.drawout_power",
+            defaultTag: "PCB-1",
+            summary: "Heavy drawout low-voltage power circuit breaker with electronic LSIG trip unit and high short-time withstand.",
+            specs: {
+              "Frame Ratings": "800A, 1600A, 2000A, 3200A, 4000A, 5000A, 6000A",
+              "Short-Time Withstand": "65 kA, 85 kA, 100 kA (0.5s / 30-cycle)",
+              "Trip Unit": "Electronic Microprocessor LSIG with Energy Reducing Maintenance Switch (ERMS)"
+            },
+            rules: ["Arc energy reduction mechanism required for breakers rated >= 1200A (NEC 240.87)"],
+            pythonSample: `pcb = DrawoutPowerBreakerObject(
+    id="pcb_1", tag="PCB-1", name="Main Service Drawout Breaker",
+    rated_amps=3200.0, poles=3, short_time_withstand_ka=100.0, has_erms=True
+)`
+          },
+          {
+            displayName: "Tandem / Space-Saver Breaker",
+            subTitle: "Twin / quad circuits in 1 slot • 15A/20A • Residential",
+            className: "TandemBreakerObject",
+            tag: "Tandem Twin",
+            module: "james_app.core.breakers.tandem_breaker",
+            defaultTag: "TBKR-1",
+            summary: "Compact breaker feeding two separate 120V circuits from a single panelboard slot position.",
+            specs: {
+              "Trip Ratings": "15A/15A, 20A/20A, 15A/20A Independent Handles",
+              "Poles": "2 Circuits on 1 Pole Physical Slot",
+              "Panel Compatibility": "Class CTL Rejection Notch"
+            },
+            rules: ["Only permitted in panelboards listed and marked for tandem breakers (CTL rule)"],
+            pythonSample: `tandem = TandemBreakerObject(
+    id="tbkr_1", tag="TBKR-1", name="Twin Lighting / Outlet Breaker",
+    circuit_a_amps=20.0, circuit_b_amps=15.0
+)`
+          }
+        ]
+      },
+      {
+        id: "switches",
+        name: "Switches, Disconnects & ATS",
+        icon: "🔌",
+        desc: "Fused disconnects, motor isolation, automatic transfer & bypass switches",
+        orderPowerFlow: 5,
+        subclasses: [
+          {
+            displayName: "Fused Safety Disconnect Switch",
+            subTitle: "Heavy-duty fused switch • 30A - 1200A • Class R/J/T Fuses",
+            className: "FusedDisconnectSwitchObject",
+            tag: "Fused Disconnect",
+            module: "james_app.core.switches.fused_disconnect",
+            defaultTag: "DS-1",
+            summary: "Heavy-duty enclosed safety disconnect with rejection clips for current-limiting fuses and 200 kA SCCR.",
+            specs: {
+              "Ratings": "30A, 60A, 100A, 200A, 400A, 600A, 800A, 1200A",
+              "Fuse Classes": "Class R, Class J, Class T, Class L Fuses",
+              "SCCR": "200 kA Short Circuit Current Rating",
+              "Enclosures": "NEMA 1, NEMA 3R, NEMA 4X Stainless"
+            },
+            rules: ["Lockout/Tagout (LOTO) handle provisions required per OSHA 1910.147", "Service entrance rating where required"],
+            pythonSample: `fused = FusedDisconnectSwitchObject(
+    id="ds_1", tag="DS-1", name="Chiller Fused Disconnect",
+    rated_amps=200.0, voltage="480V 3Ø", fuse_class="Class J", sccr_ka=200.0
+)`
+          },
+          {
+            displayName: "Non-Fused Isolation Switch",
+            subTitle: "Motor isolation switch • 30A - 800A • Within sight of motor",
+            className: "NonFusedDisconnectSwitchObject",
+            tag: "Non-Fused Switch",
+            module: "james_app.core.switches.non_fused_disconnect",
+            defaultTag: "NF-1",
+            summary: "Visible blade isolation switch installed within sight of motors, pumps, and rooftop HVAC units for maintenance safety.",
+            specs: {
+              "Ratings": "30A, 60A, 100A, 200A, 400A, 600A, 800A",
+              "Horsepower Rating": "HP Rated for Motor Full-Load Interruption",
+              "Location": "Within sight (<= 50 ft) of equipment"
+            },
+            rules: ["Disconnect must be in sight from motor location per NEC 430.102 / 440.14"],
+            pythonSample: `nf = NonFusedDisconnectSwitchObject(
+    id="nf_1", tag="NF-1", name="Rooftop AHU-1 Isolation Switch",
+    rated_amps=60.0, voltage="480V 3Ø", hp_rated=30.0
+)`
+          },
+          {
+            displayName: "Automatic Transfer Switch (ATS)",
+            subTitle: "Normal/Emergency power transfer • 100A - 4000A • Open/Closed Transition",
+            className: "AutomaticTransferSwitchObject",
+            tag: "ATS",
+            module: "james_app.core.switches.automatic_transfer",
+            defaultTag: "ATS-1",
+            summary: "Microprocessor-controlled transfer switch that senses utility outage, starts the generator, and transfers load automatically.",
+            specs: {
+              "Amperage": "100A, 225A, 400A, 800A, 1200A, 2000A, 4000A",
+              "Transition": "Open Transition (Break-Before-Make) or Closed Transition (Make-Before-Break)",
+              "Signals": "Engine Start Contacts, In-Phase Monitor"
+            },
+            rules: ["Emergency life safety transfer within 10 seconds per NFPA 110 Class 10 / NEC 700.12"],
+            pythonSample: `ats = AutomaticTransferSwitchObject(
+    id="ats_1", tag="ATS-1", name="Life Safety Automatic Transfer Switch",
+    rated_amps=400.0, voltage="480Y/277V", transition_type="Open Transition"
+)`
+          },
+          {
+            displayName: "Bypass-Isolation Transfer Switch",
+            subTitle: "Dual drawout ATS with manual bypass • Critical Power / Healthcare",
+            className: "BypassIsolationSwitchObject",
+            tag: "Bypass ATS",
+            module: "james_app.core.switches.bypass_isolation",
+            defaultTag: "ATS-BYP-1",
+            summary: "High-reliability dual-mechanism transfer switch allowing the automatic transfer mechanism to be isolated and serviced live.",
+            specs: {
+              "Amperage": "400A, 800A, 1200A, 2000A, 4000A",
+              "Mechanisms": "1x Automatic Drawout Switch + 1x Manual Bypass/Isolation Switch",
+              "Standard": "NFPA 99 (Healthcare Facilities) & Critical Data Centers"
+            },
+            rules: ["Allows complete de-energization of automatic unit without interrupting load power"],
+            pythonSample: `byp = BypassIsolationSwitchObject(
+    id="byp_1", tag="ATS-BYP-1", name="Hospital Critical Branch Bypass ATS",
+    rated_amps=800.0, voltage="480Y/277V", bypass_active=False
+)`
+          },
+          {
+            displayName: "Manual Transfer Switch (MTS)",
+            subTitle: "Double-throw interlock • Portable generator • Cam-Lock inlet",
+            className: "ManualTransferSwitchObject",
+            tag: "MTS Switch",
+            module: "james_app.core.switches.manual_transfer",
+            defaultTag: "MTS-1",
+            summary: "Manually operated double-throw switch with mechanical interlock preventing backfeeding grid utility.",
+            specs: {
+              "Ratings": "100A, 200A, 400A, 800A, 1200A",
+              "Inlet": "Quick-Connect Color-Coded Series 16 Cam-Locks",
+              "Interlock": "Positive Mechanical Interlock"
+            },
+            rules: ["Interlock must prevent simultaneous connection to utility and generator per NEC 702.6"],
+            pythonSample: `mts = ManualTransferSwitchObject(
+    id="mts_1", tag="MTS-1", name="Portable Generator Docking Station",
+    rated_amps=400.0, voltage="480Y/277V", has_camlock_inlet=True
+)`
+          }
+        ]
+      },
+      {
+        id: "sources",
+        name: "Power Generation & Sources",
+        icon: "⚡",
+        desc: "Utility service, diesel generators, solar PV & battery storage (BESS)",
+        orderPowerFlow: 1,
+        subclasses: [
+          {
+            displayName: "Utility Grid Service Entrance",
+            subTitle: "Grid Point of Common Coupling • Service transformer & CT metering",
+            className: "UtilityServiceSource",
+            tag: "Utility Service",
+            module: "james_app.core.sources.utility_service",
+            defaultTag: "UTIL-1",
+            summary: "Primary electric utility grid connection point including service transformer, metering CTs/PTs, and utility fault capacity.",
+            specs: {
+              "Service Voltages": "480Y/277V 3Ø, 208Y/120V 3Ø, 12.47kV, 34.5kV",
+              "Fault Current": "Available Short Circuit MVA (Ssc) & X/R Ratio",
+              "Metering": "Utility Revenue Metering CT Cabinet"
+            },
+            rules: ["Service disconnect must be suitable for use as service equipment (SUSE) per NEC 230.66"],
+            pythonSample: `util = UtilityServiceSource(
+    id="util_1", tag="UTIL-1", name="Utility Grid Service Entrance",
+    voltage="480Y/277V", available_fault_mva=250.0, xr_ratio=8.0
+)`
+          },
+          {
+            displayName: "Emergency Diesel Generator Set",
+            subTitle: "Standby power • 50 kW - 2500 kW • NFPA 110 Class 10",
+            className: "DieselGeneratorObject",
+            tag: "Generator",
+            module: "james_app.core.sources.generator",
+            defaultTag: "GEN-1",
+            summary: "Stationary diesel engine-generator set providing standby emergency power with sub-base fuel storage.",
+            specs: {
+              "kW / kVA Rating": "100kW (125kVA) to 2500kW (3125kVA)",
+              "Voltages": "480Y/277V or 208Y/120V (3Ø 4W)",
+              "Starting Response": "NFPA 110 Class 10 (<= 10 seconds)",
+              "Fuel Tank Autonomy": "24 to 72 Hours Sized Sub-base Tank"
+            },
+            rules: ["Emergency start and load pickup within 10 seconds per NFPA 110 Class 10 / NEC 700.12"],
+            pythonSample: `gen = DieselGeneratorObject(
+    id="gen_1", tag="GEN-1", name="Standby Emergency Diesel Generator",
+    kw=750.0, kva=937.5, voltage="480Y/277V", fuel_tank_gallons=1200.0
+)`
+          },
+          {
+            displayName: "Solar Photovoltaic Array (PV)",
+            subTitle: "Grid-tied solar inverters • Rapid shutdown NEC 690",
+            className: "SolarPvSystemObject",
+            tag: "Solar PV",
+            module: "james_app.core.sources.solar_pv",
+            defaultTag: "PV-1",
+            summary: "Rooftop or ground-mount photovoltaic solar generation system with string/central inverters and rapid shutdown.",
+            specs: {
+              "DC / AC Capacity": "25 kW to 1000 kW AC Output",
+              "Inverter Architecture": "String Inverters or Central Inverter",
+              "Safety": "NEC 690.12 Rapid Shutdown Module-Level Control"
+            },
+            rules: ["Supply-side or load-side interconnection sized per NEC 705.12 (120% busbar rule)"],
+            pythonSample: `pv = SolarPvSystemObject(
+    id="pv_1", tag="PV-1", name="Rooftop Solar PV Array",
+    kw_ac=250.0, dc_stc_kw=300.0, inverter_voltage="480V 3Ø"
+)`
+          },
+          {
+            displayName: "Battery Energy Storage System (BESS)",
+            subTitle: "Peak shaving & islanding • 100 kWh - 5 MWh • Lithium-ion",
+            className: "BatteryEnergyStorageObject",
+            tag: "BESS Battery",
+            module: "james_app.core.sources.bess",
+            defaultTag: "BESS-1",
+            summary: "Electrochemical battery energy storage system with bi-directional inverter for peak shaving, demand management, and microgrid backup.",
+            specs: {
+              "Power / Energy": "250 kW / 1000 kWh (4-Hour Duration)",
+              "Chemistry": "Lithium Iron Phosphate (LFP) / NMC",
+              "Coupling": "AC-Coupled or DC-Coupled Microgrid"
+            },
+            rules: ["UL 9540 listing and NFPA 855 fire safety compliance mandatory"],
+            pythonSample: `bess = BatteryEnergyStorageObject(
+    id="bess_1", tag="BESS-1", name="Facility BESS Battery Storage",
+    power_kw=500.0, energy_kwh=2000.0, voltage="480V 3Ø"
+)`
+          }
+        ]
+      },
+      {
+        id: "loads",
+        name: "Electrical Loads & Motors",
+        icon: "⚙️",
+        desc: "Induction motors, VFDs, HVAC packages, EV charging & lighting zones",
+        orderPowerFlow: 8,
+        subclasses: [
+          {
+            displayName: "AC Induction Motor",
+            subTitle: "1 HP to 500 HP • 460V 3-Phase • NEC Table 430.250 FLA",
+            className: "ElectricMotorObject",
+            tag: "Induction Motor",
+            module: "james_app.core.loads.motor",
+            defaultTag: "MTR-101",
+            summary: "Standard 3-phase squirrel cage induction motor for pumps, fans, compressors, and industrial machinery.",
+            specs: {
+              "Horsepower": "5, 10, 15, 25, 50, 75, 100, 150, 200, 300, 500 HP",
+              "Voltages": "460V 3Ø, 208V 3Ø, 230V 1Ø",
+              "FLA / LRA": "Full Load Amps per NEC Table 430.250 / Locked Rotor 6x FLA"
+            },
+            rules: ["Conductor ampacity sized at 125% of motor full-load current per NEC 430.22"],
+            pythonSample: `motor = ElectricMotorObject(
+    id="mtr_1", tag="MTR-101", name="Chilled Water Pump Motor",
+    hp=50.0, voltage=460.0, efficiency=0.945, power_factor=0.88
+)`
+          },
+          {
+            displayName: "Variable Frequency Drive (VFD)",
+            subTitle: "Adjustable speed inverter • 3% line reactor • Maintenance bypass",
+            className: "VariableFrequencyDriveObject",
+            tag: "VFD Inverter",
+            module: "james_app.core.loads.vfd",
+            defaultTag: "VFD-1",
+            summary: "Solid-state PWM variable frequency inverter driving AC motors with energy efficiency and soft starting.",
+            specs: {
+              "Input Ratings": "480V 3-Phase, 60Hz Input",
+              "Features": "3% / 5% Input Line Reactor, 3-Contactor Bypass",
+              "Harmonic Filter": "Active Harmonic Filter or 18-Pulse Rectifier"
+            },
+            rules: ["Branch circuit conductors sized at 125% of drive rated input current (NEC 430.122)"],
+            pythonSample: `vfd = VariableFrequencyDriveObject(
+    id="vfd_1", tag="VFD-1", name="AHU-1 Supply Fan VFD",
+    rated_hp=75.0, input_voltage=480.0, has_bypass=True
+)`
+          },
+          {
+            displayName: "Packaged HVAC / Chiller Unit",
+            subTitle: "Commercial cooling package • MCA / MOCP rating per NEC 440",
+            className: "HvacEquipmentObject",
+            tag: "HVAC / Chiller",
+            module: "james_app.core.loads.hvac",
+            defaultTag: "CH-1",
+            summary: "Packaged rooftop unit or water-cooled centrifugal chiller with Minimum Circuit Ampacity (MCA) and Max Overcurrent (MOCP).",
+            specs: {
+              "MCA (Min Ampacity)": "Determines minimum conductor size",
+              "MOCP (Max Breaker)": "Maximum allowable upstream breaker/fuse",
+              "Compressor + Fans": "Hermetic compressor RLA + condenser fan motors"
+            },
+            rules: ["Conductor sized to MCA; upstream breaker cannot exceed MOCP per NEC 440.4"],
+            pythonSample: `hvac = HvacEquipmentObject(
+    id="hvac_1", tag="CH-1", name="Central Plant Water Chiller",
+    mca_amps=285.0, mocp_amps=400.0, voltage="480V 3Ø"
+)`
+          },
+          {
+            displayName: "EV Charging Station (EVSE)",
+            subTitle: "Level 2 (48A) / DC Fast Charger (150-350 kW) • NEC 625",
+            className: "EvChargingStationObject",
+            tag: "EV Charger",
+            module: "james_app.core.loads.ev_charger",
+            defaultTag: "EV-1",
+            summary: "Commercial Level 2 AC dual-port charger or Level 3 DC Fast Charging (DCFC) dispenser.",
+            specs: {
+              "Levels": "Level 2 AC (48A / 11.5 kW) or Level 3 DCFC (50 - 350 kW)",
+              "Load Type": "Continuous Duty (125% factor required)",
+              "Power Management": "Dynamic load sharing and peak shaving"
+            },
+            rules: ["EV charging equipment considered continuous load; branch circuit sized at 125% per NEC 625.41"],
+            pythonSample: `ev = EvChargingStationObject(
+    id="ev_1", tag="EV-1", name="Dual-Port Fleet EV Charger",
+    output_kw=19.2, voltage="208V 1Ø", rated_amps=80.0
+)`
+          },
+          {
+            displayName: "Lumped General Load",
+            subTitle: "Aggregate lighting zones, plugs & demand factor diversification",
+            className: "LumpedLoadObject",
+            tag: "Lumped Load",
+            module: "james_app.core.loads.lumped_load",
+            defaultTag: "LOAD-1",
+            summary: "Aggregate electrical load representation for lighting schedules, receptacle groups, and diversified load calculations.",
+            specs: {
+              "kVA / kW Rating": "Total connected load before demand factor",
+              "Demand Factor": "NEC Article 220 diversification percentage (e.g. 50% - 100%)",
+              "Power Factor": "0.85 to 0.95 typical"
+            },
+            rules: ["Demand factor applied per NEC Article 220 calculations"],
+            pythonSample: `lump = LumpedLoadObject(
+    id="load_1", tag="LOAD-1", name="Office Lighting & Receptacle Load",
+    connected_kva=45.0, demand_factor=0.80, power_factor=0.92
+)`
+          }
+        ]
+      },
+      {
+        id: "power_quality",
+        name: "Power Quality, UPS & Clean Power",
+        icon: "🔋",
+        desc: "Online double-conversion UPS, surge arresters (SPD), floor PDUs & capacitor banks",
+        orderPowerFlow: 7,
+        subclasses: [
+          {
+            displayName: "Online Double-Conversion Static UPS",
+            subTitle: "Continuous clean power • 20 kVA - 1000 kVA • Static bypass",
+            className: "UpsObject",
+            tag: "Static UPS",
+            module: "james_app.core.power_quality.base_ups",
+            defaultTag: "UPS-1",
+            summary: "True online double-conversion UPS isolating critical IT loads from utility anomalies with zero transfer time.",
+            specs: {
+              "Capacity": "50 kVA / 45 kW to 1000 kVA / 1000 kW",
+              "Battery Autonomy": "10 to 30 Minutes Full Load Runtime",
+              "Bypass": "Automatic Static Bypass + External Maintenance Bypass"
+            },
+            rules: ["Input feeder sized at 125% of full load rectifier + battery recharge current"],
+            pythonSample: `ups = UpsObject(
+    id="ups_1", tag="UPS-1", name="Data Center Central UPS System",
+    kva=250.0, kw=250.0, input_voltage="480V 3Ø", battery_runtime_mins=15.0
+)`
+          },
+          {
+            displayName: "Surge Protective Device (SPD / TVSS)",
+            subTitle: "Transient voltage suppression • 50 kA - 300 kA • NEC 242 / UL 1449",
+            className: "SurgeProtectiveDeviceObject",
+            tag: "SPD / TVSS",
+            module: "james_app.core.power_quality.spd",
+            defaultTag: "SPD-1",
+            summary: "High-capacity transient surge suppressor protecting sensitive electronics from lightning and switching spikes.",
+            specs: {
+              "Types": "Type 1 (Service Entrance), Type 2 (Branch Panels), Type 3 (Point of Use)",
+              "Surge Current": "50 kA to 300 kA per phase surge rating",
+              "VPR (Clamping)": "600V to 1200V Voltage Protection Rating"
+            },
+            rules: ["Lead length must be kept as short and straight as possible (< 12 inches recommended)"],
+            pythonSample: `spd = SurgeProtectiveDeviceObject(
+    id="spd_1", tag="SPD-1", name="Main Switchboard Surge Suppressor",
+    spd_type="Type 1", surge_capacity_ka=200.0, voltage="480Y/277V"
+)`
+          },
+          {
+            displayName: "Power Distribution Unit (PDU)",
+            subTitle: "Raised-floor data center PDU • K-13 isolation • Branch monitoring",
+            className: "PowerDistributionUnitObject",
+            tag: "Floor PDU",
+            module: "james_app.core.power_quality.pdu",
+            defaultTag: "PDU-1",
+            summary: "Data center power distribution unit stepping 480V down to 208Y/120V with K-13 shielding and branch circuit monitoring.",
+            specs: {
+              "kVA Rating": "50 kVA, 75 kVA, 100 kVA, 150 kVA, 225 kVA, 300 kVA",
+              "Isolation XFMR": "K-13 Copper Wound with Dual Electrostatic Shielding",
+              "Branch Monitoring": "Real-time current and kWh per breaker pole"
+            },
+            rules: ["Secondary neutral sized at 200% for high triplen harmonic loads"],
+            pythonSample: `pdu = PowerDistributionUnitObject(
+    id="pdu_1", tag="PDU-1", name="Server Hall Floor PDU",
+    kva=150.0, primary_voltage=480.0, secondary_voltage=208.0, k_factor=13
+)`
+          },
+          {
+            displayName: "Power Factor Correction Capacitor Bank",
+            subTitle: "Automatic multi-step bank • Harmonic detuning reactors • PF > 0.95",
+            className: "PowerFactorCapacitorBankObject",
+            tag: "Capacitor Bank",
+            module: "james_app.core.power_quality.capacitor_bank",
+            defaultTag: "PFC-1",
+            summary: "Switched capacitor bank automatically injecting reactive VARs to eliminate utility low power factor penalty charges.",
+            specs: {
+              "kVAR Capacity": "50 kVAR to 1000 kVAR in automated steps",
+              "Detuning": "4.2 / 4.7 Tuning (prevents 5th/7th harmonic resonance)",
+              "Target PF": "0.95 to 0.98 Lagging"
+            },
+            rules: ["Conductors sized at not less than 135% of capacitor rated current per NEC 460.8"],
+            pythonSample: `pfc = PowerFactorCapacitorBankObject(
+    id="pfc_1", tag="PFC-1", name="Main Bus Power Factor Correction Bank",
+    total_kvar=300.0, steps=6, voltage="480V 3Ø", has_detuning_reactors=True
+)`
+          }
+        ]
+      },
+      {
+        id: "distribution",
+        name: "Bulk Distribution Infrastructure",
+        icon: "🏢",
+        desc: "Feeder busways, plug-in busducts, tap-off disconnects & cable tray raceways",
+        orderPowerFlow: 6,
+        subclasses: [
+          {
+            displayName: "Sandwich Feeder & Plug-In Busway",
+            subTitle: "High-ampacity busduct • 800A - 5000A • Copper / Aluminum",
+            className: "BuswayObject",
+            tag: "Busway Run",
+            module: "james_app.core.distribution.busway",
+            defaultTag: "BUS-1",
+            summary: "Prefabricated sandwich busway run for vertical riser power distribution in high-rise buildings and factories.",
+            specs: {
+              "Ampacity": "800A, 1200A, 1600A, 2000A, 2500A, 3200A, 4000A, 5000A",
+              "Conductors": "Copper or Aluminum Sandwich Housing",
+              "Plugs": "Plug-in openings every 24 inches"
+            },
+            rules: ["Supported at intervals not exceeding 5 ft unless approved for longer spans (NEC 368.30)"],
+            pythonSample: `bus = BuswayObject(
+    id="bus_1", tag="BUS-1", name="Riser Busduct R-1",
+    rated_amps=2000.0, voltage="480Y/277V", material="Copper", length_ft=180.0
+)`
+          },
+          {
+            displayName: "Bus Tap-Off Unit (Bus Plug)",
+            subTitle: "Stab-connected disconnect or breaker plug • 30A - 800A",
+            className: "BusTapOffUnitObject",
+            tag: "Bus Plug",
+            module: "james_app.core.distribution.bus_tap",
+            defaultTag: "BP-1",
+            summary: "Stab-in branch tap unit with integrated circuit breaker or fused switch drawing power from a busway run.",
+            specs: {
+              "Ratings": "30A, 60A, 100A, 200A, 400A, 800A",
+              "Type": "Fused Disconnect Plug or Molded Case Breaker Plug",
+              "Interlock": "Mechanical door interlock preventing insertion when ON"
+            },
+            rules: ["Overcurrent protection required at point of tap unless meeting tap rules (NEC 368.17 / 240.21)"],
+            pythonSample: `bp = BusTapOffUnitObject(
+    id="bp_1", tag="BP-1", name="Floor 3 Tap-Off Breaker Plug",
+    rated_amps=225.0, voltage="480V 3Ø", breaker_aic_ka=65.0
+)`
+          },
+          {
+            displayName: "Continuous Cable Tray Raceway",
+            subTitle: "Ladder / ventilated trough tray • Cable fill percentage NEC 392",
+            className: "CableTrayObject",
+            tag: "Cable Tray",
+            module: "james_app.core.distribution.cable_tray",
+            defaultTag: "TRAY-1",
+            summary: "Rigid aluminum or steel cable tray supporting multi-conductor cables and single-conductor feeder runs.",
+            specs: {
+              "Widths": "6, 12, 18, 24, 30, 36 inches wide (4-6 inch depth)",
+              "Type": "Ladder Tray, Ventilated Trough, or Solid Bottom",
+              "Fill Capacity": "Max 40% - 50% cross-sectional area fill"
+            },
+            rules: ["Cable fill must not exceed allowable square inch cross-sectional area per NEC 392.22"],
+            pythonSample: `tray = CableTrayObject(
+    id="tray_1", tag="TRAY-1", name="Main Feeder Ladder Cable Tray",
+    width_inches=24.0, depth_inches=6.0, material="Aluminum", fill_pct=34.5
+)`
+          }
+        ]
+      },
+      {
+        id: "protection",
+        name: "Relays & Instrument Transformers",
+        icon: "🧭",
+        desc: "Microprocessor protective relays (ANSI 50/51, 87), CTs & PTs",
+        orderPowerFlow: 9,
+        subclasses: [
+          {
+            displayName: "Numerical Protective Relay",
+            subTitle: "ANSI 50/51, 87, 27/59, 81 • Microprocessor switchgear protection",
+            className: "ProtectiveRelayObject",
+            tag: "Protective Relay",
+            module: "james_app.core.protection.relay",
+            defaultTag: "RELAY-1",
+            summary: "Microprocessor-based multi-function protection relay monitoring CT/PT inputs and commanding breaker trip coils.",
+            specs: {
+              "ANSI Functions": "50/51 (Overcurrent), 87 (Differential), 27/59 (Under/Over Voltage), 81 (Frequency)",
+              "Communication": "IEC 61850, Modbus TCP, DNP3, Ethernet/IP"
+            },
+            rules: ["Trip curve coordinates with upstream utility and downstream feeder devices"],
+            pythonSample: `relay = ProtectiveRelayObject(
+    id="relay_1", tag="RELAY-1", name="Main Feeder Overcurrent Relay",
+    ansi_functions=["50", "51", "51N", "27", "59"], protocol="IEC 61850"
+)`
+          },
+          {
+            displayName: "Current Transformer (CT)",
+            subTitle: "Current stepping sensor • 100:5A - 4000:5A • C400 Accuracy",
+            className: "CurrentTransformerObject",
+            tag: "CT Sensor",
+            module: "james_app.core.protection.instrument_transformer",
+            defaultTag: "CT-1A",
+            summary: "Precision current transformer stepping high bus amperage down to standard 5A secondary for relays and meters.",
+            specs: {
+              "Ratios": "100:5A, 200:5A, 400:5A, 800:5A, 1200:5A, 2000:5A, 4000:5A",
+              "Accuracy Class": "C100, C200, C400, C800 Relay Class (0.3% Revenue Metering)",
+              "Type": "Window (Donut), Bushing, or Bar Type"
+            },
+            rules: ["Secondary must NEVER be open-circuited while primary is energized (extreme lethal voltage risk)"],
+            pythonSample: `ct = CurrentTransformerObject(
+    id="ct_1", tag="CT-1A", name="Phase A Current Transformer",
+    primary_ratio_amps=2000, secondary_ratio_amps=5, accuracy_class="C400"
+)`
+          },
+          {
+            displayName: "Potential Transformer (PT / VT)",
+            subTitle: "Voltage sensing sensor • 480V:120V / 12.47kV:120V • 0.3% Metering",
+            className: "PotentialTransformerObject",
+            tag: "PT Sensor",
+            module: "james_app.core.protection.instrument_transformer",
+            defaultTag: "PT-1",
+            summary: "Instrument voltage transformer stepping down bus potential to standard 120V secondary for relays and revenue metering.",
+            specs: {
+              "Primary Voltages": "480V, 4160V, 12470V, 13800V",
+              "Secondary Standard": "120V Nominal",
+              "Accuracy": "0.3% Revenue Metering Accuracy (W, X, Y Burden)"
+            },
+            rules: ["Secondary overcurrent fusing required for short-circuit isolation"],
+            pythonSample: `pt = PotentialTransformerObject(
+    id="pt_1", tag="PT-1", name="Bus Voltage Sensing PT",
+    primary_voltage=480.0, secondary_voltage=120.0, accuracy_class="0.3 WX"
+)`
+          }
+        ]
+      },
+      {
+        id: "cables",
+        name: "Conductors & Cable Runs",
+        icon: "🧵",
+        desc: "Feeder conductors, metals (Cu/Al), insulation, raceways & NEC 310.16 ampacity",
+        orderPowerFlow: 10,
+        subclasses: [
+          {
+            displayName: "Conductor / Feeder Cable Run",
+            subTitle: "14 AWG to 750 kcmil • Cu / Al • THHN / XHHW • Voltage Drop",
+            className: "CableObject",
+            tag: "Feeder Cable",
+            module: "james_app.core.cable",
+            defaultTag: "CABLE-1",
+            summary: "Single or multi-conductor cable runs calculated for continuous ampacity, conduit fill, and Ohm's law voltage drop.",
+            specs: {
+              "Gauges": "14 AWG - 4/0 AWG, 250 - 750 kcmil",
+              "Metals": "Copper (Cu) or Aluminum (Al)",
+              "Insulation": "THHN/THWN-2 (90°C), XHHW-2",
+              "Raceways": "EMT, PVC, RMC, MC Cable, Free Air",
+              "Parallel Sets": "1x, 2x, 3x, 4x Sets per Phase"
+            },
+            rules: ["Ampacity checked per NEC Table 310.16 with ambient and conduit fill derating", "Voltage drop <= 3.0% maximum for branch circuits (5% total)"],
+            pythonSample: `cable = CableObject(
+    id="cable_1", tag="CABLE-1", name="Main Feeder Cable",
+    gauge="500 kcmil", material="Copper", length_ft=140.0, parallel_sets=2
+)`
+          }
+        ]
+      },
+      {
+        id: "generic",
+        name: "Placeholders & Generic Assets",
+        icon: "📦",
+        desc: "Polymorphic placeholders with live class promotion engine",
+        orderPowerFlow: 11,
+        subclasses: [
+          {
+            displayName: "Generic Electrical Asset",
+            subTitle: "Unfinalized placeholder with live promotion to concrete class",
+            className: "GenericElectricalObject",
+            tag: "Placeholder",
+            module: "james_app.core.generic",
+            defaultTag: "FUT-1",
+            summary: "Provisional placeholder node preserving connectivity and ratings before the physical equipment schedule is finalized.",
+            specs: {
+              "Archetypes": "Load, Panel, Switch, Source, Transformer, Motor",
+              "Provisional": "Voltage, Amps, kVA, kW, Power Factor",
+              "Promotion": "promote_to_panel(), promote_to_breaker()"
+            },
+            rules: ["Non-negative electrical rating checks", "Seamless conversion to concrete classes without breaking single-line links"],
+            pythonSample: `generic = GenericElectricalObject(
+    id="fut_1", tag="FUT-1", name="Future Expansion Chiller",
+    generic_kind="MOTOR", voltage="480V 3Ø", current_amps=150.0
+)`
+          }
+        ]
+      }
+    ];
+
+    // State Management
+    let selectedCatIndex = 0;
+    let selectedSubIndex = 0;
+    let currentRightTab = "form"; // 'form' or 'specs'
+    let domainSortMode = "power_flow";
+    let equipSortMode = "default";
+    let filteredTaxonomy = [...TAXONOMY_DATA];
+
+    // DOM Elements
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const searchInput = document.getElementById("searchInput");
+    const categoryList = document.getElementById("categoryList");
+    const subclassList = document.getElementById("subclassList");
+    const specPanel = document.getElementById("specPanel");
+    const categoryCount = document.getElementById("categoryCount");
+    const subclassCount = document.getElementById("subclassCount");
+    const bcCategory = document.getElementById("bcCategory");
+    const bcSubclass = document.getElementById("bcSubclass");
+    const instantiateBtn = document.getElementById("instantiateBtn");
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+    const domainSortSelect = document.getElementById("domainSortSelect");
+    const equipSortSelect = document.getElementById("equipSortSelect");
+
+    // Resizable Columns Elements
+    const colDomains = document.getElementById("colDomains");
+    const colEquipment = document.getElementById("colEquipment");
+    const resizer1 = document.getElementById("resizer1");
+    const resizer2 = document.getElementById("resizer2");
+
+    // Modal Visibility Handlers
+    function openModal() {
+      modalBackdrop.classList.add("active");
+      searchInput.value = "";
+      applyFilteringAndSorting();
+      setTimeout(() => searchInput.focus(), 100);
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("active");
+    }
+
+    openModalBtn.addEventListener("click", openModal);
+    closeModalBtn.addEventListener("click", closeModal);
+    cancelBtn.addEventListener("click", closeModal);
+
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+
+    // Keyboard Shortcuts (Cmd+K / Ctrl+K and ESC)
+    window.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        modalBackdrop.classList.contains("active") ? closeModal() : openModal();
+      } else if (e.key === "Escape" && modalBackdrop.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+    // Resizable Column Widths Handlers
+    function makeResizable(resizer, leftCol, minWidth, maxWidth) {
+      let startX, startWidth;
+
+      resizer.addEventListener("mousedown", (e) => {
+        startX = e.clientX;
+        startWidth = leftCol.getBoundingClientRect().width;
+        resizer.classList.add("resizing");
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+
+        function onMouseMove(e) {
+          const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidth + (e.clientX - startX)));
+          leftCol.style.width = newWidth + "px";
+        }
+
+        function onMouseUp() {
+          resizer.classList.remove("resizing");
+          document.body.style.cursor = "";
+          document.body.style.userSelect = "";
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
+        }
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      });
+    }
+
+    makeResizable(resizer1, colDomains, 200, 420);
+    makeResizable(resizer2, colEquipment, 240, 520);
+
+    // Sorting Logic
+    function sortCategories(categories, mode) {
+      const copy = [...categories];
+      if (mode === "power_flow") {
+        return copy.sort((a, b) => (a.orderPowerFlow || 99) - (b.orderPowerFlow || 99));
+      } else if (mode === "az") {
+        return copy.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (mode === "favorites") {
+        // High frequency field favorites: Panels, Breakers, Transformers, Switches, Loads
+        const order = { "panels": 1, "breakers": 2, "transformers": 3, "switches": 4, "loads": 5, "sources": 6 };
+        return copy.sort((a, b) => (order[a.id] || 99) - (order[b.id] || 99));
+      }
+      return copy;
+    }
+
+    function sortEquipment(subclasses, mode) {
+      const copy = [...subclasses];
+      if (mode === "az") {
+        return copy.sort((a, b) => a.displayName.localeCompare(b.displayName));
+      } else if (mode === "capacity") {
+        // Sort by primary rating magnitude if available
+        return copy.sort((a, b) => b.displayName.length - a.displayName.length);
+      }
+      return copy; // Default hierarchy
+    }
+
+    domainSortSelect.addEventListener("change", (e) => {
+      domainSortMode = e.target.value;
+      applyFilteringAndSorting();
+    });
+
+    equipSortSelect.addEventListener("change", (e) => {
+      equipSortMode = e.target.value;
+      applyFilteringAndSorting();
+    });
+
+    // Filtering & Searching Logic
+    function applyFilteringAndSorting() {
+      const q = searchInput.value.trim().toLowerCase();
+      let baseCategories = sortCategories(TAXONOMY_DATA, domainSortMode);
+
+      if (!q) {
+        filteredTaxonomy = baseCategories.map(cat => ({
+          ...cat,
+          subclasses: sortEquipment(cat.subclasses, equipSortMode)
+        }));
+      } else {
+        filteredTaxonomy = baseCategories.map(cat => {
+          const matchedSubs = cat.subclasses.filter(sub => 
+            sub.displayName.toLowerCase().includes(q) ||
+            sub.className.toLowerCase().includes(q) ||
+            sub.tag.toLowerCase().includes(q) ||
+            sub.subTitle.toLowerCase().includes(q) ||
+            sub.summary.toLowerCase().includes(q) ||
+            cat.name.toLowerCase().includes(q)
+          );
+          return {
+            ...cat,
+            subclasses: sortEquipment(matchedSubs, equipSortMode)
+          };
+        }).filter(cat => cat.subclasses.length > 0);
+      }
+
+      if (selectedCatIndex >= filteredTaxonomy.length) selectedCatIndex = 0;
+      const currentCat = filteredTaxonomy[selectedCatIndex];
+      if (currentCat && selectedSubIndex >= currentCat.subclasses.length) selectedSubIndex = 0;
+
+      renderCategories();
+      renderSubclasses();
+      renderRightPanel();
+    }
+
+    searchInput.addEventListener("input", applyFilteringAndSorting);
+
+    // Render Column 1: Domain Categories
+    function renderCategories() {
+      categoryList.innerHTML = "";
+      categoryCount.textContent = filteredTaxonomy.length;
+
+      if (filteredTaxonomy.length === 0) {
+        categoryList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">No matching domains</div>';
+        return;
+      }
+
+      filteredTaxonomy.forEach((cat, idx) => {
+        const item = document.createElement("div");
+        item.className = `nav-item ${idx === selectedCatIndex ? 'active' : ''}`;
+        item.innerHTML = `
+          <div class="nav-item-left">
+            <div class="category-icon-box">${cat.icon}</div>
+            <div class="item-title-group">
+              <div class="item-title">${cat.name}</div>
+              <div class="item-desc">${cat.subclasses.length} equipment types</div>
+            </div>
+          </div>
+          <span class="chevron">›</span>
+        `;
+
+        item.addEventListener("click", () => {
+          selectedCatIndex = idx;
+          selectedSubIndex = 0;
+          renderCategories();
+          renderSubclasses();
+          renderRightPanel();
+        });
+
+        categoryList.appendChild(item);
+      });
+    }
+
+    // Render Column 2: Equipment Types (User-Friendly Display Names)
+    function renderSubclasses() {
+      subclassList.innerHTML = "";
+      const currentCat = filteredTaxonomy[selectedCatIndex];
+
+      if (!currentCat || currentCat.subclasses.length === 0) {
+        subclassCount.textContent = "0";
+        subclassList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">No equipment classes</div>';
+        return;
+      }
+
+      subclassCount.textContent = currentCat.subclasses.length;
+
+      currentCat.subclasses.forEach((sub, idx) => {
+        const item = document.createElement("div");
+        item.className = `subclass-item ${idx === selectedSubIndex ? 'active' : ''}`;
+        item.innerHTML = `
+          <div class="subclass-top">
+            <span class="subclass-name">${sub.displayName}</span>
+            <span class="subclass-tag">${sub.tag}</span>
+          </div>
+          <div class="subclass-summary">${sub.subTitle}</div>
+        `;
+
+        item.addEventListener("click", () => {
+          selectedSubIndex = idx;
+          renderSubclasses();
+          renderRightPanel();
+        });
+
+        subclassList.appendChild(item);
+      });
+    }
+
+    // Render Right Panel (Tabs: Active Field Data Entry Form vs. Code Specs)
+    function renderRightPanel() {
+      const currentCat = filteredTaxonomy[selectedCatIndex];
+      const currentSub = currentCat && currentCat.subclasses[selectedSubIndex];
+
+      if (!currentSub) {
+        specPanel.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--text-muted); font-size: 13px;">Select an equipment class to begin field data entry</div>';
+        bcCategory.textContent = "—";
+        bcSubclass.textContent = "—";
+        return;
+      }
+
+      // Update Breadcrumbs
+      bcCategory.textContent = currentCat.name;
+      bcSubclass.textContent = currentSub.displayName;
+
+      // Render Tab Header
+      let html = `
+        <div class="panel-tabs-bar">
+          <div class="tab-btn-group">
+            <button id="tabFormBtn" class="tab-btn ${currentRightTab === 'form' ? 'active' : ''}">
+              <span>📝 Field Data Entry</span>
+            </button>
+            <button id="tabSpecsBtn" class="tab-btn ${currentRightTab === 'specs' ? 'active' : ''}">
+              <span>📖 Code Rules & Specs</span>
+            </button>
+          </div>
+          <span class="spec-badge-pill">${currentSub.tag}</span>
+        </div>
+
+        <div class="spec-header-compact">
+          <div>
+            <h2 class="spec-class-title">${currentSub.displayName}</h2>
+            <p class="spec-module-path">${currentSub.className} • ${currentSub.module}</p>
+          </div>
+        </div>
+      `;
+
+      if (currentRightTab === "form") {
+        html += renderDataEntryForm(currentCat, currentSub);
+      } else {
+        html += renderSpecsContent(currentSub);
+      }
+
+      specPanel.innerHTML = html;
+
+      // Wire Tab Buttons
+      document.getElementById("tabFormBtn").addEventListener("click", () => {
+        currentRightTab = "form";
+        renderRightPanel();
+      });
+      document.getElementById("tabSpecsBtn").addEventListener("click", () => {
+        currentRightTab = "specs";
+        renderRightPanel();
+      });
+
+      // Wire Live Form Calculation Listeners if in Form Mode
+      if (currentRightTab === "form") {
+        setupFormCalculationHandlers(currentCat, currentSub);
+      }
+    }
+
+    // Helper: Render Dynamic Field Data Entry Form
+    function renderDataEntryForm(cat, sub) {
+      // Class-specific fields generator
+      let specificFieldsHtml = "";
+
+      if (cat.id === "transformers") {
+        specificFieldsHtml = `
+          <div class="form-section">
+            <div class="form-section-title">🔄 Transformer Parameters</div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label">Rated kVA</label>
+                <select id="formKva" class="form-select">
+                  <option value="15">15 kVA</option>
+                  <option value="30">30 kVA</option>
+                  <option value="45">45 kVA</option>
+                  <option value="75" selected>75 kVA</option>
+                  <option value="112.5">112.5 kVA</option>
+                  <option value="150">150 kVA</option>
+                  <option value="225">225 kVA</option>
+                  <option value="300">300 kVA</option>
+                  <option value="500">500 kVA</option>
+                  <option value="1000">1000 kVA</option>
+                  <option value="1500">1500 kVA</option>
+                  <option value="2500">2500 kVA</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Primary Voltage</label>
+                <select id="formPrimaryV" class="form-select">
+                  <option value="480" selected>480V Delta</option>
+                  <option value="4160">4160V</option>
+                  <option value="12470">12.47 kV</option>
+                  <option value="13800">13.8 kV</option>
+                  <option value="208">208V</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Secondary Voltage</label>
+                <select id="formSecondaryV" class="form-select">
+                  <option value="208" selected>208Y/120V Wye</option>
+                  <option value="480">480Y/277V Wye</option>
+                  <option value="240">120/240V 1Ø</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (cat.id === "switches") {
+        specificFieldsHtml = `
+          <div class="form-section">
+            <div class="form-section-title">🔌 Switch & Transfer Controls</div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Normal Source Tag</label>
+                <input type="text" id="formNormalSrc" class="form-input" value="UTIL-1" placeholder="e.g. UTIL-1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Emergency Source Tag</label>
+                <input type="text" id="formEmergSrc" class="form-input" value="GEN-1" placeholder="e.g. GEN-1">
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (cat.id === "breakers") {
+        specificFieldsHtml = `
+          <div class="form-section">
+            <div class="form-section-title">🛡️ Breaker Poles & Trip Unit</div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label">Poles</label>
+                <select id="formPoles" class="form-select">
+                  <option value="1">1-Pole (1P)</option>
+                  <option value="2">2-Pole (2P)</option>
+                  <option value="3" selected>3-Pole (3P)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Trip Rating (A)</label>
+                <input type="number" id="formTripAmps" class="form-input" value="100" min="15" step="5">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Trip Unit Type</label>
+                <select id="formTripType" class="form-select">
+                  <option value="TM">Thermal-Magnetic</option>
+                  <option value="LSI">Electronic LSI</option>
+                  <option value="LSIG">Electronic LSIG</option>
+                  <option value="MAG">Magnetic Only (MCP)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (cat.id === "loads") {
+        specificFieldsHtml = `
+          <div class="form-section">
+            <div class="form-section-title">⚙️ Motor & Load Sizing</div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label">Horsepower (HP)</label>
+                <input type="number" id="formHp" class="form-input" value="50" min="0.5" step="0.5">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Power Factor</label>
+                <input type="number" id="formPf" class="form-input" value="0.88" min="0.5" max="1.0" step="0.01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Efficiency (%)</label>
+                <input type="number" id="formEff" class="form-input" value="94.5" min="70" max="99" step="0.1">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <!-- Field Identification Section -->
+        <div class="form-section">
+          <div class="form-section-title">🏷️ Equipment Identification & Location</div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Tag / Designation</label>
+              <input type="text" id="formTag" class="form-input" value="${sub.defaultTag || 'EQ-1'}" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #38BDF8;">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label">Equipment Description / Name</label>
+              <input type="text" id="formName" class="form-input" value="${sub.displayName}">
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Room / Floor Location</label>
+              <input type="text" id="formLocation" class="form-input" placeholder="e.g. Electrical Room 102, Penthouse">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Manufacturer / Brand</label>
+              <select id="formMfr" class="form-select">
+                <option value="Square D">Square D / Schneider Electric</option>
+                <option value="Eaton">Eaton / Cutler-Hammer</option>
+                <option value="Siemens">Siemens</option>
+                <option value="ABB">ABB / GE Industrial</option>
+                <option value="ASCO">ASCO Power Technologies</option>
+                <option value="Cummins">Cummins Power Generation</option>
+                <option value="Other">Other / Custom Nameplate</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Electrical Ratings Section -->
+        <div class="form-section">
+          <div class="form-section-title">⚡ Electrical Nameplate Ratings</div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">System Voltage</label>
+              <select id="formVoltage" class="form-select">
+                <option value="480Y/277V 3Ø 4W" selected>480Y/277V 3Ø 4W</option>
+                <option value="208Y/120V 3Ø 4W">208Y/120V 3Ø 4W</option>
+                <option value="120/240V 1Ø 3W">120/240V 1Ø 3W</option>
+                <option value="480V 3Ø 3W">480V 3Ø 3W</option>
+                <option value="4160V 3Ø 3W">4160V 3Ø 3W</option>
+                <option value="12.47kV 3Ø 3W">12.47 kV 3Ø</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ampacity / Bus Rating (A)</label>
+              <input type="number" id="formAmps" class="form-input" value="400" min="15" step="25">
+            </div>
+            <div class="form-group">
+              <label class="form-label">AIC / SCCR Rating (kA)</label>
+              <select id="formAic" class="form-select">
+                <option value="10">10 kA AIC</option>
+                <option value="22">22 kA AIC</option>
+                <option value="42">42 kA AIC</option>
+                <option value="65" selected>65 kA AIC</option>
+                <option value="100">100 kA AIC</option>
+                <option value="200">200 kA AIC</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Enclosure Protection</label>
+              <select id="formEnclosure" class="form-select">
+                <option value="NEMA 1">NEMA 1 (Indoor General Purpose)</option>
+                <option value="NEMA 3R">NEMA 3R (Outdoor Rainproof)</option>
+                <option value="NEMA 4X">NEMA 4X (Stainless Washdown)</option>
+                <option value="NEMA 12">NEMA 12 (Dust-Tight Industrial)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mounting Type</label>
+              <select id="formMounting" class="form-select">
+                <option value="Surface">Surface Wall Mount</option>
+                <option value="Flush">Flush Recessed</option>
+                <option value="Padmount">Floor Padmount / Free-Standing</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        ${specificFieldsHtml}
+
+        <!-- Live Engineering Calculation Card -->
+        <div class="telemetry-card">
+          <div class="telemetry-header">
+            <span>Live Digital Twin Sizing Telemetry</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px;">NEC 2023 Rules</span>
+          </div>
+          <div class="telemetry-grid">
+            <div class="telemetry-stat">
+              <span class="telemetry-stat-label">Calculated Full-Load (FLA)</span>
+              <span id="telemetryFla" class="telemetry-stat-val">481.1 A</span>
+            </div>
+            <div class="telemetry-stat">
+              <span class="telemetry-stat-label">Continuous 125% OCPD</span>
+              <span id="telemetryOcpd" class="telemetry-stat-val">600 A</span>
+            </div>
+            <div class="telemetry-stat">
+              <span class="telemetry-stat-label">Short-Circuit Withstand</span>
+              <span id="telemetrySccr" class="telemetry-stat-val">65.0 kA</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Helper: Render Engineering Specs Tab
+    function renderSpecsContent(sub) {
+      const specCardsHtml = Object.entries(sub.specs).map(([key, val]) => `
+        <div class="spec-card">
+          <span class="spec-card-label">${key}</span>
+          <span class="spec-card-value">${val}</span>
+        </div>
+      `).join("");
+
+      const rulesHtml = sub.rules.map(r => `<li style="margin-left: 16px; margin-bottom: 4px;">${r}</li>`).join("");
+
+      return `
+        <div>
+          <h4 class="spec-section-title" style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Overview & Application</h4>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">${sub.summary}</p>
+        </div>
+
+        <div>
+          <h4 class="spec-section-title" style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">Engineering Ratings & Sizing</h4>
+          <div class="spec-grid">
+            ${specCardsHtml}
+          </div>
+        </div>
+
+        <div>
+          <h4 class="spec-section-title" style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Deterministic Code Rules (NEC / NFPA)</h4>
+          <ul style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+            ${rulesHtml}
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="spec-section-title" style="font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Python Digital Twin Instantiation</h4>
+          <pre class="code-preview-box"><code>${escapeHtml(sub.pythonSample)}</code></pre>
+        </div>
+      `;
+    }
+
+    // Setup Live Calculation Listeners
+    function setupFormCalculationHandlers(cat, sub) {
+      const formKva = document.getElementById("formKva");
+      const formSecondaryV = document.getElementById("formSecondaryV");
+      const formAmps = document.getElementById("formAmps");
+      const formAic = document.getElementById("formAic");
+      const formHp = document.getElementById("formHp");
+      const telemetryFla = document.getElementById("telemetryFla");
+      const telemetryOcpd = document.getElementById("telemetryOcpd");
+      const telemetrySccr = document.getElementById("telemetrySccr");
+
+      function updateCalculations() {
+        if (!telemetryFla) return;
+
+        if (cat.id === "transformers" && formKva && formSecondaryV) {
+          const kva = parseFloat(formKva.value) || 75;
+          const secV = parseFloat(formSecondaryV.value) || 208;
+          const fla = (kva * 1000) / (Math.sqrt(3) * secV);
+          const ocpd = Math.round(fla * 1.25);
+          telemetryFla.textContent = `${fla.toFixed(1)} A`;
+          telemetryOcpd.textContent = `${ocpd} A`;
+          telemetrySccr.textContent = "DOE 2016";
+        } else if (cat.id === "loads" && formHp) {
+          const hp = parseFloat(formHp.value) || 50;
+          // Approximate 460V 3-phase FLA ~ 1.3A per HP
+          const fla = hp * 1.3;
+          const ocpd = Math.round(fla * 1.25);
+          telemetryFla.textContent = `${fla.toFixed(1)} A`;
+          telemetryOcpd.textContent = `${ocpd} A`;
+          telemetrySccr.textContent = "NEC 430.52";
+        } else if (formAmps) {
+          const amps = parseFloat(formAmps.value) || 400;
+          const ocpd = Math.round(amps * 1.25);
+          telemetryFla.textContent = `${amps.toFixed(1)} A`;
+          telemetryOcpd.textContent = `${ocpd} A`;
+          if (formAic) telemetrySccr.textContent = `${formAic.value} kA`;
+        }
+      }
+
+      if (formKva) formKva.addEventListener("change", updateCalculations);
+      if (formSecondaryV) formSecondaryV.addEventListener("change", updateCalculations);
+      if (formAmps) formAmps.addEventListener("input", updateCalculations);
+      if (formAic) formAic.addEventListener("change", updateCalculations);
+      if (formHp) formHp.addEventListener("input", updateCalculations);
+
+      updateCalculations();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Save & Add to Single-Line Action Button
+    instantiateBtn.addEventListener("click", () => {
+      const currentCat = filteredTaxonomy[selectedCatIndex];
+      const currentSub = currentCat && currentCat.subclasses[selectedSubIndex];
+      if (currentSub) {
+        const tagInput = document.getElementById("formTag");
+        const enteredTag = tagInput ? tagInput.value : currentSub.defaultTag || currentSub.tag;
+        toastMsg.textContent = `Saved [${enteredTag}] ${currentSub.displayName} to Single-Line Diagram!`;
+        toast.classList.add("show");
+        closeModal();
+        setTimeout(() => toast.classList.remove("show"), 3500);
+      }
+    });
+
+    // Initialize UI on page load
+    applyFilteringAndSorting();
+  </script>
+</body>
+</html>

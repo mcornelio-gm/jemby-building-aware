@@ -1,0 +1,9 @@
+{
+  "project_name": "Build Aware EMP",
+  "project_id": "project-bc67d769-caac-49d1-8d2",
+  "services": [
+    "cloud_run",
+    "cloud_sql",
+    "bigquery"
+  ]
+}

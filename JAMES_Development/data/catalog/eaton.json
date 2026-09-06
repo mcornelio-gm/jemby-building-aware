@@ -1,0 +1,5095 @@
+{
+  "manufacturer": "Eaton",
+  "items": [
+    {
+      "part_number": "PDF34GH400E2XN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Four Pole, 400A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG42K0800D3DK",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 4, Two Pole, 800A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG23N0200P8WN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF33F0250E2CK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF64P1600E5WM",
+      "series": "Power Defense Frame 6",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 6, Four Pole, 1600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 1600.0,
+        "poles": 4,
+        "aic": 100.0,
+        "frame": "Frame 6",
+        "interrupt_rating": "100.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF33F0400E2WN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 400A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG23K0015TFFL",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 15A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 15.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32GH250D4YN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 250A High Override",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33KH250E5MK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32M0250E2RJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 250A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF24K0060B2NN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 60A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 60.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF44K0800E2ZL",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 4, Four Pole, 800A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG30K0300VFAN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Four Pole, 300A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 300.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33M0600P8DN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF33KH400E3XK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 400A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF24N0225B2NN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 225A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33N0125P5DJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 125A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF53M1200P2MM",
+      "series": "Power Defense Frame 5",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 5, Three Pole, 1200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "poles": 3,
+        "aic": 100.0,
+        "frame": "Frame 5",
+        "interrupt_rating": "100.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG14C0045VFFN",
+      "series": "Power Defense Frame 1",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 1, Four Pole, 45A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 45.0,
+        "poles": 4,
+        "aic": 25.0,
+        "frame": "Frame 1",
+        "interrupt_rating": "25.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33G0125P2WJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 125A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33GH250E5ZK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG34K0125B2NL",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Four Pole, 125A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG20F0200TFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF33F0600P4YK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33G0250E2NK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG14K0045TFFN",
+      "series": "Power Defense Frame 1",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 1, Four Pole, 45A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 45.0,
+        "poles": 4,
+        "aic": 25.0,
+        "frame": "Frame 1",
+        "interrupt_rating": "25.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF24M0225E3ZW",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 225A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG34PH400P2WL",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Four Pole, 400A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG23F0200TFFJ",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG21G0020VFFL",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Single Pole, 20A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 20.0,
+        "poles": 1,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32M0125P3MJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 125A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF24M0150E2XJ",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 150A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 150.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG24P0200TFFL",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33N0250E5RL",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG24P0225E2CJ",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 225A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32NH250D4MN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 250A High Override",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32G0200VFAK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDD23M0150VFFJ",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 150A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 150.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDD22F0080VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Two Pole, 80A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 80.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG24K0060P3DJ",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 60A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 60.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF23N0225P2YW",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 225A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG34M0125E3RK",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Four Pole, 125A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32P0600P4DL",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG54P1200FNNN",
+      "series": "Power Defense Frame 5",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 5, Four Pole, 1200A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "poles": 4,
+        "aic": 100.0,
+        "frame": "Frame 5",
+        "interrupt_rating": "100.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33GH400P3MN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 400A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF24G0100E2XN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 100A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33M0250E5WN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG44K0600VFAL",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 4, Four Pole, 600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33MH400P4WJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 400A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG23G0100E3CL",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 100A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDF33KH400E2CJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 400A-High",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG24K0225P3WJ",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 225A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG12K0030TFFJ",
+      "series": "Power Defense Frame 1",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 1, Two Pole, 30A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 30.0,
+        "poles": 2,
+        "aic": 25.0,
+        "frame": "Frame 1",
+        "interrupt_rating": "25.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32GH400D5ML",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 400A High Override",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG24P0060VFFK",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Four Pole, 60A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 60.0,
+        "poles": 4,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG32M0600P2YJ",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Two Pole, 600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 2,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDC54M1600E3MM",
+      "series": "Power Defense Frame 5",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 5, Four Pole, 1600A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 1600.0,
+        "poles": 4,
+        "aic": 100.0,
+        "frame": "Frame 5",
+        "interrupt_rating": "100.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33M0250P4YN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 3, Three Pole, 250A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG11F0020TFFJ",
+      "series": "Power Defense Frame 1",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 1, Single Pole, 20A",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 20.0,
+        "poles": 1,
+        "aic": 25.0,
+        "frame": "Frame 1",
+        "interrupt_rating": "25.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDG23N0100P2WN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Frame 2, Three Pole, 100A",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO43G0500VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 500A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 500.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO43G0450VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 450A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 450.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0175VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 175A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 175.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0080VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 80A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 80.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0030VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 30A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 30.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0070VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 70A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 70.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0100VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0100VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34GH250VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0070VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 70A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 70.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0125VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 125A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0225VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 225A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO43G0400VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 400A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34GH350VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO43G0350VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 350A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 350.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0300VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 300A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 300.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0200VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 200A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP43G0600VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 600A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP43G0350VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 350A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 350.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0030VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 30A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 30.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO43G0600VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 600A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0050VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 50A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 50.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0040VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 40A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 40.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34GH350VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0060VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 60A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0060VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 60A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP43G0450VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 450A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 450.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0150VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 150A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 150.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0250VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 250A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP43G0300VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 300A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 300.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0200VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 200A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34GH300VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP43G0500VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 500A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 500.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO24G0090VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 90A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 90.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34GH400VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO43G0300VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 300A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 300.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0080VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 80A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 80.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0350VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 350A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 350.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP43G0400VFFN",
+      "series": "Power Defense Frame 4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 4 4-Pole 400A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "poles": 4,
+        "aic": 65.0,
+        "frame": "Frame 4",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34GH300VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0090VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 90A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 90.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0350VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 350A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 350.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34GH250VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34GH400VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 100A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0150VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 150A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 150.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0125VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 125A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0300VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 300A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 300.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0040VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 40A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 40.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP34G0175VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 175A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 175.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0250VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 250A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDO34G0225VFFN",
+      "series": "Power Defense Frame 3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 3 3-Pole 225A Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "poles": 3,
+        "aic": 65.0,
+        "frame": "Frame 3",
+        "interrupt_rating": "65.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "PDP24G0050VFFN",
+      "series": "Power Defense Frame 2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Power Defense Frame 2 2-Pole 50A Circuit Breaker",
+      "specs": {
+        "voltage": "240/120V",
+        "amps": 50.0,
+        "poles": 2,
+        "aic": 35.0,
+        "frame": "Frame 2",
+        "interrupt_rating": "35.0kA @ 480V",
+        "trip_type": "Electronic / Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS4084HEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS4084HEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC203VEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC203VEAXX2H)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPN85N3LEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPN85N3LEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPNC203YEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPNC203YEAXX2A)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN6404HEAXXSW",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN6404HEAXXSW)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC083WEAXXSW",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC083WEAXXSW)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN6124LEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN6124LEAXX2F)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN4163LEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN4163LEAXX2H)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6203MEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6203MEAXX2A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN4163YEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN4163YEAXX2H)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6164MEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6164MEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPSC5A4WEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPSC5A4WEAXX2A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS5163HEAXX3A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS5163HEAXX3A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS86A4EEAXX2Q",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS86A4EEAXX2Q)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPSC5N3WEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPSC5N3WEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPNC4N4YEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPNC4N4YEAXX2H)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN85N3WEAXX2S",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN85N3WEAXX2S)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC083WEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC083WEAXX2A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN6403LEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN6403LEAXX2F)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN6084VEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN6084VEAXX2F)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6124VEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6124VEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC404MEAXX2S",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC404MEAXX2S)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC503HEAXX2C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC503HEAXX2C)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN6163CEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN6163CEAXX2H)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8404WEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8404WEAXX2A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6163HEAXXSW",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6163HEAXXSW)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS86A4GEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS86A4GEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPNC4N4YEAXXSW",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPNC4N4YEAXXSW)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPNC084YEAXXSW",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPNC084YEAXXSW)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6203VEAXX3D",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6203VEAXX3D)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN4084HEAXX2Q",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN4084HEAXX2Q)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8163MEAXX2Q",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8163MEAXX2Q)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPNC4N3LEAXX3C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPNC4N3LEAXX3C)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8084MEAXX2C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8084MEAXX2C)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN64N3LEAXX2Q",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN64N3LEAXX2Q)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8324MEAXX2C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8324MEAXX2C)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN5123YEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN5123YEAXX2A)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8124WEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8124WEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8503HEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8503HEAXX2H)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC323WEAXX3A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC323WEAXX3A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC203WEAXX2C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC203WEAXX2C)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS85N4HEAXX2Q",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS85N4HEAXX2Q)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC504HEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC504HEAXX2H)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8504HEAXX2S",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8504HEAXX2S)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC6N3GEAXX3B",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC6N3GEAXX3B)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC5N3HEAXX2Q",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC5N3HEAXX2Q)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6084HEAXXSW",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6084HEAXXSW)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS8503VEAXX2S",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS8503VEAXX2S)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPN6204XEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPN6204XEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN64N3HEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN64N3HEAXX2A)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPSC203WEAXX3C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPSC203WEAXX3C)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPSC124WEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPSC124WEAXX2A)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPN6164YEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPN6164YEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPS8503MEAXX2C",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPS8503MEAXX2C)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN4163LEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN4163LEAXX2A)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPN84N4XEAXX2A",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPN84N4XEAXX2A)",
+      "specs": {
+        "voltage": "208Y/120V 3\u00d8 4W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6164WEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6164WEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPN84N4WEAXX2F",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPN84N4WEAXX2F)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "MPS6253MEAXX3B",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (MPS6253MEAXX3B)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "SPS84N3MEAXX2H",
+      "series": "1MP / 3MM Commercial & Residential Modular Metering",
+      "domain": "panels",
+      "type_tag": "REC",
+      "type_name": "Meter Center / Modular Meter Stack",
+      "description": "Eaton Modular Meter Stack / Tenant Main (SPS84N3MEAXX2H)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8 3W",
+        "amps": 200.0,
+        "aic": 65.0,
+        "slots": 12,
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG225NRK-00EM",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG222URB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324FGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG322NRBP",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG325URK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG326NRK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324URK-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG325FGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG223URB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG326FGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG221NRBP",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323NRB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG224URK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG224FRKV",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324NRKP",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321NGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323NGBP",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG325FRK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG223UGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG224FGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324NRK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG222NGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323NRBP",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG222UGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323NGBLORED",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG326URK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324URK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG222NRB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG322FRB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323URB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG322UGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG322NGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321NRB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG223NRB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG326NGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG226FGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG222URB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321UGB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG221NGBLORED",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323FRB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG322URB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG223NGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG325NGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG325UGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321UGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323NRB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG225FGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324NGKP",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321URB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG224FRK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG326UGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG324UGK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG323UGB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321FRB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 100.0,
+        "fuse_style": "Class R / Class H",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG224NRKV",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG222UGB-CSA",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG224URKN-00EM",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG226NRK",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG321NGBLORED",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V / 480V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 1 (Indoor)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DG221URB",
+      "series": "DG Series General Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Safety Switch / Disconnect",
+      "description": "Eaton General Duty Safety Switch 2P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 3R (Rainproof)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH421FDK",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 4P 60A (Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 60.0,
+        "poles": 4,
+        "aic": 200.0,
+        "fuse_style": "Class J / Class R",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH226FWKW",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 200.0,
+        "fuse_style": "Class J / Class R",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH362NGK-RDLO",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 3P 600A (Non-Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH362NCK",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 3P 600A (Non-Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH224FWK",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 200.0,
+        "fuse_style": "Class J / Class R",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH227FDKW",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 2P 60A (Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 200.0,
+        "fuse_style": "Class J / Class R",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH361FDK2WR",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 3P 600A (Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 200.0,
+        "fuse_style": "Class J / Class R",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH424FGKV",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 4P 60A (Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 60.0,
+        "poles": 4,
+        "aic": 200.0,
+        "fuse_style": "Class J / Class R",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH322NGK",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 3P 60A (Non-Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH368NWK",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 3P 600A (Non-Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "DH367NWKW",
+      "series": "DH Series Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy Duty Safety Switch",
+      "description": "Eaton Heavy Duty Safety Switch 3P 600A (Non-Fusible)",
+      "specs": {
+        "voltage": "600V AC/DC",
+        "amps": 600.0,
+        "poles": 3,
+        "aic": 10.0,
+        "fuse_style": "Non-Fused",
+        "nema_rating": "NEMA 4X (Stainless)"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "V48M28T75EE",
+      "series": "V48M Ventilated Transformer Series",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Eaton 75 kVA Ventilated Transformer (NEMA 1, Energy Star, aluminum windings)",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.8,
+        "winding": "Aluminum",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "V48M28T7516",
+      "series": "V48M Ventilated Transformer Series",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Eaton 75 kVA Ventilated Transformer (NEMA 3R (outdoor enclosure))",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.8,
+        "winding": "Aluminum",
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "V48M28T112516",
+      "series": "V48M Ventilated Transformer Series",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Eaton 112 kVA Ventilated Transformer (NEMA 3R (FR943 frame))",
+      "specs": {
+        "kva": 112.5,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.8,
+        "winding": "Aluminum",
+        "nema_rating": "NEMA 3R"
+      },
+      "docs": {
+        "cut_sheet": "",
+        "upc": null
+      }
+    }
+  ]
+}
