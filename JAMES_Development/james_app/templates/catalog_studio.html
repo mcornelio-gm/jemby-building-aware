@@ -850,7 +850,7 @@
           } else if (mLower.includes('leviton') && p.length <= 8 && !p.startsWith('GEN')) {
             return `https://www.leviton.com/en/products/${p.toLowerCase()}`;
           } else {
-            const query = `${m || 'Electrical'} ${p} cut sheet pdf`;
+            const query = `${m || 'Electrical'} "${p}" cut sheet pdf`;
             return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
           }
         },

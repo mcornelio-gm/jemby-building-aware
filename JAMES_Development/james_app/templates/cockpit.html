@@ -3177,7 +3177,8 @@
             return item.cut_sheet_url.trim();
           }
           const m = (this.form.manufacturer || (item && item.manufacturer) || 'Electrical').trim();
-          return `https://www.google.com/search?q=${encodeURIComponent(m + ' ' + this.form.model_no.trim() + ' cut sheet pdf')}`;
+          const p = this.form.model_no.trim();
+          return `https://www.google.com/search?q=${encodeURIComponent(`${m} "${p}" cut sheet pdf`)}`;
         },
 
         onCatalogManufacturerChange() {
