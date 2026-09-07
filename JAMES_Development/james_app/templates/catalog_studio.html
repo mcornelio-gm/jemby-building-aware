@@ -143,40 +143,48 @@
         </div>
       </div>
 
-      <!-- Equipment Archetype Filter -->
+      <!-- Equipment Archetype Filter (Cascades from Selected Domain) -->
       <div class="p-3 border-b border-slate-800">
-        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Equipment Type</div>
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+          <span>Equipment Type</span>
+          <button x-show="selectedTypeTag"
+                  @click="selectedTypeTag = ''"
+                  class="text-[10px] text-emerald-400 hover:underline">Clear</button>
+        </div>
         <select x-model="selectedTypeTag"
                 class="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-xs text-slate-200 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-          <option value="">All Equipment Types</option>
+          <option value="" x-text="selectedDomain ? 'All ' + selectedDomain.replace('_', ' ') + ' Types' : 'All Equipment Types'"></option>
           <template x-for="(count, typeTag) in typeCounts" :key="typeTag">
             <option :value="typeTag" x-text="typeTag + ' (' + count + ')'"></option>
           </template>
         </select>
+        <template x-if="selectedDomain && Object.keys(typeCounts).length === 0">
+          <div class="text-[10px] text-slate-500 mt-1.5 italic">No equipment types in this domain</div>
+        </template>
       </div>
 
-      <!-- Manufacturers List -->
+      <!-- Manufacturers List (Cascades from Domain and Type Tag) -->
       <div class="p-3 flex-1">
         <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
           <span>Manufacturers</span>
           <button x-show="selectedManufacturer"
                   @click="selectedManufacturer = ''"
-                  class="text-[10px] text-emerald-400 hover:underline">Clear</button>
+                  class="text-[10px] text-cyan-400 hover:underline">Clear</button>
         </div>
         <div class="space-y-1 text-xs">
           <button @click="selectedManufacturer = ''"
                   :class="!selectedManufacturer ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
                   class="w-full text-left px-2.5 py-1.5 rounded-md border flex items-center justify-between transition">
-            <span>All Manufacturers</span>
-            <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="items.length"></span>
+            <span>All Matching Brands</span>
+            <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="matchingItemsCount"></span>
           </button>
           
-          <template x-for="mfg in manufacturers" :key="mfg.name">
-            <button @click="selectedManufacturer = mfg.name"
-                    :class="selectedManufacturer === mfg.name ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+          <template x-for="(count, mfgName) in mfgCounts" :key="mfgName">
+            <button @click="selectedManufacturer = mfgName"
+                    :class="selectedManufacturer === mfgName ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
                     class="w-full text-left px-2.5 py-1.5 rounded-md border flex items-center justify-between transition">
-              <span class="truncate pr-1" x-text="mfg.name"></span>
-              <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="mfgCounts[mfg.name] || 0"></span>
+              <span class="truncate pr-1" x-text="mfgName"></span>
+              <span class="text-[10px] px-1.5 py-0.2 bg-slate-800 rounded font-mono text-slate-400" x-text="count"></span>
             </button>
           </template>
         </div>
@@ -654,8 +662,27 @@
 
         initData() {
           this.$watch('searchQuery', () => { this.currentPage = 1; });
-          this.$watch('selectedDomain', () => { this.currentPage = 1; });
-          this.$watch('selectedTypeTag', () => { this.currentPage = 1; });
+          
+          this.$watch('selectedDomain', () => {
+            this.currentPage = 1;
+            // If current type_tag is not available in the newly selected domain, clear it
+            if (this.selectedTypeTag && !this.typeCounts[this.selectedTypeTag]) {
+              this.selectedTypeTag = '';
+            }
+            // If current manufacturer is not available in the newly selected domain, clear it
+            if (this.selectedManufacturer && !this.mfgCounts[this.selectedManufacturer]) {
+              this.selectedManufacturer = '';
+            }
+          });
+
+          this.$watch('selectedTypeTag', () => {
+            this.currentPage = 1;
+            // If current manufacturer is not available for this type_tag, clear it
+            if (this.selectedManufacturer && !this.mfgCounts[this.selectedManufacturer]) {
+              this.selectedManufacturer = '';
+            }
+          });
+
           this.$watch('selectedManufacturer', () => { this.currentPage = 1; });
         },
 
@@ -670,7 +697,12 @@
 
         get typeCounts() {
           const counts = {};
-          this.items.forEach(it => {
+          let list = this.items;
+          // Limit types by currently selected domain
+          if (this.selectedDomain) {
+            list = list.filter(it => (it.domain || '').toLowerCase() === this.selectedDomain.toLowerCase());
+          }
+          list.forEach(it => {
             const t = it.type_tag || 'GEN';
             counts[t] = (counts[t] || 0) + 1;
           });
@@ -679,11 +711,31 @@
 
         get mfgCounts() {
           const counts = {};
-          this.items.forEach(it => {
+          let list = this.items;
+          // Cascade by selected domain
+          if (this.selectedDomain) {
+            list = list.filter(it => (it.domain || '').toLowerCase() === this.selectedDomain.toLowerCase());
+          }
+          // Cascade by selected type tag
+          if (this.selectedTypeTag) {
+            list = list.filter(it => (it.type_tag || '').toUpperCase() === this.selectedTypeTag.toUpperCase());
+          }
+          list.forEach(it => {
             const m = it.manufacturer || 'Other';
             counts[m] = (counts[m] || 0) + 1;
           });
           return counts;
+        },
+
+        get matchingItemsCount() {
+          let list = this.items;
+          if (this.selectedDomain) {
+            list = list.filter(it => (it.domain || '').toLowerCase() === this.selectedDomain.toLowerCase());
+          }
+          if (this.selectedTypeTag) {
+            list = list.filter(it => (it.type_tag || '').toUpperCase() === this.selectedTypeTag.toUpperCase());
+          }
+          return list.length;
         },
 
         get filteredItems() {
