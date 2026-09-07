@@ -7,8 +7,8 @@
 | Document Info | Details |
 | :--- | :--- |
 | **Product Name** | JEMBY JAMES Electrical Digital Twin (JAMES) |
-| **Document Version** | 1.0.0 |
-| **Document Status** | Approved for Implementation |
+| **Document Version** | 1.1.0 |
+| **Document Status** | Approved & Implemented (Master Catalog Studio & Operations Telemetry) |
 | **Target Audience** | Engineering Leadership, Field Surveyors, Electrical Engineers, Product Managers |
 | **Author** | JEMBY Solutions / Google Antigravity Architecture Team |
 | **Date** | September 2026 |
@@ -80,7 +80,7 @@ JAMES implements a decoupled **Data-Physics-Visualization Triad**:
 
 ```mermaid
 flowchart LR
-    subgraph Frontend["Frontend Layer (SPA / Cockpit)"]
+    subgraph Frontend["Frontend Layer (SPA / Cockpit & Catalog Studio)"]
         UI1["Tailwind CSS 3.4 (Dark/Light)"]
         UI2["Alpine.js 3.14 (Reactive State)"]
         UI3["HTMX 2.0 (Dynamic Partials)"]
@@ -90,12 +90,14 @@ flowchart LR
     subgraph Backend["Backend Layer (FastAPI)"]
         API["FastAPI 0.110 (Async REST)"]
         COMP["DOT Graph Compiler (dot_compiler.py)"]
+        CAT["Master Catalog Engine (master_catalog.py)"]
         RULES["Deterministic Physics & Rules Engine"]
     end
 
     subgraph Storage["Persistence Layer"]
-        SQL["SQLite (Multi-Tenant model.db)"]
-        JSONL["Companion model.jsonl (Streaming Interchange)"]
+        SQL["Facility DB (SQLite model.db)"]
+        CAT_DB["Master Catalog (SQLite master_catalog.db)"]
+        JSONL["Companion model.jsonl & data/catalog/*.json"]
     end
 
     Frontend <-->|JSON REST & WebSockets| Backend
@@ -108,6 +110,7 @@ flowchart LR
 | :--- | :--- | :--- | :--- |
 | **Backend Framework** | Python / FastAPI | 3.11+ / 0.110 | Asynchronous REST API, Graph Engine, Data Validation |
 | **Data Validation** | Pydantic | 2.6+ | Strongly-typed electrical twin data models |
+| **Master Catalog Engine** | SQLite 3 / B-Tree Indexing | 3.40+ | High-performance catalog registry with JSON auto-sync |
 | **Client Storage** | SQLite + JSONL | SQLite 3 | Zero-config localized relational & line-delimited storage |
 | **Frontend Framework** | Alpine.js | 3.14+ | Lightweight reactive state management |
 | **Styling Engine** | Tailwind CSS | 3.4+ | Utility-first responsive design, dark mode, glassmorphism |
@@ -226,10 +229,53 @@ flowchart TD
     * **Line 3**: `50A` *(Breaker Trip Rating)*
 * **FR-7.4 Orthogonal Polyline Routing & Dark Feeder Lines**:
   * Feeder runs are routed with `splines=polyline` in bold dark slate (`#0F172A`, `penwidth=2.0`), with emergency standby generator feeds highlighted in safety amber (`#B45309`, `penwidth=2.2`).
-* **FR-7.5 Floating Interactive Domain Legend**:
-  * Persistent pill bar docked at the viewport base providing instant domain context.
+* **FR-7.5 Interactive Domain Legend & Active Highlighting**:
+  * Persistent pill bar docked at the viewport base providing live badge counts for every equipment domain present in the active single-line schematic.
+  * Clicking any domain legend button dynamically highlights and isolates all matching equipment nodes on the canvas.
+* **FR-7.6 Compact Multi-Line Box Formatting**:
+  * Equipment boxes display voltage, amperage, and slot counts formatted across compact secondary and tertiary lines to minimize node width and optimize schematic routing density.
 
-![Single-Line Diagram Silver Drafting Canvas](assets/sld_silver_theme_screenshot.png)
+---
+
+### FR-8: Master Equipment Catalog Engine & Catalog Studio (`/catalog`)
+* **FR-8.1 Multi-Manufacturer SQLite Storage Engine (`data/master_catalog.db`)**:
+  * High-performance relational catalog indexing over 280+ certified equipment parts and UPCs across 9 major manufacturers:
+    * **Eaton** (Power Defense MCCB Frames 1–6, Safety Switches, Meter Centers, V48M Transformers)
+    * **Square D / Schneider Electric** (EE Series Low Voltage Dry-Type Transformers 75–225 kVA)
+    * **Siemens** (Standard Ventilated Low-Voltage Dry-Type Transformers)
+    * **Bussmann** (Low-Peak & Fusetron Industrial Class J/CC/RK5 Fuses with UPCs)
+    * **Generac Power Systems** (Guardian Standby Generators & Automatic Transfer Switches with UPCs)
+    * **Leviton** (Industrial Spec-Grade Receptacles & Locking Plugs with UPCs)
+    * **Southwire** (SIMpull THHN & XHHW-2 Copper Building Wire with UPCs)
+    * **Allied Tube & Conduit** (True Color EMT & Galvanized Steel Conduit with UPCs)
+    * **Cooper Lighting Solutions** (Commercial & Industrial LED Fixtures with UPCs)
+* **FR-8.2 Full-Screen Catalog Studio Web Application (`/catalog`)**:
+  * Dedicated desktop catalog management dashboard featuring:
+    * Real-time search with instant debounce across part numbers, descriptions, series, and barcodes.
+    * Multi-filter sidebar (Domain, Archetype, Manufacturer with live counts).
+    * Slide-Over Specification Drawer for creating and editing electrical ratings, dimensions, and cut-sheet URLs.
+    * **1-Click Part Cloning (`📋 Clone`)**: Rapidly duplicates existing parts with custom amperages or kVA ratings.
+    * **Bulk Import & Export**: 1-click JSON / CSV upload and download.
+* **FR-8.3 Cascading Auto-Fill in Field Cockpit**:
+  * In Column 3 (Inspector) and the Breaker Modal, selecting an OEM dynamically filters available part numbers and auto-populates voltage, amps, AIC, kVA, total slots, enclosure ratings, and UPC codes with a green **`⚡ Catalog Verified`** badge.
+* **FR-8.4 Bi-Directional Git Sync**:
+  * Automatically syncs all SQLite database mutations to human-readable `data/catalog/{manufacturer}.json` files for Git versioning.
+
+---
+
+### FR-9: Operations, Asset Health & Safety Telemetry
+* **FR-9.1 Asset Criticality & Condition Assessment**:
+  * **Operational Criticality**: (1 - High / Life Safety & Data Center, 2 - Medium / Production, 3 - Low / Non-Essential).
+  * **Physical Condition Rating**: (1 - Excellent / As-New, 2 - Good / Operational, 3 - Degraded / Action Required).
+  * **Operating Environment**: (Indoor Conditioned, NEMA 3R Outdoor, Harsh / Chemical, Damp).
+* **FR-9.2 Maintenance & Inspection Scheduling**:
+  * Configurable inspection intervals (*Quarterly, Semi-Annual, Annual, 3-Year, 5-Year*) with automated Next Due Date computation and overdue alerting.
+* **FR-9.3 Arc Flash Safety & Incident Energy Compliance**:
+  * Logging for Arc Flash Hazard Category (0 to 4) and Incident Energy ratings ($cal/cm^2$).
+* **FR-9.4 Field Diagnostic Telemetry Logs**:
+  * **Infrared Thermography**: Visual hot-spot detection, delta-T logging, and pass/fail tagging.
+  * **Torque Verification**: Lug tightening checks verified against manufacturer specifications (in-lbs / ft-lbs).
+  * **Insulation Resistance (Megger)**: Phase-to-phase and phase-to-ground resistance measurements ($M\Omega$).
 
 ---
 
@@ -364,12 +410,22 @@ flowchart TD
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/cockpit` | Serves the interactive 4-Column Field Collector Cockpit |
-| `GET` | `/sld` | Serves the interactive Single-Line Diagram viewer |
-| `GET` | `/api/clients/{client}/facilities/{facility}/nodes` | Retrieves all equipment nodes for a facility |
-| `POST` | `/api/clients/{client}/facilities/{facility}/nodes` | Upserts an asset node (with schedule, photos, & dynamic attrs) |
+| `GET` | `/catalog` | Serves the full Master Catalog Studio UI for equipment management |
+| `GET` | `/clients/{client}/facilities/{facility}/sld` | Serves the interactive Single-Line Diagram viewer |
+| `GET` | `/api/clients/{client}/facilities/{facility}/nodes` | Retrieves all equipment nodes from client-isolated SQLite DB |
+| `POST` | `/api/clients/{client}/facilities/{facility}/nodes` | Upserts an asset node (with schedule, telemetry, photos, & dynamic attrs) |
 | `DELETE` | `/api/clients/{client}/facilities/{facility}/nodes/{id}`| Deletes an asset node and cleans up downstream references |
 | `GET` | `/api/clients/{client}/facilities/{facility}/dot` | Compiles facility digital twin graph to Graphviz DOT string |
-| `GET` | `/api/catalog` | Retrieves master equipment domains and type definitions |
+| `GET` | `/api/catalog/stats` | Summary statistics and counts across all Master Catalog equipment |
+| `GET` | `/api/catalog/manufacturers` | List of manufacturers supporting selected domain/type |
+| `GET` | `/api/catalog/items` | Filtered list of equipment parts with pagination and search |
+| `GET` | `/api/catalog/items/{part_number}` | Retrieves single item specification and barcode data |
+| `POST` | `/api/catalog/items` | Creates a new catalog item and persists to SQLite & JSON |
+| `PUT` | `/api/catalog/items/{part_number}` | Updates an existing catalog item with live sync |
+| `DELETE` | `/api/catalog/items/{part_number}` | Deletes an item from the Master Catalog |
+| `POST` | `/api/catalog/clone/{part_number}` | Clones an existing part into a new variant with overrides |
+| `POST` | `/api/catalog/import` | Bulk imports items from JSON/CSV payload with overwrite safety |
+| `GET` | `/api/catalog/export` | Exports catalog items as structured CSV or JSON |
 
 ---
 
