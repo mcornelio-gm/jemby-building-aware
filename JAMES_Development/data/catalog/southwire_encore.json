@@ -1,0 +1,59 @@
+{
+  "manufacturer": "Southwire / Encore",
+  "items": [
+    {
+      "part_number": "THHN-10-STR-500",
+      "series": "Simpull Copper Building Wire",
+      "domain": "wiring",
+      "type_tag": "CABLE",
+      "type_name": "Building Wire Conductor",
+      "description": "Southwire 10 AWG Stranded Copper THHN/THWN-2 600V Building Wire",
+      "specs": {
+        "voltage": "600V",
+        "conductor": "Copper",
+        "insulation": "THHN / THWN-2 / XHHW-2",
+        "temp_rating": "90\u00b0C"
+      },
+      "docs": {
+        "cut_sheet": "https://www.southwire.com/wire-cable/building-wire/c/building-wire",
+        "upc": "980100229108"
+      }
+    },
+    {
+      "part_number": "THHN-12-SOL-500",
+      "series": "Simpull Copper Building Wire",
+      "domain": "wiring",
+      "type_tag": "CABLE",
+      "type_name": "Building Wire Conductor",
+      "description": "Southwire 12 AWG Solid Copper THHN/THWN-2 Building Wire (500 ft Spool)",
+      "specs": {
+        "voltage": "600V",
+        "conductor": "Copper",
+        "insulation": "THHN / THWN-2 / XHHW-2",
+        "temp_rating": "90\u00b0C"
+      },
+      "docs": {
+        "cut_sheet": "https://www.southwire.com/wire-cable/building-wire/c/building-wire",
+        "upc": "048243234479"
+      }
+    },
+    {
+      "part_number": "XHHW-4/0-STR-1000",
+      "series": "Simpull Copper Building Wire",
+      "domain": "wiring",
+      "type_tag": "CABLE",
+      "type_name": "Building Wire Conductor",
+      "description": "Southwire 4/0 AWG Stranded Copper XHHW-2 600V Feeder Conductor",
+      "specs": {
+        "voltage": "600V",
+        "conductor": "Copper",
+        "insulation": "THHN / THWN-2 / XHHW-2",
+        "temp_rating": "90\u00b0C"
+      },
+      "docs": {
+        "cut_sheet": "https://www.southwire.com/wire-cable/building-wire/c/building-wire",
+        "upc": "980100234010"
+      }
+    }
+  ]
+}

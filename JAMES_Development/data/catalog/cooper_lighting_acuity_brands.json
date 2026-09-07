@@ -1,0 +1,95 @@
+{
+  "manufacturer": "Cooper Lighting / Acuity Brands",
+  "items": [
+    {
+      "part_number": "2VTL4-40L-ADP",
+      "series": "Commercial & Industrial LED Luminaires",
+      "domain": "lighting",
+      "type_tag": "LIGHT",
+      "type_name": "Commercial LED Luminaire",
+      "description": "Lithonia Lighting Volumetric LED Troffer 2x4 4000 Lumens 120-277V",
+      "specs": {
+        "voltage": "120-277V MVOLT",
+        "amps": 1.2,
+        "watts": 40.0,
+        "nema_rating": "NEMA 1 (Damp Location)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.cooperlighting.com/global/brands/metalux",
+        "upc": "193048671889"
+      }
+    },
+    {
+      "part_number": "CPX-2X4-4000LM",
+      "series": "Commercial & Industrial LED Luminaires",
+      "domain": "lighting",
+      "type_tag": "LIGHT",
+      "type_name": "Commercial LED Luminaire",
+      "description": "Lithonia Lighting LED Flat Panel 2x4 Edge-Lit 4000LM",
+      "specs": {
+        "voltage": "120-277V MVOLT",
+        "amps": 1.2,
+        "watts": 40.0,
+        "nema_rating": "NEMA 1 (Damp Location)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.cooperlighting.com/global/brands/metalux",
+        "upc": "807154905201"
+      }
+    },
+    {
+      "part_number": "GTL-4000L-40K",
+      "series": "Commercial & Industrial LED Luminaires",
+      "domain": "lighting",
+      "type_tag": "LIGHT",
+      "type_name": "Commercial LED Luminaire",
+      "description": "Lithonia Lighting Recessed LED Troffer 2x4 Direct/Indirect",
+      "specs": {
+        "voltage": "120-277V MVOLT",
+        "amps": 1.2,
+        "watts": 40.0,
+        "nema_rating": "NEMA 1 (Damp Location)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.cooperlighting.com/global/brands/metalux",
+        "upc": "844006091194"
+      }
+    },
+    {
+      "part_number": "IBH-18L-MVOLT",
+      "series": "Commercial & Industrial LED Luminaires",
+      "domain": "lighting",
+      "type_tag": "LIGHT",
+      "type_name": "Commercial LED Luminaire",
+      "description": "Lithonia Lighting I-BEAM LED High Bay 18,000 Lumens 120-277V",
+      "specs": {
+        "voltage": "120-277V MVOLT",
+        "amps": 1.2,
+        "watts": 135.0,
+        "nema_rating": "NEMA 1 (Damp Location)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.cooperlighting.com/global/brands/metalux",
+        "upc": "080083838196"
+      }
+    },
+    {
+      "part_number": "OVR-LED-4FT",
+      "series": "Commercial & Industrial LED Luminaires",
+      "domain": "lighting",
+      "type_tag": "LIGHT",
+      "type_name": "Commercial LED Luminaire",
+      "description": "Cooper Lighting Metalux 4ft LED Commercial Strip Luminaire",
+      "specs": {
+        "voltage": "120-277V MVOLT",
+        "amps": 1.2,
+        "watts": 40.0,
+        "nema_rating": "NEMA 1 (Damp Location)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.cooperlighting.com/global/brands/metalux",
+        "upc": "190887529739"
+      }
+    }
+  ]
+}

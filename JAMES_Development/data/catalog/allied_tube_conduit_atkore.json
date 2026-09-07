@@ -1,0 +1,56 @@
+{
+  "manufacturer": "Allied Tube & Conduit / Atkore",
+  "items": [
+    {
+      "part_number": "EMT-075-10",
+      "series": "E-Z Pull EMT & True Color Rigid Steel Conduit",
+      "domain": "conduit",
+      "type_tag": "CONDUIT",
+      "type_name": "Electrical Conduit Raceway",
+      "description": "Allied Tube 3/4-inch Electrical Metallic Tubing (EMT) Steel Conduit 10ft",
+      "specs": {
+        "material": "Galvanized Steel",
+        "trade_size": "3/4 in",
+        "standard": "UL 797 / ANSI C80.3"
+      },
+      "docs": {
+        "cut_sheet": "https://www.atkore.com/allied-tube-and-conduit",
+        "upc": "980010020024"
+      }
+    },
+    {
+      "part_number": "EMT-100-10",
+      "series": "E-Z Pull EMT & True Color Rigid Steel Conduit",
+      "domain": "conduit",
+      "type_tag": "CONDUIT",
+      "type_name": "Electrical Conduit Raceway",
+      "description": "Allied Tube 1-inch Electrical Metallic Tubing (EMT) Steel Conduit 10ft",
+      "specs": {
+        "material": "Galvanized Steel",
+        "trade_size": "1 in",
+        "standard": "UL 797 / ANSI C80.3"
+      },
+      "docs": {
+        "cut_sheet": "https://www.atkore.com/allied-tube-and-conduit",
+        "upc": "980010001061"
+      }
+    },
+    {
+      "part_number": "RMC-200-10",
+      "series": "E-Z Pull EMT & True Color Rigid Steel Conduit",
+      "domain": "conduit",
+      "type_tag": "CONDUIT",
+      "type_name": "Electrical Conduit Raceway",
+      "description": "Allied Tube 2-inch Rigid Metal Conduit (RMC) Galvanized Steel 10ft",
+      "specs": {
+        "material": "Galvanized Steel",
+        "trade_size": "2 in",
+        "standard": "UL 797 / ANSI C80.3"
+      },
+      "docs": {
+        "cut_sheet": "https://www.atkore.com/allied-tube-and-conduit",
+        "upc": "980060060063"
+      }
+    }
+  ]
+}

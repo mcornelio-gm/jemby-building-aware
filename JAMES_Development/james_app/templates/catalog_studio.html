@@ -248,6 +248,7 @@
               <th class="py-2.5 px-3">Description</th>
               <th class="py-2.5 px-3">Rating Specs</th>
               <th class="py-2.5 px-3">UPC / Barcode</th>
+              <th class="py-2.5 px-3 text-center">Cut-Sheet</th>
               <th class="py-2.5 px-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -307,6 +308,22 @@
                   </template>
                   <template x-if="!item.docs || !item.docs.upc">
                     <span class="text-slate-600">-</span>
+                  </template>
+                </td>
+
+                <!-- Cut-Sheet Link -->
+                <td class="py-2 px-3 text-center whitespace-nowrap">
+                  <template x-if="item.docs && item.docs.cut_sheet">
+                    <a :href="item.docs.cut_sheet" target="_blank"
+                       class="px-2 py-1 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 hover:text-white border border-indigo-500/30 rounded text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm"
+                       title="Open Official Manufacturer Specification Portal">
+                      <i class="fa-solid fa-file-lines text-[9px] text-indigo-400"></i>
+                      <span>View</span>
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-70"></i>
+                    </a>
+                  </template>
+                  <template x-if="!item.docs || !item.docs.cut_sheet">
+                    <span class="text-slate-600 text-[10px]">-</span>
                   </template>
                 </td>
 
@@ -509,7 +526,16 @@
             </div>
 
             <div>
-              <label class="block text-slate-300 font-medium mb-1">Cut-sheet PDF URL</label>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-slate-300 font-medium">Cut-sheet Specification URL</label>
+                <template x-if="formData.docs && formData.docs.cut_sheet">
+                  <a :href="formData.docs.cut_sheet" target="_blank"
+                     class="text-[10px] text-amber-400 hover:text-amber-300 font-bold inline-flex items-center gap-1">
+                    <span>Open Live Portal</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
+                </template>
+              </div>
               <input type="text" x-model="formData.docs.cut_sheet" placeholder="https://..."
                      class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-amber-500 focus:outline-none">
             </div>

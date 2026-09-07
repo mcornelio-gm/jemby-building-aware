@@ -1,0 +1,120 @@
+{
+  "manufacturer": "Square D / Schneider Electric",
+  "items": [
+    {
+      "part_number": "75T3HNV",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 75 kVA Dry-Type Distribution Transformer (Ventilated dry-type, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/75T3HNV/",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE112T3HFISNLP",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 112 kVA Dry-Type Distribution Transformer (NEMA 1, isolated, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 112.5,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EE112T3HFISNLP/",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE150T3HFISNLP",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 150 kVA Dry-Type Distribution Transformer (NEMA 1, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 150.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EE150T3HFISNLP/",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE225T3H",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 225 kVA Dry-Type Distribution Transformer (Standard Ventilated Dry-Type 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 225.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EE225T3H/",
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE75T3H",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 75 kVA Dry-Type Distribution Transformer (150\u00b0C rise, 20 taps, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EE75T3H/",
+        "upc": null
+      }
+    }
+  ]
+}

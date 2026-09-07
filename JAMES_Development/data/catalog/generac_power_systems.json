@@ -1,0 +1,77 @@
+{
+  "manufacturer": "Generac Power Systems",
+  "items": [
+    {
+      "part_number": "G0070432",
+      "series": "Guardian Standby Power Systems",
+      "domain": "sources",
+      "type_tag": "GEN",
+      "type_name": "Standby Generator",
+      "description": "Generac 22kW Guardian Series Standby Generator (240V 1-Phase Aluminum Enclosure)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8",
+        "amps": 100.0,
+        "kw": 24.0,
+        "nema_rating": "NEMA 3R (Outdoor Weatherproof)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.generac.com/all-products/generators/home-standby-generators/guardian-series",
+        "upc": "696471074352"
+      }
+    },
+    {
+      "part_number": "G0071720",
+      "series": "Guardian Standby Power Systems",
+      "domain": "sources",
+      "type_tag": "GEN",
+      "type_name": "Standby Generator",
+      "description": "Generac 24kW Guardian Series Standby Generator (240V 1-Phase)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8",
+        "amps": 100.0,
+        "kw": 24.0,
+        "nema_rating": "NEMA 3R (Outdoor Weatherproof)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.generac.com/all-products/generators/home-standby-generators/guardian-series",
+        "upc": "696471617122"
+      }
+    },
+    {
+      "part_number": "G0071890",
+      "series": "Guardian Standby Power Systems",
+      "domain": "sources",
+      "type_tag": "GEN",
+      "type_name": "Standby Generator",
+      "description": "Generac 26kW Guardian Standby Generator with Wi-Fi",
+      "specs": {
+        "voltage": "120/240V 1\u00d8",
+        "amps": 100.0,
+        "kw": 24.0,
+        "nema_rating": "NEMA 3R (Outdoor Weatherproof)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.generac.com/all-products/generators/home-standby-generators/guardian-series",
+        "upc": "696471618280"
+      }
+    },
+    {
+      "part_number": "RXSW200A3",
+      "series": "Guardian Standby Power Systems",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Generac 200A Service Rated Automatic Transfer Switch (NEMA 3R Aluminum Enclosure)",
+      "specs": {
+        "voltage": "120/240V 1\u00d8",
+        "amps": 200.0,
+        "kw": null,
+        "nema_rating": "NEMA 3R (Outdoor Weatherproof)"
+      },
+      "docs": {
+        "cut_sheet": "https://www.generac.com/all-products/generators/home-standby-generators/guardian-series",
+        "upc": "696471615180"
+      }
+    }
+  ]
+}

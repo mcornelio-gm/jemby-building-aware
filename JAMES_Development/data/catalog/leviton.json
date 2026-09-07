@@ -2,23 +2,6 @@
   "manufacturer": "Leviton",
   "items": [
     {
-      "part_number": "5362-W",
-      "series": "Industrial & Commercial Specification Grade",
-      "domain": "loads",
-      "type_tag": "REC",
-      "type_name": "Commercial Receptacle",
-      "description": "Leviton 20A 125V Commercial Specification Grade Duplex Receptacle (White)",
-      "specs": {
-        "voltage": "125V 1\u00d8",
-        "amps": 20.0,
-        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
-      },
-      "docs": {
-        "cut_sheet": "",
-        "upc": "078477819814"
-      }
-    },
-    {
       "part_number": "5262-W",
       "series": "Industrial & Commercial Specification Grade",
       "domain": "loads",
@@ -31,25 +14,8 @@
         "nema_rating": "NEMA 5-20R / NEMA 5-15R"
       },
       "docs": {
-        "cut_sheet": "",
+        "cut_sheet": "https://www.leviton.com/en/products/5262-w",
         "upc": "078477809495"
-      }
-    },
-    {
-      "part_number": "8300-W",
-      "series": "Industrial & Commercial Specification Grade",
-      "domain": "loads",
-      "type_tag": "REC",
-      "type_name": "Commercial Receptacle",
-      "description": "Leviton Hospital Grade 20A 125V Extra Heavy-Duty Duplex Receptacle",
-      "specs": {
-        "voltage": "125V 1\u00d8",
-        "amps": 20.0,
-        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
-      },
-      "docs": {
-        "cut_sheet": "",
-        "upc": "078477901908"
       }
     },
     {
@@ -65,8 +31,25 @@
         "nema_rating": "NEMA 5-20R / NEMA 5-15R"
       },
       "docs": {
-        "cut_sheet": "",
+        "cut_sheet": "https://www.leviton.com/en/products/5266-c",
         "upc": "078477901717"
+      }
+    },
+    {
+      "part_number": "5362-W",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "loads",
+      "type_tag": "REC",
+      "type_name": "Commercial Receptacle",
+      "description": "Leviton 20A 125V Commercial Specification Grade Duplex Receptacle (White)",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 20.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "https://www.leviton.com/en/products/5362-w",
+        "upc": "078477819814"
       }
     },
     {
@@ -82,8 +65,25 @@
         "nema_rating": "NEMA 5-20R / NEMA 5-15R"
       },
       "docs": {
-        "cut_sheet": "",
+        "cut_sheet": "https://www.leviton.com/en/products/5366-c",
         "upc": "078477808450"
+      }
+    },
+    {
+      "part_number": "8300-W",
+      "series": "Industrial & Commercial Specification Grade",
+      "domain": "loads",
+      "type_tag": "REC",
+      "type_name": "Commercial Receptacle",
+      "description": "Leviton Hospital Grade 20A 125V Extra Heavy-Duty Duplex Receptacle",
+      "specs": {
+        "voltage": "125V 1\u00d8",
+        "amps": 20.0,
+        "nema_rating": "NEMA 5-20R / NEMA 5-15R"
+      },
+      "docs": {
+        "cut_sheet": "https://www.leviton.com/en/products/8300-w",
+        "upc": "078477901908"
       }
     },
     {
@@ -99,7 +99,7 @@
         "nema_rating": "NEMA 5-20R / NEMA 5-15R"
       },
       "docs": {
-        "cut_sheet": "",
+        "cut_sheet": "https://www.leviton.com/en/products/l520-p",
         "upc": "078477795200"
       }
     }

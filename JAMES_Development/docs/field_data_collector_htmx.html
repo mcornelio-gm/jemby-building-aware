@@ -585,9 +585,18 @@
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">Catalog / Model #</label>
-                <span x-show="isCatalogItemActive" class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
-                  <span>⚡</span><span>Catalog Verified</span>
-                </span>
+                <div class="flex items-center gap-1.5">
+                  <span x-show="isCatalogItemActive" class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                    <span>⚡</span><span>Catalog Verified</span>
+                  </span>
+                  <template x-if="activeCatalogItemUrl">
+                    <a :href="activeCatalogItemUrl" target="_blank"
+                       class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5"
+                       title="Open Official Manufacturer Specification Sheet">
+                      <span>📄 Cut-Sheet ↗</span>
+                    </a>
+                  </template>
+                </div>
               </div>
               <div class="relative">
                 <input 
@@ -3156,6 +3165,13 @@
           if (!this.form || !this.form.model_no) return false;
           const modelUpper = this.form.model_no.trim().toUpperCase();
           return this.masterCatalogList.some(item => item.part_number && item.part_number.toUpperCase() === modelUpper);
+        },
+
+        get activeCatalogItemUrl() {
+          if (!this.form || !this.form.model_no) return null;
+          const modelUpper = this.form.model_no.trim().toUpperCase();
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === modelUpper);
+          return (item && item.docs && item.docs.cut_sheet) ? item.docs.cut_sheet : (item && item.cut_sheet_url ? item.cut_sheet_url : null);
         },
 
         onCatalogManufacturerChange() {

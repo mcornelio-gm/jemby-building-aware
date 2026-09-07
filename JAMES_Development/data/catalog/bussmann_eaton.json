@@ -1,0 +1,105 @@
+{
+  "manufacturer": "Bussmann (Eaton)",
+  "items": [
+    {
+      "part_number": "FRN-R-100",
+      "series": "Low-Peak & Fusetron Industrial Fuses",
+      "domain": "switches",
+      "type_tag": "FUSE",
+      "type_name": "Industrial Fuse",
+      "description": "Bussmann Fusetron Class RK5 Dual-Element Time-Delay Fuse 100A 250V",
+      "specs": {
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 200.0,
+        "fuse_type": "Class J / RK5",
+        "time_delay": true,
+        "current_limiting": true
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.FRN-R-100.html",
+        "upc": "051712508483"
+      }
+    },
+    {
+      "part_number": "FRS-R-200",
+      "series": "Low-Peak & Fusetron Industrial Fuses",
+      "domain": "switches",
+      "type_tag": "FUSE",
+      "type_name": "Industrial Fuse",
+      "description": "Bussmann Fusetron Class RK5 Dual-Element Time-Delay Fuse 200A 600V",
+      "specs": {
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "fuse_type": "Class J / RK5",
+        "time_delay": true,
+        "current_limiting": true
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.FRS-R-200.html",
+        "upc": "051712522007"
+      }
+    },
+    {
+      "part_number": "LP-CC-30",
+      "series": "Low-Peak & Fusetron Industrial Fuses",
+      "domain": "switches",
+      "type_tag": "FUSE",
+      "type_name": "Industrial Fuse",
+      "description": "Bussmann Low-Peak Class CC Time-Delay Current-Limiting Fuse 30A 600V",
+      "specs": {
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "fuse_type": "Class J / RK5",
+        "time_delay": true,
+        "current_limiting": true
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.LP-CC-30.html",
+        "upc": "051712101851"
+      }
+    },
+    {
+      "part_number": "LPJ-200SPI",
+      "series": "Low-Peak & Fusetron Industrial Fuses",
+      "domain": "switches",
+      "type_tag": "FUSE",
+      "type_name": "Industrial Fuse",
+      "description": "Bussmann Low-Peak Class J Time-Delay Indicating Fuse 200A 600V",
+      "specs": {
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "fuse_type": "Class J / RK5",
+        "time_delay": true,
+        "current_limiting": true
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.LPJ-200SPI.html",
+        "upc": "051712204446"
+      }
+    },
+    {
+      "part_number": "LPJ-400SP",
+      "series": "Low-Peak & Fusetron Industrial Fuses",
+      "domain": "switches",
+      "type_tag": "FUSE",
+      "type_name": "Industrial Fuse",
+      "description": "Bussmann Low-Peak Class J Time-Delay Fuse 400A 600V",
+      "specs": {
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 200.0,
+        "fuse_type": "Class J / RK5",
+        "time_delay": true,
+        "current_limiting": true
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.LPJ-400SP.html",
+        "upc": "051712204606"
+      }
+    }
+  ]
+}
