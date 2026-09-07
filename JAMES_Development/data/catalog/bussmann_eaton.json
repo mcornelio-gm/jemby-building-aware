@@ -17,7 +17,7 @@
         "current_limiting": true
       },
       "docs": {
-        "cut_sheet": "https://www.google.com/search?q=Bussmann%20%28Eaton%29%20FRN-R-100%20cut%20sheet%20pdf",
+        "cut_sheet": null,
         "upc": "051712508483"
       }
     },
@@ -37,7 +37,7 @@
         "current_limiting": true
       },
       "docs": {
-        "cut_sheet": "https://www.google.com/search?q=Bussmann%20%28Eaton%29%20FRS-R-200%20cut%20sheet%20pdf",
+        "cut_sheet": null,
         "upc": "051712522007"
       }
     },
@@ -57,7 +57,7 @@
         "current_limiting": true
       },
       "docs": {
-        "cut_sheet": "https://www.google.com/search?q=Bussmann%20%28Eaton%29%20LP-CC-30%20cut%20sheet%20pdf",
+        "cut_sheet": null,
         "upc": "051712101851"
       }
     },
@@ -77,7 +77,7 @@
         "current_limiting": true
       },
       "docs": {
-        "cut_sheet": "https://www.google.com/search?q=Bussmann%20%28Eaton%29%20LPJ-200SPI%20cut%20sheet%20pdf",
+        "cut_sheet": null,
         "upc": "051712204446"
       }
     },
@@ -97,7 +97,7 @@
         "current_limiting": true
       },
       "docs": {
-        "cut_sheet": "https://www.google.com/search?q=Bussmann%20%28Eaton%29%20LPJ-400SP%20cut%20sheet%20pdf",
+        "cut_sheet": null,
         "upc": "051712204606"
       }
     }
