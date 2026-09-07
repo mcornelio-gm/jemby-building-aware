@@ -528,13 +528,20 @@
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-slate-300 font-medium">Cut-sheet Specification URL</label>
-                <template x-if="formData.docs && formData.docs.cut_sheet">
-                  <a :href="formData.docs.cut_sheet" target="_blank"
-                     class="text-[10px] text-amber-400 hover:text-amber-300 font-bold inline-flex items-center gap-1">
-                    <span>Open Live Portal</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-                  </a>
-                </template>
+                <div class="flex items-center gap-2">
+                  <button type="button" @click="autoGenerateUrl()"
+                          class="text-[10px] text-cyan-400 hover:text-cyan-300 font-bold inline-flex items-center gap-1">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i>
+                    <span>Auto-Generate</span>
+                  </button>
+                  <template x-if="formData.docs && formData.docs.cut_sheet">
+                    <a :href="formData.docs.cut_sheet" target="_blank"
+                       class="text-[10px] text-amber-400 hover:text-amber-300 font-bold inline-flex items-center gap-1">
+                      <span>Open Portal</span>
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    </a>
+                  </template>
+                </div>
               </div>
               <input type="text" x-model="formData.docs.cut_sheet" placeholder="https://..."
                      class="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-white font-mono focus:ring-1 focus:ring-amber-500 focus:outline-none">
@@ -824,6 +831,40 @@
           if (!this.formData.specs) this.formData.specs = {};
           if (!this.formData.docs) this.formData.docs = { cut_sheet: '', upc: null };
           this.drawerOpen = true;
+        },
+
+        generateSearchUrl(pn, mfg) {
+          if (!pn) return '';
+          const p = encodeURIComponent(pn.trim());
+          const m = (mfg || '').toLowerCase();
+          if (m.includes('eaton') || m.includes('bussmann')) {
+            return `https://www.eaton.com/us/en-us/skuPage.${pn.trim()}.html`;
+          } else if (m.includes('square d') || m.includes('schneider')) {
+            return `https://www.se.com/us/en/search/?q=${p}`;
+          } else if (m.includes('siemens')) {
+            return `https://sieportal.siemens.com/en-us/search?searchTerm=${p}`;
+          } else if (m.includes('leviton')) {
+            return `https://www.leviton.com/en/products/${pn.trim().toLowerCase()}`;
+          } else if (m.includes('generac')) {
+            return `https://www.generac.com/search?q=${p}`;
+          } else if (m.includes('southwire') || m.includes('encore')) {
+            return `https://www.southwire.com/search?text=${p}`;
+          } else if (m.includes('allied') || m.includes('atkore')) {
+            return `https://www.atkore.com/search-results?query=${p}`;
+          } else if (m.includes('cooper') || m.includes('metalux') || m.includes('acuity')) {
+            return `https://www.cooperlighting.com/global/search#q=${p}`;
+          } else {
+            return `https://www.google.com/search?q=${encodeURIComponent((mfg || 'Electrical') + ' ' + pn.trim() + ' cut sheet pdf spec')}`;
+          }
+        },
+
+        autoGenerateUrl() {
+          if (!this.formData.part_number) {
+            alert('Please enter a Part Number first.');
+            return;
+          }
+          if (!this.formData.docs) this.formData.docs = {};
+          this.formData.docs.cut_sheet = this.generateSearchUrl(this.formData.part_number, this.formData.manufacturer);
         },
 
         async saveItem() {
