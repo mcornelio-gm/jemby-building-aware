@@ -519,6 +519,43 @@
             </div>
           </div>
 
+          <!-- Dynamic / Custom Archetype Specifications -->
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Custom / Archetype Specifications</span>
+              </div>
+              <button type="button" @click="addCustomSpec()"
+                      class="text-[10px] font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1 hover:underline">
+                <i class="fa-solid fa-plus text-[9px]"></i>
+                <span>Add Attribute</span>
+              </button>
+            </div>
+
+            <div class="space-y-2">
+              <template x-if="customSpecsList.length === 0">
+                <div class="text-[11px] text-slate-500 italic py-1">
+                  No custom attributes. Click "Add Attribute" for archetype-specific ratings (e.g. winding_material, temp_rise, trip_unit, fuel_type).
+                </div>
+              </template>
+
+              <template x-for="(spec, sIdx) in customSpecsList" :key="sIdx">
+                <div class="flex items-center gap-2">
+                  <input type="text" x-model="spec.key" placeholder="Attribute (e.g. winding_material)"
+                         class="flex-1 px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-xs text-white font-mono focus:ring-1 focus:ring-purple-500 focus:outline-none">
+                  <input type="text" x-model="spec.val" placeholder="Value (e.g. Copper)"
+                         class="flex-1 px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-md text-xs text-slate-200 focus:ring-1 focus:ring-purple-500 focus:outline-none">
+                  <button type="button" @click="removeCustomSpec(sIdx)"
+                          class="w-7 h-7 rounded bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 flex items-center justify-center text-xs transition cursor-pointer"
+                          title="Remove Attribute">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              </template>
+            </div>
+          </div>
+
           <!-- Documentation -->
           <div class="space-y-3 pt-2">
             <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 border-b border-slate-800 pb-1 flex items-center gap-1.5">
@@ -664,6 +701,7 @@
         // Drawer state
         drawerOpen: false,
         isEditMode: false,
+        customSpecsList: [],
         formData: {
           part_number: '',
           manufacturer: '',
@@ -806,6 +844,7 @@
 
         openCreateDrawer() {
           this.isEditMode = false;
+          this.customSpecsList = [];
           this.formData = {
             part_number: '',
             manufacturer: this.selectedManufacturer || '',
@@ -825,7 +864,21 @@
           this.formData = JSON.parse(JSON.stringify(item));
           if (!this.formData.specs) this.formData.specs = {};
           if (!this.formData.docs) this.formData.docs = { cut_sheet: '', upc: null };
+
+          const standardKeys = ['voltage', 'amps', 'aic', 'kva', 'poles', 'phase', 'total_slots', 'slots', 'nema_rating', 'impedance_z'];
+          this.customSpecsList = Object.entries(this.formData.specs)
+            .filter(([k]) => !standardKeys.includes(k))
+            .map(([k, v]) => ({ key: k, val: v !== null && v !== undefined ? String(v) : '' }));
+
           this.drawerOpen = true;
+        },
+
+        addCustomSpec() {
+          this.customSpecsList.push({ key: '', val: '' });
+        },
+
+        removeCustomSpec(idx) {
+          this.customSpecsList.splice(idx, 1);
         },
 
         getEffectiveCutSheetUrl(item) {
@@ -861,6 +914,22 @@
             alert('Part number and manufacturer are required.');
             return;
           }
+
+          // Merge custom specs into specs dictionary
+          const standardKeys = ['voltage', 'amps', 'aic', 'kva', 'poles', 'phase', 'total_slots', 'slots', 'nema_rating', 'impedance_z'];
+          const mergedSpecs = {};
+          standardKeys.forEach(k => {
+            if (this.formData.specs && this.formData.specs[k] !== undefined && this.formData.specs[k] !== '') {
+              mergedSpecs[k] = this.formData.specs[k];
+            }
+          });
+          this.customSpecsList.forEach(s => {
+            const k = (s.key || '').trim();
+            if (k) {
+              mergedSpecs[k] = s.val;
+            }
+          });
+          this.formData.specs = mergedSpecs;
 
           const url = this.isEditMode ? `/api/catalog/items/${encodeURIComponent(pn)}` : '/api/catalog/items';
           const method = this.isEditMode ? 'PUT' : 'POST';

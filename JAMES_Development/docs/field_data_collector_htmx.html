@@ -3210,6 +3210,20 @@
             this.form.vendor_attrs.upc = item.docs.upc;
           }
 
+          // Automatically unpack and merge all archetype-specific / custom dynamic specs
+          const standardDirectKeys = ['voltage', 'amps', 'aic', 'slots', 'nema_rating', 'poles', 'phase', 'total_slots', 'kva', 'impedance_z', 'hp', 'kw', 'fuse_style'];
+          Object.entries(specs).forEach(([k, v]) => {
+            if (!standardDirectKeys.includes(k) && v !== null && v !== undefined && v !== '') {
+              this.form.vendor_attrs[k] = v;
+              const existing = this.customAttrsList.find(a => a.key === k);
+              if (existing) {
+                existing.val = String(v);
+              } else {
+                this.customAttrsList.push({ key: k, val: String(v) });
+              }
+            }
+          });
+
           if (this.form.is_panel) {
             this.updateSlotCount();
           }
