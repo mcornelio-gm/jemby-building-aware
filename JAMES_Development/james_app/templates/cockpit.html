@@ -3170,7 +3170,14 @@
           if (!this.form || !this.form.model_no) return null;
           const modelUpper = this.form.model_no.trim().toUpperCase();
           const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === modelUpper);
-          return (item && item.docs && item.docs.cut_sheet) ? item.docs.cut_sheet : (item && item.cut_sheet_url ? item.cut_sheet_url : null);
+          if (item && item.docs && item.docs.cut_sheet && item.docs.cut_sheet.trim()) {
+            return item.docs.cut_sheet.trim();
+          }
+          if (item && item.cut_sheet_url && item.cut_sheet_url.trim()) {
+            return item.cut_sheet_url.trim();
+          }
+          const m = (this.form.manufacturer || (item && item.manufacturer) || 'Electrical').trim();
+          return `https://www.google.com/search?q=${encodeURIComponent(m + ' ' + this.form.model_no.trim() + ' cut sheet pdf')}`;
         },
 
         onCatalogManufacturerChange() {
