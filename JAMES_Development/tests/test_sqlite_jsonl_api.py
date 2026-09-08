@@ -32,10 +32,14 @@ def test_sqlite_db_and_jsonl_isolation(tmp_path):
         assert ats.amps == 400.0
 
 
-def test_api_cockpit_view():
-    res = client.get("/cockpit")
+def test_api_survey_view():
+    res = client.get("/survey")
     assert res.status_code == 200
     assert "Building Aware" in res.text
+
+    # Backwards compatibility alias
+    res_legacy = client.get("/cockpit")
+    assert res_legacy.status_code == 200
 
 
 def test_api_get_nodes():

@@ -27,8 +27,8 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 @app.get("/", response_class=RedirectResponse)
 def root():
-    """Redirect root access to Cockpit workbench."""
-    return RedirectResponse(url="/cockpit")
+    """Redirect root access to Survey workbench."""
+    return RedirectResponse(url="/survey")
 
 
 @app.get("/api/catalog")
@@ -628,10 +628,11 @@ def get_field_collector_cockpit_view():
     raise HTTPException(status_code=404, detail="Cockpit template not found")
 
 
+@app.get("/survey", response_class=HTMLResponse)
 @app.get("/cockpit", response_class=HTMLResponse)
 @app.get("/field-collector-htmx", response_class=HTMLResponse)
-def get_field_collector_htmx_view(request: Request, client_id: str = "zoetis", facility_id: str = "b4"):
-    """Serve modern Jinja2 + HTML + SQLite + JSON + FastAPI + HTMX + Alpine.js + Tailwind Cockpit."""
+def get_survey_view(request: Request, client_id: str = "zoetis", facility_id: str = "b4"):
+    """Serve modern Jinja2 + HTML + SQLite + JSON + FastAPI + HTMX + Alpine.js + Tailwind Survey Workbench."""
     # Ensure client facility SQLite DB is seeded
     db.seed_demo_facility(client_id, facility_id)
     with db.get_session(client_id, facility_id) as session:
@@ -661,7 +662,7 @@ def get_field_collector_htmx_view(request: Request, client_id: str = "zoetis", f
 
     return templates.TemplateResponse(
         request=request,
-        name="cockpit.html",
+        name="survey.html",
         context={
             "client_id": client_id,
             "facility_id": facility_id,

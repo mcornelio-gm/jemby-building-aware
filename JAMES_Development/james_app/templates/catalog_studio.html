@@ -45,7 +45,7 @@
   <header class="h-11 bg-white dark:bg-slate-900 border-b border-slate-300 dark:border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
     <!-- Brand & Section -->
     <div class="flex items-center space-x-2">
-      <a href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer shrink-0" title="Return to Survey Workbench">
+      <a href="/survey?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer shrink-0" title="Return to Survey Workbench">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
         <div class="hidden sm:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
@@ -69,7 +69,7 @@
 
         <!-- 2. Survey -->
         <a 
-          href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
+          href="/survey?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
           class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1 transition"
           title="Field Survey & Digital Twin Modeler"
         >
