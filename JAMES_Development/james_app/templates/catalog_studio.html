@@ -310,7 +310,6 @@
               <th class="py-2.5 px-3">Description</th>
               <th class="py-2.5 px-3">Rating Specs</th>
               <th class="py-2.5 px-3">UPC / Barcode</th>
-              <th class="py-2.5 px-3 text-center">Cut-Sheet</th>
               <th class="py-2.5 px-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -373,25 +372,16 @@
                   </template>
                 </td>
 
-                <!-- Cut-Sheet Link -->
-                <td class="py-2 px-3 text-center whitespace-nowrap">
-                  <template x-if="getEffectiveCutSheetUrl(item)">
-                    <a :href="getEffectiveCutSheetUrl(item)" target="_blank"
-                       class="px-2 py-1 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 hover:text-white border border-indigo-500/30 rounded text-[10px] font-bold inline-flex items-center gap-1 transition shadow-sm"
-                       title="Open Cut-Sheet / Specification Sheet">
-                      <i class="fa-solid fa-file-lines text-[9px] text-indigo-400"></i>
-                      <span>View</span>
-                      <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-70"></i>
-                    </a>
-                  </template>
-                  <template x-if="!getEffectiveCutSheetUrl(item)">
-                    <span class="text-slate-600 text-[10px]">-</span>
-                  </template>
-                </td>
-
                 <!-- Actions -->
                 <td class="py-2 px-3 text-right whitespace-nowrap">
                   <div class="flex items-center justify-end space-x-1">
+                    <template x-if="getEffectiveCutSheetUrl(item)">
+                      <a :href="getEffectiveCutSheetUrl(item)" target="_blank"
+                         title="Open Cut-Sheet / OEM Spec"
+                         class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded transition inline-flex items-center justify-center">
+                        <i class="fa-solid fa-file-lines"></i>
+                      </a>
+                    </template>
                     <button @click="openEditDrawer(item)"
                             title="Edit Item Specs"
                             class="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 rounded transition">
@@ -402,9 +392,9 @@
                             class="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded transition">
                       <i class="fa-solid fa-copy"></i>
                     </button>
-                    <button @click="deleteItem(item.part_number)"
+                    <button @click="openDeleteModal(item)"
                             title="Delete Part"
-                            class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded transition">
+                            class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded transition cursor-pointer">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
@@ -747,6 +737,78 @@
     </div>
   </div>
 
+  <!-- 6. DANGER CONFIRMATION MODAL (DELETE PART) -->
+  <div x-show="showDeleteModal"
+       x-cloak
+       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+       @keydown.escape.window="showDeleteModal = false">
+    <div class="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 text-slate-800 dark:text-slate-200 overflow-hidden"
+         @click.away="showDeleteModal = false">
+      
+      <!-- Danger Header -->
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center text-lg font-bold border border-rose-500/20 shrink-0">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Delete Catalog Equipment</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-semibold">Irreversible</span>
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Are you sure you want to permanently remove this archetype from the Master Catalog?
+          </p>
+        </div>
+      </div>
+
+      <!-- Item Preview Card -->
+      <template x-if="itemToDelete">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono font-bold text-xs text-slate-900 dark:text-white" x-text="itemToDelete.part_number"></span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300" x-text="itemToDelete.type_tag || 'GEN'"></span>
+          </div>
+          <div class="text-[11px] text-cyan-600 dark:text-cyan-400 font-medium" x-text="itemToDelete.manufacturer"></div>
+          <div class="text-xs text-slate-600 dark:text-slate-400 truncate" x-text="itemToDelete.description || 'No description provided.'"></div>
+          
+          <!-- Quick specs badges -->
+          <div class="flex items-center gap-1.5 flex-wrap pt-1 text-[10px] font-mono">
+            <template x-if="itemToDelete.specs && itemToDelete.specs.voltage">
+              <span class="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded" x-text="itemToDelete.specs.voltage"></span>
+            </template>
+            <template x-if="itemToDelete.specs && itemToDelete.specs.amps">
+              <span class="px-1.5 py-0.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded" x-text="itemToDelete.specs.amps + 'A'"></span>
+            </template>
+            <template x-if="itemToDelete.specs && itemToDelete.specs.kva">
+              <span class="px-1.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded" x-text="itemToDelete.specs.kva + ' kVA'"></span>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <!-- Safety Notice -->
+      <div class="p-2.5 rounded-lg bg-rose-50/50 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40 text-[11px] text-rose-800 dark:text-rose-300 flex items-center gap-2">
+        <span class="text-xs">🛡️</span>
+        <span>Existing facility twins will retain their unpacked snapshot specs.</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+        <button @click="showDeleteModal = false"
+                :disabled="isDeleting"
+                class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer">
+          Cancel
+        </button>
+        <button @click="confirmDelete()"
+                :disabled="isDeleting"
+                class="px-4 py-1.5 bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white font-bold rounded-lg text-xs flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+          <i :class="isDeleting ? 'fa-solid fa-spinner fa-spin' : 'fa-solid fa-trash'"></i>
+          <span x-text="isDeleting ? 'Deleting...' : 'Delete Part'"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MASTER CATALOG STUDIO & ARCHETYPE SPECS HELP MODAL -->
   <div 
     x-show="showHelpModal" 
@@ -755,13 +817,13 @@
     @keydown.escape.window="showHelpModal = false"
   >
     <div 
-      class="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-200"
+      class="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-200"
       @click.away="showHelpModal = false"
     >
       <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950 shrink-0">
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#0B1220] shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg font-bold border border-emerald-500/20">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold border border-emerald-500/20">
             📚
           </div>
           <div>
@@ -769,7 +831,7 @@
               <span>Master Catalog Studio Guide</span>
               <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold">Archetypes & Specs</span>
             </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Manage standard OEM electrical equipment, archetype attributes, and cut-sheet discoverability.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Standard OEM electrical equipment, archetype attributes, cut-sheet discovery, and field collection bridge.</p>
           </div>
         </div>
         <button 
@@ -781,51 +843,234 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-600 dark:text-slate-300">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-          <!-- Card 1: Equipment Archetypes -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
-            <div class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 text-xs">
-              <span>📦</span> Standard Equipment Archetypes
+      <!-- Navigation Tabs -->
+      <div class="px-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-[#0E1626] flex gap-1 overflow-x-auto shrink-0 py-2">
+        <button 
+          type="button"
+          @click="activeHelpTab = 'flow'"
+          :class="activeHelpTab === 'flow' ? 'bg-emerald-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>🚀</span>
+          <span>Catalog Flow</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'filters'"
+          :class="activeHelpTab === 'filters' ? 'bg-emerald-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>🔍</span>
+          <span>Search & Filters</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'specs'"
+          :class="activeHelpTab === 'specs' ? 'bg-emerald-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>🏷️</span>
+          <span>Dynamic Specs</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'cutsheets'"
+          :class="activeHelpTab === 'cutsheets' ? 'bg-emerald-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>📄</span>
+          <span>Cut-Sheet Engine</span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'import_export'"
+          :class="activeHelpTab === 'import_export' ? 'bg-emerald-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>⚡</span>
+          <span>Import & Export</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="p-6 overflow-y-auto flex-1 space-y-5 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+        
+        <!-- TAB 1: CATALOG FLOW -->
+        <div x-show="activeHelpTab === 'flow'" class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 flex items-start gap-3">
+            <span class="text-xl">🗺️</span>
+            <div>
+              <h4 class="font-bold text-emerald-950 dark:text-emerald-200 text-xs">The 5-Step Catalog-to-Twin Lifecycle</h4>
+              <p class="text-emerald-800/80 dark:text-emerald-300/80 mt-0.5">
+                The Master Catalog is the single source of truth for standard equipment archetypes, bridging verified manufacturer data directly into rapid mobile field surveys and automated Single-Line compilation.
+              </p>
             </div>
-            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
-              The Master Catalog contains curated equipment models from leading manufacturers (Eaton, Square D, Siemens, Leviton, Hubbell, etc.). When surveyors select an archetype during field surveys, standard ratings (Voltage, Amps, AIC, Slots) auto-fill instantly.
-            </p>
           </div>
 
-          <!-- Card 2: Dynamic Custom Attributes -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
-            <div class="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5 text-xs">
-              <span>🏷️</span> Dynamic Attribute Specs
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+            <!-- Step 1 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">1</span>
+                <span class="font-bold text-slate-900 dark:text-white">Domain & Archetype Discovery</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                In the <strong>Left Column</strong>, select the electrical domain (e.g. <em>Power Distribution, Transformers, Branch Circuits</em>), narrow by equipment type (<em>PNL, SWG, XFMR</em>), or click a brand (<em>Eaton, Square D, Siemens</em>).
+              </p>
             </div>
-            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
-              Attach custom nameplate parameters (e.g. <code class="text-slate-700 dark:text-slate-300 font-mono">trip_curve: LI</code>, <code class="text-slate-700 dark:text-slate-300 font-mono">enclosure: NEMA 3R</code>) in the Part Editor. These automatically unpack into the Cockpit's <em>Custom Nameplate Tags</em> on selection.
-            </p>
-          </div>
 
-          <!-- Card 3: High-Precision Cut-Sheets -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
-            <div class="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 text-xs">
-              <span>📄</span> Precision Cut-Sheet Discovery
+            <!-- Step 2 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">2</span>
+                <span class="font-bold text-slate-900 dark:text-white">Add or Clone Parts</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Use <code class="text-emerald-600 dark:text-emerald-400 font-semibold">[+ Add Part]</code> to register a new SKU from scratch, or click <code class="text-cyan-600 dark:text-cyan-400 font-semibold">[ 📋 Clone ]</code> on any existing row to instantly spawn ampacity variants (e.g. 15A, 20A, 30A, 50A, 100A).
+              </p>
             </div>
-            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
-              Clicking <strong>[ 📄 View Cut-Sheet ↗ ]</strong> launches verified OEM document portals or dynamically executes quoted PDF queries (<code class="text-slate-700 dark:text-slate-300 font-mono">{Mfg} "{PN}" cut sheet pdf</code>) ensuring immediate document discovery.
-            </p>
-          </div>
 
-          <!-- Card 4: Import, Export, & CRUD -->
-          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
-            <div class="font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 text-xs">
-              <span>⚡</span> CRUD, Clones & Bulk Data
+            <!-- Step 3 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">3</span>
+                <span class="font-bold text-slate-900 dark:text-white">Define Dynamic Specs & Ratings</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                In the <strong>Part Editor Drawer</strong>, set standard ratings (Volts, Amps, kVA, AIC, Slots) and attach custom key-value specs (e.g. <code class="font-mono text-slate-700 dark:text-slate-300">trip_curve: LI</code>, <code class="font-mono text-slate-700 dark:text-slate-300">enclosure: NEMA 3R</code>).
+              </p>
             </div>
-            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
-              Add individual parts, clone existing models to create ampacity variants, export to clean CSV/JSON, or ingest legacy catalogs using the bulk Import modal with SQLite WAL transaction safety.
-            </p>
+
+            <!-- Step 4 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">4</span>
+                <span class="font-bold text-slate-900 dark:text-white">Verify Cut-Sheets & Portals</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Click <code class="text-indigo-600 dark:text-indigo-400 font-semibold">[ 📄 View ↗ ]</code> in the table to verify official PDF submittals or OEM portals. The search engine automatically quotes part numbers to prevent Google minus-sign bugs.
+              </p>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1.5 md:col-span-2">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">5</span>
+                <span class="font-bold text-slate-900 dark:text-white">Automatic Field Unpacking in Cockpit</span>
+              </div>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                When an electrician in the <strong>Cockpit Workbench</strong> searches and picks this catalog model, JAMES automatically unpacks all electrical ratings, dimensions, and custom tags into the survey form with zero manual typing required.
+              </p>
+            </div>
           </div>
         </div>
 
-        <!-- Keyboard Shortcuts -->
+        <!-- TAB 2: SEARCH & FILTERS -->
+        <div x-show="activeHelpTab === 'filters'" class="space-y-4" x-cloak>
+          <div class="p-3.5 rounded-xl bg-cyan-50/70 dark:bg-cyan-950/40 border border-cyan-200/80 dark:border-cyan-800/60 flex items-start gap-3">
+            <span class="text-xl">🔍</span>
+            <div>
+              <h4 class="font-bold text-cyan-950 dark:text-cyan-200 text-xs">High-Speed Multi-Attribute Search & Cascading</h4>
+              <p class="text-cyan-800/80 dark:text-cyan-300/80 mt-0.5">
+                Find exact electrical components across thousands of SKUs in milliseconds using client-side indexing.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <h5 class="font-bold text-slate-900 dark:text-white">Multi-Attribute Search Bar</h5>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                The top search input scans simultaneously across: <code class="font-mono text-cyan-600 dark:text-cyan-400">part_number</code>, <code class="font-mono text-cyan-600 dark:text-cyan-400">manufacturer</code>, <code class="font-mono text-cyan-600 dark:text-cyan-400">series</code>, <code class="font-mono text-cyan-600 dark:text-cyan-400">description</code>, <code class="font-mono text-cyan-600 dark:text-cyan-400">type_tag</code>, and <code class="font-mono text-cyan-600 dark:text-cyan-400">UPC barcode</code>.
+              </p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <h5 class="font-bold text-slate-900 dark:text-white">Cascading Hierarchy Filters</h5>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Selecting a <strong>Domain</strong> dynamically recalculates available <strong>Equipment Types</strong> and live <strong>Manufacturer Counts</strong>, ensuring you never see zero-result filters.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: DYNAMIC SPECS -->
+        <div x-show="activeHelpTab === 'specs'" class="space-y-4" x-cloak>
+          <div class="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 flex items-start gap-3">
+            <span class="text-xl">🏷️</span>
+            <div>
+              <h4 class="font-bold text-indigo-950 dark:text-indigo-200 text-xs">Dynamic Custom / Archetype Specifications</h4>
+              <p class="text-indigo-800/80 dark:text-indigo-300/80 mt-0.5">
+                Every OEM part can store arbitrary key-value metadata that flows into data collection nameplate tags.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2">
+            <h5 class="font-bold text-slate-900 dark:text-white">How Dynamic Specs Work:</h5>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
+              <li>Open the edit drawer on any part and navigate to <strong>Custom / Archetype Specifications</strong>.</li>
+              <li>Click <code class="text-emerald-600 dark:text-emerald-400 font-semibold">[+ Add Attribute]</code> to define keys like <code class="font-mono text-slate-700 dark:text-slate-300">frame_rating</code>, <code class="font-mono text-slate-700 dark:text-slate-300">interrupting_rating_240v</code>, or <code class="font-mono text-slate-700 dark:text-slate-300">mounting_style</code>.</li>
+              <li>When selected during field walk-throughs, the Cockpit reads these specs and automatically populates the <em>Custom Nameplate Tags</em> list.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- TAB 4: CUT-SHEET ENGINE -->
+        <div x-show="activeHelpTab === 'cutsheets'" class="space-y-4" x-cloak>
+          <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 flex items-start gap-3">
+            <span class="text-xl">📄</span>
+            <div>
+              <h4 class="font-bold text-amber-950 dark:text-amber-200 text-xs">Intelligent Cut-Sheet Search & Discoverability</h4>
+              <p class="text-amber-800/80 dark:text-amber-300/80 mt-0.5">
+                Guaranteed zero link rot with dual-mode verified portals and high-precision quoted PDF queries.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <h5 class="font-bold text-slate-900 dark:text-white">Verified OEM Portals</h5>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                Explicit cut-sheet links stored in <code class="font-mono text-amber-600 dark:text-amber-400">docs.cut_sheet</code> (e.g. Eaton PD series, Leviton product pages) open directly to the manufacturer catalog page.
+              </p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-1">
+              <h5 class="font-bold text-slate-900 dark:text-white">Quoted PDF Query Engine</h5>
+              <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+                For parts without static URLs, the system dynamically launches: <code class="font-mono text-slate-700 dark:text-slate-300">{Mfg} "{PN}" cut sheet pdf</code>. Quoting eliminates Google hyphen word-negation bugs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: IMPORT / EXPORT -->
+        <div x-show="activeHelpTab === 'import_export'" class="space-y-4" x-cloak>
+          <div class="p-3.5 rounded-xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-800/60 flex items-start gap-3">
+            <span class="text-xl">⚡</span>
+            <div>
+              <h4 class="font-bold text-rose-950 dark:text-rose-200 text-xs">Bulk Ingestion & Export Capabilities</h4>
+              <p class="text-rose-800/80 dark:text-rose-300/80 mt-0.5">
+                Export to standard CSV/JSON for engineering handoffs or ingest entire equipment libraries in one click.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2">
+            <h5 class="font-bold text-slate-900 dark:text-white">Supported Operations:</h5>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
+              <li><strong>Export CSV / JSON</strong>: Download the entire sanitized catalog for procurement, BIM modeling, or external estimating.</li>
+              <li><strong>Bulk JSON Import</strong>: Paste an array of catalog objects into the modal. The system validates all required keys and safely ingests via SQLite WAL mode.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Keyboard Shortcuts Footer -->
         <div class="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between font-mono text-[11px]">
           <span class="text-slate-600 dark:text-slate-400 font-sans font-bold">Keyboard Shortcuts:</span>
           <div class="flex items-center gap-3">
@@ -864,6 +1109,7 @@
         // Global UI state
         isDark: true,
         showHelpModal: false,
+        activeHelpTab: 'flow',
 
         // Drawer state
         drawerOpen: false,
@@ -892,6 +1138,11 @@
         showImportModal: false,
         importJsonText: '',
         importOverwrite: true,
+
+        // Delete Danger Modal state
+        showDeleteModal: false,
+        itemToDelete: null,
+        isDeleting: false,
 
         initData() {
           // Sync Theme with localStorage
@@ -1206,10 +1457,15 @@
           }
         },
 
-        async deleteItem(partNumber) {
-          if (!confirm(`Are you sure you want to delete part "${partNumber}" from the Master Catalog?`)) {
-            return;
-          }
+        openDeleteModal(item) {
+          this.itemToDelete = item;
+          this.showDeleteModal = true;
+        },
+
+        async confirmDelete() {
+          if (!this.itemToDelete) return;
+          const partNumber = this.itemToDelete.part_number;
+          this.isDeleting = true;
 
           try {
             const res = await fetch(`/api/catalog/items/${encodeURIComponent(partNumber)}`, {
@@ -1222,8 +1478,12 @@
             }
 
             this.items = this.items.filter(i => i.part_number.toUpperCase() !== partNumber.toUpperCase());
+            this.showDeleteModal = false;
+            this.itemToDelete = null;
           } catch (e) {
             alert('Error: ' + e.message);
+          } finally {
+            this.isDeleting = false;
           }
         },
 
