@@ -162,22 +162,9 @@
         <span>🏢</span>
         <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
       </div>
-    </div>
 
-    <!-- Live Telemetry Inline Stream -->
-    <div class="hidden xl:flex items-center gap-3 text-[11px] font-mono text-slate-500 dark:text-slate-400">
-      <span><strong class="text-slate-800 dark:text-slate-200 font-semibold" x-text="stack.length">{{ initial_nodes | length }}</strong> Assets</span>
-      <span class="text-slate-300 dark:text-slate-700">•</span>
-      <span><strong class="text-cyan-600 dark:text-cyan-400 font-semibold" x-text="totalAmps.toLocaleString() + ' A'">3,225 A</strong> Mains</span>
-      <span class="text-slate-300 dark:text-slate-700">•</span>
-      <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-        Auto-Saved
-      </span>
-    </div>
+      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
-    <!-- Action Controls & Unified Navigation -->
-    <div class="flex items-center gap-1.5">
       <!-- Unified Global Navigation Segment -->
       <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium">
         <!-- 1. Cockpit (Active) -->
@@ -210,9 +197,22 @@
           <span>Diagram</span>
         </a>
       </nav>
+    </div>
 
-      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
+    <!-- Live Telemetry Inline Stream -->
+    <div class="hidden xl:flex items-center gap-3 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+      <span><strong class="text-slate-800 dark:text-slate-200 font-semibold" x-text="stack.length">{{ initial_nodes | length }}</strong> Assets</span>
+      <span class="text-slate-300 dark:text-slate-700">•</span>
+      <span><strong class="text-cyan-600 dark:text-cyan-400 font-semibold" x-text="totalAmps.toLocaleString() + ' A'">3,225 A</strong> Mains</span>
+      <span class="text-slate-300 dark:text-slate-700">•</span>
+      <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        Auto-Saved
+      </span>
+    </div>
 
+    <!-- Action Controls -->
+    <div class="flex items-center gap-1.5">
       <!-- Show / Hide Catalog Sidebar Toggle -->
       <button 
         type="button"
