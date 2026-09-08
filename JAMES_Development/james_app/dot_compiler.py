@@ -409,20 +409,37 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             breaker_ids = []
             if schedule and isinstance(schedule, list):
                 for row in schedule:
-                    if row.get("leftTrip") and str(row.get("leftTrip")).strip():
+                    left_trip = row.get("leftAmps") or row.get("leftTrip")
+                    if left_trip is not None and str(left_trip).strip():
                         s_num = row.get("leftSlot")
-                        desc = _clean_str(row.get("leftDesc") or row.get("leftTargetLoad") or f"Circuit {s_num}")
-                        trip = _clean_str(row.get("leftTrip"))
+                        desc = _clean_str(row.get("leftDescription") or row.get("leftDesc") or row.get("leftTargetLoad") or f"Circuit {s_num}")
+                        trip = _clean_str(str(left_trip))
+                        poles = row.get("leftPoles", 1)
+                        try:
+                            poles_int = int(poles)
+                        except (ValueError, TypeError):
+                            poles_int = 1
+                        poles_str = f"/{poles_int}P" if poles_int > 1 else ""
                         b_id = f"{node_id}_b{s_num}"
-                        breaker_ids.append(b_id)
-                        breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A", {PORT_STYLE}];')
-                    if row.get("rightTrip") and str(row.get("rightTrip")).strip():
+                        if b_id not in breaker_ids:
+                            breaker_ids.append(b_id)
+                            breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
+
+                    right_trip = row.get("rightAmps") or row.get("rightTrip")
+                    if right_trip is not None and str(right_trip).strip():
                         s_num = row.get("rightSlot")
-                        desc = _clean_str(row.get("rightDesc") or row.get("rightTargetLoad") or f"Circuit {s_num}")
-                        trip = _clean_str(row.get("rightTrip"))
+                        desc = _clean_str(row.get("rightDescription") or row.get("rightDesc") or row.get("rightTargetLoad") or f"Circuit {s_num}")
+                        trip = _clean_str(str(right_trip))
+                        poles = row.get("rightPoles", 1)
+                        try:
+                            poles_int = int(poles)
+                        except (ValueError, TypeError):
+                            poles_int = 1
+                        poles_str = f"/{poles_int}P" if poles_int > 1 else ""
                         b_id = f"{node_id}_b{s_num}"
-                        breaker_ids.append(b_id)
-                        breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A", {PORT_STYLE}];')
+                        if b_id not in breaker_ids:
+                            breaker_ids.append(b_id)
+                            breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
 
             if not breaker_ids:
                 for idx in [1, 2, 3, 4]:
@@ -430,7 +447,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                     breaker_ids.append(b_id)
                     breaker_nodes.append(f'        {b_id} [label="[ Slot {idx} ]\\nCircuit {idx}\\n20A", {PORT_STYLE}];')
 
-            rank_same = " ".join(breaker_ids[:8])
+            rank_same = " ".join(breaker_ids)
 
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
@@ -441,7 +458,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 f'        fontcolor = "{palette["text"]}";',
                 '        penwidth = 1.8;',
                 f'        {node_id}_in [label="{main_type}", {PORT_STYLE}];',
-                *breaker_nodes[:10],
+                *breaker_nodes,
                 f'        {{ rank=same; {rank_same}; }}',
                 f'        {node_id}_in -> {breaker_ids[0]} [style=invis];',
                 '    }',
