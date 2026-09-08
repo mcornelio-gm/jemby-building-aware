@@ -831,5 +831,30 @@ def get_client_facility_sld(request: Request, client_id: str, facility_id: str):
     )
 
 
+@app.get("/api/workspace/facilities")
+def api_list_workspace_facilities():
+    """List all client companies, facility folders, and their SQLite model.db statistics."""
+    return db.list_all_client_facilities()
+
+
+@app.post("/api/workspace/facilities")
+async def api_create_workspace_facility(request: Request):
+    """Create a new client company folder, facility folder, and initialize model.db."""
+    try:
+        data = await request.json()
+    except Exception:
+        data = {}
+    client_id = str(data.get("client_id", "")).strip()
+    facility_id = str(data.get("facility_id", "")).strip()
+    seed = bool(data.get("seed", True))
+
+    if not client_id or not facility_id:
+        raise HTTPException(status_code=400, detail="client_id and facility_id are required.")
+
+    result = db.create_client_facility(client_id, facility_id, seed=seed)
+    return result
+
+
+
 
 

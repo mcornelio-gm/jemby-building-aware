@@ -195,16 +195,33 @@
           <i class="fa-solid fa-sitemap text-[11px] text-amber-500"></i>
           <span class="hidden sm:inline">Diagram</span>
         </a>
+
+        <!-- 4. Files (Finder) -->
+        <button 
+          type="button"
+          @click="openFinderModal()" 
+          class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1 transition cursor-pointer"
+          title="Workspace Database Finder (Cmd+O / Ctrl+O)"
+        >
+          <span>📁</span>
+          <span class="hidden sm:inline">Files</span>
+        </button>
       </nav>
 
       <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
-      <!-- Multi-Tenant Client DB Path Pill -->
-      <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 font-medium shrink-0" title="Active SQLite Digital Twin: data/clients/{{ client_id }}/{{ facility_id }}/model.db">
+      <!-- Multi-Tenant Client DB Path Pill & Finder Trigger -->
+      <button 
+        type="button"
+        @click="openFinderModal()"
+        class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 hover:border-indigo-400 dark:hover:border-indigo-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
+        title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
+      >
         <span>🏢</span>
-        <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
+        <span class="font-bold" x-text="(client || '{{ client_id }}').toUpperCase() + ' / ' + (facility || '{{ facility_id }}').toUpperCase()">{{ client_id | upper }} / {{ facility_id | upper }}</span>
         <span class="text-[10px] text-indigo-400 dark:text-indigo-400/70 font-normal">📁 model.db</span>
-      </div>
+        <span class="text-[9px] text-indigo-400 dark:text-indigo-500 font-bold group-hover:translate-y-0.5 transition-transform">▼</span>
+      </button>
     </div>
 
     <!-- Live Telemetry Inline Stream -->

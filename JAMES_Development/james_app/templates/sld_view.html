@@ -53,6 +53,9 @@
   <script src="https://unpkg.com/@hpcc-js/wasm/index.min.js"></script>
   <script src="https://unpkg.com/d3-graphviz@5.1.0/build/d3-graphviz.min.js"></script>
 
+  <!-- Alpine.js for Finder Modal -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
   <style>
     #graph-container svg {
       width: 100% !important;
@@ -66,9 +69,10 @@
     .node:hover {
       filter: drop-shadow(0 4px 12px rgba(15, 23, 42, 0.35));
     }
+    [x-cloak] { display: none !important; }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans bg-[#CBD5E1] text-slate-900 overflow-hidden select-none">
+<body class="h-full flex flex-col font-sans bg-[#CBD5E1] text-slate-900 overflow-hidden select-none" x-data="sldFinderApp()">
 
   <!-- Top Navigation Bar -->
   <header class="h-11 px-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-xs z-10 text-white select-none">
@@ -114,16 +118,33 @@
           <i class="fa-solid fa-sitemap text-[11px]"></i>
           <span class="hidden sm:inline">Diagram</span>
         </a>
+
+        <!-- 4. Files (Finder) -->
+        <button 
+          type="button"
+          @click="openFinderModal()" 
+          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition cursor-pointer"
+          title="Workspace Database Finder (Cmd+O / Ctrl+O)"
+        >
+          <span>📁</span>
+          <span class="hidden sm:inline">Files</span>
+        </button>
       </nav>
 
       <div class="hidden md:block h-3.5 w-[1px] bg-slate-800"></div>
 
-      <!-- Multi-Tenant Client DB Path Pill -->
-      <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 font-medium shrink-0" title="Active SQLite Database: data/clients/{{ client_id }}/{{ facility_id }}/model.db">
+      <!-- Multi-Tenant Client DB Path Pill & Finder Trigger -->
+      <button 
+        type="button"
+        @click="openFinderModal()"
+        class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 hover:bg-indigo-900/80 hover:border-indigo-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
+        title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
+      >
         <span>🏢</span>
-        <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
+        <span class="font-bold">{{ client_id | upper }} / {{ facility_id | upper }}</span>
         <span class="text-[10px] text-indigo-400/70 font-normal">📁 model.db</span>
-      </div>
+        <span class="text-[9px] text-indigo-500 font-bold group-hover:translate-y-0.5 transition-transform">▼</span>
+      </button>
     </div>
 
     <!-- Viewer Controls -->
@@ -784,6 +805,348 @@
       initFontSize();
       initSLD();
     });
+
+    function sldFinderApp() {
+      return {
+        client: "{{ client_id }}",
+        facility: "{{ facility_id }}",
+        showFinderModal: false,
+        finderLoading: false,
+        finderClients: [],
+        finderSearch: '',
+        finderNewMode: false,
+        finderNewClientSelect: '{{ client_id }}',
+        finderNewClient: '{{ client_id }}',
+        finderIsCustomClient: false,
+        finderNewFacility: '',
+        finderSeedData: true,
+        finderCreating: false,
+
+        init() {
+          window.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'o') {
+              e.preventDefault();
+              this.openFinderModal();
+            }
+          });
+        },
+
+        openFinderModal() {
+          this.showFinderModal = true;
+          this.fetchFinderClients();
+        },
+
+        async fetchFinderClients() {
+          this.finderLoading = true;
+          try {
+            const res = await fetch('/api/workspace/facilities');
+            if (res.ok) {
+              this.finderClients = await res.json();
+              if (this.finderClients.length > 0 && !this.finderNewClientSelect) {
+                this.finderNewClientSelect = this.finderClients[0].client_id;
+                this.finderNewClient = this.finderClients[0].client_id;
+              }
+            }
+          } catch (e) {
+            console.error('Error fetching workspace facilities:', e);
+          } finally {
+            this.finderLoading = false;
+          }
+        },
+
+        get filteredFinderClients() {
+          if (!this.finderSearch || !this.finderSearch.trim()) return this.finderClients;
+          const q = this.finderSearch.toLowerCase().trim();
+          return this.finderClients.map(c => {
+            const clientMatch = (c.client_id || '').toLowerCase().includes(q) || (c.client_name || '').toLowerCase().includes(q);
+            const matchingFacilities = (c.facilities || []).filter(f => 
+              (f.facility_id || '').toLowerCase().includes(q) || 
+              (f.facility_name || '').toLowerCase().includes(q) ||
+              (f.db_path || '').toLowerCase().includes(q)
+            );
+            if (clientMatch) return c;
+            if (matchingFacilities.length > 0) {
+              return { ...c, facilities: matchingFacilities, facility_count: matchingFacilities.length };
+            }
+            return null;
+          }).filter(Boolean);
+        },
+
+        selectFacility(client_id, facility_id) {
+          if ((this.client || '').toLowerCase() === client_id.toLowerCase() && (this.facility || '').toLowerCase() === facility_id.toLowerCase()) {
+            this.showFinderModal = false;
+            return;
+          }
+          window.location.href = '/clients/' + encodeURIComponent(client_id) + '/facilities/' + encodeURIComponent(facility_id) + '/sld';
+        },
+
+        async createFacilityDatabase() {
+          const client = (this.finderNewClient || '').trim();
+          const facility = (this.finderNewFacility || '').trim();
+          if (!client || !facility) return;
+
+          this.finderCreating = true;
+          try {
+            const res = await fetch('/api/workspace/facilities', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                client_id: client,
+                facility_id: facility,
+                seed: this.finderSeedData
+              })
+            });
+            const data = await res.json();
+            if (res.ok) {
+              window.location.href = '/clients/' + encodeURIComponent(data.client_id) + '/facilities/' + encodeURIComponent(data.facility_id) + '/sld';
+            } else {
+              alert(data.detail || 'Failed to create facility database');
+            }
+          } catch (e) {
+            console.error('Error creating facility database:', e);
+            alert('Error creating facility database');
+          } finally {
+            this.finderCreating = false;
+          }
+        }
+      };
+    }
   </script>
+
+  <!-- Workspace Database Finder Modal -->
+  <div 
+    x-show="showFinderModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showFinderModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+      @click.away="showFinderModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="h-14 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-base border border-indigo-200 dark:border-indigo-800 shadow-2xs">📁</span>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+              <span>Workspace Database Finder</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 font-bold" x-text="finderClients.reduce((sum, c) => sum + (c.facility_count || 0), 0) + ' Databases'"></span>
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Browse company folders and switch or create SQLite digital twin models.</p>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          @click="showFinderModal = false" 
+          class="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-base p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Action Bar / Search Filter & New Button -->
+      <div class="p-3.5 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0">
+        <div class="relative flex-1">
+          <input 
+            type="text" 
+            x-model="finderSearch" 
+            placeholder="🔍 Search companies or facilities (e.g. Zoetis, B4, Pfizer)..." 
+            class="w-full h-8 pl-8 pr-7 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 font-mono"
+          >
+          <span class="absolute left-2.5 top-2 text-xs text-slate-400">🔍</span>
+          <button 
+            x-show="finderSearch" 
+            @click="finderSearch = ''" 
+            class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+
+        <button 
+          type="button" 
+          @click="finderNewMode = !finderNewMode" 
+          class="h-8 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
+          :class="finderNewMode ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200' : 'bg-indigo-600 hover:bg-indigo-500 text-white'"
+        >
+          <span x-text="finderNewMode ? '✕ Close Form' : '➕ New Database'"></span>
+        </button>
+      </div>
+
+      <!-- Collapsible Create New Database Panel -->
+      <div x-show="finderNewMode" x-cloak class="p-4 bg-indigo-50/40 dark:bg-indigo-950/30 border-b border-indigo-200 dark:border-indigo-900/50 space-y-3 shrink-0">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+            <span>⚡</span>
+            <span>Create New Client Company & Facility Digital Twin</span>
+          </span>
+          <span class="text-[10px] font-mono text-slate-500">Initializes isolated SQLite model.db</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Company Selection -->
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Client</label>
+            <div class="space-y-1.5">
+              <select 
+                x-model="finderNewClientSelect" 
+                @change="if (finderNewClientSelect === '__custom__') { finderIsCustomClient = true; finderNewClient = ''; } else { finderIsCustomClient = false; finderNewClient = finderNewClientSelect; }"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+              >
+                <template x-for="c in finderClients" :key="c.client_id">
+                  <option :value="c.client_id" x-text="c.client_name + ' (' + c.client_id + ')'"></option>
+                </template>
+                <option value="__custom__">➕ [+ New Company / Client Folder...]</option>
+              </select>
+
+              <input 
+                x-show="finderIsCustomClient" 
+                x-cloak 
+                type="text" 
+                x-model="finderNewClient" 
+                placeholder="Enter new company name (e.g. Pfizer, Merck)..." 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
+              >
+            </div>
+          </div>
+
+          <!-- Facility / Building Name -->
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Facility / Building Code</label>
+            <input 
+              type="text" 
+              x-model="finderNewFacility" 
+              placeholder="e.g. b12_warehouse, pilot_plant, central_utility" 
+              class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
+            >
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1 text-xs">
+          <label class="flex items-center gap-2 cursor-pointer select-none text-slate-600 dark:text-slate-300 text-[11px]">
+            <input type="checkbox" x-model="finderSeedData" class="rounded text-indigo-600 focus:ring-indigo-500">
+            <span>Pre-seed verified starter equipment (MCB Switchboard, ATS, Transformer, Panel)</span>
+          </label>
+
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              @click="finderNewMode = false" 
+              class="px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 font-medium transition cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button 
+              type="button" 
+              @click="createFacilityDatabase()" 
+              :disabled="!finderNewClient || !finderNewFacility || finderCreating" 
+              class="px-4 py-1.5 rounded-lg font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span x-show="finderCreating" class="animate-spin text-xs">⏳</span>
+              <span>💾 Create & Open Twin</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Body / Client Directory Tree -->
+      <div class="p-5 overflow-y-auto space-y-4 flex-1">
+        <!-- Loading State -->
+        <div x-show="finderLoading" class="py-12 text-center text-slate-400 space-y-2">
+          <div class="inline-block animate-spin text-2xl">⚡</div>
+          <p class="text-xs font-mono">Scanning workspace client directories...</p>
+        </div>
+
+        <!-- Empty Results State -->
+        <div x-show="!finderLoading && filteredFinderClients.length === 0" class="py-12 text-center text-slate-400 space-y-2">
+          <div class="text-3xl">📂</div>
+          <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">No matching companies or facilities found.</p>
+          <p class="text-[11px]">Click <strong>+ New Database</strong> to create a new client twin.</p>
+        </div>
+
+        <!-- Client Groups -->
+        <template x-for="c in filteredFinderClients" :key="c.client_id">
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 overflow-hidden">
+            <!-- Company Header -->
+            <div class="px-4 py-2 bg-slate-100/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🏢</span>
+                <span class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider" x-text="c.client_name"></span>
+                <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400" x-text="'(data/clients/' + c.client_id + '/)'"></span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="c.facilities.length + ' facilities'"></span>
+            </div>
+
+            <!-- Facilities List -->
+            <div class="p-2 space-y-1.5">
+              <template x-for="f in c.facilities" :key="f.facility_id">
+                <div 
+                  class="p-2.5 rounded-lg border transition flex items-center justify-between gap-3 group"
+                  :class="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase()) 
+                    ? 'bg-indigo-50/80 dark:bg-indigo-950/50 border-indigo-300 dark:border-indigo-800 shadow-2xs' 
+                    : 'bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-sm">🗄️</span>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="font-bold text-xs text-slate-900 dark:text-white font-mono" x-text="f.facility_id"></h4>
+                        <span 
+                          x-show="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase())" 
+                          class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
+                        >
+                          ACTIVE
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2 text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                        <span class="font-semibold text-indigo-600 dark:text-indigo-400" x-text="f.asset_count + ' Assets'"></span>
+                        <span>•</span>
+                        <span x-text="f.file_size_str"></span>
+                        <span>•</span>
+                        <span x-text="'Updated: ' + f.modified_at"></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="flex items-center gap-1.5">
+                    <button 
+                      type="button" 
+                      @click="selectFacility(c.client_id, f.facility_id)" 
+                      class="px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
+                      :class="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase())
+                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white'"
+                    >
+                      <span x-text="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase()) ? '✓ Current Twin' : '⚡ Open Twin'"></span>
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 shrink-0">
+        <div class="flex items-center gap-1.5 font-mono text-[10px]">
+          <span>💡 Shortcut: Press</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Cmd+O</kbd>
+          <span>or</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Ctrl+O</kbd>
+          <span>to open Finder</span>
+        </div>
+        <button 
+          type="button" 
+          @click="showFinderModal = false" 
+          class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

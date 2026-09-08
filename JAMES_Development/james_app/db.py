@@ -1,6 +1,7 @@
 """Database Layer: Client-Isolated SQLite + JSONL Multi-Tenant Architecture with SQLAlchemy ORM."""
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from datetime import datetime
@@ -394,4 +395,92 @@ def reset_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> N
         session.commit()
 
     export_to_jsonl(client_id, facility_id)
+
+
+def list_all_client_facilities() -> List[Dict[str, Any]]:
+    """Scan data/clients directory and return all discovered clients and their facility databases."""
+    clients_map: Dict[str, Dict[str, Any]] = {}
+    
+    if not CLIENTS_DATA_DIR.exists():
+        CLIENTS_DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    for client_dir in sorted(CLIENTS_DATA_DIR.iterdir()):
+        if not client_dir.is_dir() or client_dir.name.startswith("."):
+            continue
+        
+        client_id = client_dir.name
+        facilities = []
+        for fac_dir in sorted(client_dir.iterdir()):
+            if not fac_dir.is_dir() or fac_dir.name.startswith("."):
+                continue
+            
+            facility_id = fac_dir.name
+            db_file = fac_dir / "model.db"
+            if not db_file.exists():
+                continue
+            
+            # Count assets from SQLite
+            asset_count = 0
+            try:
+                with get_session(client_id, facility_id) as session:
+                    asset_count = session.query(NodeRecord).count()
+            except Exception:
+                pass
+
+            stat = db_file.stat()
+            size_kb = max(1, round(stat.st_size / 1024))
+            size_str = f"{size_kb} KB" if size_kb < 1024 else f"{round(size_kb / 1024, 1)} MB"
+            mod_time = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M")
+
+            facilities.append({
+                "facility_id": facility_id,
+                "facility_name": facility_id.replace("_", " ").title(),
+                "db_path": f"data/clients/{client_id}/{facility_id}/model.db",
+                "asset_count": asset_count,
+                "file_size_bytes": stat.st_size,
+                "file_size_str": size_str,
+                "modified_at": mod_time,
+            })
+
+        if facilities or True:  # Include client even if empty so folders show
+            clients_map[client_id] = {
+                "client_id": client_id,
+                "client_name": client_id.replace("_", " ").title(),
+                "facilities": facilities,
+                "facility_count": len(facilities),
+            }
+
+    return list(clients_map.values())
+
+
+def create_client_facility(client_id: str, facility_id: str, seed: bool = True) -> Dict[str, Any]:
+    """Create a new client/facility directory and initialize its SQLite database."""
+    clean_client = re.sub(r'[^a-zA-Z0-9_\-]', '_', client_id.strip().lower())
+    clean_facility = re.sub(r'[^a-zA-Z0-9_\-]', '_', facility_id.strip().lower())
+    if not clean_client:
+        clean_client = "default_client"
+    if not clean_facility:
+        clean_facility = "main_facility"
+
+    get_facility_dir(clean_client, clean_facility)
+    get_engine(clean_client, clean_facility)
+    
+    asset_count = 0
+    with get_session(clean_client, clean_facility) as session:
+        if seed and session.query(NodeRecord).count() == 0:
+            for item in get_verified_demo_assets():
+                session.add(NodeRecord(**item))
+            session.commit()
+        asset_count = session.query(NodeRecord).count()
+    
+    export_to_jsonl(clean_client, clean_facility)
+
+    return {
+        "client_id": clean_client,
+        "facility_id": clean_facility,
+        "db_path": f"data/clients/{clean_client}/{clean_facility}/model.db",
+        "asset_count": asset_count,
+        "seeded": seed
+    }
+
 
