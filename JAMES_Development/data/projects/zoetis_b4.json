@@ -1187,6 +1187,16 @@
       "data": {
         "breaker": "CB-EMERG-600A"
       }
+    },
+    {
+      "id": "edge_util_ats_1_465f",
+      "from_node": "UTIL",
+      "from_port": "out",
+      "to_node": "ATS_1",
+      "to_port": "emerg",
+      "data": {
+        "breaker": "CB-EMERG-600A"
+      }
     }
   ]
 }

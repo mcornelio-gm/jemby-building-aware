@@ -273,10 +273,15 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     break
                         tail_parts.append(matched_slot if matched_slot else "Feeder Out")
                     elif parent_domain == "transformers" or parent_type in ["XFMR", "PAD"]:
-                        tail_parts.append("Sec Out")
+                        tail_parts.append("Secondary Out")
                     elif parent_domain == "sources" or parent_type in ["UTIL", "GEN", "PV"]:
-                        tail_parts.append("Main Out")
+                        port_label = "Mtr / Main Out" if parent_type == "UTIL" else ("Gen Breaker" if parent_type == "GEN" else "Inverter Out")
+                        tail_parts.append(port_label)
                     elif parent_domain == "switches" or parent_type in ["ATS", "MTS", "DISC"]:
+                        tail_parts.append("Load Out")
+                    elif parent_domain == "power_quality" or parent_type == "UPS":
+                        tail_parts.append("Inverter Out")
+                    elif parent_domain == "cables" or parent_type in ["CABLE", "FEEDER"]:
                         tail_parts.append("Load Out")
                     else:
                         tail_parts.append("Out")
@@ -286,16 +291,24 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                     # 2. Determine Head Label (Downstream Input Terminal)
                     head_parts = []
                     if type_tag in ["ATS", "MTS"]:
-                        head_parts.append("Norm In")
+                        head_parts.append("Normal In")
                     elif type_tag in ["XFMR", "PAD"]:
-                        head_parts.append("Pri In")
-                    elif n.get("is_panel") or child_domain == "panels":
-                        main_type = (n.get("attributes") or {}).get("main_type", "")
-                        head_parts.append(f"Mains ({main_type})" if main_type else "Line In")
-                    elif child_domain == "loads":
-                        head_parts.append("Load In")
-                    else:
+                        head_parts.append("Primary In")
+                    elif n.get("is_panel") or child_domain == "panels" or type_tag in ["LP", "MDP", "MCC", "PP", "REC", "PDU"]:
+                        main_type = (n.get("attributes") or {}).get("main_type", "Main Lugs")
+                        head_parts.append(main_type)
+                    elif child_domain == "power_quality" or type_tag == "UPS":
+                        head_parts.append("UPS Input")
+                    elif child_domain == "loads" or type_tag in ["HVAC", "MOTOR", "EV", "PUMP"]:
+                        head_parts.append("Disconnect / Lugs")
+                    elif child_domain == "metering" or type_tag in ["METER", "MTR"]:
+                        head_parts.append("CT / Voltage Sense In")
+                    elif child_domain == "renewables" or type_tag in ["BESS", "SOLAR"]:
+                        head_parts.append("Bi-Directional AC In/Out")
+                    elif child_domain == "cables" or type_tag in ["CABLE", "FEEDER"]:
                         head_parts.append("Line In")
+                    else:
+                        head_parts.append("In")
 
                     head_label = _clean_str(" • ".join(head_parts))
 
@@ -318,7 +331,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 for candidate in nodes:
                     if candidate.get("type_tag") == "ATS" or candidate.get("domain") == "switches":
                         ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
-                        gen_tail_badge = _make_silver_badge("Gen Out", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
+                        gen_tail_badge = _make_silver_badge("Gen Breaker", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
                         emerg_head_badge = _make_silver_badge("Emerg In", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
                         dot_lines.append(
                             f'    {node_id} -> {ats_id} ['
