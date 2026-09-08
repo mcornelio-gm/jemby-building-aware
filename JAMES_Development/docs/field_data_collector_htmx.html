@@ -1162,13 +1162,16 @@
                       <td 
                         @click="openBreakerInspector(row, 'left', rIdx)"
                         class="p-1.5 border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-sans"
-                        :class="row.leftTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic'"
+                        :class="row.leftIsGanged ? 'bg-indigo-50/25 dark:bg-indigo-950/20 border-l-2 border-l-indigo-400' : (row.leftTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic')"
                       >
                         <div class="flex items-center justify-between gap-1">
-                          <span class="truncate text-xs" :class="row.leftTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400'" x-text="row.leftDesc || '+ Space / Spare'"></span>
-                          <div class="flex items-center gap-1 shrink-0" x-show="row.leftTrip">
+                          <span class="truncate text-xs" :class="row.leftIsGanged ? 'text-indigo-600 dark:text-indigo-400 font-normal italic text-[11px]' : (row.leftTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400')" x-text="row.leftDesc || '+ Space / Spare'"></span>
+                          <div class="flex items-center gap-1 shrink-0" x-show="row.leftTrip && !row.leftIsGanged">
                             <span x-show="row.leftPoles > 1" class="px-1 py-0.2 rounded text-[9px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-mono" x-text="row.leftPoles + 'P'"></span>
                             <span x-show="row.leftType && row.leftType !== 'MCCB'" class="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono" x-text="row.leftType"></span>
+                          </div>
+                          <div class="flex items-center gap-1 shrink-0" x-show="row.leftIsGanged">
+                            <span class="px-1 py-0.2 rounded text-[8px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono">GANGED</span>
                           </div>
                         </div>
                       </td>
@@ -1176,9 +1179,9 @@
                       <!-- Left Trip Rating -->
                       <td 
                         @click="openBreakerInspector(row, 'left', rIdx)"
-                        class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-bold text-xs"
-                        :class="row.leftTrip ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'"
-                        x-text="row.leftTrip ? (row.leftTrip + 'A') : '—'"
+                        class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer text-xs"
+                        :class="row.leftIsGanged ? 'text-indigo-400/80 font-normal text-[10px]' : (row.leftTrip ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-400')"
+                        x-text="row.leftIsGanged ? ('(' + row.leftTrip + 'A)') : (row.leftTrip ? (row.leftTrip + 'A') : '—')"
                       ></td>
 
                       <!-- Phase Marker -->
@@ -1187,22 +1190,25 @@
                       <!-- Right Trip Rating -->
                       <td 
                         @click="openBreakerInspector(row, 'right', rIdx)"
-                        class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-bold text-xs"
-                        :class="row.rightTrip ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'"
-                        x-text="row.rightTrip ? (row.rightTrip + 'A') : '—'"
+                        class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer text-xs"
+                        :class="row.rightIsGanged ? 'text-indigo-400/80 font-normal text-[10px]' : (row.rightTrip ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-400')"
+                        x-text="row.rightIsGanged ? ('(' + row.rightTrip + 'A)') : (row.rightTrip ? (row.rightTrip + 'A') : '—')"
                       ></td>
 
                       <!-- Right Slot Card (Clickable) -->
                       <td 
                         @click="openBreakerInspector(row, 'right', rIdx)"
                         class="p-1.5 border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-sans"
-                        :class="row.rightTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic'"
+                        :class="row.rightIsGanged ? 'bg-indigo-50/25 dark:bg-indigo-950/20 border-l-2 border-l-indigo-400' : (row.rightTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic')"
                       >
                         <div class="flex items-center justify-between gap-1">
-                          <span class="truncate text-xs" :class="row.rightTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400'" x-text="row.rightDesc || '+ Space / Spare'"></span>
-                          <div class="flex items-center gap-1 shrink-0" x-show="row.rightTrip">
+                          <span class="truncate text-xs" :class="row.rightIsGanged ? 'text-indigo-600 dark:text-indigo-400 font-normal italic text-[11px]' : (row.rightTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400')" x-text="row.rightDesc || '+ Space / Spare'"></span>
+                          <div class="flex items-center gap-1 shrink-0" x-show="row.rightTrip && !row.rightIsGanged">
                             <span x-show="row.rightPoles > 1" class="px-1 py-0.2 rounded text-[9px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-mono" x-text="row.rightPoles + 'P'"></span>
                             <span x-show="row.rightType && row.rightType !== 'MCCB'" class="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono" x-text="row.rightType"></span>
+                          </div>
+                          <div class="flex items-center gap-1 shrink-0" x-show="row.rightIsGanged">
+                            <span class="px-1 py-0.2 rounded text-[8px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono">GANGED</span>
                           </div>
                         </div>
                       </td>
@@ -2753,7 +2759,7 @@
         },
 
         initScheduleRows() {
-          const slotCount = this.form.slots || 42;
+          const slotCount = Number(this.form.slots) || 42;
           const phases = ['A', 'B', 'C'];
           const phaseColors = ['text-red-500', 'text-blue-500', 'text-emerald-500'];
           const rows = [];
@@ -2761,21 +2767,25 @@
             const phaseIdx = Math.floor((i - 1) / 2) % 3;
             rows.push({
               leftSlot: i,
-              leftDesc: i === 1 ? 'Server Rack 1A' : (i === 3 ? 'Server Rack 1B' : (i === 5 ? 'Lighting West' : '')),
-              leftTrip: (i === 1 || i === 3) ? '50' : (i === 5 ? '20' : ''),
-              leftPoles: (i === 1 || i === 3) ? 2 : 1,
+              leftDesc: '',
+              leftTrip: '',
+              leftPoles: 1,
               leftType: 'MCCB',
-              leftWire: '10 AWG Cu',
+              leftWire: '12 AWG Cu',
               leftTargetLoad: '',
+              leftParentSlot: null,
+              leftIsGanged: false,
               phase: phases[phaseIdx],
               phaseColor: phaseColors[phaseIdx],
               rightSlot: i + 1,
-              rightDesc: i === 1 ? 'HVAC Fan 1' : (i === 3 ? 'Exhaust Fan 2' : ''),
-              rightTrip: (i === 1 || i === 3) ? '20' : '',
+              rightDesc: '',
+              rightTrip: '',
               rightPoles: 1,
               rightType: 'MCCB',
               rightWire: '12 AWG Cu',
-              rightTargetLoad: ''
+              rightTargetLoad: '',
+              rightParentSlot: null,
+              rightIsGanged: false,
             });
           }
           this.scheduleRows = rows;
@@ -2804,6 +2814,8 @@
                 leftType: 'MCCB',
                 leftWire: '12 AWG Cu',
                 leftTargetLoad: '',
+                leftParentSlot: null,
+                leftIsGanged: false,
                 phase: phases[phaseIdx],
                 phaseColor: phaseColors[phaseIdx],
                 rightSlot: i + 1,
@@ -2812,7 +2824,9 @@
                 rightPoles: 1,
                 rightType: 'MCCB',
                 rightWire: '12 AWG Cu',
-                rightTargetLoad: ''
+                rightTargetLoad: '',
+                rightParentSlot: null,
+                rightIsGanged: false,
               });
             }
           }
@@ -2821,16 +2835,30 @@
         },
 
         openBreakerInspector(row, side, rIdx) {
-          const slotNum = side === 'left' ? row.leftSlot : row.rightSlot;
-          const desc = side === 'left' ? row.leftDesc : row.rightDesc;
-          const trip = side === 'left' ? row.leftTrip : row.rightTrip;
-          const poles = (side === 'left' ? row.leftPoles : row.rightPoles) || 1;
-          const type = (side === 'left' ? row.leftType : row.rightType) || 'MCCB';
-          const wire = (side === 'left' ? row.leftWire : row.rightWire) || this.getConductor(Number(trip) || 20);
-          const targetLoad = (side === 'left' ? row.leftTargetLoad : row.rightTargetLoad) || '';
+          let targetRowIdx = rIdx;
+          let targetRow = row;
+          let slotNum = side === 'left' ? row.leftSlot : row.rightSlot;
+          const parentSlot = side === 'left' ? row.leftParentSlot : row.rightParentSlot;
+
+          // If clicking a ganged slave slot, auto-navigate to the parent breaker
+          if (parentSlot) {
+            const foundIdx = this.scheduleRows.findIndex(r => (side === 'left' ? r.leftSlot : r.rightSlot) === parentSlot);
+            if (foundIdx !== -1) {
+              targetRowIdx = foundIdx;
+              targetRow = this.scheduleRows[foundIdx];
+              slotNum = side === 'left' ? targetRow.leftSlot : targetRow.rightSlot;
+            }
+          }
+
+          const desc = side === 'left' ? targetRow.leftDesc : targetRow.rightDesc;
+          const trip = side === 'left' ? targetRow.leftTrip : targetRow.rightTrip;
+          const poles = (side === 'left' ? targetRow.leftPoles : targetRow.rightPoles) || 1;
+          const type = (side === 'left' ? targetRow.leftType : targetRow.rightType) || 'MCCB';
+          const wire = (side === 'left' ? targetRow.leftWire : targetRow.rightWire) || this.getConductor(Number(trip) || 20);
+          const targetLoad = (side === 'left' ? targetRow.leftTargetLoad : targetRow.rightTargetLoad) || '';
 
           this.activeBreaker = {
-            rowIdx: rIdx,
+            rowIdx: targetRowIdx,
             side: side,
             slot: slotNum,
             desc: desc || '',
@@ -2839,58 +2867,143 @@
             type: type,
             wire: wire,
             targetLoad: targetLoad,
-            phase: row.phase,
-            phaseColor: row.phaseColor,
-            isOccupied: Boolean(trip && trip.trim())
+            phase: targetRow.phase,
+            phaseColor: targetRow.phaseColor,
+            isOccupied: Boolean(trip && String(trip).trim())
           };
           this.showBreakerModal = true;
         },
 
         saveBreakerAttributes() {
           const b = this.activeBreaker;
-          const row = this.scheduleRows[b.rowIdx];
-          if (row) {
-            if (b.side === 'left') {
-              row.leftDesc = b.desc.trim() || `Circuit #${b.slot}`;
-              row.leftTrip = b.trip;
-              row.leftPoles = b.poles;
-              row.leftType = b.type;
-              row.leftWire = b.wire;
-              row.leftTargetLoad = b.targetLoad;
-            } else {
-              row.rightDesc = b.desc.trim() || `Circuit #${b.slot}`;
-              row.rightTrip = b.trip;
-              row.rightPoles = b.poles;
-              row.rightType = b.type;
-              row.rightWire = b.wire;
-              row.rightTargetLoad = b.targetLoad;
-            }
-            this.notify(`Saved Breaker at Slot #${b.slot} (${b.trip}A ${b.poles}P)`);
+          const rIdx = b.rowIdx;
+          const poles = parseInt(b.poles) || 1;
+          const side = b.side;
+          
+          if (rIdx < 0 || rIdx >= this.scheduleRows.length) {
+            this.showBreakerModal = false;
+            return;
           }
+
+          // Check if multi-pole fits within panel height
+          if (rIdx + (poles - 1) >= this.scheduleRows.length) {
+            this.notify(`Cannot fit a ${poles}-pole breaker starting at Slot #${b.slot} (exceeds panel spaces)`);
+            return;
+          }
+
+          // Clear any previous slave slots linked to this parent slot
+          this.scheduleRows.forEach(r => {
+            if (side === 'left' && r.leftParentSlot === b.slot) {
+              r.leftDesc = '';
+              r.leftTrip = '';
+              r.leftPoles = 1;
+              r.leftType = 'MCCB';
+              r.leftWire = '12 AWG Cu';
+              r.leftTargetLoad = '';
+              r.leftParentSlot = null;
+              r.leftIsGanged = false;
+            } else if (side === 'right' && r.rightParentSlot === b.slot) {
+              r.rightDesc = '';
+              r.rightTrip = '';
+              r.rightPoles = 1;
+              r.rightType = 'MCCB';
+              r.rightWire = '12 AWG Cu';
+              r.rightTargetLoad = '';
+              r.rightParentSlot = null;
+              r.rightIsGanged = false;
+            }
+          });
+
+          // Set parent pole
+          const parentRow = this.scheduleRows[rIdx];
+          const desc = b.desc.trim() || `Circuit #${b.slot}`;
+          if (side === 'left') {
+            parentRow.leftDesc = desc;
+            parentRow.leftTrip = b.trip;
+            parentRow.leftPoles = poles;
+            parentRow.leftType = b.type;
+            parentRow.leftWire = b.wire;
+            parentRow.leftTargetLoad = b.targetLoad;
+            parentRow.leftParentSlot = null;
+            parentRow.leftIsGanged = false;
+          } else {
+            parentRow.rightDesc = desc;
+            parentRow.rightTrip = b.trip;
+            parentRow.rightPoles = poles;
+            parentRow.rightType = b.type;
+            parentRow.rightWire = b.wire;
+            parentRow.rightTargetLoad = b.targetLoad;
+            parentRow.rightParentSlot = null;
+            parentRow.rightIsGanged = false;
+          }
+
+          // Set slave poles if multi-pole (2P or 3P)
+          for (let p = 1; p < poles; p++) {
+            const slaveRow = this.scheduleRows[rIdx + p];
+            if (slaveRow) {
+              const slavePhase = slaveRow.phase || (p === 1 ? 'Phase B' : 'Phase C');
+              const slaveDesc = `↳ Ganged with Slot #${b.slot} (${slavePhase})`;
+              if (side === 'left') {
+                slaveRow.leftDesc = slaveDesc;
+                slaveRow.leftTrip = b.trip;
+                slaveRow.leftPoles = poles;
+                slaveRow.leftType = b.type;
+                slaveRow.leftWire = b.wire;
+                slaveRow.leftTargetLoad = b.targetLoad;
+                slaveRow.leftParentSlot = b.slot;
+                slaveRow.leftIsGanged = true;
+              } else {
+                slaveRow.rightDesc = slaveDesc;
+                slaveRow.rightTrip = b.trip;
+                slaveRow.rightPoles = poles;
+                slaveRow.rightType = b.type;
+                slaveRow.rightWire = b.wire;
+                slaveRow.rightTargetLoad = b.targetLoad;
+                slaveRow.rightParentSlot = b.slot;
+                slaveRow.rightIsGanged = true;
+              }
+            }
+          }
+
+          this.notify(`Saved Breaker at Slot #${b.slot} (${b.trip}A ${poles}P)`);
           this.showBreakerModal = false;
         },
 
         removeBreakerFromSlot() {
           const b = this.activeBreaker;
-          const row = this.scheduleRows[b.rowIdx];
-          if (row) {
-            if (b.side === 'left') {
-              row.leftDesc = '';
-              row.leftTrip = '';
-              row.leftPoles = 1;
-              row.leftType = 'MCCB';
-              row.leftWire = '12 AWG Cu';
-              row.leftTargetLoad = '';
-            } else {
-              row.rightDesc = '';
-              row.rightTrip = '';
-              row.rightPoles = 1;
-              row.rightType = 'MCCB';
-              row.rightWire = '12 AWG Cu';
-              row.rightTargetLoad = '';
+          const side = b.side;
+          const parentSlot = b.slot;
+
+          // Clear parent and all associated slave slots
+          this.scheduleRows.forEach(r => {
+            const isTargetParentLeft = side === 'left' && r.leftSlot === parentSlot;
+            const isTargetSlaveLeft = side === 'left' && r.leftParentSlot === parentSlot;
+            if (isTargetParentLeft || isTargetSlaveLeft) {
+              r.leftDesc = '';
+              r.leftTrip = '';
+              r.leftPoles = 1;
+              r.leftType = 'MCCB';
+              r.leftWire = '12 AWG Cu';
+              r.leftTargetLoad = '';
+              r.leftParentSlot = null;
+              r.leftIsGanged = false;
             }
-            this.notify(`Cleared Slot #${b.slot} (Converted to Space)`);
-          }
+
+            const isTargetParentRight = side === 'right' && r.rightSlot === parentSlot;
+            const isTargetSlaveRight = side === 'right' && r.rightParentSlot === parentSlot;
+            if (isTargetParentRight || isTargetSlaveRight) {
+              r.rightDesc = '';
+              r.rightTrip = '';
+              r.rightPoles = 1;
+              r.rightType = 'MCCB';
+              r.rightWire = '12 AWG Cu';
+              r.rightTargetLoad = '';
+              r.rightParentSlot = null;
+              r.rightIsGanged = false;
+            }
+          });
+
+          this.notify(`Cleared Slot #${b.slot} (Converted to Space)`);
           this.showBreakerModal = false;
         },
 
@@ -3569,6 +3682,8 @@
                   leftType: ex.leftType || 'MCCB',
                   leftWire: ex.leftWire || this.getConductor(Number(ex.leftTrip || ex.leftAmps) || 20),
                   leftTargetLoad: ex.leftTargetLoad || '',
+                  leftParentSlot: ex.leftParentSlot || null,
+                  leftIsGanged: Boolean(ex.leftIsGanged),
                   phase: phases[phaseIdx],
                   phaseColor: phaseColors[phaseIdx],
                   rightSlot: i + 1,
@@ -3577,7 +3692,9 @@
                   rightPoles: ex.rightPoles || 1,
                   rightType: ex.rightType || 'MCCB',
                   rightWire: ex.rightWire || this.getConductor(Number(ex.rightTrip || ex.rightAmps) || 20),
-                  rightTargetLoad: ex.rightTargetLoad || ''
+                  rightTargetLoad: ex.rightTargetLoad || '',
+                  rightParentSlot: ex.rightParentSlot || null,
+                  rightIsGanged: Boolean(ex.rightIsGanged),
                 });
               } else {
                 fullRows.push({
@@ -3588,6 +3705,8 @@
                   leftType: 'MCCB',
                   leftWire: '12 AWG Cu',
                   leftTargetLoad: '',
+                  leftParentSlot: null,
+                  leftIsGanged: false,
                   phase: phases[phaseIdx],
                   phaseColor: phaseColors[phaseIdx],
                   rightSlot: i + 1,
@@ -3596,10 +3715,54 @@
                   rightPoles: 1,
                   rightType: 'MCCB',
                   rightWire: '12 AWG Cu',
-                  rightTargetLoad: ''
+                  rightTargetLoad: '',
+                  rightParentSlot: null,
+                  rightIsGanged: false,
                 });
               }
             }
+
+            // Auto-link any multi-pole slave rows if not already explicitly marked
+            fullRows.forEach((row, idx) => {
+              const leftPoles = Number(row.leftPoles) || 1;
+              if (leftPoles > 1 && !row.leftIsGanged && row.leftTrip) {
+                for (let p = 1; p < leftPoles; p++) {
+                  if (idx + p < fullRows.length) {
+                    const slave = fullRows[idx + p];
+                    slave.leftParentSlot = row.leftSlot;
+                    slave.leftIsGanged = true;
+                    slave.leftTrip = row.leftTrip;
+                    slave.leftPoles = leftPoles;
+                    slave.leftType = row.leftType;
+                    slave.leftWire = row.leftWire;
+                    slave.leftTargetLoad = row.leftTargetLoad;
+                    if (!slave.leftDesc) {
+                      slave.leftDesc = `↳ Ganged with Slot #${row.leftSlot} (${slave.phase})`;
+                    }
+                  }
+                }
+              }
+
+              const rightPoles = Number(row.rightPoles) || 1;
+              if (rightPoles > 1 && !row.rightIsGanged && row.rightTrip) {
+                for (let p = 1; p < rightPoles; p++) {
+                  if (idx + p < fullRows.length) {
+                    const slave = fullRows[idx + p];
+                    slave.rightParentSlot = row.rightSlot;
+                    slave.rightIsGanged = true;
+                    slave.rightTrip = row.rightTrip;
+                    slave.rightPoles = rightPoles;
+                    slave.rightType = row.rightType;
+                    slave.rightWire = row.rightWire;
+                    slave.rightTargetLoad = row.rightTargetLoad;
+                    if (!slave.rightDesc) {
+                      slave.rightDesc = `↳ Ganged with Slot #${row.rightSlot} (${slave.phase})`;
+                    }
+                  }
+                }
+              }
+            });
+
             this.scheduleRows = fullRows;
           } else {
             this.initScheduleRows();

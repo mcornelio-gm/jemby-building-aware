@@ -250,9 +250,9 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         if schedule and isinstance(schedule, list):
                             for row in schedule:
                                 if row.get("leftTargetLoad") == n.get("tag"):
-                                    slot_num = int(row.get("leftSlot", 1))
+                                    slot_num = int(row.get("leftParentSlot") or row.get("leftSlot", 1))
                                     poles = int(row.get("leftPoles", 1))
-                                    amps = row.get("leftAmps", "")
+                                    amps = row.get("leftAmps") or row.get("leftTrip", "")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
                                     if parent_type == "MCC":
                                         slot_str = f"Bucket {slot_num}A"
@@ -261,9 +261,9 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                                 elif row.get("rightTargetLoad") == n.get("tag"):
-                                    slot_num = int(row.get("rightSlot", 2))
+                                    slot_num = int(row.get("rightParentSlot") or row.get("rightSlot", 2))
                                     poles = int(row.get("rightPoles", 1))
-                                    amps = row.get("rightAmps", "")
+                                    amps = row.get("rightAmps") or row.get("rightTrip", "")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
                                     if parent_type == "MCC":
                                         slot_str = f"Bucket {slot_num}B"
@@ -442,7 +442,8 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             if schedule and isinstance(schedule, list):
                 for row in schedule:
                     left_trip = row.get("leftAmps") or row.get("leftTrip")
-                    if left_trip is not None and str(left_trip).strip():
+                    is_left_ganged = row.get("leftIsGanged") or bool(row.get("leftParentSlot"))
+                    if left_trip is not None and str(left_trip).strip() and not is_left_ganged:
                         s_num = row.get("leftSlot")
                         desc = _clean_str(row.get("leftDescription") or row.get("leftDesc") or row.get("leftTargetLoad") or f"Circuit {s_num}")
                         trip = _clean_str(str(left_trip))
@@ -458,7 +459,8 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                             breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
 
                     right_trip = row.get("rightAmps") or row.get("rightTrip")
-                    if right_trip is not None and str(right_trip).strip():
+                    is_right_ganged = row.get("rightIsGanged") or bool(row.get("rightParentSlot"))
+                    if right_trip is not None and str(right_trip).strip() and not is_right_ganged:
                         s_num = row.get("rightSlot")
                         desc = _clean_str(row.get("rightDescription") or row.get("rightDesc") or row.get("rightTargetLoad") or f"Circuit {s_num}")
                         trip = _clean_str(str(right_trip))
@@ -628,11 +630,11 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         for row in schedule:
                             left_trip = row.get("leftAmps") or row.get("leftTrip")
                             if left_trip and (row.get("leftTargetLoad") == n.get("tag") or row.get("leftDescription") == n.get("name")):
-                                slot_port = str(row.get("leftSlot", "1"))
+                                slot_port = str(row.get("leftParentSlot") or row.get("leftSlot", "1"))
                                 break
                             right_trip = row.get("rightAmps") or row.get("rightTrip")
                             if right_trip and (row.get("rightTargetLoad") == n.get("tag") or row.get("rightDescription") == n.get("name")):
-                                slot_port = str(row.get("rightSlot", "2"))
+                                slot_port = str(row.get("rightParentSlot") or row.get("rightSlot", "2"))
                                 break
                     if slot_port:
                         dot_lines.append(f'    {parent_id}_b{slot_port}:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
