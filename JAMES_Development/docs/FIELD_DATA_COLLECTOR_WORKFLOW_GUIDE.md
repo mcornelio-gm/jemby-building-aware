@@ -62,16 +62,33 @@ flowchart LR
 - **Unsaved Changes Safety Guard**: If you modify fields and accidentally switch assets, an interception modal provides `[💾 Save & Switch]`, `[🗑️ Discard & Switch]`, and `[Keep Editing]`.
 - **Facility Stack Grouping**: View by **📍 Room**, **⚡ Power Tree**, or **📦 Equipment Type**.
 - **⚡ View SLD Diagram**: Compiles the Graphviz single-line drawing directly from the digital twin.
-- **📋 Export JSONL**: Downloads the facility model for CAD/GIS or version control.
+- **Archetype / Part #**: Selected from archetype templates or customized.
+- **Electrical Ratings**: Real-time calculated fields (e.g. 3-phase FLA kVA calculations, Voltage system configurations `480Y/277V`, `208Y/120V`, etc.).
+- **Upstream Connection**: Interactive dropdown selecting which parent panel or switchboard feeds this asset.
 
 ---
 
-## 3. Standard NEMA Bus Stab & Phase Architecture
+## 3. The 4-Column Panel Schedule Matrix
 
-In North American electrical panelboards (NEMA / UL 67), bus stabs alternate rows vertically:
+When a distribution panel, lighting panel, or switchboard is selected, the center column mounts an interactive **Breaker Schedule**:
 
-| Row | Left Slot (Odd) | Phase Stab | Right Slot (Even) | System Line Voltage |
-| :---: | :---: | :---: | :---: | :---: |
+```
++-----------------------------------------------------------------------------------------------+
+| POLE A/B/C  |  BREAKER (L)  | TRIP (A) |  [ L1 ]  [ N ]  [ L2 ]  | TRIP (A) |  BREAKER (R)  | POLE A/B/C |
++-----------------------------------------------------------------------------------------------+
+```
+
+### Key Capabilities:
+- **Odd / Even Phase Mapping**: Accurate NEMA panel layout reflecting alternating bus bar stabs:
+  - **Rows 1, 4, 7...** → 🔴 **Phase A**
+  - **Rows 2, 5, 8...** → 🔵 **Phase B**
+  - **Rows 3, 6, 9...** → 🟢 **Phase C**
+- **Multipole Gang Linking (1P, 2P, 3P)**: Multi-pole breakers automatically lock adjacent bus stabs together across consecutive odd/even rows.
+- **Real-Time Load Summaries**: Automatically sums Connected VA and computes total Panel Amperage load and phase imbalance metrics.
+- **One-Click Phase Rotation Guide**:
+
+| Row | Left Slot | Phase | Right Slot | Typical Line Voltage |
+|:---|:---|:---|:---|:---|
 | **1** | **Slot 1** | 🔴 **Phase A** | **Slot 2** | 120V / 277V to Neutral |
 | **2** | **Slot 3** | 🔵 **Phase B** | **Slot 4** | 120V / 277V to Neutral |
 | **3** | **Slot 5** | 🟢 **Phase C** | **Slot 6** | 120V / 277V to Neutral |
@@ -84,7 +101,7 @@ In North American electrical panelboards (NEMA / UL 67), bus stabs alternate row
 ## 4. Pro-Tips for Field Technicians
 
 1. **Tag Integrity**: Duplicate equipment tags are blocked automatically; let archetype auto-incrementing speed up panel tagging (`LP-1`, `LP-2`, `LP-3`).
-2. **Maximize Screen Real-Estate**: Use `◀ Hide Catalog` on tablets to focus on the active breaker matrix and stack.
+2. **Maximize Screen Real-Estate**: Use `◀ Hide Domains` on tablets to focus on the active breaker matrix and stack.
 3. **Fast Guide Access**: Press `?` on a physical keyboard or tap `📖 Field Guide` in the header.
 4. **Emergency Discard**: Press `Esc` to instantly dismiss any open modal or photo lightbox.
 5. **Lighting Conditions**: Switch between `🌙 Dark Mode` (for dark electrical rooms) and `☀️ Light Mode` (for bright outdoor substations).
