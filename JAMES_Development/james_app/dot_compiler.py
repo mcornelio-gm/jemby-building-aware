@@ -213,24 +213,91 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
         
         dot_lines.append("")
         
-        # 2. Render Direct Edges (Parent -> Child)
+        # 2. Render Direct Edges with Arrowtail & Arrowhead Labels (Parent -> Child)
         for n in nodes:
             node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
             fed_from = n.get("fed_from")
             type_tag = n.get("type_tag", "")
+            child_domain = n.get("domain", "")
 
             if fed_from:
                 parent_node = nodes_by_tag.get(fed_from)
                 if parent_node:
                     parent_id = _sanitize_id(parent_node.get("id", parent_node.get("tag", "eq")))
-                    dot_lines.append(f'    {parent_id} -> {node_id} [color="#0F172A", penwidth=2.0];')
+                    parent_domain = parent_node.get("domain", "")
+                    parent_type = parent_node.get("type_tag", "")
+
+                    # 1. Determine Tail Label (Upstream Breaker / Output Port)
+                    tail_parts = []
+                    if parent_node.get("is_panel") or parent_domain == "panels":
+                        schedule = (parent_node.get("attributes") or {}).get("schedule", [])
+                        matched_slot = None
+                        if schedule and isinstance(schedule, list):
+                            for row in schedule:
+                                if row.get("leftTargetLoad") == n.get("tag"):
+                                    slot_num = row.get("leftSlot", 1)
+                                    poles = row.get("leftPoles", 1)
+                                    amps = row.get("leftAmps", "")
+                                    slot_str = f"Slot {slot_num}" if poles == 1 else f"Slots {slot_num}-{int(slot_num) + (poles - 1) * 2}"
+                                    matched_slot = f"[{slot_str}] {amps}A" if amps else f"[{slot_str}]"
+                                    break
+                                elif row.get("rightTargetLoad") == n.get("tag"):
+                                    slot_num = row.get("rightSlot", 2)
+                                    poles = row.get("rightPoles", 1)
+                                    amps = row.get("rightAmps", "")
+                                    slot_str = f"Slot {slot_num}" if poles == 1 else f"Slots {slot_num}-{int(slot_num) + (poles - 1) * 2}"
+                                    matched_slot = f"[{slot_str}] {amps}A" if amps else f"[{slot_str}]"
+                                    break
+                        tail_parts.append(matched_slot if matched_slot else "Feeder Out")
+                    elif parent_domain == "transformers" or parent_type in ["XFMR", "PAD"]:
+                        tail_parts.append("Sec Out")
+                    elif parent_domain == "sources" or parent_type in ["UTIL", "GEN", "PV"]:
+                        tail_parts.append("Main Out")
+                    elif parent_domain == "switches" or parent_type in ["ATS", "MTS", "DISC"]:
+                        tail_parts.append("Load Out")
+                    else:
+                        tail_parts.append("Out")
+
+                    tail_label = _clean_str(" • ".join(tail_parts))
+
+                    # 2. Determine Head Label (Downstream Input Terminal)
+                    head_parts = []
+                    if type_tag in ["ATS", "MTS"]:
+                        head_parts.append("Norm In")
+                    elif type_tag in ["XFMR", "PAD"]:
+                        head_parts.append("Pri In")
+                    elif n.get("is_panel") or child_domain == "panels":
+                        main_type = (n.get("attributes") or {}).get("main_type", "")
+                        head_parts.append(f"Mains ({main_type})" if main_type else "Line In")
+                    elif child_domain == "loads":
+                        head_parts.append("Load In")
+                    else:
+                        head_parts.append("Line In")
+
+                    head_label = _clean_str(" • ".join(head_parts))
+
+                    # 3. Conductor Wire Label (Center)
+                    conductor = (n.get("attributes") or {}).get("conductor") or n.get("conductor")
+                    cond_attr = f'label="{_clean_str(conductor)}", ' if conductor else ''
+
+                    dot_lines.append(
+                        f'    {parent_id} -> {node_id} ['
+                        f'color="#0F172A", penwidth=2.0, {cond_attr}'
+                        f'taillabel="{tail_label}", headlabel="{head_label}", '
+                        f'labeldistance=2.4, labelangle=25, fontsize=8, fontname="Arial", fontcolor="#334155"];'
+                    )
 
             # Special connection: Emergency Generator to ATS
             if type_tag == "GEN":
                 for candidate in nodes:
                     if candidate.get("type_tag") == "ATS" or candidate.get("domain") == "switches":
                         ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
-                        dot_lines.append(f'    {node_id} -> {ats_id} [color="#B45309", penwidth=2.2, label="Emergency", fontcolor="#B45309", fontsize=8];')
+                        dot_lines.append(
+                            f'    {node_id} -> {ats_id} ['
+                            f'color="#B45309", penwidth=2.2, '
+                            f'taillabel="Gen Out", headlabel="Emerg In", '
+                            f'labeldistance=2.4, labelangle=-25, fontsize=8, fontname="Arial", fontcolor="#9A3412"];'
+                        )
 
         dot_lines.append("}")
         return "\n".join(dot_lines)

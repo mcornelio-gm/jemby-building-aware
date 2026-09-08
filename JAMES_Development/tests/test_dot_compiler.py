@@ -40,11 +40,15 @@ def test_compile_facility_to_dot():
     assert "s3_out:s -> s4_in:n" in dot_detailed
     assert "s2_out:s -> s3_emerg:n" in dot_detailed
 
-    # 2. Macro Mode (Consolidated Single Nodes)
+    # 2. Macro Mode (Consolidated Single Nodes with Arrowtail & Arrowhead Labels)
     dot_macro = compile_facility_to_dot(sample_nodes, mode="macro")
     assert "digraph ElectricalOneLine {" in dot_macro
     assert "subgraph cluster_" not in dot_macro
     assert "s1 [label=" in dot_macro
     assert "s4 [label=" in dot_macro
-    assert "s3 -> s4 [color=" in dot_macro
-    assert "s2 -> s3 [color=" in dot_macro
+    assert "s3 -> s4 [" in dot_macro
+    assert 'taillabel="Load Out"' in dot_macro
+    assert 'headlabel="Line In"' in dot_macro or 'headlabel="Mains (' in dot_macro
+    assert "s2 -> s3 [" in dot_macro
+    assert 'taillabel="Gen Out"' in dot_macro
+    assert 'headlabel="Emerg In"' in dot_macro
