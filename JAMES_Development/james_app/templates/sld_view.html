@@ -9,7 +9,28 @@
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Early Theme & Font Scale Sync Script (FOUC Prevention) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('james-theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+        const savedScale = localStorage.getItem('james-font-scale');
+        if (savedScale) {
+          const scale = parseInt(savedScale, 10);
+          if (scale && scale >= 70 && scale <= 150) {
+            document.documentElement.style.fontSize = (16 * (scale / 100)).toFixed(1) + 'px';
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -106,6 +127,39 @@
 
     <!-- Viewer Controls -->
     <div class="flex items-center gap-1.5 shrink-0">
+      <!-- Font Size Stepper [ A⁻ | 100% | A⁺ ] -->
+      <div class="flex items-center rounded-md border border-slate-700 bg-slate-800 text-slate-300 shadow-2xs overflow-hidden select-none" title="Adjust text size">
+        <button 
+          type="button" 
+          onclick="decreaseFontSize()" 
+          id="sld-btn-font-dec"
+          class="px-1.5 py-1 text-[11px] font-bold transition hover:bg-slate-700 flex items-center justify-center border-r border-slate-700 cursor-pointer"
+          title="Decrease text size (A⁻)"
+        >
+          A⁻
+        </button>
+        <button 
+          type="button" 
+          onclick="resetFontSize()" 
+          id="sld-font-scale-label"
+          class="px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-700 cursor-pointer min-w-[34px] text-center"
+          title="Reset to 100%"
+        >
+          100%
+        </button>
+        <button 
+          type="button" 
+          onclick="increaseFontSize()" 
+          id="sld-btn-font-inc"
+          class="px-1.5 py-1 text-[11px] font-bold transition hover:bg-slate-700 flex items-center justify-center border-l border-slate-700 cursor-pointer"
+          title="Increase text size (A⁺)"
+        >
+          A⁺
+        </button>
+      </div>
+
+      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
+
       <button 
         onclick="zoomIn()" 
         class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
@@ -549,7 +603,48 @@
       }
     });
 
-    window.addEventListener("DOMContentLoaded", initSLD);
+    // Global Font Scaling for SLD View
+    let sldFontScale = 100;
+
+    function applyFontSize(scale) {
+      sldFontScale = scale;
+      const basePx = (16 * (scale / 100)).toFixed(1);
+      document.documentElement.style.fontSize = `${basePx}px`;
+      localStorage.setItem('james-font-scale', String(scale));
+      const lbl = document.getElementById('sld-font-scale-label');
+      if (lbl) lbl.textContent = scale + '%';
+      const decBtn = document.getElementById('sld-btn-font-dec');
+      const incBtn = document.getElementById('sld-btn-font-inc');
+      if (decBtn) decBtn.disabled = scale <= 85;
+      if (incBtn) incBtn.disabled = scale >= 130;
+    }
+
+    function increaseFontSize() {
+      const scales = [85, 90, 100, 110, 120, 130];
+      const next = scales.find(s => s > sldFontScale);
+      if (next) applyFontSize(next);
+    }
+
+    function decreaseFontSize() {
+      const scales = [85, 90, 100, 110, 120, 130];
+      const prev = [...scales].reverse().find(s => s < sldFontScale);
+      if (prev) applyFontSize(prev);
+    }
+
+    function resetFontSize() {
+      applyFontSize(100);
+    }
+
+    function initFontSize() {
+      const saved = localStorage.getItem('james-font-scale');
+      sldFontScale = saved ? parseInt(saved, 10) : 100;
+      applyFontSize(sldFontScale);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initFontSize();
+      initSLD();
+    });
   </script>
 </body>
 </html>

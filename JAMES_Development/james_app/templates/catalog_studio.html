@@ -9,7 +9,28 @@
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Early Theme & Font Scale Sync Script (FOUC Prevention) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('james-theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+        const savedScale = localStorage.getItem('james-font-scale');
+        if (savedScale) {
+          const scale = parseInt(savedScale, 10);
+          if (scale && scale >= 70 && scale <= 150) {
+            document.documentElement.style.fontSize = (16 * (scale / 100)).toFixed(1) + 'px';
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -161,6 +182,39 @@
       </div>
 
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
+
+      <!-- Font Size Stepper [ A⁻ | 100% | A⁺ ] -->
+      <div class="flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-2xs overflow-hidden select-none" title="Adjust text size">
+        <button 
+          type="button" 
+          @click="decreaseFontSize()" 
+          :disabled="fontScale <= 85"
+          :class="fontScale <= 85 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
+          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-r border-slate-300 dark:border-slate-700"
+          title="Decrease text size (A⁻)"
+        >
+          A⁻
+        </button>
+        <button 
+          type="button" 
+          @click="resetFontSize()" 
+          class="px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer min-w-[34px] text-center"
+          title="Reset to 100%"
+          x-text="fontScale + '%'"
+        >
+          100%
+        </button>
+        <button 
+          type="button" 
+          @click="increaseFontSize()" 
+          :disabled="fontScale >= 130"
+          :class="fontScale >= 130 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
+          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-l border-slate-300 dark:border-slate-700"
+          title="Increase text size (A⁺)"
+        >
+          A⁺
+        </button>
+      </div>
 
       <!-- Dark / Light Theme Toggle -->
       <button 
@@ -1136,6 +1190,7 @@
 
         // Global UI state
         isDark: true,
+        fontScale: 100,
         showHelpModal: false,
         showSidebar: window.innerWidth >= 1024,
         activeHelpTab: 'flow',
@@ -1186,6 +1241,10 @@
             this.isDark = true;
           }
 
+          const savedScale = localStorage.getItem('james-font-scale');
+          this.fontScale = savedScale ? parseInt(savedScale, 10) : 100;
+          this.applyFontSize(this.fontScale);
+
           this.$watch('searchQuery', () => { this.currentPage = 1; });
           
           this.$watch('selectedDomain', () => {
@@ -1209,6 +1268,29 @@
           });
 
           this.$watch('selectedManufacturer', () => { this.currentPage = 1; });
+        },
+
+        applyFontSize(scale) {
+          this.fontScale = scale;
+          const basePx = (16 * (scale / 100)).toFixed(1);
+          document.documentElement.style.fontSize = `${basePx}px`;
+          localStorage.setItem('james-font-scale', String(scale));
+        },
+
+        increaseFontSize() {
+          const scales = [85, 90, 100, 110, 120, 130];
+          const next = scales.find(s => s > this.fontScale);
+          if (next) this.applyFontSize(next);
+        },
+
+        decreaseFontSize() {
+          const scales = [85, 90, 100, 110, 120, 130];
+          const prev = [...scales].reverse().find(s => s < this.fontScale);
+          if (prev) this.applyFontSize(prev);
+        },
+
+        resetFontSize() {
+          this.applyFontSize(100);
         },
 
         toggleTheme() {

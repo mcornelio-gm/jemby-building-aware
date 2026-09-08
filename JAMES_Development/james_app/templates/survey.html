@@ -43,7 +43,7 @@
   <!-- HTMX CDN -->
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-  <!-- Early Theme Sync Script (FOUC Prevention) -->
+  <!-- Early Theme & Font Scale Sync Script (FOUC Prevention) -->
   <script>
     (function() {
       try {
@@ -54,6 +54,13 @@
         } else {
           document.documentElement.classList.add('dark');
           document.documentElement.style.colorScheme = 'dark';
+        }
+        const savedScale = localStorage.getItem('james-font-scale');
+        if (savedScale) {
+          const scale = parseInt(savedScale, 10);
+          if (scale && scale >= 70 && scale <= 150) {
+            document.documentElement.style.fontSize = (16 * (scale / 100)).toFixed(1) + 'px';
+          }
         }
       } catch (e) {}
     })();
@@ -236,6 +243,39 @@
       </button>
 
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
+
+      <!-- Font Size Stepper [ A⁻ | 100% | A⁺ ] -->
+      <div class="flex items-center rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-2xs overflow-hidden select-none" title="Adjust text size">
+        <button 
+          type="button" 
+          @click="decreaseFontSize()" 
+          :disabled="fontScale <= 85"
+          :class="fontScale <= 85 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
+          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-r border-slate-200 dark:border-slate-700"
+          title="Decrease text size (A⁻)"
+        >
+          A⁻
+        </button>
+        <button 
+          type="button" 
+          @click="resetFontSize()" 
+          class="px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer min-w-[34px] text-center"
+          title="Reset to 100%"
+          x-text="fontScale + '%'"
+        >
+          100%
+        </button>
+        <button 
+          type="button" 
+          @click="increaseFontSize()" 
+          :disabled="fontScale >= 130"
+          :class="fontScale >= 130 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
+          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-l border-slate-200 dark:border-slate-700"
+          title="Increase text size (A⁺)"
+        >
+          A⁺
+        </button>
+      </div>
 
       <!-- Dark / Light Theme Toggle -->
       <button 
@@ -2440,6 +2480,7 @@
 
         // UI State
         isDark: true,
+        fontScale: 100,
         domainSearch: '',
         typeSearch: '',
         stackSearch: '',
@@ -2483,30 +2524,36 @@
             { tag: 'LP', name: 'Lighting Branch Panel (LP)', desc: '42-slot 208Y/120V lighting & receptacle panel', volts: '208Y/120V 3Ø 4W', amps: 225, aic: 22, is_panel: 1, defaultSlots: 42, defaultTag: 'LP-1' },
             { tag: 'MDP', name: 'Main Distribution Panel (MDP)', desc: 'Central service entrance switchboard / panel', volts: '480Y/277V 3Ø 4W', amps: 1200, aic: 65, is_panel: 1, defaultSlots: 42, defaultTag: 'MDP-1' },
             { tag: 'MCC', name: 'Motor Control Center (MCC)', desc: 'Grouped motor starters and VFD buckets', volts: '480V 3Ø 3W', amps: 800, aic: 65, is_panel: 1, defaultSlots: 30, defaultTag: 'MCC-1' },
-            { tag: 'PP', name: 'Power Distribution Panel (PP)', desc: 'Dedicated mechanical power distribution panel', volts: '480Y/277V', amps: 400, aic: 35, is_panel: 1, defaultSlots: 30, defaultTag: 'PP-1' },
-            { tag: 'REC', name: 'Residential Loadcenter (REC)', desc: '24-slot residential/light commercial loadcenter', volts: '120/240V 1Ø 3W', amps: 200, aic: 22, is_panel: 1, defaultSlots: 24, defaultTag: 'REC-1' },
+            { tag: 'MSB', name: 'Main Switchboard (MSB)', desc: 'High-capacity distribution switchboard', volts: '480Y/277V 3Ø 4W', amps: 2500, aic: 100, is_panel: 1, defaultSlots: 60, defaultTag: 'MSB-1' },
+            { tag: 'DP', name: 'Distribution Panelboard (DP)', desc: 'Intermediate power distribution feeder panel', volts: '480Y/277V 3Ø 4W', amps: 400, aic: 42, is_panel: 1, defaultSlots: 42, defaultTag: 'DP-1' },
+            { tag: 'RP', name: 'Receptacle Branch Panel (RP)', desc: 'Appliance and convenience branch circuits', volts: '208Y/120V 3Ø 4W', amps: 100, aic: 14, is_panel: 1, defaultSlots: 30, defaultTag: 'RP-1' },
+            { tag: 'SUB', name: 'Sub-Panelboard', desc: 'Remote floor or zone sub-panelboard', volts: '208Y/120V 3Ø 4W', amps: 125, aic: 10, is_panel: 1, defaultSlots: 24, defaultTag: 'SUB-1' },
           ],
           transformers: [
-            { tag: 'XFMR', name: 'Dry-Type Step-Down Transformer', desc: '480V to 208Y/120V distribution transformer', volts: '480V : 208Y/120V', amps: 208, aic: 22, defaultTag: 'T-1' },
-            { tag: 'PAD', name: 'Liquid-Filled Padmount Transformer', desc: 'Utility outdoor oil-filled step-down unit', volts: '13.8kV : 480V', amps: 1200, aic: 65, defaultTag: 'XFMR-PAD' },
+            { tag: 'XFMR-D', name: 'Dry-Type Step-Down Transformer', desc: 'General purpose 480V to 208Y/120V dry step-down', volts: '480V Pri / 208Y/120V Sec', amps: 208, aic: 14, defaultTag: 'T-1' },
+            { tag: 'XFMR-O', name: 'Oil-Filled Padmount Transformer', desc: 'Utility outdoor oil-insulated substation unit', volts: '13.8kV Pri / 480V Sec', amps: 1200, aic: 65, defaultTag: 'TX-1' },
+            { tag: 'XFMR-K', name: 'K-Factor Harmonic Transformer', desc: 'Harmonic mitigating K-13 rated transformer', volts: '480V Pri / 208Y/120V Sec', amps: 300, aic: 22, defaultTag: 'TK-1' },
           ],
           power_quality: [
-            { tag: 'UPS', name: 'Double-Conversion Static UPS', desc: 'Uninterruptible power supply system with battery bank', volts: '480V 3Ø', amps: 300, aic: 65, defaultTag: 'UPS-1' },
+            { tag: 'UPS', name: 'Uninterruptible Power Supply (UPS)', desc: 'Double-conversion online battery backup system', volts: '480V 3Ø', amps: 250, aic: 42, defaultTag: 'UPS-1' },
+            { tag: 'TVSS', name: 'Surge Protective Device (SPD/TVSS)', desc: 'Transient voltage surge suppressor', volts: '480Y/277V', amps: 100, aic: 200, defaultTag: 'SPD-1' },
             { tag: 'PDU', name: 'Power Distribution Unit (PDU)', desc: 'Data center cabinet power distribution unit', volts: '208Y/120V', amps: 150, aic: 22, is_panel: 1, defaultSlots: 42, defaultTag: 'PDU-1' },
           ],
           loads: [
-            { tag: 'HVAC', name: 'Packaged Chiller / RTU', desc: 'Central cooling plant / rooftop HVAC package', volts: '480V 3Ø', amps: 285, aic: 65, defaultTag: 'CH-1' },
-            { tag: 'MOTOR', name: 'Process Pump / Motor', desc: '3-phase induction motor across-the-line or VFD', volts: '480V 3Ø', amps: 65, aic: 35, defaultTag: 'PUMP-1' },
-            { tag: 'EV', name: 'EV Fast Charging Station', desc: 'Level 2 or DC Fast Charger', volts: '480V 3Ø', amps: 100, aic: 35, defaultTag: 'EV-1' },
+            { tag: 'CHLR', name: 'Water-Cooled Chiller', desc: 'Central mechanical plant centrifugal chiller', volts: '480V 3Ø', amps: 350, aic: 65, defaultTag: 'CH-1' },
+            { tag: 'AHU', name: 'Air Handling Unit (AHU)', desc: 'HVAC supply and return fan system', volts: '480V 3Ø', amps: 45, aic: 22, defaultTag: 'AHU-1' },
+            { tag: 'PUMP', name: 'Hydronic Circulating Pump', desc: 'Centrifugal motor pump assembly', volts: '480V 3Ø', amps: 30, aic: 22, defaultTag: 'P-1' },
+            { tag: 'EVC', name: 'EV Fast Charger Station', desc: 'Commercial Level 3 DC Fast Charger', volts: '480V 3Ø', amps: 125, aic: 65, defaultTag: 'EV-1' },
           ],
           cables: [
-            { tag: 'CABLE', name: 'Low Voltage Feeder Run', desc: 'Copper THHN/XHHW in EMT/RMC Conduit', volts: '480V', amps: 400, aic: 65, defaultTag: 'FEEDER-1' },
+            { tag: 'FEEDER', name: 'Conduit & Feeder Run', desc: 'Sub-distribution bus or THHN conduit raceway', volts: '480V 3Ø', amps: 400, aic: 65, defaultTag: 'FDR-1' },
+            { tag: 'BUS', name: 'Electrical Busway Run', desc: 'Overhead plug-in bus duct run', volts: '480V 3Ø', amps: 800, aic: 65, defaultTag: 'BUS-1' },
           ],
           metering: [
-            { tag: 'METER', name: 'Digital Power Meter', desc: 'Multifunction power quality & energy monitor', volts: '480V', amps: 5, aic: 100, defaultTag: 'MTR-1' },
+            { tag: 'METER', name: 'Digital Power Meter', desc: 'Multi-function tenant revenue submeter', volts: '480V 3Ø', amps: 5, aic: 10, defaultTag: 'MTR-1' },
           ],
           renewables: [
-            { tag: 'BESS', name: 'Battery Energy Storage (BESS)', desc: 'Grid-tied battery energy storage system', volts: '480V 3Ø', amps: 500, aic: 65, defaultTag: 'BESS-1' },
+            { tag: 'BESS', name: 'Battery Energy Storage System', desc: 'Utility scale grid-tied battery storage', volts: '480V 3Ø', amps: 400, aic: 65, defaultTag: 'BESS-1' },
           ],
           generic: [
             { tag: 'GENERIC', name: 'Unclassified Asset', desc: 'Custom facility asset or junction enclosure', volts: '480V', amps: 100, aic: 22, defaultTag: 'EQ-1' },
@@ -2527,6 +2574,10 @@
             document.documentElement.classList.remove('dark');
             document.documentElement.style.colorScheme = 'light';
           }
+
+          const savedScale = localStorage.getItem('james-font-scale');
+          this.fontScale = savedScale ? parseInt(savedScale, 10) : 100;
+          this.applyFontSize(this.fontScale);
 
           const savedCatalog = localStorage.getItem('james-show-catalog');
           if (savedCatalog !== null) {
@@ -3671,6 +3722,29 @@
           a.click();
           URL.revokeObjectURL(url);
           this.notify('Exported companion JSONL file!');
+        },
+
+        applyFontSize(scale) {
+          this.fontScale = scale;
+          const basePx = (16 * (scale / 100)).toFixed(1);
+          document.documentElement.style.fontSize = `${basePx}px`;
+          localStorage.setItem('james-font-scale', String(scale));
+        },
+
+        increaseFontSize() {
+          const scales = [85, 90, 100, 110, 120, 130];
+          const next = scales.find(s => s > this.fontScale);
+          if (next) this.applyFontSize(next);
+        },
+
+        decreaseFontSize() {
+          const scales = [85, 90, 100, 110, 120, 130];
+          const prev = [...scales].reverse().find(s => s < this.fontScale);
+          if (prev) this.applyFontSize(prev);
+        },
+
+        resetFontSize() {
+          this.applyFontSize(100);
         },
 
         toggleTheme() {
