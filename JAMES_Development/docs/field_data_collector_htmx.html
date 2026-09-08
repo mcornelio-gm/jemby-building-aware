@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JEMBY Digital Twin - Field Collector (Jinja2 + Tailwind + Alpine.js + HTMX + SQLite)</title>
+  <title>Building Aware • Electrical Digital Twin Workbench</title>
+  <link rel="icon" type="image/jpeg" href="/static/building_aware_mark.jpg">
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -146,10 +147,17 @@
   <!-- Top Master Control Bar -->
   <header class="h-14 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-5 shrink-0 z-50 shadow-sm">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-indigo-500/30">
-        J
-      </div>
-      <span class="font-bold text-slate-900 dark:text-white tracking-tight text-sm">JEMBY JAMES</span>
+      <a href="/cockpit" class="flex items-center gap-2.5 group cursor-pointer" title="Building Aware • Electrical Digital Twin">
+        <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-700/60 group-hover:border-rose-500/50 transition">
+        <div>
+          <div class="flex items-center gap-1 leading-none">
+            <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-sm">Building</span>
+            <span class="font-light text-slate-600 dark:text-slate-300 tracking-tight text-sm">Aware</span>
+            <span class="text-[9px] px-1 py-0.2 bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 rounded font-bold font-mono">TWIN</span>
+          </div>
+          <div class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5">Electrical Digital Twin</div>
+        </div>
+      </a>
       
       <!-- Multi-Tenant Client Pill -->
       <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300">

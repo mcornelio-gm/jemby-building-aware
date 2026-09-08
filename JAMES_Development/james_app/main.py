@@ -18,10 +18,10 @@ from james_app import storage, db
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
-
 STATIC_DIR.mkdir(exist_ok=True)
 
-app = FastAPI(title="JAMES - Electrical SLD Builder", version="0.1.0")
+app = FastAPI(title="Building Aware - Electrical Digital Twin", version="1.2.0")
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 

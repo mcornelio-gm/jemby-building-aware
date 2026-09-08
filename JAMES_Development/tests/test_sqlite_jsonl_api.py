@@ -35,7 +35,7 @@ def test_sqlite_db_and_jsonl_isolation(tmp_path):
 def test_api_cockpit_view():
     res = client.get("/cockpit")
     assert res.status_code == 200
-    assert "Tailwind + Alpine.js + HTMX + SQLite" in res.text
+    assert "Building Aware" in res.text
 
 
 def test_api_get_nodes():
@@ -146,7 +146,8 @@ def test_api_facility_dot_and_sld():
     # Test HTML SLD Viewer endpoint
     res_sld = client.get("/clients/zoetis/facilities/b4/sld")
     assert res_sld.status_code == 200
-    assert "Electrical Single-Line Diagram" in res_sld.text
+    assert "Building Aware" in res_sld.text
+    assert "Single-Line Diagram" in res_sld.text
     assert "d3-graphviz" in res_sld.text
 
 
