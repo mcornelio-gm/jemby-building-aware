@@ -51,19 +51,19 @@
 
   <!-- Top Navigation Bar -->
   <header class="h-11 px-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-xs z-10 text-white select-none">
-    <div class="flex items-center gap-2.5">
-      <a href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer" title="Return to Data Collector">
+    <div class="flex items-center gap-2">
+      <a href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Return to Data Collector">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div class="flex items-center gap-1 leading-none">
+        <div class="hidden sm:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
           <span class="font-light text-slate-400 tracking-tight text-xs">Aware</span>
         </div>
       </a>
 
-      <div class="h-3.5 w-[1px] bg-slate-800"></div>
+      <div class="hidden md:block h-3.5 w-[1px] bg-slate-800"></div>
 
       <!-- Multi-Tenant Client Pill -->
-      <div class="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 font-medium">
+      <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 font-medium shrink-0">
         <span>🏢</span>
         <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
       </div>
@@ -71,7 +71,7 @@
       <div class="h-3.5 w-[1px] bg-slate-800"></div>
 
       <!-- Unified Global Navigation Segment -->
-      <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium">
+      <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium shrink-0">
         <!-- 1. Catalog -->
         <a 
           href="/catalog?client={{ client_id }}&facility={{ facility_id }}" 
@@ -79,7 +79,7 @@
           title="Master Catalog Studio & Archetype Specs"
         >
           <span>📚</span>
-          <span>Catalog</span>
+          <span class="hidden sm:inline">Catalog</span>
         </a>
 
         <!-- 2. Survey -->
@@ -89,7 +89,7 @@
           title="Field Survey & Digital Twin Modeler"
         >
           <span>📋</span>
-          <span>Survey</span>
+          <span class="hidden sm:inline">Survey</span>
         </a>
 
         <!-- 3. Diagram (Active) -->
@@ -99,13 +99,13 @@
           title="Interactive Single-Line Hierarchy Diagram (Active)"
         >
           <i class="fa-solid fa-sitemap text-[11px]"></i>
-          <span>Diagram</span>
+          <span class="hidden sm:inline">Diagram</span>
         </a>
       </nav>
     </div>
 
     <!-- Viewer Controls -->
-    <div class="flex items-center gap-1.5">
+    <div class="flex items-center gap-1.5 shrink-0">
       <button 
         onclick="zoomIn()" 
         class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
@@ -123,19 +123,16 @@
       <button 
         onclick="resetFit()" 
         class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Fit to Screen (F)"
+        title="Fit Diagram to Viewport (F)"
       >
-        Fit View
+        <span class="hidden md:inline">Reset </span>Fit
       </button>
-
-      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
-
       <button 
-        onclick="toggleDotModal()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1"
+        onclick="toggleHierarchy()" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+        title="Toggle Hierarchy View Mode (H)"
       >
-        <span>📝</span>
-        <span>Raw DOT</span>
+        <span class="hidden md:inline">Toggle </span>Hierarchy
       </button>
     </div>
   </header>

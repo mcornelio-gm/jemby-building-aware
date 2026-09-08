@@ -44,10 +44,10 @@
   <!-- 1. TOP NAVIGATION & GLOBAL TOOLBAR -->
   <header class="h-11 bg-white dark:bg-slate-900 border-b border-slate-300 dark:border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
     <!-- Brand & Section -->
-    <div class="flex items-center space-x-2.5">
-      <a href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer" title="Return to Survey Workbench">
+    <div class="flex items-center space-x-2">
+      <a href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer shrink-0" title="Return to Survey Workbench">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div class="flex items-center gap-1 leading-none">
+        <div class="hidden sm:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
           <span class="font-light text-slate-600 dark:text-slate-400 tracking-tight text-xs">Aware</span>
         </div>
@@ -56,7 +56,7 @@
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
       <!-- Unified Global Navigation Segment -->
-      <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium">
+      <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium shrink-0">
         <!-- 1. Catalog (Active) -->
         <a 
           href="/catalog?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
@@ -64,7 +64,7 @@
           title="Master Catalog Studio & Archetype Specs (Active)"
         >
           <span>📚</span>
-          <span>Catalog</span>
+          <span class="hidden sm:inline">Catalog</span>
         </a>
 
         <!-- 2. Survey -->
@@ -74,7 +74,7 @@
           title="Field Survey & Digital Twin Modeler"
         >
           <span>📋</span>
-          <span>Survey</span>
+          <span class="hidden sm:inline">Survey</span>
         </a>
 
         <!-- 3. Diagram -->
@@ -84,7 +84,7 @@
           title="Single-Line Hierarchy & SLD Schematic Viewer"
         >
           <i class="fa-solid fa-sitemap text-[11px] text-amber-500"></i>
-          <span>Diagram</span>
+          <span class="hidden sm:inline">Diagram</span>
         </a>
       </nav>
 
@@ -98,12 +98,12 @@
     </div>
 
     <!-- Center Search Bar -->
-    <div class="flex-1 max-w-md mx-4">
+    <div class="flex-1 max-w-md mx-2 sm:mx-4">
       <div class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs"></i>
         <input type="text"
                x-model="searchQuery"
-               placeholder="Search Part #, Model, Manufacturer, UPC, Description..."
+               placeholder="Search Part #, Model, Manufacturer..."
                class="w-full pl-8 pr-7 py-1 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-md text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
         <button x-show="searchQuery"
                 @click="searchQuery = ''"
@@ -114,17 +114,28 @@
     </div>
 
     <!-- Right Actions -->
-    <div class="flex items-center space-x-1.5">
+    <div class="flex items-center space-x-1.5 shrink-0">
+      <!-- Toggle Filter Sidebar (Tablet / Mobile) -->
+      <button 
+        type="button"
+        @click="showSidebar = !showSidebar" 
+        class="lg:hidden px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none"
+        title="Toggle Filter Sidebar"
+      >
+        <i class="fa-solid fa-filter text-emerald-600 dark:text-emerald-400 text-[10px]"></i>
+        <span class="hidden sm:inline">Filters</span>
+      </button>
+
       <button @click="openCreateDrawer()"
               class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition cursor-pointer select-none">
         <i class="fa-solid fa-plus text-[10px]"></i>
-        <span>Add Part</span>
+        <span class="hidden sm:inline">Add Part</span>
       </button>
 
       <button @click="showImportModal = true"
               class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none">
         <i class="fa-solid fa-file-import text-cyan-600 dark:text-cyan-400 text-[10px]"></i>
-        <span>Import</span>
+        <span class="hidden md:inline">Import</span>
       </button>
 
       <div class="relative" x-data="{ exportOpen: false }">
@@ -132,7 +143,7 @@
                 @click.away="exportOpen = false"
                 class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none">
           <i class="fa-solid fa-file-export text-amber-600 dark:text-amber-400 text-[10px]"></i>
-          <span>Export</span>
+          <span class="hidden md:inline">Export</span>
           <i class="fa-solid fa-chevron-down text-[8px] text-slate-500 dark:text-slate-400"></i>
         </button>
         <div x-show="exportOpen"
@@ -175,10 +186,22 @@
   </header>
 
   <!-- 2. MAIN 2-COLUMN LAYOUT -->
-  <div class="flex-1 flex overflow-hidden">
+  <div class="flex-1 flex overflow-hidden relative">
     
+    <!-- Mobile/Tablet Sidebar Backdrop -->
+    <div 
+      x-show="showSidebar" 
+      x-cloak 
+      @click="showSidebar = false" 
+      class="fixed inset-0 top-11 bg-slate-900/60 backdrop-blur-xs z-30 lg:hidden"
+    ></div>
+
     <!-- LEFT SIDEBAR: FILTERS & BRANDS -->
-    <aside class="w-64 bg-white dark:bg-slate-900/90 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-y-auto">
+    <aside 
+      x-show="showSidebar" 
+      x-cloak
+      class="w-64 bg-white dark:bg-slate-900/90 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-y-auto max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:top-11 max-lg:z-40 max-lg:shadow-2xl"
+    >
       
       <!-- Domain Filter -->
       <div class="p-3 border-b border-slate-200 dark:border-slate-800">
@@ -308,9 +331,9 @@
               <th class="py-2.5 px-3">Part / Model #</th>
               <th class="py-2.5 px-3">Manufacturer</th>
               <th class="py-2.5 px-3">Archetype</th>
-              <th class="py-2.5 px-3">Description</th>
+              <th class="py-2.5 px-3 hidden md:table-cell">Description</th>
               <th class="py-2.5 px-3">Rating Specs</th>
-              <th class="py-2.5 px-3">UPC / Barcode</th>
+              <th class="py-2.5 px-3 hidden lg:table-cell">UPC / Barcode</th>
               <th class="py-2.5 px-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -338,7 +361,7 @@
                 </td>
 
                 <!-- Description -->
-                <td class="py-2 px-3 text-slate-700 dark:text-slate-300 max-w-xs truncate" :title="item.description">
+                <td class="py-2 px-3 text-slate-700 dark:text-slate-300 max-w-xs truncate hidden md:table-cell" :title="item.description">
                   <span x-text="item.description || '-'"></span>
                 </td>
 
@@ -364,7 +387,7 @@
                 </td>
 
                 <!-- UPC -->
-                <td class="py-2 px-3 font-mono text-[10px] text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                <td class="py-2 px-3 font-mono text-[10px] text-slate-500 dark:text-slate-400 whitespace-nowrap hidden lg:table-cell">
                   <template x-if="item.docs && item.docs.upc">
                     <span class="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-700 dark:text-slate-300" x-text="item.docs.upc"></span>
                   </template>
@@ -1114,6 +1137,7 @@
         // Global UI state
         isDark: true,
         showHelpModal: false,
+        showSidebar: window.innerWidth >= 1024,
         activeHelpTab: 'flow',
 
         // Drawer state

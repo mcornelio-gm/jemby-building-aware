@@ -146,19 +146,19 @@
 
   <!-- Top Master Control Bar -->
   <header class="h-11 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-3.5 shrink-0 z-50 shadow-xs select-none">
-    <div class="flex items-center gap-2.5">
-      <a href="/cockpit" class="flex items-center gap-2 group cursor-pointer" title="Building Aware • Electrical Digital Twin">
+    <div class="flex items-center gap-2">
+      <a href="/cockpit" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Building Aware • Electrical Digital Twin">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div class="flex items-center gap-1 leading-none">
+        <div class="hidden sm:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
           <span class="font-light text-slate-600 dark:text-slate-300 tracking-tight text-xs">Aware</span>
         </div>
       </a>
       
-      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+      <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
       <!-- Multi-Tenant Client Pill -->
-      <div class="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 font-medium">
+      <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 font-medium shrink-0">
         <span>🏢</span>
         <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
       </div>
@@ -166,7 +166,7 @@
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
       <!-- Unified Global Navigation Segment -->
-      <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium">
+      <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium shrink-0">
         <!-- 1. Catalog -->
         <a 
           :href="'/catalog?client=' + client + '&facility=' + facility" 
@@ -174,7 +174,7 @@
           title="Master Catalog Studio & Archetype Specs"
         >
           <span>📚</span>
-          <span>Catalog</span>
+          <span class="hidden sm:inline">Catalog</span>
         </a>
 
         <!-- 2. Survey (Active) -->
@@ -184,7 +184,7 @@
           title="Field Survey & Digital Twin Modeler (Active)"
         >
           <span>📋</span>
-          <span>Survey</span>
+          <span class="hidden sm:inline">Survey</span>
         </a>
 
         <!-- 3. Diagram -->
@@ -194,7 +194,7 @@
           title="Single-Line Hierarchy & SLD Schematic Viewer"
         >
           <i class="fa-solid fa-sitemap text-[11px] text-amber-500"></i>
-          <span>Diagram</span>
+          <span class="hidden sm:inline">Diagram</span>
         </a>
       </nav>
     </div>
@@ -212,7 +212,7 @@
     </div>
 
     <!-- Action Controls -->
-    <div class="flex items-center gap-1.5">
+    <div class="flex items-center gap-1.5 shrink-0">
       <!-- Show / Hide Domains Sidebar Toggle -->
       <button 
         type="button"
@@ -221,8 +221,8 @@
         :class="showCatalog ? 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700' : 'border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 font-semibold'"
         title="Toggle Equipment Domains & Archetypes (D)"
       >
-        <span x-show="showCatalog">◀ Hide Domains</span>
-        <span x-show="!showCatalog" x-cloak>▶ Show Domains</span>
+        <span x-show="showCatalog" class="flex items-center gap-1"><span>◀</span><span class="hidden md:inline">Hide Domains</span></span>
+        <span x-show="!showCatalog" x-cloak class="flex items-center gap-1"><span>▶</span><span class="hidden md:inline">Show Domains</span></span>
       </button>
 
       <!-- Export JSONL -->
@@ -231,7 +231,8 @@
         class="px-2.5 py-1 rounded-md text-[11px] font-medium border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-1 transition cursor-pointer"
         title="Export Facility Model (JSONL)"
       >
-        <span>📋 Export JSONL</span>
+        <span>📋</span>
+        <span class="hidden md:inline">Export<span class="hidden lg:inline"> JSONL</span></span>
       </button>
 
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
@@ -262,116 +263,125 @@
   <!-- 4-Column Full-Page Cockpit Workspace -->
   <main class="flex-1 flex overflow-hidden relative">
 
-    <!-- COLUMN 1: Equipment Domains (Pure Standalone Assets) -->
-    <section 
-      x-show="showCatalog" 
-      x-cloak 
-      :style="`width: ${col1Width}px;`" 
-      class="shrink-0 flex flex-col bg-slate-50 dark:bg-[#0E1626]/70 border-r border-slate-200 dark:border-slate-800 transition-all duration-150"
-    >
-      <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          <span>Domains</span>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="domains.length">10</span>
-        </div>
-        <button 
-          type="button" 
-          @click="toggleCatalog()" 
-          title="Collapse Domains" 
-          class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs cursor-pointer"
-        >
-          ◀
-        </button>
-      </div>
-      
-      <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
-        <input 
-          type="text" 
-          x-model="domainSearch" 
-          placeholder="Filter domains..." 
-          class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
-        >
-      </div>
-
-      <div class="flex-1 overflow-y-auto p-2 space-y-1">
-        <template x-for="(dom, idx) in filteredDomains" :key="dom.id">
-          <div 
-            @click="requestSelectDomain(dom)"
-            :class="selectedDomain.id === dom.id 
-              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold' 
-              : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/80'"
-            class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-xs select-none"
-          >
-            <div class="flex items-center gap-2 truncate">
-              <span x-text="dom.icon"></span>
-              <span x-text="dom.name" class="truncate"></span>
-            </div>
-            <span class="text-[10px] opacity-70">›</span>
-          </div>
-        </template>
-      </div>
-    </section>
-
-    <!-- Resizer 1 -->
+    <!-- Equipment Domains & Types Pane (Inline on ≥1024px, Slide-Over Drawer on <1024px) -->
     <div 
       x-show="showCatalog" 
       x-cloak 
-      class="resizer-bar bg-slate-200 dark:bg-slate-800" 
-      @mousedown="startResize($event, 1)"
+      class="shrink-0 flex max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:top-11 max-lg:z-40 max-lg:shadow-2xl max-lg:bg-white max-lg:dark:bg-[#0E1626]"
+    >
+      <!-- COLUMN 1: Equipment Domains (Pure Standalone Assets) -->
+      <section 
+        :style="`width: ${col1Width}px;`" 
+        class="shrink-0 flex flex-col bg-slate-50 dark:bg-[#0E1626]/70 border-r border-slate-200 dark:border-slate-800 transition-all duration-150 h-full"
+      >
+        <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span>Domains</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="domains.length">10</span>
+          </div>
+          <button 
+            type="button" 
+            @click="toggleCatalog()" 
+            title="Collapse Domains" 
+            class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs cursor-pointer"
+          >
+            ◀
+          </button>
+        </div>
+        
+        <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+          <input 
+            type="text" 
+            x-model="domainSearch" 
+            placeholder="Filter domains..." 
+            class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+          >
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-2 space-y-1">
+          <template x-for="(dom, idx) in filteredDomains" :key="dom.id">
+            <div 
+              @click="requestSelectDomain(dom)"
+              :class="selectedDomain.id === dom.id 
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold' 
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/80'"
+              class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-xs select-none"
+            >
+              <div class="flex items-center gap-2 truncate">
+                <span x-text="dom.icon"></span>
+                <span x-text="dom.name" class="truncate"></span>
+              </div>
+              <span class="text-[10px] opacity-70">›</span>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <!-- Resizer 1 (Desktop inline) -->
+      <div 
+        class="resizer-bar bg-slate-200 dark:bg-slate-800 max-lg:hidden" 
+        @mousedown="startResize($event, 1)"
+      ></div>
+
+      <!-- COLUMN 2: Equipment Types -->
+      <section 
+        :style="`width: ${col2Width}px;`" 
+        class="shrink-0 flex flex-col bg-slate-100/70 dark:bg-[#0B1220]/80 border-r border-slate-200 dark:border-slate-800 transition-all duration-150 h-full"
+      >
+        <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span>Equipment Types</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="filteredTypes.length">0</span>
+          </div>
+        </div>
+
+        <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+          <input 
+            type="text" 
+            x-model="typeSearch" 
+            placeholder="Search equipment types..." 
+            class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+          >
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-2 space-y-1.5">
+          <template x-for="type in filteredTypes" :key="type.tag">
+            <div 
+              @click="requestSelectType(type)"
+              :class="selectedType.tag === type.tag 
+                ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
+                : 'bg-white dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
+              class="flex flex-col p-2.5 rounded-lg cursor-pointer transition text-xs select-none gap-0.5"
+            >
+              <div class="flex items-start justify-between gap-1.5">
+                <span class="font-semibold text-xs leading-snug" :class="selectedType.tag === type.tag ? 'text-white' : 'text-slate-900 dark:text-white'" x-text="type.name"></span>
+                <span 
+                  class="px-1.5 py-0.5 rounded font-mono text-[10px] shrink-0 font-bold"
+                  :class="selectedType.tag === type.tag ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'"
+                  x-text="type.tag"
+                ></span>
+              </div>
+              <p class="text-[11px] opacity-75 line-clamp-2" x-text="type.desc"></p>
+            </div>
+          </template>
+        </div>
+      </section>
+    </div>
+
+    <!-- Resizer 2 (Desktop inline divider) -->
+    <div 
+      x-show="showCatalog" 
+      x-cloak 
+      class="resizer-bar bg-slate-200 dark:bg-slate-800 max-lg:hidden" 
+      @mousedown="startResize($event, 2)"
     ></div>
 
-    <!-- COLUMN 2: Equipment Types -->
-    <section 
-      x-show="showCatalog" 
-      x-cloak 
-      :style="`width: ${col2Width}px;`" 
-      class="shrink-0 flex flex-col bg-slate-100/70 dark:bg-[#0B1220]/80 border-r border-slate-200 dark:border-slate-800 transition-all duration-150"
-    >
-      <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          <span>Equipment Types</span>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="filteredTypes.length">0</span>
-        </div>
-      </div>
-
-      <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
-        <input 
-          type="text" 
-          x-model="typeSearch" 
-          placeholder="Search equipment types..." 
-          class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
-        >
-      </div>
-
-      <div class="flex-1 overflow-y-auto p-2 space-y-1.5">
-        <template x-for="type in filteredTypes" :key="type.tag">
-          <div 
-            @click="requestSelectType(type)"
-            :class="selectedType.tag === type.tag 
-              ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
-              : 'bg-white dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
-            class="flex flex-col p-2.5 rounded-lg cursor-pointer transition text-xs select-none gap-0.5"
-          >
-            <div class="flex items-start justify-between gap-1.5">
-              <span class="font-semibold text-xs leading-snug" :class="selectedType.tag === type.tag ? 'text-white' : 'text-slate-900 dark:text-white'" x-text="type.name"></span>
-              <span 
-                class="px-1.5 py-0.5 rounded font-mono text-[10px] shrink-0 font-bold"
-                :class="selectedType.tag === type.tag ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'"
-                x-text="type.tag"
-              ></span>
-            </div>
-            <p class="text-[11px] opacity-75 line-clamp-2" x-text="type.desc"></p>
-          </div>
-        </template>
-      </div>
-    </section>
-
-    <!-- Resizer 2 -->
+    <!-- Mobile/Tablet Overlay Backdrop -->
     <div 
       x-show="showCatalog" 
       x-cloak 
-      class="resizer-bar bg-slate-200 dark:bg-slate-800" 
-      @mousedown="startResize($event, 2)"
+      @click="showCatalog = false" 
+      class="fixed inset-0 top-11 bg-slate-900/60 backdrop-blur-xs z-30 lg:hidden"
     ></div>
 
     <!-- COLUMN 3: Active Equipment Form, Calculations & Embedded Panel Schedule -->
@@ -2526,6 +2536,8 @@
           const savedCatalog = localStorage.getItem('james-show-catalog');
           if (savedCatalog !== null) {
             this.showCatalog = (savedCatalog === '1');
+          } else {
+            this.showCatalog = (window.innerWidth >= 1024);
           }
 
           this.selectedDomain = this.domains[3]; // Panelboards
@@ -3310,6 +3322,9 @@
         selectType(t) {
           this.selectedType = t;
           this.editingId = null;
+          if (window.innerWidth < 1024) {
+            this.showCatalog = false;
+          }
           this.form.tag = this.getNextAvailableTag(t.defaultTag || 'EQ-1');
           this.form.name = t.name;
           this.form.voltage = t.volts || '480Y/277V 3Ø 4W';
