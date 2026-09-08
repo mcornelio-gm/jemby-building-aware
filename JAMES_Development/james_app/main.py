@@ -38,14 +38,22 @@ def api_get_catalog():
 
 
 @app.get("/catalog", response_class=HTMLResponse)
-def get_catalog_studio_view(request: Request, client_id: str = "zoetis", facility_id: str = "b4"):
+def get_catalog_studio_view(
+    request: Request,
+    client: Optional[str] = None,
+    facility: Optional[str] = None,
+    client_id: Optional[str] = None,
+    facility_id: Optional[str] = None
+):
     """Render the full Master Catalog Studio UI for parts management and CRUD."""
+    active_client = (client or client_id or "zoetis").strip().lower()
+    active_facility = (facility or facility_id or "b4").strip().lower()
     return templates.TemplateResponse(
         request=request,
         name="catalog_studio.html",
         context={
-            "client_id": client_id,
-            "facility_id": facility_id,
+            "client_id": active_client,
+            "facility_id": active_facility,
             "master_catalog_items": get_master_catalog().get_all_items(),
             "manufacturers": get_master_catalog().get_manufacturers(),
             "stats": get_master_catalog().get_catalog_stats()
@@ -631,11 +639,20 @@ def get_field_collector_cockpit_view():
 @app.get("/survey", response_class=HTMLResponse)
 @app.get("/cockpit", response_class=HTMLResponse)
 @app.get("/field-collector-htmx", response_class=HTMLResponse)
-def get_survey_view(request: Request, client_id: str = "zoetis", facility_id: str = "b4"):
+def get_survey_view(
+    request: Request,
+    client: Optional[str] = None,
+    facility: Optional[str] = None,
+    client_id: Optional[str] = None,
+    facility_id: Optional[str] = None
+):
     """Serve modern Jinja2 + HTML + SQLite + JSON + FastAPI + HTMX + Alpine.js + Tailwind Survey Workbench."""
-    # Ensure client facility SQLite DB is seeded
-    db.seed_demo_facility(client_id, facility_id)
-    with db.get_session(client_id, facility_id) as session:
+    active_client = (client or client_id or "zoetis").strip().lower()
+    active_facility = (facility or facility_id or "b4").strip().lower()
+
+    # Ensure client facility SQLite DB is initialized/seeded
+    db.seed_demo_facility(active_client, active_facility)
+    with db.get_session(active_client, active_facility) as session:
         records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
         initial_nodes = [
             {
@@ -664,8 +681,8 @@ def get_survey_view(request: Request, client_id: str = "zoetis", facility_id: st
         request=request,
         name="survey.html",
         context={
-            "client_id": client_id,
-            "facility_id": facility_id,
+            "client_id": active_client,
+            "facility_id": active_facility,
             "initial_nodes": initial_nodes,
             "master_catalog_items": get_master_catalog().get_all_items(),
         }

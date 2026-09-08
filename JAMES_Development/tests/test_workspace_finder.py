@@ -108,3 +108,17 @@ def test_api_post_workspace_facilities_validation():
 
     res = client.post("/api/workspace/facilities", json={"client_id": "client_a", "facility_id": ""})
     assert res.status_code == 400
+
+
+def test_survey_and_catalog_client_param_routing():
+    """Verify ?client=...&facility=... query params are correctly parsed by survey and catalog routes."""
+    res = client.get("/survey?client=pfizer_biotech&facility=lab_building_9")
+    assert res.status_code == 200
+    assert "PFIZER_BIOTECH" in res.text
+    assert "LAB_BUILDING_9" in res.text
+
+    res_cat = client.get("/catalog?client=pfizer_biotech&facility=lab_building_9")
+    assert res_cat.status_code == 200
+    assert "PFIZER_BIOTECH" in res_cat.text
+    assert "LAB_BUILDING_9" in res_cat.text
+

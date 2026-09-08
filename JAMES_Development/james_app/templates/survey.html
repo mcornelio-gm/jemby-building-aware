@@ -2564,10 +2564,11 @@
             <div class="p-2 space-y-1.5">
               <template x-for="f in c.facilities" :key="f.facility_id">
                 <div 
-                  class="p-2.5 rounded-lg border transition flex items-center justify-between gap-3 group"
+                  @click="selectFacility(c.client_id, f.facility_id)"
+                  class="p-2.5 rounded-lg border transition flex items-center justify-between gap-3 group cursor-pointer"
                   :class="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase()) 
                     ? 'bg-indigo-50/80 dark:bg-indigo-950/50 border-indigo-300 dark:border-indigo-800 shadow-2xs' 
-                    : 'bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'"
+                    : 'bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-400 dark:hover:border-indigo-600'"
                 >
                   <div class="flex items-center gap-3">
                     <span class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-sm">🗄️</span>
@@ -2595,7 +2596,7 @@
                   <div class="flex items-center gap-1.5">
                     <button 
                       type="button" 
-                      @click="selectFacility(c.client_id, f.facility_id)" 
+                      @click.stop="selectFacility(c.client_id, f.facility_id)" 
                       class="px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
                       :class="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase())
                         ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
@@ -2929,10 +2930,7 @@
         },
 
         selectFacility(client_id, facility_id) {
-          if ((this.client || '').toLowerCase() === client_id.toLowerCase() && (this.facility || '').toLowerCase() === facility_id.toLowerCase()) {
-            this.showFinderModal = false;
-            return;
-          }
+          this.showFinderModal = false;
           window.location.href = '/survey?client=' + encodeURIComponent(client_id) + '&facility=' + encodeURIComponent(facility_id);
         },
 

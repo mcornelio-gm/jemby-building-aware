@@ -375,7 +375,12 @@ def get_verified_demo_assets() -> List[Dict[str, Any]]:
 
 def seed_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> None:
     """Seed sample facility with realistic equipment stack if empty."""
-    with get_session(client_id, facility_id) as session:
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    get_facility_dir(clean_c, clean_f)
+    get_engine(clean_c, clean_f)
+
+    with get_session(clean_c, clean_f) as session:
         if session.query(NodeRecord).count() > 0:
             return  # Already seeded
 
@@ -383,7 +388,7 @@ def seed_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> No
             session.add(NodeRecord(**item))
         session.commit()
 
-    export_to_jsonl(client_id, facility_id)
+    export_to_jsonl(clean_c, clean_f)
 
 
 def reset_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> None:
