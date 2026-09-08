@@ -1,11 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="en" class="h-full dark" style="color-scheme: dark;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building Aware • Master Catalog Studio</title>
   <link rel="icon" type="image/jpeg" href="/static/building_aware_mark.jpg">
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -17,30 +36,31 @@
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none"
+<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
       x-data="catalogStudio()"
-      x-init="initData()">
+      x-init="initData()"
+      @keydown.window="handleGlobalKeydown($event)">
 
   <!-- 1. TOP NAVIGATION & GLOBAL TOOLBAR -->
-  <header class="h-11 bg-slate-900 border-b border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
+  <header class="h-11 bg-white dark:bg-slate-900 border-b border-slate-300 dark:border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
     <!-- Brand & Section -->
     <div class="flex items-center space-x-2.5">
       <a href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer" title="Return to Cockpit Workbench">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
         <div class="flex items-center gap-1 leading-none">
-          <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
-          <span class="font-light text-slate-400 tracking-tight text-xs">Aware</span>
+          <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
+          <span class="font-light text-slate-600 dark:text-slate-400 tracking-tight text-xs">Aware</span>
         </div>
       </a>
 
-      <div class="h-3.5 w-[1px] bg-slate-800"></div>
+      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
       <!-- Unified Global Navigation Segment -->
-      <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium">
+      <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium">
         <!-- 1. Cockpit -->
         <a 
           href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
-          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1 transition"
           title="Data Collection Cockpit & Graph Modeler"
         >
           <span>📊</span>
@@ -50,7 +70,7 @@
         <!-- 2. Catalog (Active) -->
         <a 
           href="/catalog?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
-          class="px-2.5 py-1 rounded-md bg-slate-800 text-emerald-400 font-bold shadow-2xs border border-slate-700/80 flex items-center gap-1 transition"
+          class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 font-bold shadow-2xs border border-slate-200/80 dark:border-slate-700/80 flex items-center gap-1 transition"
           title="Master Catalog Studio & Archetype Specs (Active)"
         >
           <span>📚</span>
@@ -60,7 +80,7 @@
         <!-- 3. Diagram -->
         <a 
           href="/clients/{{ client_id | default('zoetis') }}/facilities/{{ facility_id | default('b4') }}/sld" 
-          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1 transition"
           title="Single-Line Diagram Viewer"
         >
           <span>⚡</span>
@@ -69,25 +89,25 @@
       </nav>
 
       <!-- Quick Metrics -->
-      <div class="hidden xl:flex items-center gap-2 text-[11px] font-mono text-slate-400 pl-1">
+      <div class="hidden xl:flex items-center gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 pl-1">
         <span>•</span>
-        <span><strong class="text-white font-semibold" x-text="items.length">280</strong> Items</span>
+        <span><strong class="text-slate-900 dark:text-white font-semibold" x-text="items.length">280</strong> Items</span>
         <span>•</span>
-        <span><strong class="text-white font-semibold" x-text="manufacturers.length">9</strong> Brands</span>
+        <span><strong class="text-slate-900 dark:text-white font-semibold" x-text="manufacturers.length">9</strong> Brands</span>
       </div>
     </div>
 
     <!-- Center Search Bar -->
     <div class="flex-1 max-w-md mx-4">
       <div class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs"></i>
         <input type="text"
                x-model="searchQuery"
                placeholder="Search Part #, Model, Manufacturer, UPC, Description..."
-               class="w-full pl-8 pr-7 py-1 bg-slate-950 border border-slate-700/80 rounded-md text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
+               class="w-full pl-8 pr-7 py-1 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-md text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
         <button x-show="searchQuery"
                 @click="searchQuery = ''"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 text-xs">
           <i class="fa-solid fa-circle-xmark"></i>
         </button>
       </div>
@@ -96,38 +116,61 @@
     <!-- Right Actions -->
     <div class="flex items-center space-x-1.5">
       <button @click="openCreateDrawer()"
-              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition">
+              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition cursor-pointer select-none">
         <i class="fa-solid fa-plus text-[10px]"></i>
         <span>Add Part</span>
       </button>
 
       <button @click="showImportModal = true"
-              class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition">
-        <i class="fa-solid fa-file-import text-cyan-400 text-[10px]"></i>
+              class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none">
+        <i class="fa-solid fa-file-import text-cyan-600 dark:text-cyan-400 text-[10px]"></i>
         <span>Import</span>
       </button>
 
       <div class="relative" x-data="{ exportOpen: false }">
         <button @click="exportOpen = !exportOpen"
                 @click.away="exportOpen = false"
-                class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition">
-          <i class="fa-solid fa-file-export text-amber-400 text-[10px]"></i>
+                class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none">
+          <i class="fa-solid fa-file-export text-amber-600 dark:text-amber-400 text-[10px]"></i>
           <span>Export</span>
-          <i class="fa-solid fa-chevron-down text-[8px] text-slate-400"></i>
+          <i class="fa-solid fa-chevron-down text-[8px] text-slate-500 dark:text-slate-400"></i>
         </button>
         <div x-show="exportOpen"
              x-cloak
-             class="absolute right-0 mt-1 w-36 bg-slate-900 border border-slate-700 rounded-lg shadow-xl py-1 z-40 text-xs">
+             class="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl py-1 z-40 text-xs">
           <a href="/api/catalog/export?format=csv" target="_blank"
-             class="block px-3 py-1.5 hover:bg-slate-800 text-slate-200 flex items-center gap-2">
-            <i class="fa-solid fa-file-csv text-emerald-400"></i> Export CSV
+             class="block px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-file-csv text-emerald-600 dark:text-emerald-400"></i> Export CSV
           </a>
           <a href="/api/catalog/export?format=json" target="_blank"
-             class="block px-3 py-1.5 hover:bg-slate-800 text-slate-200 flex items-center gap-2">
-            <i class="fa-solid fa-file-code text-cyan-400"></i> Export JSON
+             class="block px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
+            <i class="fa-solid fa-file-code text-cyan-600 dark:text-cyan-400"></i> Export JSON
           </a>
         </div>
       </div>
+
+      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
+
+      <!-- Dark / Light Theme Toggle -->
+      <button 
+        type="button"
+        @click="toggleTheme()" 
+        class="w-7 h-7 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
+        :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      >
+        <span x-show="isDark" class="text-xs">🌙</span>
+        <span x-show="!isDark" class="text-xs" x-cloak>☀️</span>
+      </button>
+
+      <!-- Help & Catalog Studio Guide Modal Toggle (?) -->
+      <button 
+        type="button"
+        @click="showHelpModal = true" 
+        class="w-7 h-7 rounded-md border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 flex items-center justify-center font-bold text-xs transition shadow-2xs cursor-pointer select-none"
+        title="Master Catalog & Archetype Specs Guide (Press ?)"
+      >
+        <span>?</span>
+      </button>
     </div>
   </header>
 
@@ -704,6 +747,107 @@
     </div>
   </div>
 
+  <!-- MASTER CATALOG STUDIO & ARCHETYPE SPECS HELP MODAL -->
+  <div 
+    x-show="showHelpModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 sm:p-6"
+    @keydown.escape.window="showHelpModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-200"
+      @click.away="showHelpModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg font-bold border border-emerald-500/20">
+            📚
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>Master Catalog Studio Guide</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold">Archetypes & Specs</span>
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Manage standard OEM electrical equipment, archetype attributes, and cut-sheet discoverability.</p>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          @click="showHelpModal = false" 
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-600 dark:text-slate-300">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Card 1: Equipment Archetypes -->
+          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
+            <div class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 text-xs">
+              <span>📦</span> Standard Equipment Archetypes
+            </div>
+            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
+              The Master Catalog contains curated equipment models from leading manufacturers (Eaton, Square D, Siemens, Leviton, Hubbell, etc.). When surveyors select an archetype during field surveys, standard ratings (Voltage, Amps, AIC, Slots) auto-fill instantly.
+            </p>
+          </div>
+
+          <!-- Card 2: Dynamic Custom Attributes -->
+          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
+            <div class="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5 text-xs">
+              <span>🏷️</span> Dynamic Attribute Specs
+            </div>
+            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
+              Attach custom nameplate parameters (e.g. <code class="text-slate-700 dark:text-slate-300 font-mono">trip_curve: LI</code>, <code class="text-slate-700 dark:text-slate-300 font-mono">enclosure: NEMA 3R</code>) in the Part Editor. These automatically unpack into the Cockpit's <em>Custom Nameplate Tags</em> on selection.
+            </p>
+          </div>
+
+          <!-- Card 3: High-Precision Cut-Sheets -->
+          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
+            <div class="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 text-xs">
+              <span>📄</span> Precision Cut-Sheet Discovery
+            </div>
+            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
+              Clicking <strong>[ 📄 View Cut-Sheet ↗ ]</strong> launches verified OEM document portals or dynamically executes quoted PDF queries (<code class="text-slate-700 dark:text-slate-300 font-mono">{Mfg} "{PN}" cut sheet pdf</code>) ensuring immediate document discovery.
+            </p>
+          </div>
+
+          <!-- Card 4: Import, Export, & CRUD -->
+          <div class="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1.5">
+            <div class="font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 text-xs">
+              <span>⚡</span> CRUD, Clones & Bulk Data
+            </div>
+            <p class="leading-relaxed text-slate-500 dark:text-slate-400 text-[11px]">
+              Add individual parts, clone existing models to create ampacity variants, export to clean CSV/JSON, or ingest legacy catalogs using the bulk Import modal with SQLite WAL transaction safety.
+            </p>
+          </div>
+        </div>
+
+        <!-- Keyboard Shortcuts -->
+        <div class="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between font-mono text-[11px]">
+          <span class="text-slate-600 dark:text-slate-400 font-sans font-bold">Keyboard Shortcuts:</span>
+          <div class="flex items-center gap-3">
+            <span><kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-slate-700 dark:text-slate-300">?</kbd> Open Guide</span>
+            <span><kbd class="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-slate-700 dark:text-slate-300">Esc</kbd> Close</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-slate-200 dark:border-slate-800 flex justify-end bg-slate-50 dark:bg-slate-950">
+        <button 
+          type="button" 
+          @click="showHelpModal = false" 
+          class="px-4 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-lg transition cursor-pointer"
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     function catalogStudio() {
@@ -716,6 +860,10 @@
         selectedManufacturer: '',
         currentPage: 1,
         pageSize: 50,
+
+        // Global UI state
+        isDark: true,
+        showHelpModal: false,
 
         // Drawer state
         drawerOpen: false,
@@ -746,6 +894,18 @@
         importOverwrite: true,
 
         initData() {
+          // Sync Theme with localStorage
+          const savedTheme = localStorage.getItem('james-theme');
+          if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+            this.isDark = false;
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+            this.isDark = true;
+          }
+
           this.$watch('searchQuery', () => { this.currentPage = 1; });
           
           this.$watch('selectedDomain', () => {
@@ -769,6 +929,31 @@
           });
 
           this.$watch('selectedManufacturer', () => { this.currentPage = 1; });
+        },
+
+        toggleTheme() {
+          const isCurrentlyDark = document.documentElement.classList.contains('dark');
+          if (isCurrentlyDark) {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+            localStorage.setItem('james-theme', 'light');
+            this.isDark = false;
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+            localStorage.setItem('james-theme', 'dark');
+            this.isDark = true;
+          }
+        },
+
+        handleGlobalKeydown(e) {
+          if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+            e.preventDefault();
+            this.showHelpModal = !this.showHelpModal;
+          }
+          if (e.key === 'Escape') {
+            if (this.showHelpModal) this.showHelpModal = false;
+          }
         },
 
         get domainCounts() {
