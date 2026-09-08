@@ -182,11 +182,13 @@
         <span class="hidden md:inline">Reset </span>Fit
       </button>
       <button 
+        id="btn-layout-dir"
         onclick="toggleHierarchy()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Toggle Hierarchy View Mode (H)"
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+        title="Toggle Power Flow: Top-Down (TB) vs Left-Right (LR) [Press H]"
       >
-        <span class="hidden md:inline">Toggle </span>Hierarchy
+        <span id="layout-dir-icon" class="font-bold text-amber-400">↕</span>
+        <span id="layout-dir-text">Top-Down</span>
       </button>
     </div>
   </header>
@@ -621,7 +623,46 @@
       alert("Graphviz DOT copied to clipboard!");
     }
 
-    // Keyboard Shortcuts for SLD Navigation (+ / - / 0 / r / Esc)
+    let currentRankDir = 'TB';
+
+    function toggleHierarchy() {
+      if (!rawDotString || !graphvizInstance) return;
+
+      currentRankDir = (currentRankDir === 'TB') ? 'LR' : 'TB';
+
+      const icon = document.getElementById("layout-dir-icon");
+      const text = document.getElementById("layout-dir-text");
+      const btn = document.getElementById("btn-layout-dir");
+
+      if (currentRankDir === 'LR') {
+        if (icon) { icon.textContent = '↔'; icon.className = 'font-bold text-cyan-400'; }
+        if (text) text.textContent = 'Left-Right';
+        if (btn) btn.title = "Current: Left-Right (LR). Click to switch to Top-Down (TB) [Press H]";
+      } else {
+        if (icon) { icon.textContent = '↕'; icon.className = 'font-bold text-amber-400'; }
+        if (text) text.textContent = 'Top-Down';
+        if (btn) btn.title = "Current: Top-Down (TB). Click to switch to Left-Right (LR) [Press H]";
+      }
+
+      // Replace rankdir attribute in the DOT script
+      const modifiedDot = rawDotString.replace(/rankdir\s*=\s*["']?(TB|LR|BT|RL)["']?/gi, `rankdir=${currentRankDir}`);
+      document.getElementById("dot-code").innerText = modifiedDot;
+
+      // Re-render graphviz
+      try {
+        graphvizInstance
+          .renderDot(modifiedDot, () => {
+            attachCanvasClickListeners();
+            if (activeHighlightDomain) {
+              applyDomainHighlight(activeHighlightDomain);
+            }
+          });
+      } catch (err) {
+        console.error("Failed to re-render layout direction:", err);
+      }
+    }
+
+    // Keyboard Shortcuts for SLD Navigation (+ / - / 0 / r / h / Esc)
     window.addEventListener("keydown", (e) => {
       if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
       if (e.key === "+" || e.key === "=") {
@@ -633,6 +674,9 @@
       } else if (e.key === "0" || e.key.toLowerCase() === "r") {
         e.preventDefault();
         resetFit();
+      } else if (e.key.toLowerCase() === "h") {
+        e.preventDefault();
+        toggleHierarchy();
       } else if (e.key === "Escape") {
         if (activeHighlightDomain) {
           clearDomainHighlight();
