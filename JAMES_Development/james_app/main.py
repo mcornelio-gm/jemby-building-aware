@@ -650,8 +650,12 @@ def get_survey_view(
     active_client = (client or client_id or "zoetis").strip().lower()
     active_facility = (facility or facility_id or "b4").strip().lower()
 
-    # Ensure client facility SQLite DB is initialized/seeded
-    db.seed_demo_facility(active_client, active_facility)
+    # Ensure client facility SQLite DB is initialized/seeded if demo
+    if active_client == "zoetis" and active_facility == "b4":
+        db.seed_demo_facility(active_client, active_facility)
+    else:
+        db.get_engine(active_client, active_facility)
+
     with db.get_session(active_client, active_facility) as session:
         records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
         initial_nodes = [
@@ -692,8 +696,14 @@ def get_survey_view(
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/nodes")
 def api_get_client_nodes(client_id: str, facility_id: str):
     """Retrieve all equipment nodes from client-isolated SQLite database."""
-    db.seed_demo_facility(client_id, facility_id)
-    with db.get_session(client_id, facility_id) as session:
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    if clean_c == "zoetis" and clean_f == "b4":
+        db.seed_demo_facility(clean_c, clean_f)
+    else:
+        db.get_engine(clean_c, clean_f)
+
+    with db.get_session(clean_c, clean_f) as session:
         records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
         return [
             {
@@ -807,8 +817,14 @@ def api_export_jsonl(client_id: str, facility_id: str):
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/dot", response_class=PlainTextResponse)
 def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "detailed"):
     """Compile and return Graphviz record-and-port DOT text representation of facility digital twin."""
-    db.seed_demo_facility(client_id, facility_id)
-    with db.get_session(client_id, facility_id) as session:
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    if clean_c == "zoetis" and clean_f == "b4":
+        db.seed_demo_facility(clean_c, clean_f)
+    else:
+        db.get_engine(clean_c, clean_f)
+
+    with db.get_session(clean_c, clean_f) as session:
         records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
         node_dicts = [
             {
