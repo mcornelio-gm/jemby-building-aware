@@ -96,6 +96,17 @@ DOMAIN_CONFIG: Dict[str, Dict[str, str]] = {
 PORT_STYLE = 'fillcolor="#334155", fontcolor="#FFFFFF", color="#1E293B"'
 
 
+def _format_slot_range(slot_num: int, poles: int = 1, is_mcc: bool = False) -> str:
+    """Format slot or bucket string representing the full physical occupied range (e.g. 'Slots 1, 3, 5')."""
+    prefix = "Bucket" if is_mcc else "Slot"
+    if poles <= 1:
+        return f"{prefix} {slot_num}"
+    
+    slots = [str(slot_num + (p * 2)) for p in range(poles)]
+    prefix_plural = "Buckets" if is_mcc else "Slots"
+    return f"{prefix_plural} {', '.join(slots)}"
+
+
 def _build_cluster_title(n: Dict[str, Any]) -> str:
     """Build rich, compact multi-line equipment cluster title for single-line diagram headers."""
     name = _clean_str(n.get("name", "Equipment"))
@@ -254,10 +265,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     poles = int(row.get("leftPoles", 1))
                                     amps = row.get("leftAmps") or row.get("leftTrip", "")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
-                                    if parent_type == "MCC":
-                                        slot_str = f"Bucket {slot_num}A"
-                                    else:
-                                        slot_str = f"Slot {slot_num}"
+                                    slot_str = _format_slot_range(slot_num, poles, is_mcc=(parent_type == "MCC"))
                                     matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                                 elif row.get("rightTargetLoad") == n.get("tag"):
@@ -265,10 +273,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     poles = int(row.get("rightPoles", 1))
                                     amps = row.get("rightAmps") or row.get("rightTrip", "")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
-                                    if parent_type == "MCC":
-                                        slot_str = f"Bucket {slot_num}B"
-                                    else:
-                                        slot_str = f"Slot {slot_num}"
+                                    slot_str = _format_slot_range(slot_num, poles, is_mcc=(parent_type == "MCC"))
                                     matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                         tail_parts.append(matched_slot if matched_slot else "Feeder Out")
@@ -443,6 +448,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 for row in schedule:
                     left_trip = row.get("leftAmps") or row.get("leftTrip")
                     is_left_ganged = row.get("leftIsGanged") or bool(row.get("leftParentSlot"))
+                    is_mcc_panel = (type_tag == "MCC" or "mcc" in str(n.get("type_name", "")).lower())
                     if left_trip is not None and str(left_trip).strip() and not is_left_ganged:
                         s_num = row.get("leftSlot")
                         desc = _clean_str(row.get("leftDescription") or row.get("leftDesc") or row.get("leftTargetLoad") or f"Circuit {s_num}")
@@ -453,10 +459,11 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         except (ValueError, TypeError):
                             poles_int = 1
                         poles_str = f"/{poles_int}P" if poles_int > 1 else ""
+                        slot_str = _format_slot_range(int(s_num), poles_int, is_mcc=is_mcc_panel)
                         b_id = f"{node_id}_b{s_num}"
                         if b_id not in breaker_ids:
                             breaker_ids.append(b_id)
-                            breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
+                            breaker_nodes.append(f'        {b_id} [label="[ {slot_str} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
 
                     right_trip = row.get("rightAmps") or row.get("rightTrip")
                     is_right_ganged = row.get("rightIsGanged") or bool(row.get("rightParentSlot"))
@@ -470,10 +477,11 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         except (ValueError, TypeError):
                             poles_int = 1
                         poles_str = f"/{poles_int}P" if poles_int > 1 else ""
+                        slot_str = _format_slot_range(int(s_num), poles_int, is_mcc=is_mcc_panel)
                         b_id = f"{node_id}_b{s_num}"
                         if b_id not in breaker_ids:
                             breaker_ids.append(b_id)
-                            breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
+                            breaker_nodes.append(f'        {b_id} [label="[ {slot_str} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
 
             if breaker_ids:
                 rank_same = " ".join(breaker_ids)
