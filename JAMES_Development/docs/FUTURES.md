@@ -117,3 +117,16 @@ Full offline operation for industrial basements, electrical vaults, mines, and r
 * **Local SQLite / WASM Storage**: Full client-side database running in the browser engine via WebAssembly.
 * **Background Delta Sync**: Automatically reconciles and merges offline field surveys back into the central cloud repository when connectivity is restored.
 * **Compressed Image Queuing**: Efficiently manages high-resolution nameplate and inspection photos offline before uploading.
+
+---
+
+## 7. Global Shared Master Catalog & Multi-Project Workspace Provisioning
+
+### 7.1 Overview
+The Master Catalog (`data/master_catalog.db`) functions as a single global source of truth across all survey projects. Each client facility maintains its own isolated digital twin SQLite database (`data/clients/{client_id}/{facility_id}/model.db`).
+
+### 7.2 Key Features:
+* **Shared Component Library**: All archetypes, voltage tiers, and manufacturer SKUs created in the Catalog Studio are instantly accessible to any survey project.
+* **`[ + New Project... ]` Provisioning Wizard (under Files Menu)**: A dedicated workflow to spawn new client/facility projects, auto-create folder structures (`data/clients/{client_id}/{facility_id}/`), initialize clean SQLite `model.db` databases, and link to the global master catalog.
+* **Dynamic Workspace Switching**: Allows surveyors to toggle between client facilities (e.g. *Zoetis B4*, *Pfizer CUP*, *Genentech B10*) on the fly without restarting the server.
+

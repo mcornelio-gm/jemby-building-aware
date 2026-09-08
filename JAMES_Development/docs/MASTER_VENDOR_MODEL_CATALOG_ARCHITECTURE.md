@@ -161,3 +161,45 @@ flowchart LR
 2. **Catalog Fuzzy Matching**: Matches partially legible model strings (e.g., `NQ442...`) to the nearest valid entry in the Master Catalog.
 3. **Automated Dynamic Slot Population**: Maps specialized ratings (e.g., `%Z = 5.75%` on a transformer or `Prime kW = 750` on a generator) straight into `vendor_attrs`.
 4. **Human-in-the-Loop Validation**: The extracted values pre-populate the Cockpit Column 3 editor with visual confidence highlights so the engineer can verify and save with a single tap.
+
+---
+
+## 5. Global Shared Catalog & Multi-Project Provisioning Architecture
+
+### 5.1 Global Shared Catalog (Single Source of Truth)
+The Master Catalog (`data/master_catalog.db`) operates as a **globally shared repository** across all survey projects, client organizations, and facility campuses:
+* **Centralized Archetypes & SKUs**: Manufacturers, series, voltage tiers, ratings, and cut-sheets defined once in the Master Catalog Studio are immediately available to all field surveyors across every project.
+* **Separation of Concerns**: Global catalog specs live independently from facility-specific digital twin instances (`model.db`), ensuring modifications to equipment libraries never corrupt or alter historical field project models.
+
+```mermaid
+flowchart TD
+    MC[("📚 Global Shared Master Catalog
+data/master_catalog.db")]
+    
+    subgraph ClientProjects ["Client Survey Projects & Twin Databases"]
+        P1[("Zoetis - Building 4
+data/clients/zoetis/b4/model.db")]
+        P2[("Pfizer - Central Utility Plant
+data/clients/pfizer/cup/model.db")]
+        P3[("Merck - Biologics Facility 2
+data/clients/merck/bio2/model.db")]
+    end
+    
+    MC -. "Referenced by all surveys" .-> P1
+    MC -. "Referenced by all surveys" .-> P2
+    MC -. "Referenced by all surveys" .-> P3
+```
+
+### 5.2 Multi-Project Workspace & Database Provisioning Workflow
+To streamline adding new facility surveys in the field, a **Project Management & Provisioning Tool** will be integrated (accessible under the **Files** menu / Project Switcher):
+
+1. **`[ + New Project... ]` Modal Workflow**:
+   - Prompts for **Client Name** (e.g. `Genentech`), **Client ID** (`genentech`), **Facility Name** (`Building 10 - Tech Ops`), and **Facility ID** (`b10`).
+   - Optional base template selection (e.g., Blank, Industrial Substation, Commercial Office, Data Center).
+2. **Automated Storage & Database Initialization**:
+   - Auto-creates directory structure: `data/clients/{client_id}/{facility_id}/`.
+   - Initializes clean SQLite digital twin database: `data/clients/{client_id}/{facility_id}/model.db` with standard tables (`equipment`, `buses`, `circuits`, `breakers`, `cables`).
+   - Generates companion project manifest: `data/projects/{client_id}_{facility_id}.json`.
+3. **Workspace Switching**:
+   - Seamlessly transitions active Survey Workbench, SLD Diagram, and Companion JSONL exports to the newly provisioned project without requiring application server restarts.
+
