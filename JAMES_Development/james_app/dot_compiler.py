@@ -96,15 +96,26 @@ DOMAIN_CONFIG: Dict[str, Dict[str, str]] = {
 PORT_STYLE = 'fillcolor="#334155", fontcolor="#FFFFFF", color="#1E293B"'
 
 
-def _format_slot_range(slot_num: int, poles: int = 1, is_mcc: bool = False) -> str:
-    """Format slot or bucket string representing the full physical occupied range (e.g. 'Slots 1, 3, 5')."""
-    prefix = "Bucket" if is_mcc else "Slot"
+def _get_equipment_unit(type_tag: str = "", is_mcc: bool = False) -> tuple[str, str]:
+    """Return (singular, plural) physical unit names for electrical equipment."""
+    tag = (type_tag or "").upper()
+    if tag == "MCC" or is_mcc:
+        return "Bucket", "Buckets"
+    if tag in ["MDP", "SWBD", "SWGR", "MSB"]:
+        return "Space", "Spaces"
+    if tag in ["PDU", "RPP"]:
+        return "Pole", "Poles"
+    return "Slot", "Slots"
+
+
+def _format_slot_range(slot_num: int, poles: int = 1, type_tag: str = "", is_mcc: bool = False) -> str:
+    """Format slot, bucket, space, or pole string representing the full physical occupied range (e.g. 'Slots 1, 3, 5')."""
+    sing, plur = _get_equipment_unit(type_tag=type_tag, is_mcc=is_mcc)
     if poles <= 1:
-        return f"{prefix} {slot_num}"
+        return f"{sing} {slot_num}"
     
     slots = [str(slot_num + (p * 2)) for p in range(poles)]
-    prefix_plural = "Buckets" if is_mcc else "Slots"
-    return f"{prefix_plural} {', '.join(slots)}"
+    return f"{plur} {', '.join(slots)}"
 
 
 def _build_cluster_title(n: Dict[str, Any]) -> str:
@@ -130,7 +141,8 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
         slots = n.get("slots") or (n.get("attributes") or {}).get("slots") or (n.get("attributes") or {}).get("defaultSlots") or 42
         main_type = (n.get("attributes") or {}).get("main_type", "Main Lugs")
         main_abbr = "MCB" if "breaker" in str(main_type).lower() or "mcb" in str(main_type).lower() else ("MLO" if "lug" in str(main_type).lower() or "mlo" in str(main_type).lower() else str(main_type))
-        line2_parts.append(f"{slots}-Slot ({main_abbr})")
+        sing, _ = _get_equipment_unit(type_tag=type_tag)
+        line2_parts.append(f"{slots}-{sing} ({main_abbr})")
         if amps_str or volts:
             line2_parts.append(f"{amps_str} {volts}".strip())
         if aic_str:
@@ -265,7 +277,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     poles = int(row.get("leftPoles", 1))
                                     amps = row.get("leftAmps") or row.get("leftTrip", "")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
-                                    slot_str = _format_slot_range(slot_num, poles, is_mcc=(parent_type == "MCC"))
+                                    slot_str = _format_slot_range(slot_num, poles, type_tag=parent_type)
                                     matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                                 elif row.get("rightTargetLoad") == n.get("tag"):
@@ -273,7 +285,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     poles = int(row.get("rightPoles", 1))
                                     amps = row.get("rightAmps") or row.get("rightTrip", "")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
-                                    slot_str = _format_slot_range(slot_num, poles, is_mcc=(parent_type == "MCC"))
+                                    slot_str = _format_slot_range(slot_num, poles, type_tag=parent_type)
                                     matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                         tail_parts.append(matched_slot if matched_slot else "Feeder Out")
@@ -459,7 +471,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         except (ValueError, TypeError):
                             poles_int = 1
                         poles_str = f"/{poles_int}P" if poles_int > 1 else ""
-                        slot_str = _format_slot_range(int(s_num), poles_int, is_mcc=is_mcc_panel)
+                        slot_str = _format_slot_range(int(s_num), poles_int, type_tag=type_tag)
                         b_id = f"{node_id}_b{s_num}"
                         if b_id not in breaker_ids:
                             breaker_ids.append(b_id)
@@ -477,7 +489,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         except (ValueError, TypeError):
                             poles_int = 1
                         poles_str = f"/{poles_int}P" if poles_int > 1 else ""
-                        slot_str = _format_slot_range(int(s_num), poles_int, is_mcc=is_mcc_panel)
+                        slot_str = _format_slot_range(int(s_num), poles_int, type_tag=type_tag)
                         b_id = f"{node_id}_b{s_num}"
                         if b_id not in breaker_ids:
                             breaker_ids.append(b_id)

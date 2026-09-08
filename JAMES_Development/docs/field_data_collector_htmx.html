@@ -1027,9 +1027,9 @@
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
                 <span>🗄️</span>
-                <span>Panel Bus & Physical Configuration</span>
+                <span x-text="getScheduleConfigHeader()">Panel Bus & Physical Configuration</span>
               </span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold" x-text="form.slots + ' Physical Slots'">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold" x-text="form.slots + ' Physical ' + getScheduleUnitPlural()">
                 42 Slots
               </span>
             </div>
@@ -1037,20 +1037,20 @@
             <div class="grid grid-cols-3 gap-3">
               <!-- # of Slots Dropdown -->
               <div>
-                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1"># of Slots</label>
+                <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1" x-text="'# of ' + getScheduleUnitPlural()"># of Slots</label>
                 <select 
                   x-model.number="form.slots" 
                   @change="updateSlotCount()"
                   class="w-full h-8 px-2.5 text-xs font-mono font-bold rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
                 >
-                  <option :value="12">12 Slots</option>
-                  <option :value="18">18 Slots</option>
-                  <option :value="24">24 Slots</option>
-                  <option :value="30">30 Slots</option>
-                  <option :value="42">42 Slots</option>
-                  <option :value="54">54 Slots</option>
-                  <option :value="72">72 Slots</option>
-                  <option :value="84">84 Slots</option>
+                  <option :value="12" x-text="'12 ' + getScheduleUnitPlural()"></option>
+                  <option :value="18" x-text="'18 ' + getScheduleUnitPlural()"></option>
+                  <option :value="24" x-text="'24 ' + getScheduleUnitPlural()"></option>
+                  <option :value="30" x-text="'30 ' + getScheduleUnitPlural()"></option>
+                  <option :value="42" x-text="'42 ' + getScheduleUnitPlural()"></option>
+                  <option :value="54" x-text="'54 ' + getScheduleUnitPlural()"></option>
+                  <option :value="72" x-text="'72 ' + getScheduleUnitPlural()"></option>
+                  <option :value="84" x-text="'84 ' + getScheduleUnitPlural()"></option>
                 </select>
               </div>
 
@@ -1118,9 +1118,9 @@
               <div class="flex items-center gap-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                   <span>⚡</span>
-                  <span>Panel Slot Schedule</span>
+                  <span x-text="getScheduleTitle()">Panel Slot Schedule</span>
                 </span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" x-text="occupiedSlotsCount + ' / ' + form.slots + ' Used'">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" x-text="occupiedSlotsCount + ' / ' + form.slots + ' ' + getScheduleUnitPlural() + ' Used'">
                   18 / 42 Used
                 </span>
               </div>
@@ -1133,7 +1133,7 @@
               </div>
             </div>
 
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            <p class="text-[11px] text-slate-500 dark:text-slate-400" x-text="'💡 ' + getScheduleSubtitle()">
               💡 Click any slot to insert or edit circuit breakers, multi-pole ganging, trip ratings, and downstream loads.
             </p>
 
@@ -1143,11 +1143,11 @@
                 <thead>
                   <tr class="bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[10px]">
                     <th class="p-1.5 text-center w-8 border-r border-slate-200 dark:border-slate-800">#</th>
-                    <th class="p-1.5 border-r border-slate-200 dark:border-slate-800">Left Breaker / Circuit</th>
+                    <th class="p-1.5 border-r border-slate-200 dark:border-slate-800" x-text="getScheduleLeftColHeader()">Left Breaker / Circuit</th>
                     <th class="p-1.5 text-center w-12 border-r border-slate-200 dark:border-slate-800">Trip</th>
                     <th class="p-1.5 text-center w-8 border-r border-slate-200 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-900">Ph</th>
                     <th class="p-1.5 text-center w-12 border-r border-slate-200 dark:border-slate-800">Trip</th>
-                    <th class="p-1.5 border-r border-slate-200 dark:border-slate-800">Right Breaker / Circuit</th>
+                    <th class="p-1.5 border-r border-slate-200 dark:border-slate-800" x-text="getScheduleRightColHeader()">Right Breaker / Circuit</th>
                     <th class="p-1.5 text-center w-8">#</th>
                   </tr>
                 </thead>
@@ -1529,7 +1529,7 @@
                       <span 
                         x-show="item.is_panel"
                         class="text-[9px] font-mono px-1.5 py-0.5 rounded font-semibold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800"
-                        x-text="(item.slots || 42) + ' Slots'"
+                        x-text="(item.slots || 42) + ' ' + getScheduleUnitPlural(item.type_tag)"
                       ></span>
                       <span 
                         class="text-[10px] font-mono px-2 py-0.5 rounded font-bold"
@@ -1759,7 +1759,7 @@
       <div class="h-12 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2">
           <span class="w-6 h-6 rounded bg-indigo-600 text-white font-mono font-bold text-xs flex items-center justify-center" x-text="activeBreaker ? ('#' + activeBreaker.slot) : ''"></span>
-          <h3 class="font-bold text-xs text-slate-900 dark:text-white" x-text="activeBreaker && activeBreaker.isOccupied ? 'Edit Circuit Breaker' : 'Insert Circuit Breaker'"></h3>
+          <h3 class="font-bold text-xs text-slate-900 dark:text-white" x-text="activeBreaker && activeBreaker.isOccupied ? ('Edit ' + getScheduleUnitSingular() + ' #' + activeBreaker.slot + ' Device') : ('Insert ' + getScheduleUnitSingular() + ' #' + activeBreaker.slot + ' Device')"></h3>
           <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold" :class="activeBreaker ? activeBreaker.phaseColor : ''" x-text="activeBreaker ? ('Phase ' + activeBreaker.phase) : ''"></span>
         </div>
         <button @click="showBreakerModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-sm cursor-pointer">✕</button>
@@ -2634,6 +2634,62 @@
             if (r.rightTrip) count += (r.rightPoles || 1);
           });
           return Math.min(count, this.form.slots || 42);
+        },
+
+        getScheduleTitle() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'MCC Bucket Schedule';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Switchboard Feeder Schedule';
+          if (['PDU', 'RPP'].includes(t)) return 'PDU Distribution Schedule';
+          return 'Panel Slot Schedule';
+        },
+
+        getScheduleSubtitle() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Click any bucket to insert or edit motor starter units, VFDs, multi-pole ganging, and downstream loads.';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Click any space to insert or edit feeder breakers, multi-pole ganging, and downstream loads.';
+          if (['PDU', 'RPP'].includes(t)) return 'Click any pole to insert or edit branch circuits, multi-pole ganging, and downstream loads.';
+          return 'Click any slot to insert or edit circuit breakers, multi-pole ganging, trip ratings, and downstream loads.';
+        },
+
+        getScheduleConfigHeader() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'MCC Structure & Bucket Configuration';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Switchboard Structure & Feeder Configuration';
+          if (['PDU', 'RPP'].includes(t)) return 'PDU Bus & Physical Configuration';
+          return 'Panel Bus & Physical Configuration';
+        },
+
+        getScheduleUnitSingular() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Bucket';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Space';
+          if (['PDU', 'RPP'].includes(t)) return 'Pole';
+          return 'Slot';
+        },
+
+        getScheduleUnitPlural(type_tag = null) {
+          const t = type_tag || (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Buckets';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Spaces';
+          if (['PDU', 'RPP'].includes(t)) return 'Poles';
+          return 'Slots';
+        },
+
+        getScheduleLeftColHeader() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Left Bucket / Starter';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Left Feeder / Breaker';
+          if (['PDU', 'RPP'].includes(t)) return 'Left Branch / Circuit';
+          return 'Left Breaker / Circuit';
+        },
+
+        getScheduleRightColHeader() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Right Bucket / Starter';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Right Feeder / Breaker';
+          if (['PDU', 'RPP'].includes(t)) return 'Right Branch / Circuit';
+          return 'Right Breaker / Circuit';
         },
 
         getAssetPhotoCount(item) {
