@@ -164,14 +164,6 @@
       
       <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
-      <!-- Multi-Tenant Client Pill -->
-      <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 font-medium shrink-0">
-        <span>🏢</span>
-        <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
-      </div>
-
-      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
-
       <!-- Unified Global Navigation Segment -->
       <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium shrink-0">
         <!-- 1. Catalog -->
@@ -186,7 +178,7 @@
 
         <!-- 2. Survey (Active) -->
         <a 
-          :href="'/cockpit?client=' + client + '&facility=' + facility" 
+          :href="'/survey?client=' + client + '&facility=' + facility" 
           class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold shadow-2xs border border-slate-200/80 dark:border-slate-700/80 flex items-center gap-1 transition"
           title="Field Survey & Digital Twin Modeler (Active)"
         >
@@ -204,6 +196,15 @@
           <span class="hidden sm:inline">Diagram</span>
         </a>
       </nav>
+
+      <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+
+      <!-- Multi-Tenant Client DB Path Pill -->
+      <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 font-medium shrink-0" title="Active SQLite Digital Twin: data/clients/{{ client_id }}/{{ facility_id }}/model.db">
+        <span>🏢</span>
+        <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
+        <span class="text-[10px] text-indigo-400 dark:text-indigo-400/70 font-normal">📁 model.db</span>
+      </div>
     </div>
 
     <!-- Live Telemetry Inline Stream -->
