@@ -25,7 +25,7 @@
   <header class="h-11 bg-slate-900 border-b border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
     <!-- Brand & Section -->
     <div class="flex items-center space-x-2.5">
-      <a href="/cockpit" class="flex items-center space-x-2 group cursor-pointer" title="Return to Cockpit Workbench">
+      <a href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer" title="Return to Cockpit Workbench">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
         <div class="flex items-center gap-1 leading-none">
           <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
@@ -35,12 +35,41 @@
 
       <div class="h-3.5 w-[1px] bg-slate-800"></div>
 
-      <div class="px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 font-medium">
-        Catalog Studio
-      </div>
+      <!-- Unified Global Navigation Segment -->
+      <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium">
+        <!-- 1. Cockpit -->
+        <a 
+          href="/cockpit?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
+          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          title="Data Collection Cockpit & Graph Modeler"
+        >
+          <span>📊</span>
+          <span>Cockpit</span>
+        </a>
+
+        <!-- 2. Catalog (Active) -->
+        <a 
+          href="/catalog?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
+          class="px-2.5 py-1 rounded-md bg-slate-800 text-emerald-400 font-bold shadow-2xs border border-slate-700/80 flex items-center gap-1 transition"
+          title="Master Catalog Studio & Archetype Specs (Active)"
+        >
+          <span>📚</span>
+          <span>Catalog</span>
+        </a>
+
+        <!-- 3. Diagram -->
+        <a 
+          href="/clients/{{ client_id | default('zoetis') }}/facilities/{{ facility_id | default('b4') }}/sld" 
+          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          title="Single-Line Diagram Viewer"
+        >
+          <span>⚡</span>
+          <span>Diagram</span>
+        </a>
+      </nav>
 
       <!-- Quick Metrics -->
-      <div class="hidden md:flex items-center gap-2 text-[11px] font-mono text-slate-400 pl-1">
+      <div class="hidden xl:flex items-center gap-2 text-[11px] font-mono text-slate-400 pl-1">
         <span>•</span>
         <span><strong class="text-white font-semibold" x-text="items.length">280</strong> Items</span>
         <span>•</span>
@@ -99,14 +128,6 @@
           </a>
         </div>
       </div>
-
-      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
-
-      <a href="/cockpit"
-         class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 text-[11px] font-semibold rounded-md flex items-center gap-1 transition">
-        <i class="fa-solid fa-network-wired text-[10px]"></i>
-        <span>Cockpit</span>
-      </a>
     </div>
   </header>
 

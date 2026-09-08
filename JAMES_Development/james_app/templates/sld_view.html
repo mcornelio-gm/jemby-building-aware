@@ -62,17 +62,46 @@
 
       <div class="h-3.5 w-[1px] bg-slate-800"></div>
 
-      <a 
-        href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 transition shadow-2xs"
-      >
-        <span>◀</span>
-        <span>Data Collector</span>
-      </a>
-
-      <div class="px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 font-medium">
-        ⚡ SLD: {{ client_id | upper }} / {{ facility_id | upper }}
+      <!-- Multi-Tenant Client Pill -->
+      <div class="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 font-medium">
+        <span>🏢</span>
+        <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
       </div>
+
+      <div class="h-3.5 w-[1px] bg-slate-800"></div>
+
+      <!-- Unified Global Navigation Segment -->
+      <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium">
+        <!-- 1. Cockpit -->
+        <a 
+          href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
+          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          title="Data Collection Cockpit & Graph Modeler"
+        >
+          <span>📊</span>
+          <span>Cockpit</span>
+        </a>
+
+        <!-- 2. Catalog -->
+        <a 
+          href="/catalog?client={{ client_id }}&facility={{ facility_id }}" 
+          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          title="Master Catalog Studio & Archetype Specs"
+        >
+          <span>📚</span>
+          <span>Catalog</span>
+        </a>
+
+        <!-- 3. Diagram (Active) -->
+        <a 
+          href="/clients/{{ client_id }}/facilities/{{ facility_id }}/sld" 
+          class="px-2.5 py-1 rounded-md bg-slate-800 text-amber-400 font-bold shadow-2xs border border-slate-700/80 flex items-center gap-1 transition"
+          title="Interactive Single-Line Diagram Viewer (Active)"
+        >
+          <span>⚡</span>
+          <span>Diagram</span>
+        </a>
+      </nav>
     </div>
 
     <!-- Viewer Controls -->

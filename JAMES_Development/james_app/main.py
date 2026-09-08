@@ -38,12 +38,14 @@ def api_get_catalog():
 
 
 @app.get("/catalog", response_class=HTMLResponse)
-def get_catalog_studio_view(request: Request):
+def get_catalog_studio_view(request: Request, client_id: str = "zoetis", facility_id: str = "b4"):
     """Render the full Master Catalog Studio UI for parts management and CRUD."""
     return templates.TemplateResponse(
         request=request,
         name="catalog_studio.html",
         context={
+            "client_id": client_id,
+            "facility_id": facility_id,
             "master_catalog_items": get_master_catalog().get_all_items(),
             "manufacturers": get_master_catalog().get_manufacturers(),
             "stats": get_master_catalog().get_catalog_stats()
