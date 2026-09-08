@@ -47,8 +47,9 @@ def test_compile_facility_to_dot():
     assert "s1 [label=" in dot_macro
     assert "s4 [label=" in dot_macro
     assert "s3 -> s4 [" in dot_macro
-    assert 'taillabel="Load Out"' in dot_macro
-    assert 'headlabel="Line In"' in dot_macro or 'headlabel="Mains (' in dot_macro
+    assert 'taillabel=<' in dot_macro and 'Load Out' in dot_macro
+    assert 'headlabel=<' in dot_macro and ('Line In' in dot_macro or 'Mains (' in dot_macro)
     assert "s2 -> s3 [" in dot_macro
-    assert 'taillabel="Gen Out"' in dot_macro
-    assert 'headlabel="Emerg In"' in dot_macro
+    assert 'taillabel=<' in dot_macro and 'Gen Out' in dot_macro
+    assert 'headlabel=<' in dot_macro and 'Emerg In' in dot_macro
+

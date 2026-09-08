@@ -24,6 +24,21 @@ def _sanitize_id(identifier: str) -> str:
     return clean or "node"
 
 
+def _make_silver_badge(
+    text: str,
+    font_size: int = 8,
+    font_color: str = "#0F172A",
+    bg_color: str = "#E2E8F0",
+    border_color: str = "#94A3B8"
+) -> str:
+    """Wrap label text in an HTML-like table pill with a silver background for maximum readability over lines/borders."""
+    if not text:
+        return ""
+    clean = html.escape(str(text).strip()).replace("\n", "<BR/>")
+    return f'<<TABLE BGCOLOR="{bg_color}" BORDER="1" COLOR="{border_color}" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD><FONT POINT-SIZE="{font_size}" COLOR="{font_color}" FACE="Arial">{clean}</FONT></TD></TR></TABLE>>'
+
+
+
 # Domain color definitions for Graphviz Single-Line Diagram
 DOMAIN_CONFIG: Dict[str, Dict[str, str]] = {
     "sources": {
@@ -294,13 +309,16 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
 
                     # 3. Conductor Wire Label (Center)
                     conductor = (n.get("attributes") or {}).get("conductor") or n.get("conductor")
-                    cond_attr = f'label="{_clean_str(conductor)}", ' if conductor else ''
+                    cond_attr = f'label={_make_silver_badge(conductor, font_size=8, font_color="#1E293B", bg_color="#F1F5F9", border_color="#94A3B8")}, ' if conductor else ''
+
+                    tail_badge = _make_silver_badge(tail_label, font_size=8, font_color="#0F172A", bg_color="#E2E8F0", border_color="#94A3B8")
+                    head_badge = _make_silver_badge(head_label, font_size=8, font_color="#0F172A", bg_color="#E2E8F0", border_color="#94A3B8")
 
                     dot_lines.append(
                         f'    {parent_id} -> {node_id} ['
                         f'color="#0F172A", penwidth=2.0, {cond_attr}'
-                        f'taillabel="{tail_label}", headlabel="{head_label}", '
-                        f'labeldistance=2.4, labelangle=25, fontsize=8, fontname="Arial", fontcolor="#334155"];'
+                        f'taillabel={tail_badge}, headlabel={head_badge}, '
+                        f'labeldistance=2.4, labelangle=25];'
                     )
 
             # Special connection: Emergency Generator to ATS
@@ -308,11 +326,13 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 for candidate in nodes:
                     if candidate.get("type_tag") == "ATS" or candidate.get("domain") == "switches":
                         ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
+                        gen_tail_badge = _make_silver_badge("Gen Out", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
+                        emerg_head_badge = _make_silver_badge("Emerg In", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
                         dot_lines.append(
                             f'    {node_id} -> {ats_id} ['
                             f'color="#B45309", penwidth=2.2, '
-                            f'taillabel="Gen Out", headlabel="Emerg In", '
-                            f'labeldistance=2.4, labelangle=-25, fontsize=8, fontname="Arial", fontcolor="#9A3412"];'
+                            f'taillabel={gen_tail_badge}, headlabel={emerg_head_badge}, '
+                            f'labeldistance=2.4, labelangle=-25];'
                         )
 
         dot_lines.append("}")
@@ -700,8 +720,9 @@ def compile_project_to_dot(project: Project) -> str:
 
         label_attr = ""
         if edge_label_parts:
-            label_str = " | ".join(edge_label_parts)
-            label_attr = f' [label="{_clean_str(label_str)}"]'
+            label_str = " • ".join(edge_label_parts)
+            badge = _make_silver_badge(label_str, font_size=8, font_color="#0F172A", bg_color="#E2E8F0", border_color="#94A3B8")
+            label_attr = f' [label={badge}]'
 
         dot_lines.append(f"    {from_spec} -> {to_spec}{label_attr};")
 
