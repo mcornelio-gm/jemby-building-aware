@@ -179,11 +179,9 @@ def seed_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> No
                 "is_panel": 1, "slots": 42, "survey_sequence": 4, 
                 "attributes": {
                     "bus_rating_a": 1200.0,
-                    "schedule": [
-                        {"leftSlot": 1, "leftAmps": 100, "leftPoles": 3, "leftDescription": "Step-Down XFMR T-1", "leftTargetLoad": "T-1"},
-                        {"leftSlot": 5, "leftAmps": 800, "leftPoles": 3, "leftDescription": "Process MCC-1", "leftTargetLoad": "MCC-1"},
-                        {"leftSlot": 9, "leftAmps": 400, "leftPoles": 3, "leftDescription": "Data Center UPS-1", "leftTargetLoad": "UPS-1"}
-                    ],
+                    "main_device": "MCB",
+                    "main_type": "MCB (Main Breaker)",
+                    "schedule": [],
                     "notes": [
                         {"id": "n3", "text": "Main breaker is 1200A Frame / 1200A Sensor with LSIG electronic trip unit.", "date": "09/06 10:15", "author": "Field Survey"}
                     ]
