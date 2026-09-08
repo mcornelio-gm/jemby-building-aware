@@ -427,7 +427,14 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
 
         elif n.get("is_panel") or domain == "panels" or type_tag in ["LP", "MDP", "MCC", "PP", "REC", "PDU"]:
             palette = DOMAIN_CONFIG["panels"]
-            main_type = (n.get("attributes") or {}).get("main_type", "Main Lugs")
+            main_device = (n.get("attributes") or {}).get("main_device") or (n.get("attributes") or {}).get("main_type") or "Main Lugs"
+            if main_device == "MCB":
+                main_type = "MCB (Main Breaker)"
+            elif main_device == "MLO":
+                main_type = "MLO (Main Lugs)"
+            else:
+                main_type = main_device
+
             schedule = (n.get("attributes") or {}).get("schedule", [])
             
             breaker_nodes = []
@@ -466,29 +473,38 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                             breaker_ids.append(b_id)
                             breaker_nodes.append(f'        {b_id} [label="[ Slot {s_num} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
 
-            if not breaker_ids:
-                for idx in [1, 2, 3, 4]:
-                    b_id = f"{node_id}_b{idx}"
-                    breaker_ids.append(b_id)
-                    breaker_nodes.append(f'        {b_id} [label="[ Slot {idx} ]\\nCircuit {idx}\\n20A", {PORT_STYLE}];')
-
-            rank_same = " ".join(breaker_ids)
-
-            dot_lines.extend([
-                f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
-                '        style = "filled,rounded";',
-                f'        color = "{palette["border"]}";',
-                f'        fillcolor = "{palette["bg"]}";',
-                f'        fontcolor = "{palette["text"]}";',
-                '        penwidth = 1.8;',
-                f'        {node_id}_in [label="{main_type}", {PORT_STYLE}];',
-                *breaker_nodes,
-                f'        {{ rank=same; {rank_same}; }}',
-                f'        {node_id}_in -> {breaker_ids[0]} [style=invis];',
-                '    }',
-                ''
-            ])
+            if breaker_ids:
+                rank_same = " ".join(breaker_ids)
+                dot_lines.extend([
+                    f'    subgraph cluster_{node_id} {{',
+                    f'        label = "{cluster_title}";',
+                    '        style = "filled,rounded";',
+                    f'        color = "{palette["border"]}";',
+                    f'        fillcolor = "{palette["bg"]}";',
+                    f'        fontcolor = "{palette["text"]}";',
+                    '        penwidth = 1.8;',
+                    f'        {node_id}_in [label="{main_type}", {PORT_STYLE}];',
+                    *breaker_nodes,
+                    f'        {{ rank=same; {rank_same}; }}',
+                    f'        {node_id}_in -> {breaker_ids[0]} [style=invis];',
+                    '    }',
+                    ''
+                ])
+            else:
+                dot_lines.extend([
+                    f'    subgraph cluster_{node_id} {{',
+                    f'        label = "{cluster_title}";',
+                    '        style = "filled,rounded";',
+                    f'        color = "{palette["border"]}";',
+                    f'        fillcolor = "{palette["bg"]}";',
+                    f'        fontcolor = "{palette["text"]}";',
+                    '        penwidth = 1.8;',
+                    f'        {node_id}_in  [label="{main_type}", {PORT_STYLE}];',
+                    f'        {node_id}_out [label="Load Out", {PORT_STYLE}];',
+                    f'        {node_id}_in -> {node_id}_out [style=invis];',
+                    '    }',
+                    ''
+                ])
 
         elif domain == "power_quality" or type_tag == "UPS":
             palette = DOMAIN_CONFIG["power_quality"]
@@ -604,19 +620,24 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 parent_type = parent_node.get("type_tag", "")
                 dest_port = f"{node_id}_norm" if type_tag in ["ATS", "MTS"] else f"{node_id}_in"
 
-                # If parent is panel, connect from the corresponding breaker
+                # If parent is panel, connect from the corresponding breaker if defined, else from Load Out
                 if parent_node.get("is_panel") or parent_domain == "panels":
                     schedule = (parent_node.get("attributes") or {}).get("schedule", [])
-                    slot_port = "1"
+                    slot_port = None
                     if schedule and isinstance(schedule, list):
                         for row in schedule:
-                            if row.get("leftTargetLoad") == n.get("tag"):
+                            left_trip = row.get("leftAmps") or row.get("leftTrip")
+                            if left_trip and (row.get("leftTargetLoad") == n.get("tag") or row.get("leftDescription") == n.get("name")):
                                 slot_port = str(row.get("leftSlot", "1"))
                                 break
-                            elif row.get("rightTargetLoad") == n.get("tag"):
+                            right_trip = row.get("rightAmps") or row.get("rightTrip")
+                            if right_trip and (row.get("rightTargetLoad") == n.get("tag") or row.get("rightDescription") == n.get("name")):
                                 slot_port = str(row.get("rightSlot", "2"))
                                 break
-                    dot_lines.append(f'    {parent_id}_b{slot_port}:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
+                    if slot_port:
+                        dot_lines.append(f'    {parent_id}_b{slot_port}:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
+                    else:
+                        dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
                 else:
                     dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
 

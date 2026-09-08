@@ -3549,7 +3549,58 @@
           this.selectedType = types.find(t => t.tag === item.type_tag) || types[0] || this.selectedType;
 
           if (rawAttrs.schedule && Array.isArray(rawAttrs.schedule)) {
-            this.scheduleRows = JSON.parse(JSON.stringify(rawAttrs.schedule));
+            const slotCount = Number(item.slots) || 42;
+            const phases = ['A', 'B', 'C'];
+            const phaseColors = ['text-red-500', 'text-blue-500', 'text-emerald-500'];
+            const existingMap = {};
+            rawAttrs.schedule.forEach(r => {
+              if (r.leftSlot) existingMap[r.leftSlot] = r;
+            });
+            const fullRows = [];
+            for (let i = 1; i <= slotCount; i += 2) {
+              const phaseIdx = Math.floor((i - 1) / 2) % 3;
+              if (existingMap[i]) {
+                const ex = existingMap[i];
+                fullRows.push({
+                  leftSlot: i,
+                  leftDesc: ex.leftDesc || ex.leftDescription || '',
+                  leftTrip: ex.leftTrip ? String(ex.leftTrip) : (ex.leftAmps ? String(ex.leftAmps) : ''),
+                  leftPoles: ex.leftPoles || 1,
+                  leftType: ex.leftType || 'MCCB',
+                  leftWire: ex.leftWire || this.getConductor(Number(ex.leftTrip || ex.leftAmps) || 20),
+                  leftTargetLoad: ex.leftTargetLoad || '',
+                  phase: phases[phaseIdx],
+                  phaseColor: phaseColors[phaseIdx],
+                  rightSlot: i + 1,
+                  rightDesc: ex.rightDesc || ex.rightDescription || '',
+                  rightTrip: ex.rightTrip ? String(ex.rightTrip) : (ex.rightAmps ? String(ex.rightAmps) : ''),
+                  rightPoles: ex.rightPoles || 1,
+                  rightType: ex.rightType || 'MCCB',
+                  rightWire: ex.rightWire || this.getConductor(Number(ex.rightTrip || ex.rightAmps) || 20),
+                  rightTargetLoad: ex.rightTargetLoad || ''
+                });
+              } else {
+                fullRows.push({
+                  leftSlot: i,
+                  leftDesc: '',
+                  leftTrip: '',
+                  leftPoles: 1,
+                  leftType: 'MCCB',
+                  leftWire: '12 AWG Cu',
+                  leftTargetLoad: '',
+                  phase: phases[phaseIdx],
+                  phaseColor: phaseColors[phaseIdx],
+                  rightSlot: i + 1,
+                  rightDesc: '',
+                  rightTrip: '',
+                  rightPoles: 1,
+                  rightType: 'MCCB',
+                  rightWire: '12 AWG Cu',
+                  rightTargetLoad: ''
+                });
+              }
+            }
+            this.scheduleRows = fullRows;
           } else {
             this.initScheduleRows();
           }
