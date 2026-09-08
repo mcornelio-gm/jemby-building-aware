@@ -279,6 +279,24 @@ flowchart TD
 
 ---
 
+### FR-10: Multi-Project Hierarchy, 1 Building = 1 DB Architecture & Searchable Summaries
+* **FR-10.1 Structured Organizational Hierarchy**:
+  * **Client / Company**: Top-level organization (e.g., `zoetis`, `pfizer`, `merck`).
+  * **Project / Location / Campus**: Geographical site or multi-building campus (e.g., `kalamazoo_site`, `pearl_river_campus`).
+  * **Building (1 Database = 1 Building)**: Each SQLite file (`model.db`) represents exactly **one physical building facility** (e.g., `data/clients/{client_id}/{facility_id}/model.db`), guaranteeing perfect transactional isolation and portable deliverables.
+* **FR-10.2 Database Content Summaries (`summary.json` / `manifest.jsonl`)**:
+  * Automatically generates and synchronizes a lightweight text-based summary index per building database containing:
+    * Total equipment counts broken down by domain (sources, panels, transformers, etc.).
+    * Main utility service ratings (Voltage, Main Bus Amps, AIC).
+    * Total feeder circuits, installed capacity, and photo attachment counts.
+  * Enables high-speed cross-building search and project discovery across thousands of facility databases without opening individual SQLite binary files.
+* **FR-10.3 Externalized Image Asset Management & Searchable Photo Indexing**:
+  * **Externalized Asset Storage**: High-resolution surveyor photos are externalized to discrete filesystem folders (`data/clients/{client_id}/{facility_id}/photos/{photo_id}.jpg`) or cloud object storage rather than bloating the primary SQLite transactional database.
+  * **Structured Photo Metadata**: Each image contains searchable JSON attributes (associated asset tag, photo classification: `nameplate`, `directory`, `overview`, `thermal_ir`, surveyor notes, and AI OCR-extracted text).
+  * **Universal Photo Search**: Allows engineers to instantly search and filter photos across projects (e.g., "Find all damaged panel nameplates at Zoetis").
+
+---
+
 ## 5. Non-Functional Requirements (NFR)
 
 ```mermaid

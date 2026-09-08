@@ -130,3 +130,42 @@ The Master Catalog (`data/master_catalog.db`) functions as a single global sourc
 * **`[ + New Project... ]` Provisioning Wizard (under Files Menu)**: A dedicated workflow to spawn new client/facility projects, auto-create folder structures (`data/clients/{client_id}/{facility_id}/`), initialize clean SQLite `model.db` databases, and link to the global master catalog.
 * **Dynamic Workspace Switching**: Allows surveyors to toggle between client facilities (e.g. *Zoetis B4*, *Pfizer CUP*, *Genentech B10*) on the fly without restarting the server.
 
+---
+
+## 8. Externalized Image Indexing & Searchable Database Summaries (1 Building = 1 DB)
+
+### 8.1 Overview
+To preserve high-speed query performance and prevent database bloat, photos are stored outside the primary transactional database while being fully indexed. Each physical building operates on its own dedicated SQLite database, with a companion JSONL / JSON summary index for global portfolio discovery.
+
+```mermaid
+flowchart TD
+    subgraph Building_Workspace ["Building Workspace (1 Building = 1 DB)
+data/clients/zoetis/b4/"]
+        DB[("⚡ Core Digital Twin DB
+model.db (Lightweight)")]
+        Photos["📁 Externalized Photos Directory
+photos/
+├── p_001_nameplate.jpg
+├── p_002_schedule.jpg
+└── p_003_thermal.jpg"]
+        Manifest["📋 Building Content Summary
+summary.json / manifest.jsonl
+• Tag index, domain counts, specs
+• Image index with OCR text & tags"]
+    end
+    
+    DB <--> Manifest
+    Photos <--> Manifest
+    
+    GSearch["🔍 Global Portfolio Search Engine
+(Finds Building DB, Assets & Photos across all Clients)"]
+    Manifest -. "Fast Text Query" .-> GSearch
+```
+
+### 8.2 Key Features:
+* **1 Database = 1 Building Rule**: A project represents a company or campus location, with each physical building possessing exactly one dedicated SQLite database (`model.db`).
+* **Externalized Image Storage**: High-resolution surveyor photographs are externalized to filesystem directories (`data/clients/{client_id}/{facility_id}/photos/{photo_id}.jpg`) or cloud object storage rather than stored as bulky inline base64 blobs in SQLite.
+* **Searchable Image Metadata**: Photos are indexed with structured metadata (equipment tag, category: `nameplate`, `directory`, `overview`, `thermal_ir`, surveyor notes, and OCR-extracted text).
+* **Companion Content Summaries (`manifest.jsonl`)**: Generates lightweight text summaries of each building's equipment inventory, service entrance capacities, and photo references. This allows engineers to locate any specific building database or equipment tag across thousands of sites instantaneously without opening individual SQLite binary files.
+
+
