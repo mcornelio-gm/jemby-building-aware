@@ -256,13 +256,9 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
                                     if parent_type == "MCC":
                                         slot_str = f"Bucket {slot_num}A"
-                                    elif poles == 1:
-                                        slot_str = f"Slot {slot_num}"
-                                    elif poles == 2:
-                                        slot_str = f"Slots {slot_num},{slot_num + 2}"
                                     else:
-                                        slot_str = f"Slots {slot_num}-{slot_num + 4}"
-                                    matched_slot = f"[{slot_str}] {amps}A{poles_str}" if amps else f"[{slot_str}]"
+                                        slot_str = f"Slot {slot_num}"
+                                    matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                                 elif row.get("rightTargetLoad") == n.get("tag"):
                                     slot_num = int(row.get("rightSlot", 2))
@@ -271,13 +267,9 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                                     poles_str = f"/{poles}P" if poles > 1 else ""
                                     if parent_type == "MCC":
                                         slot_str = f"Bucket {slot_num}B"
-                                    elif poles == 1:
-                                        slot_str = f"Slot {slot_num}"
-                                    elif poles == 2:
-                                        slot_str = f"Slots {slot_num},{slot_num + 2}"
                                     else:
-                                        slot_str = f"Slots {slot_num}-{slot_num + 4}"
-                                    matched_slot = f"[{slot_str}] {amps}A{poles_str}" if amps else f"[{slot_str}]"
+                                        slot_str = f"Slot {slot_num}"
+                                    matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
                                     break
                         tail_parts.append(matched_slot if matched_slot else "Feeder Out")
                     elif parent_domain == "transformers" or parent_type in ["XFMR", "PAD"]:
