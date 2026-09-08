@@ -72,17 +72,7 @@
 
       <!-- Unified Global Navigation Segment -->
       <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium">
-        <!-- 1. Cockpit -->
-        <a 
-          href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
-          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
-          title="Data Collection Cockpit & Graph Modeler"
-        >
-          <span>📊</span>
-          <span>Cockpit</span>
-        </a>
-
-        <!-- 2. Catalog -->
+        <!-- 1. Catalog -->
         <a 
           href="/catalog?client={{ client_id }}&facility={{ facility_id }}" 
           class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
@@ -92,13 +82,23 @@
           <span>Catalog</span>
         </a>
 
+        <!-- 2. Survey -->
+        <a 
+          href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
+          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
+          title="Field Survey & Digital Twin Modeler"
+        >
+          <span>📋</span>
+          <span>Survey</span>
+        </a>
+
         <!-- 3. Diagram (Active) -->
         <a 
           href="/clients/{{ client_id }}/facilities/{{ facility_id }}/sld" 
-          class="px-2.5 py-1 rounded-md bg-slate-800 text-amber-400 font-bold shadow-2xs border border-slate-700/80 flex items-center gap-1 transition"
-          title="Interactive Single-Line Diagram Viewer (Active)"
+          class="px-2.5 py-1 rounded-md bg-slate-800 text-amber-400 font-bold shadow-2xs border border-slate-700/80 flex items-center gap-1.5 transition"
+          title="Interactive Single-Line Hierarchy Diagram (Active)"
         >
-          <span>⚡</span>
+          <i class="fa-solid fa-sitemap text-[11px]"></i>
           <span>Diagram</span>
         </a>
       </nav>
