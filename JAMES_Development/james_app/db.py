@@ -179,6 +179,11 @@ def seed_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> No
                 "is_panel": 1, "slots": 42, "survey_sequence": 4, 
                 "attributes": {
                     "bus_rating_a": 1200.0,
+                    "schedule": [
+                        {"leftSlot": 1, "leftAmps": 100, "leftPoles": 3, "leftDescription": "Step-Down XFMR T-1", "leftTargetLoad": "T-1"},
+                        {"leftSlot": 5, "leftAmps": 800, "leftPoles": 3, "leftDescription": "Process MCC-1", "leftTargetLoad": "MCC-1"},
+                        {"leftSlot": 9, "leftAmps": 400, "leftPoles": 3, "leftDescription": "Data Center UPS-1", "leftTargetLoad": "UPS-1"}
+                    ],
                     "notes": [
                         {"id": "n3", "text": "Main breaker is 1200A Frame / 1200A Sensor with LSIG electronic trip unit.", "date": "09/06 10:15", "author": "Field Survey"}
                     ]
@@ -203,7 +208,13 @@ def seed_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> No
                 "object_class": "MotorControlCenterObject", "domain": "panels", "type_tag": "MCC",
                 "type_name": "Motor Control Center (MCC)", "room": "Penthouse - Mechanical Room",
                 "fed_from": "MDP-1", "voltage": "480V 3Ø 3W", "amps": 800.0, "aic": 65.0,
-                "is_panel": 1, "slots": 24, "survey_sequence": 7, "attributes": {"bus_rating_a": 800.0}
+                "is_panel": 1, "slots": 24, "survey_sequence": 7, 
+                "attributes": {
+                    "bus_rating_a": 800.0,
+                    "schedule": [
+                        {"leftSlot": 1, "leftAmps": 400, "leftPoles": 3, "leftDescription": "Central Plant Chiller CH-1", "leftTargetLoad": "CH-1"}
+                    ]
+                }
             },
             {
                 "id": "s8", "tag": "CH-1", "name": "Central Plant Water Chiller",
