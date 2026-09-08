@@ -32,9 +32,19 @@ def test_compile_facility_to_dot():
         {"id": "s3", "tag": "ATS-1", "name": "Transfer Switch", "domain": "switches", "type_tag": "ATS", "fed_from": "UTIL-1", "voltage": "480V", "amps": 400},
         {"id": "s4", "tag": "MDP-1", "name": "Main Panel", "domain": "panels", "type_tag": "MDP", "fed_from": "ATS-1", "is_panel": True, "voltage": "480V", "amps": 1200},
     ]
-    dot = compile_facility_to_dot(sample_nodes)
-    assert "digraph ElectricalOneLine {" in dot
-    assert "subgraph cluster_s1 {" in dot
-    assert "subgraph cluster_s4 {" in dot
-    assert "s3_out:s -> s4_in:n" in dot
-    assert "s2_out:s -> s3_emerg:n" in dot
+    # 1. Detailed Mode
+    dot_detailed = compile_facility_to_dot(sample_nodes, mode="detailed")
+    assert "digraph ElectricalOneLine {" in dot_detailed
+    assert "subgraph cluster_s1 {" in dot_detailed
+    assert "subgraph cluster_s4 {" in dot_detailed
+    assert "s3_out:s -> s4_in:n" in dot_detailed
+    assert "s2_out:s -> s3_emerg:n" in dot_detailed
+
+    # 2. Macro Mode (Consolidated Single Nodes)
+    dot_macro = compile_facility_to_dot(sample_nodes, mode="macro")
+    assert "digraph ElectricalOneLine {" in dot_macro
+    assert "subgraph cluster_" not in dot_macro
+    assert "s1 [label=" in dot_macro
+    assert "s4 [label=" in dot_macro
+    assert "s3 -> s4 [color=" in dot_macro
+    assert "s2 -> s3 [color=" in dot_macro

@@ -788,7 +788,7 @@ def api_export_jsonl(client_id: str, facility_id: str):
 
 
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/dot", response_class=PlainTextResponse)
-def api_get_client_facility_dot(client_id: str, facility_id: str):
+def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "detailed"):
     """Compile and return Graphviz record-and-port DOT text representation of facility digital twin."""
     db.seed_demo_facility(client_id, facility_id)
     with db.get_session(client_id, facility_id) as session:
@@ -815,7 +815,7 @@ def api_get_client_facility_dot(client_id: str, facility_id: str):
             }
             for r in records
         ]
-        return compile_facility_to_dot(node_dicts)
+        return compile_facility_to_dot(node_dicts, mode=mode)
 
 
 @app.get("/clients/{client_id}/facilities/{facility_id}/sld", response_class=HTMLResponse)

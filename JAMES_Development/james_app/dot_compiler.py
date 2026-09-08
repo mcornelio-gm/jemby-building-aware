@@ -174,8 +174,13 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
     return "\\n".join(lines)
 
 
-def compile_facility_to_dot(nodes: List[Dict[str, Any]]) -> str:
-    """Compile a list of facility equipment nodes into Graphviz cluster-based DOT single-line diagram with discrete port rectangles."""
+def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed") -> str:
+    """Compile a list of facility equipment nodes into Graphviz DOT single-line diagram.
+    
+    Supports:
+    - mode='detailed' (default): Cluster-based layout with discrete port rectangles and breaker slots.
+    - mode='macro': Consolidated single-node boxes per equipment for high-level power flow hierarchy.
+    """
     dot_lines = [
         "digraph ElectricalOneLine {",
         '    graph [rankdir=TB, splines=polyline, nodesep=0.75, ranksep=0.95, compound=true, fontname="Arial", bgcolor="#CBD5E1"];',
@@ -192,7 +197,45 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]]) -> str:
             nodes_by_tag[tag] = n
         nodes_by_id[n.get("id", tag)] = n
 
-    # 1. Render Equipment Enclosures as Subgraph Clusters with Port Rectangles
+    if mode == "macro":
+        # 1. Render each equipment as a single consolidated node box
+        for n in nodes:
+            node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
+            domain = n.get("domain", "generic")
+            cluster_title = _build_cluster_title(n)
+            palette = DOMAIN_CONFIG.get(domain, DOMAIN_CONFIG["generic"])
+            
+            dot_lines.append(
+                f'    {node_id} [label="{cluster_title}", shape=box, style="filled,rounded", '
+                f'color="{palette["border"]}", fillcolor="{palette["bg"]}", fontcolor="{palette["text"]}", '
+                f'penwidth=2.0, margin="0.2,0.12"];'
+            )
+        
+        dot_lines.append("")
+        
+        # 2. Render Direct Edges (Parent -> Child)
+        for n in nodes:
+            node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
+            fed_from = n.get("fed_from")
+            type_tag = n.get("type_tag", "")
+
+            if fed_from:
+                parent_node = nodes_by_tag.get(fed_from)
+                if parent_node:
+                    parent_id = _sanitize_id(parent_node.get("id", parent_node.get("tag", "eq")))
+                    dot_lines.append(f'    {parent_id} -> {node_id} [color="#0F172A", penwidth=2.0];')
+
+            # Special connection: Emergency Generator to ATS
+            if type_tag == "GEN":
+                for candidate in nodes:
+                    if candidate.get("type_tag") == "ATS" or candidate.get("domain") == "switches":
+                        ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
+                        dot_lines.append(f'    {node_id} -> {ats_id} [color="#B45309", penwidth=2.2, label="Emergency", fontcolor="#B45309", fontsize=8];')
+
+        dot_lines.append("}")
+        return "\n".join(dot_lines)
+
+    # 1. Render Equipment Enclosures as Subgraph Clusters with Port Rectangles (Detailed Mode)
     for n in nodes:
         node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
         tag = _clean_str(n.get("tag", "EQ"))
