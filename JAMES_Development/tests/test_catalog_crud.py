@@ -14,8 +14,8 @@ def test_catalog_studio_page_renders():
     response = client.get("/catalog")
     assert response.status_code == 200
     assert "Master Catalog Studio" in response.text
-    assert "Add Part" in response.text
-    assert "Import" in response.text
+    assert "Part" in response.text
+    assert "Files" in response.text
 
 
 def test_catalog_stats_endpoint():
