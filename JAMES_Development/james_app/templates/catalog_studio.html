@@ -118,22 +118,6 @@
       </div>
     </div>
 
-    <!-- Center Search Bar -->
-    <div class="flex-1 max-w-md mx-2 sm:mx-4">
-      <div class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs"></i>
-        <input type="text"
-               x-model="searchQuery"
-               placeholder="Search Part #, Model, Manufacturer..."
-               class="w-full pl-8 pr-7 py-1 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-md text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
-        <button x-show="searchQuery"
-                @click="searchQuery = ''"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 text-xs">
-          <i class="fa-solid fa-circle-xmark"></i>
-        </button>
-      </div>
-    </div>
-
     <!-- Right Actions -->
     <div class="flex items-center space-x-1.5 shrink-0">
       <!-- Toggle Filter Sidebar (Tablet / Mobile) -->
@@ -147,34 +131,38 @@
         <span class="hidden sm:inline">Filters</span>
       </button>
 
+      <!-- 1. Compact [+ Part] Button -->
       <button @click="openCreateDrawer()"
-              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition cursor-pointer select-none">
+              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition cursor-pointer select-none"
+              title="Add New Catalog Part">
         <i class="fa-solid fa-plus text-[10px]"></i>
-        <span class="hidden sm:inline">Add Part</span>
+        <span>Part</span>
       </button>
 
-      <button @click="showImportModal = true"
-              class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none">
-        <i class="fa-solid fa-file-import text-cyan-600 dark:text-cyan-400 text-[10px]"></i>
-        <span class="hidden md:inline">Import</span>
-      </button>
-
-      <div class="relative" x-data="{ exportOpen: false }">
-        <button @click="exportOpen = !exportOpen"
-                @click.away="exportOpen = false"
-                class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition cursor-pointer select-none">
-          <i class="fa-solid fa-file-export text-amber-600 dark:text-amber-400 text-[10px]"></i>
-          <span class="hidden md:inline">Export</span>
+      <!-- 2. Combined [Files] Dropdown (Import + Export) -->
+      <div class="relative" x-data="{ filesOpen: false }">
+        <button @click="filesOpen = !filesOpen"
+                @click.away="filesOpen = false"
+                class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1.5 transition cursor-pointer select-none"
+                title="Import / Export Catalog Files">
+          <i class="fa-solid fa-folder-open text-cyan-600 dark:text-cyan-400 text-[10px]"></i>
+          <span>Files</span>
           <i class="fa-solid fa-chevron-down text-[8px] text-slate-500 dark:text-slate-400"></i>
         </button>
-        <div x-show="exportOpen"
+        <div x-show="filesOpen"
              x-cloak
-             class="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl py-1 z-40 text-xs">
-          <a href="/api/catalog/export?format=csv" target="_blank"
+             class="absolute right-0 mt-1 w-44 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl py-1 z-40 text-xs">
+          <button type="button"
+                  @click="showImportModal = true; filesOpen = false"
+                  class="w-full text-left px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2 cursor-pointer">
+            <i class="fa-solid fa-file-import text-cyan-600 dark:text-cyan-400"></i> Import Catalog...
+          </button>
+          <div class="border-t border-slate-200 dark:border-slate-800 my-1"></div>
+          <a href="/api/catalog/export?format=csv" target="_blank" @click="filesOpen = false"
              class="block px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
             <i class="fa-solid fa-file-csv text-emerald-600 dark:text-emerald-400"></i> Export CSV
           </a>
-          <a href="/api/catalog/export?format=json" target="_blank"
+          <a href="/api/catalog/export?format=json" target="_blank" @click="filesOpen = false"
              class="block px-3 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center gap-2">
             <i class="fa-solid fa-file-code text-cyan-600 dark:text-cyan-400"></i> Export JSON
           </a>
@@ -334,18 +322,36 @@
     <!-- MAIN DATA TABLE -->
     <main class="flex-1 bg-slate-50 dark:bg-slate-950 flex flex-col overflow-hidden">
       
-      <!-- Table Header Status -->
-      <div class="px-4 py-2 border-b border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/40 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 shrink-0">
-        <div class="flex items-center gap-2">
-          <span>Showing <strong class="text-slate-900 dark:text-white font-mono" x-text="filteredItems.length"></strong> catalog items</span>
+      <!-- Table Header Status & Search -->
+      <div class="px-4 py-1.5 border-b border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/40 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-500 dark:text-slate-400 shrink-0">
+        <!-- Left: Items Count & Search & Filter Badges -->
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <div class="whitespace-nowrap font-medium text-slate-600 dark:text-slate-400">
+            Showing <strong class="text-slate-900 dark:text-white font-mono font-bold" x-text="filteredItems.length"></strong> catalog items
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative w-56 sm:w-72">
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xs"></i>
+            <input type="text"
+                   x-model="searchQuery"
+                   placeholder="Search Part #, Model, Brand..."
+                   class="w-full pl-7 pr-6 py-1 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-md text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
+            <button x-show="searchQuery"
+                    @click="searchQuery = ''"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 text-xs">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </div>
+
           <template x-if="selectedManufacturer">
-            <span class="px-2 py-0.5 bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/20 rounded-md font-mono flex items-center gap-1">
+            <span class="px-2 py-0.5 bg-cyan-50 dark:bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/20 rounded-md font-mono flex items-center gap-1 text-[11px]">
               <span x-text="selectedManufacturer"></span>
               <button @click="selectedManufacturer = ''" class="hover:text-cyan-900 dark:hover:text-cyan-200"><i class="fa-solid fa-xmark text-[10px]"></i></button>
             </span>
           </template>
           <template x-if="selectedDomain">
-            <span class="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 rounded-md font-mono flex items-center gap-1">
+            <span class="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 rounded-md font-mono flex items-center gap-1 text-[11px]">
               <span x-text="selectedDomain"></span>
               <button @click="selectedDomain = ''" class="hover:text-emerald-900 dark:hover:text-emerald-200"><i class="fa-solid fa-xmark text-[10px]"></i></button>
             </span>
