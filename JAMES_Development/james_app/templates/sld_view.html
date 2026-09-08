@@ -50,58 +50,60 @@
 <body class="h-full flex flex-col font-sans bg-[#CBD5E1] text-slate-900 overflow-hidden select-none">
 
   <!-- Top Navigation Bar -->
-  <header class="h-14 px-5 bg-slate-900 border-b border-slate-700/80 flex items-center justify-between shrink-0 shadow-sm z-10 text-white">
-    <div class="flex items-center gap-3">
-      <a 
-        href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition shadow-xs"
-      >
-        <span>◀</span>
-        <span>Back to Data Collector</span>
+  <header class="h-11 px-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-xs z-10 text-white select-none">
+    <div class="flex items-center gap-2.5">
+      <a href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer" title="Return to Data Collector">
+        <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
+        <div class="flex items-center gap-1 leading-none">
+          <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
+          <span class="font-light text-slate-400 tracking-tight text-xs">Aware</span>
+        </div>
       </a>
 
-      <div class="h-5 w-px bg-slate-700"></div>
+      <div class="h-3.5 w-[1px] bg-slate-800"></div>
 
-      <div class="flex items-center gap-2">
-        <span class="text-sm font-bold text-white flex items-center gap-1.5">
-          <span>⚡</span>
-          <span>Single-Line Diagram (SLD)</span>
-        </span>
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-950 border border-indigo-700 text-indigo-200 font-mono">
-          {{ client_id | upper }} / {{ facility_id | upper }}
-        </span>
+      <a 
+        href="/cockpit?client={{ client_id }}&facility={{ facility_id }}" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 transition shadow-2xs"
+      >
+        <span>◀</span>
+        <span>Data Collector</span>
+      </a>
+
+      <div class="px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 font-medium">
+        ⚡ SLD: {{ client_id | upper }} / {{ facility_id | upper }}
       </div>
     </div>
 
     <!-- Viewer Controls -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5">
       <button 
         onclick="zoomIn()" 
-        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Zoom In"
+        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
+        title="Zoom In (+)"
       >
-        🔍+
+        +
       </button>
       <button 
         onclick="zoomOut()" 
-        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Zoom Out"
+        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
+        title="Zoom Out (-)"
       >
-        🔍-
+        -
       </button>
       <button 
         onclick="resetFit()" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Fit to Screen"
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+        title="Fit to Screen (F)"
       >
         Fit View
       </button>
 
-      <div class="h-5 w-px bg-slate-700"></div>
+      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
 
       <button 
         onclick="toggleDotModal()" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5"
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1"
       >
         <span>📝</span>
         <span>Raw DOT</span>

@@ -22,73 +22,69 @@
       x-init="initData()">
 
   <!-- 1. TOP NAVIGATION & GLOBAL TOOLBAR -->
-  <header class="bg-slate-900 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between z-30 shrink-0 shadow-md">
+  <header class="h-11 bg-slate-900 border-b border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
     <!-- Brand & Section -->
-    <div class="flex items-center space-x-3">
-      <a href="/cockpit" class="flex items-center space-x-2.5 group cursor-pointer" title="Return to Cockpit Workbench">
-        <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div>
-          <div class="flex items-center gap-1.5 leading-none">
-            <span class="font-extrabold text-white tracking-tight text-sm">Building</span>
-            <span class="font-light text-slate-300 tracking-tight text-sm">Aware</span>
-            <span class="text-[9px] px-1.5 py-0.2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded font-mono font-normal">v1.2</span>
-          </div>
-          <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5">Master Catalog Studio</div>
+    <div class="flex items-center space-x-2.5">
+      <a href="/cockpit" class="flex items-center space-x-2 group cursor-pointer" title="Return to Cockpit Workbench">
+        <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
+        <div class="flex items-center gap-1 leading-none">
+          <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
+          <span class="font-light text-slate-400 tracking-tight text-xs">Aware</span>
         </div>
       </a>
 
-      <div class="h-6 w-[1px] bg-slate-800 mx-2"></div>
+      <div class="h-3.5 w-[1px] bg-slate-800"></div>
 
-      <!-- Quick Metrics Pills -->
-      <div class="hidden md:flex items-center gap-2 text-xs">
-        <div class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/60 rounded-md text-slate-300 flex items-center gap-1.5 font-mono">
-          <i class="fa-solid fa-boxes-stacked text-emerald-400"></i>
-          <span class="font-bold text-white" x-text="items.length">280</span> <span class="text-slate-400">Items</span>
-        </div>
-        <div class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/60 rounded-md text-slate-300 flex items-center gap-1.5 font-mono">
-          <i class="fa-solid fa-industry text-cyan-400"></i>
-          <span class="font-bold text-white" x-text="manufacturers.length">9</span> <span class="text-slate-400">Brands</span>
-        </div>
+      <div class="px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 font-medium">
+        Catalog Studio
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="hidden md:flex items-center gap-2 text-[11px] font-mono text-slate-400 pl-1">
+        <span>•</span>
+        <span><strong class="text-white font-semibold" x-text="items.length">280</strong> Items</span>
+        <span>•</span>
+        <span><strong class="text-white font-semibold" x-text="manufacturers.length">9</strong> Brands</span>
       </div>
     </div>
 
     <!-- Center Search Bar -->
     <div class="flex-1 max-w-md mx-4">
       <div class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
         <input type="text"
                x-model="searchQuery"
                placeholder="Search Part #, Model, Manufacturer, UPC, Description..."
-               class="w-full pl-9 pr-8 py-1.5 bg-slate-950 border border-slate-700/80 rounded-lg text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
+               class="w-full pl-8 pr-7 py-1 bg-slate-950 border border-slate-700/80 rounded-md text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition">
         <button x-show="searchQuery"
                 @click="searchQuery = ''"
-                class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">
           <i class="fa-solid fa-circle-xmark"></i>
         </button>
       </div>
     </div>
 
     <!-- Right Actions -->
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-1.5">
       <button @click="openCreateDrawer()"
-              class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-sm transition">
-        <i class="fa-solid fa-plus"></i>
+              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition">
+        <i class="fa-solid fa-plus text-[10px]"></i>
         <span>Add Part</span>
       </button>
 
       <button @click="showImportModal = true"
-              class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center gap-1.5 transition">
-        <i class="fa-solid fa-file-import text-cyan-400"></i>
+              class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition">
+        <i class="fa-solid fa-file-import text-cyan-400 text-[10px]"></i>
         <span>Import</span>
       </button>
 
       <div class="relative" x-data="{ exportOpen: false }">
         <button @click="exportOpen = !exportOpen"
                 @click.away="exportOpen = false"
-                class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium rounded-lg flex items-center gap-1.5 transition">
-          <i class="fa-solid fa-file-export text-amber-400"></i>
+                class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1 transition">
+          <i class="fa-solid fa-file-export text-amber-400 text-[10px]"></i>
           <span>Export</span>
-          <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+          <i class="fa-solid fa-chevron-down text-[8px] text-slate-400"></i>
         </button>
         <div x-show="exportOpen"
              x-cloak
@@ -104,9 +100,11 @@
         </div>
       </div>
 
+      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
+
       <a href="/cockpit"
-         class="px-3 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 text-xs font-bold rounded-lg flex items-center gap-1.5 transition ml-1">
-        <i class="fa-solid fa-network-wired"></i>
+         class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 text-[11px] font-semibold rounded-md flex items-center gap-1 transition">
+        <i class="fa-solid fa-network-wired text-[10px]"></i>
         <span>Cockpit</span>
       </a>
     </div>

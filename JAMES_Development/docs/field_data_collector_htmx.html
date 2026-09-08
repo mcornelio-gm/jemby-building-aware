@@ -145,96 +145,56 @@
   >
 
   <!-- Top Master Control Bar -->
-  <header class="h-14 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-5 shrink-0 z-50 shadow-sm">
-    <div class="flex items-center gap-3">
-      <a href="/cockpit" class="flex items-center gap-2.5 group cursor-pointer" title="Building Aware • Electrical Digital Twin">
-        <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-8 h-8 rounded-lg object-cover shadow-sm border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div>
-          <div class="flex items-center gap-1 leading-none">
-            <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-sm">Building</span>
-            <span class="font-light text-slate-600 dark:text-slate-300 tracking-tight text-sm">Aware</span>
-            <span class="text-[9px] px-1 py-0.2 bg-rose-500/10 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 rounded font-bold font-mono">TWIN</span>
-          </div>
-          <div class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mt-0.5">Electrical Digital Twin</div>
+  <header class="h-11 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-3.5 shrink-0 z-50 shadow-xs select-none">
+    <div class="flex items-center gap-2.5">
+      <a href="/cockpit" class="flex items-center gap-2 group cursor-pointer" title="Building Aware • Electrical Digital Twin">
+        <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
+        <div class="flex items-center gap-1 leading-none">
+          <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
+          <span class="font-light text-slate-600 dark:text-slate-300 tracking-tight text-xs">Aware</span>
         </div>
       </a>
       
+      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+
       <!-- Multi-Tenant Client Pill -->
-      <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300">
+      <div class="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 font-medium">
         <span>🏢</span>
         <span>{{ client_id | upper }} / {{ facility_id | upper }}</span>
-        <span class="text-[10px] px-1.5 py-0.2 bg-indigo-200 dark:bg-indigo-900 rounded text-indigo-900 dark:text-indigo-200 font-mono">Field Survey</span>
       </div>
     </div>
 
-    <!-- Live Telemetry Counts -->
-    <div class="hidden md:flex items-center gap-4 text-xs">
-      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 font-mono">
-        <span class="text-slate-500 dark:text-slate-400">Total Stack:</span>
-        <span class="font-bold text-slate-900 dark:text-white" x-text="stack.length + ' Assets'">{{ initial_nodes | length }} Assets</span>
-      </div>
-      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 font-mono">
-        <span class="text-slate-500 dark:text-slate-400">Total Mains:</span>
-        <span class="font-bold text-cyan-600 dark:text-cyan-400" x-text="totalAmps.toLocaleString() + ' A'">3,225 A</span>
-      </div>
-      <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 font-mono">
-        <span class="text-slate-500 dark:text-slate-400">Status:</span>
-        <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Auto-Saved</span>
-      </div>
+    <!-- Live Telemetry Inline Stream -->
+    <div class="hidden xl:flex items-center gap-3 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+      <span><strong class="text-slate-800 dark:text-slate-200 font-semibold" x-text="stack.length">{{ initial_nodes | length }}</strong> Assets</span>
+      <span class="text-slate-300 dark:text-slate-700">•</span>
+      <span><strong class="text-cyan-600 dark:text-cyan-400 font-semibold" x-text="totalAmps.toLocaleString() + ' A'">3,225 A</strong> Mains</span>
+      <span class="text-slate-300 dark:text-slate-700">•</span>
+      <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        Auto-Saved
+      </span>
     </div>
 
     <!-- Action Controls -->
-    <div class="flex items-center gap-2.5">
+    <div class="flex items-center gap-1.5">
       <!-- Show / Hide Catalog Sidebar Toggle -->
       <button 
         type="button"
         @click="toggleCatalog()" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition shadow-sm cursor-pointer select-none flex items-center gap-1.5"
-        :class="showCatalog ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700' : 'border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 font-bold'"
-        title="Toggle Equipment Catalog"
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium border transition shadow-2xs cursor-pointer select-none flex items-center gap-1"
+        :class="showCatalog ? 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700' : 'border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 font-semibold'"
+        title="Toggle Equipment Catalog (C)"
       >
-        <span x-show="showCatalog" class="flex items-center gap-1">
-          <span>◀</span>
-          <span>Hide Catalog</span>
-        </span>
-        <span x-show="!showCatalog" class="flex items-center gap-1" x-cloak>
-          <span>▶</span>
-          <span>Show Catalog</span>
-        </span>
-      </button>
-
-      <!-- Field Guide & Help Modal Toggle -->
-      <button 
-        type="button"
-        @click="showHelpModal = true" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-200 dark:border-indigo-800 bg-indigo-50/70 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 flex items-center gap-1.5 transition shadow-sm cursor-pointer select-none"
-        title="Field Workflow & Usage Guide (Press ?)"
-      >
-        <span>📖</span>
-        <span>Field Guide</span>
-      </button>
-
-      <!-- Dark / Light Theme Toggle -->
-      <button 
-        type="button"
-        @click="toggleTheme()" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2 transition shadow-sm cursor-pointer select-none"
-        title="Toggle Theme"
-      >
-        <span x-show="isDark" class="flex items-center gap-1.5 text-indigo-400">
-          <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-          <span>🌙 Dark Mode</span>
-        </span>
-        <span x-show="!isDark" class="flex items-center gap-1.5 text-amber-600" x-cloak>
-          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-          <span>☀️ Light Mode</span>
-        </span>
+        <span x-show="showCatalog">◀ Hide Catalog</span>
+        <span x-show="!showCatalog" x-cloak>▶ Show Catalog</span>
       </button>
 
       <!-- Export JSONL -->
       <button 
         @click="exportJsonl()" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center gap-1.5 transition cursor-pointer"
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-1 transition cursor-pointer"
+        title="Export Facility Model (JSONL)"
       >
         <span>📋 Export JSONL</span>
       </button>
@@ -242,20 +202,43 @@
       <!-- Master Catalog Studio -->
       <a 
         href="/catalog" 
-        class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 flex items-center gap-1.5 transition shadow-sm cursor-pointer select-none"
-        title="Open Master Catalog Studio (CRUD & Specs)"
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 flex items-center gap-1 transition shadow-2xs cursor-pointer select-none"
+        title="Master Catalog Studio"
       >
-        <span>📚</span>
-        <span>Catalog Studio</span>
+        <span>📚 Catalog Studio</span>
       </a>
 
-      <!-- Generate Single Line -->
+      <!-- View Single Line Diagram -->
       <a 
         :href="'/clients/' + client + '/facilities/' + facility + '/sld'"
-        class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-sm shadow-indigo-500/30 flex items-center gap-1.5 transition text-center cursor-pointer"
+        class="px-3 py-1 rounded-md text-[11px] font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs flex items-center gap-1 transition text-center cursor-pointer"
+        title="Open Single-Line Diagram Viewer"
       >
-        <span>⚡ View SLD Diagram</span>
+        <span>⚡ View SLD</span>
       </a>
+
+      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
+
+      <!-- Dark / Light Theme Toggle -->
+      <button 
+        type="button"
+        @click="toggleTheme()" 
+        class="w-7 h-7 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
+        :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+      >
+        <span x-show="isDark" class="text-xs">🌙</span>
+        <span x-show="!isDark" class="text-xs" x-cloak>☀️</span>
+      </button>
+
+      <!-- Help & Field Guide Modal Toggle (?) -->
+      <button 
+        type="button"
+        @click="showHelpModal = true" 
+        class="w-7 h-7 rounded-md border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 flex items-center justify-center font-bold text-xs transition shadow-2xs cursor-pointer select-none"
+        title="Help & Field Guide (Press ?)"
+      >
+        <span>?</span>
+      </button>
     </div>
   </header>
 
