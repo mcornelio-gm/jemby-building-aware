@@ -260,120 +260,114 @@
     </div>
   </header>
 
-  <!-- 4-Column Full-Page Cockpit Workspace -->
+  <!-- 4-Column Full-Page Survey Workspace -->
   <main class="flex-1 flex overflow-hidden relative">
 
-    <!-- Equipment Domains & Types Pane (Inline on ≥1024px, Slide-Over Drawer on <1024px) -->
-    <div 
+    <!-- Equipment Domains & Archetypes Accordion Sidebar (Inline on ≥1024px, Slide-Over Drawer on <1024px) -->
+    <aside 
       x-show="showCatalog" 
       x-cloak 
-      class="shrink-0 flex max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:top-11 max-lg:z-40 max-lg:shadow-2xl max-lg:bg-white max-lg:dark:bg-[#0E1626]"
+      :style="`width: ${col1Width}px;`"
+      class="shrink-0 flex flex-col bg-slate-50 dark:bg-[#0B1220] border-r border-slate-200 dark:border-slate-800 transition-all duration-150 h-full max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:top-11 max-lg:z-40 max-lg:shadow-2xl max-lg:w-72"
     >
-      <!-- COLUMN 1: Equipment Domains (Pure Standalone Assets) -->
-      <section 
-        :style="`width: ${col1Width}px;`" 
-        class="shrink-0 flex flex-col bg-slate-50 dark:bg-[#0E1626]/70 border-r border-slate-200 dark:border-slate-800 transition-all duration-150 h-full"
-      >
-        <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
-          <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            <span>Domains</span>
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="domains.length">10</span>
-          </div>
-          <button 
-            type="button" 
-            @click="toggleCatalog()" 
-            title="Collapse Domains" 
-            class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs cursor-pointer"
-          >
-            ◀
-          </button>
+      <!-- Top Header -->
+      <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <span>Domains & Types</span>
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="domains.length"></span>
         </div>
-        
-        <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+        <button 
+          type="button" 
+          @click="toggleCatalog()" 
+          title="Collapse Domains" 
+          class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs cursor-pointer"
+        >
+          ◀
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
+        <div class="relative">
           <input 
             type="text" 
-            x-model="domainSearch" 
-            placeholder="Filter domains..." 
-            class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+            x-model="catalogSearch" 
+            placeholder="Search domains & types..." 
+            class="w-full h-8 pl-7 pr-2 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
           >
+          <span class="absolute left-2 top-2 text-slate-400 text-xs">🔍</span>
         </div>
+      </div>
 
-        <div class="flex-1 overflow-y-auto p-2 space-y-1">
-          <template x-for="(dom, idx) in filteredDomains" :key="dom.id">
-            <div 
-              @click="requestSelectDomain(dom)"
-              :class="selectedDomain.id === dom.id 
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold' 
-                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800/80'"
-              class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-xs select-none"
+      <!-- Accordion List -->
+      <div class="flex-1 overflow-y-auto p-2 space-y-1.5">
+        <template x-for="dom in filteredCatalogTree" :key="dom.id">
+          <div class="rounded-xl border border-slate-200/80 dark:border-slate-800/90 bg-white dark:bg-[#0E1626]/80 overflow-hidden shadow-2xs transition">
+            
+            <!-- Domain Accordion Header Button -->
+            <button 
+              type="button"
+              @click="toggleDomainAccordion(dom)"
+              class="w-full px-2.5 py-2 flex items-center justify-between text-left transition select-none cursor-pointer"
+              :class="(expandedDomain === dom.id || (catalogSearch && catalogSearch.trim())) ? 'bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/60 dark:border-slate-800 font-semibold' : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'"
             >
-              <div class="flex items-center gap-2 truncate">
-                <span x-text="dom.icon"></span>
-                <span x-text="dom.name" class="truncate"></span>
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="text-xs" x-text="dom.icon"></span>
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" x-text="dom.name"></span>
               </div>
-              <span class="text-[10px] opacity-70">›</span>
+              <div class="flex items-center gap-1 shrink-0 ml-1.5">
+                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-medium" x-text="dom.types.length"></span>
+                <svg 
+                  class="w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" 
+                  :class="(expandedDomain === dom.id || (catalogSearch && catalogSearch.trim())) ? 'rotate-180 text-indigo-500' : ''"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+
+            <!-- Accordion Subtype Body -->
+            <div 
+              x-show="expandedDomain === dom.id || (catalogSearch && catalogSearch.trim())" 
+              class="p-1.5 space-y-1 bg-slate-50/50 dark:bg-[#070B14]/50"
+            >
+              <template x-for="type in dom.types" :key="type.tag">
+                <div 
+                  @click="requestSelectTypeFromAccordion(dom, type)"
+                  class="p-2 rounded-lg cursor-pointer transition text-xs select-none border group/type"
+                  :class="(selectedType && selectedType.tag === type.tag && selectedDomain && selectedDomain.id === dom.id && !editingId)
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs' 
+                    : 'bg-white dark:bg-slate-800/60 border-slate-200/70 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 hover:border-indigo-300 dark:hover:border-indigo-600 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/30'"
+                >
+                  <div class="flex items-center justify-between gap-1.5">
+                    <span class="font-bold text-xs truncate" :class="(selectedType && selectedType.tag === type.tag && selectedDomain && selectedDomain.id === dom.id && !editingId) ? 'text-white' : 'text-slate-900 dark:text-white'" x-text="type.name"></span>
+                    <span 
+                      class="px-1.5 py-0.5 rounded font-mono text-[9px] shrink-0 font-bold"
+                      :class="(selectedType && selectedType.tag === type.tag && selectedDomain && selectedDomain.id === dom.id && !editingId) ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600'"
+                      x-text="type.tag"
+                    ></span>
+                  </div>
+                  <p 
+                    class="text-[10px] mt-0.5 line-clamp-1 opacity-75"
+                    :class="(selectedType && selectedType.tag === type.tag && selectedDomain && selectedDomain.id === dom.id && !editingId) ? 'text-indigo-100' : 'text-slate-500 dark:text-slate-400'"
+                    x-text="type.desc"
+                  ></p>
+                </div>
+              </template>
             </div>
-          </template>
-        </div>
-      </section>
 
-      <!-- Resizer 1 (Desktop inline) -->
-      <div 
-        class="resizer-bar bg-slate-200 dark:bg-slate-800 max-lg:hidden" 
-        @mousedown="startResize($event, 1)"
-      ></div>
-
-      <!-- COLUMN 2: Equipment Types -->
-      <section 
-        :style="`width: ${col2Width}px;`" 
-        class="shrink-0 flex flex-col bg-slate-100/70 dark:bg-[#0B1220]/80 border-r border-slate-200 dark:border-slate-800 transition-all duration-150 h-full"
-      >
-        <div class="h-11 px-3 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
-          <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            <span>Equipment Types</span>
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="filteredTypes.length">0</span>
           </div>
-        </div>
+        </template>
+      </div>
+    </aside>
 
-        <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-transparent">
-          <input 
-            type="text" 
-            x-model="typeSearch" 
-            placeholder="Search equipment types..." 
-            class="w-full h-8 px-2.5 text-xs rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-800 dark:text-slate-200"
-          >
-        </div>
-
-        <div class="flex-1 overflow-y-auto p-2 space-y-1.5">
-          <template x-for="type in filteredTypes" :key="type.tag">
-            <div 
-              @click="requestSelectType(type)"
-              :class="selectedType.tag === type.tag 
-                ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
-                : 'bg-white dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
-              class="flex flex-col p-2.5 rounded-lg cursor-pointer transition text-xs select-none gap-0.5"
-            >
-              <div class="flex items-start justify-between gap-1.5">
-                <span class="font-semibold text-xs leading-snug" :class="selectedType.tag === type.tag ? 'text-white' : 'text-slate-900 dark:text-white'" x-text="type.name"></span>
-                <span 
-                  class="px-1.5 py-0.5 rounded font-mono text-[10px] shrink-0 font-bold"
-                  :class="selectedType.tag === type.tag ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'"
-                  x-text="type.tag"
-                ></span>
-              </div>
-              <p class="text-[11px] opacity-75 line-clamp-2" x-text="type.desc"></p>
-            </div>
-          </template>
-        </div>
-      </section>
-    </div>
-
-    <!-- Resizer 2 (Desktop inline divider) -->
+    <!-- Resizer 1 (Desktop inline divider between Accordion and Nameplate) -->
     <div 
       x-show="showCatalog" 
       x-cloak 
       class="resizer-bar bg-slate-200 dark:bg-slate-800 max-lg:hidden" 
-      @mousedown="startResize($event, 2)"
+      @mousedown="startResize($event, 1)"
     ></div>
 
     <!-- Mobile/Tablet Overlay Backdrop -->
@@ -2449,13 +2443,14 @@
         domainSearch: '',
         typeSearch: '',
         stackSearch: '',
+        catalogSearch: '',
+        expandedDomain: 'panels',
         groupMode: 'room', // 'room' | 'tree' | 'type'
         toastShow: false,
         toastMessage: '',
 
         // Resizable Column Widths (px)
-        col1Width: 230,
-        col2Width: 280,
+        col1Width: 260,
         col4Width: 260,
 
         // Equipment Domains (Breakers live inside Panels)
@@ -2620,6 +2615,15 @@
           return current !== this.formSnapshot;
         },
 
+        toggleDomainAccordion(dom) {
+          if (this.expandedDomain === dom.id) {
+            this.expandedDomain = null;
+          } else {
+            this.expandedDomain = dom.id;
+            this.requestSelectDomain(dom);
+          }
+        },
+
         requestSelectDomain(dom) {
           if (this.selectedDomain && this.selectedDomain.id === dom.id) return;
           if (this.hasUnsavedChanges()) {
@@ -2636,6 +2640,18 @@
             this.pendingNavigation = { action: 'type', target: type };
             this.showUnsavedModal = true;
           } else {
+            this.selectType(type);
+          }
+        },
+
+        requestSelectTypeFromAccordion(dom, type) {
+          if (this.selectedType && this.selectedType.tag === type.tag && this.selectedDomain && this.selectedDomain.id === dom.id && !this.editingId) return;
+          if (this.hasUnsavedChanges()) {
+            this.pendingNavigation = { action: 'accordion_type', target: { dom, type } };
+            this.showUnsavedModal = true;
+          } else {
+            this.selectedDomain = dom;
+            this.expandedDomain = dom.id;
             this.selectType(type);
           }
         },
@@ -2674,6 +2690,12 @@
             this.selectDomain(target);
           } else if (action === 'type') {
             this.selectType(target);
+          } else if (action === 'accordion_type') {
+            if (target && target.dom && target.type) {
+              this.selectedDomain = target.dom;
+              this.expandedDomain = target.dom.id;
+              this.selectType(target.type);
+            }
           } else if (action === 'edit') {
             this.editAsset(target);
           }
@@ -2975,6 +2997,23 @@
         },
 
         // Equipment Selection & Editing
+        get filteredCatalogTree() {
+          const q = (this.catalogSearch || '').trim().toLowerCase();
+          return this.domains.map(dom => {
+            const allTypes = this.typesCatalog[dom.id] || [];
+            const matchingTypes = !q 
+              ? allTypes 
+              : allTypes.filter(t => t.name.toLowerCase().includes(q) || t.tag.toLowerCase().includes(q) || (t.desc || '').toLowerCase().includes(q) || dom.name.toLowerCase().includes(q));
+            return {
+              ...dom,
+              types: matchingTypes
+            };
+          }).filter(dom => {
+            if (!q) return true;
+            return dom.name.toLowerCase().includes(q) || dom.types.length > 0;
+          });
+        },
+
         get filteredDomains() {
           if (!this.domainSearch) return this.domains;
           return this.domains.filter(d => d.name.toLowerCase().includes(this.domainSearch.toLowerCase()));
@@ -3454,6 +3493,7 @@
 
           const dom = this.domains.find(d => d.id === item.domain) || this.domains[3];
           this.selectedDomain = dom;
+          this.expandedDomain = dom.id;
           const types = this.typesCatalog[dom.id] || [];
           this.selectedType = types.find(t => t.tag === item.type_tag) || types[0] || this.selectedType;
 
@@ -3668,15 +3708,13 @@
         startResize(e, colNum) {
           const startX = e.clientX;
           const startW1 = this.col1Width;
-          const startW2 = this.col2Width;
           const startW4 = this.col4Width;
           const target = e.target;
           target.classList.add('active-resizing');
 
           const onMove = (moveEv) => {
             const dx = moveEv.clientX - startX;
-            if (colNum === 1) this.col1Width = Math.max(180, Math.min(360, startW1 + dx));
-            if (colNum === 2) this.col2Width = Math.max(220, Math.min(450, startW2 + dx));
+            if (colNum === 1) this.col1Width = Math.max(200, Math.min(420, startW1 + dx));
             if (colNum === 3) this.col4Width = Math.max(200, Math.min(600, startW4 - dx));
           };
 
