@@ -1368,6 +1368,7 @@
             nameplate_photo: attrs.nameplate_photo || null,
             vendor_attrs: attrs.vendor_attrs || {},
             checklists: (attrs.checklists && typeof attrs.checklists === 'object') ? JSON.parse(JSON.stringify(attrs.checklists)) : {},
+            checklist_signoff: (attrs.checklist_signoff && typeof attrs.checklist_signoff === 'object') ? JSON.parse(JSON.stringify(attrs.checklist_signoff)) : null,
             notes: Array.isArray(attrs.notes) ? attrs.notes : (Array.isArray(this.editingNode.notes) ? this.editingNode.notes : [])
           };
 
@@ -2436,6 +2437,7 @@
               nameplate_photo: this.form.nameplate_photo || null,
               vendor_attrs: this.form.vendor_attrs || {},
               checklists: this.form.checklists || {},
+              checklist_signoff: this.form.checklist_signoff || null,
               notes: this.form.notes || []
             },
             notes: this.form.notes || []

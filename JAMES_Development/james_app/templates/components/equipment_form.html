@@ -823,6 +823,88 @@
             </div>
           </div>
         </template>
+
+        <!-- 5.5.B CHECKLIST COMPLETION CHECK & INSPECTOR SIGN-OFF -->
+        <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+          <!-- Live Completion Status Banner -->
+          <div 
+            :class="{
+              'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800/60 text-emerald-900 dark:text-emerald-200': getOverallChecklistStats().isComplete && getOverallChecklistStats().deficient === 0,
+              'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800/60 text-amber-900 dark:text-amber-200': getOverallChecklistStats().isComplete && getOverallChecklistStats().deficient > 0,
+              'bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300': !getOverallChecklistStats().isComplete
+            }"
+            class="p-2.5 rounded-lg border flex items-center justify-between gap-3 text-xs"
+          >
+            <div class="flex items-center gap-2">
+              <span class="text-base" x-text="getOverallChecklistStats().isComplete ? (getOverallChecklistStats().deficient > 0 ? '⚠️' : '✅') : '⏳'"></span>
+              <div>
+                <span class="font-bold block" x-text="getOverallChecklistStats().isComplete ? (getOverallChecklistStats().deficient > 0 ? 'Checklists Complete with Deficiencies' : 'Checklists Complete & Verified') : 'Checklist Incomplete'"></span>
+                <span class="text-[11px] opacity-80" x-text="getOverallChecklistStats().passed + '/' + getOverallChecklistStats().total + ' Passed (' + getOverallChecklistStats().pct + '%) • ' + getOverallChecklistStats().pending + ' Pending Review'"></span>
+              </div>
+            </div>
+            
+            <template x-if="getOverallChecklistStats().isComplete">
+              <span class="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full" :class="getOverallChecklistStats().deficient > 0 ? 'bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-200' : 'bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200'">
+                100% Evaluated
+              </span>
+            </template>
+          </div>
+
+          <!-- Inspector Sign-Off Stamp Card -->
+          <div class="bg-white dark:bg-slate-800/80 p-3 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span>✍️</span>
+                <span>Inspector Validation & Sign-Off</span>
+              </span>
+              <template x-if="getChecklistSignoff()">
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">
+                  ✓ Certified
+                </span>
+              </template>
+            </div>
+
+            <!-- Certified Sign-off Details (if signed) -->
+            <template x-if="getChecklistSignoff()">
+              <div class="p-2 rounded bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-xs flex items-center justify-between">
+                <div>
+                  <div class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <span x-text="'Inspector: ' + getChecklistSignoff().inspector"></span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold" :class="getChecklistSignoff().status === 'Compliant' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300'" x-text="getChecklistSignoff().status"></span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 font-mono mt-0.5" x-text="'Signed: ' + new Date(getChecklistSignoff().timestamp).toLocaleString()"></p>
+                </div>
+                <button
+                  type="button"
+                  @click="clearChecklistSignoff()"
+                  class="text-[11px] text-slate-400 hover:text-rose-500 underline ml-2 cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+            </template>
+
+            <!-- Sign-Off Form Input (if not signed) -->
+            <template x-if="!getChecklistSignoff()">
+              <div class="flex items-center gap-2">
+                <input
+                  type="text"
+                  x-model="checklistInspectorInput"
+                  placeholder="Inspector Name / ID (e.g. J. Doe, PE)"
+                  class="flex-1 h-8 px-2.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                >
+                <button
+                  type="button"
+                  @click="signOffChecklist(checklistInspectorInput)"
+                  class="px-3 h-8 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition flex items-center gap-1 shrink-0 cursor-pointer"
+                >
+                  <span>✓</span>
+                  <span>Sign & Stamp</span>
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
       </div>
     </template>
   </div>

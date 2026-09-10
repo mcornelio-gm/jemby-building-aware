@@ -80,6 +80,7 @@
     selectedChecklistTab: null,
     checklistFilter: 'all', // 'all' | 'deficient' | 'pending' | 'pass'
     checklistLoading: false,
+    checklistInspectorInput: '',
 
     async loadDomainChecklists(domainId, typeTag) {
       const d = (domainId || (this.form && this.form.domain) || 'panels').toLowerCase();
@@ -201,7 +202,45 @@
       });
       const evaluated = passed + deficient + na;
       const pct = total > 0 ? Math.round((evaluated / total) * 100) : 0;
-      return { total, passed, deficient, na, pending, pct, isComplete: total > 0 && evaluated === total };
+      const isComplete = total > 0 && evaluated === total;
+      const status = !isComplete ? 'incomplete' : (deficient > 0 ? 'deficient' : 'compliant');
+      return { total, passed, deficient, na, pending, pct, isComplete, status };
+    },
+
+    getChecklistSignoff() {
+      if (!this.form) return null;
+      if (this.form.checklist_signoff && typeof this.form.checklist_signoff === 'object') {
+        return this.form.checklist_signoff;
+      }
+      return null;
+    },
+
+    signOffChecklist(inspectorName) {
+      if (!this.form) return;
+      const stats = this.getOverallChecklistStats();
+      const inspector = (inspectorName || this.checklistInspectorInput || 'Field Inspector').trim();
+      const signoffData = {
+        inspector: inspector,
+        timestamp: new Date().toISOString(),
+        status: stats.deficient > 0 ? 'Deficiencies Found' : 'Compliant',
+        is_complete: stats.isComplete,
+        passed_items: stats.passed,
+        deficient_items: stats.deficient,
+        total_items: stats.total,
+        compliance_pct: stats.pct
+      };
+      this.form.checklist_signoff = signoffData;
+      if (typeof this.toast === 'function') {
+        this.toast(`✅ Inspection signed off by ${inspector} (${signoffData.status})`);
+      }
+    },
+
+    clearChecklistSignoff() {
+      if (!this.form) return;
+      this.form.checklist_signoff = null;
+      if (typeof this.toast === 'function') {
+        this.toast('Sign-off cleared.');
+      }
     },
 
     /**

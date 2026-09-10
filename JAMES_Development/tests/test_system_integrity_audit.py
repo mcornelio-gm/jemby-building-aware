@@ -89,7 +89,8 @@ def test_markdown_report_generation():
     assert "[3. Critical Electrical Deficiencies" in md
     assert "[4. Warnings & Capacity Headroom" in md
     assert "[5. Field Documentation & Informational Observations" in md
-    assert "[6. Prioritized Remediation Action Plan]" in md
+    assert "[6. Field Inspection Checklists & Code Compliance Summary" in md
+    assert "[7. Prioritized Remediation Action Plan]" in md
     assert "ZOETIS" in md
     assert "B4" in md
 
@@ -119,6 +120,7 @@ def test_api_audit_endpoints(client):
     assert "health_score" in data
     assert "health_grade" in data
     assert "findings" in data
+    assert "checklist_summary" in data
     assert isinstance(data["findings"], list)
 
     # 2. Export Markdown (.md with TOC)
@@ -141,3 +143,37 @@ def test_api_audit_endpoints(client):
     res_txt = client.get("/api/clients/zoetis/facilities/b4/audit/export?format=txt")
     assert res_txt.status_code == 200
     assert "SYSTEM INTEGRITY AUDIT REPORT" in res_txt.text
+
+
+def test_checklist_deficiency_and_signoff_audit():
+    nodes = [
+        {
+            "id": "pnl_1",
+            "tag": "MDP-1",
+            "name": "Main Distribution Panel",
+            "domain": "panels",
+            "type_tag": "MDP",
+            "voltage": "480V",
+            "amps": 1200,
+            "fed_from": "UTIL-1",
+            "attributes": {
+                "checklists": {
+                    "CHK-PANEL-408": {
+                        "1": {"status": "deficient", "notes": "Busbar torque marks missing"}
+                    }
+                },
+                "checklist_signoff": {
+                    "inspector": "J. Smith, PE",
+                    "timestamp": "2026-09-10T12:00:00Z",
+                    "status": "Deficiencies Found"
+                }
+            }
+        }
+    ]
+    audit = audit_facility_system_integrity(nodes)
+    deficiencies = [f for f in audit["findings"] if f["category"] == "Checklists & Code" and "Code Deficiency" in f["title"]]
+    assert len(deficiencies) >= 1
+    assert "MDP-1" in deficiencies[0]["asset_tag"]
+    assert "Busbar torque marks missing" in deficiencies[0]["description"]
+    assert audit["checklist_summary"]["signoffs_count"] == 1
+    assert audit["checklist_summary"]["deficient_items"] == 1

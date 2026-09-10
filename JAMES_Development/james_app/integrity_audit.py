@@ -15,6 +15,8 @@ import json
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
+from james_app.checklists import get_checklists_for_domain
+
 
 def _parse_voltage_num(v_str: Any) -> Optional[float]:
     """Extract primary nominal line-to-line voltage number (e.g. '480Y/277V' -> 480.0, '208V' -> 208.0)."""
@@ -343,6 +345,120 @@ def audit_facility_system_integrity(nodes: List[Dict[str, Any]], client: str = "
                 recommendation="Assign room name (e.g. 'Main Electrical Room', 'Penthouse') in equipment details."
             )
 
+    # 7. Field Inspection Checklists & Code Compliance Checks
+    total_facility_chk_items = 0
+    passed_facility_chk_items = 0
+    deficient_facility_chk_items = 0
+    evaluated_facility_chk_items = 0
+    signoffs_count = 0
+
+    for n in nodes:
+        tag = n.get("tag") or n.get("id") or "EQ"
+        name = n.get("name") or n.get("type_name") or tag
+        room = n.get("room") or "Unassigned"
+        nid = n.get("id") or tag
+        domain = n.get("domain") or "generic"
+        type_tag = n.get("type_tag") or ""
+        attrs = n.get("attributes") or {}
+        checklists_data = attrs.get("checklists") or {}
+        signoff = attrs.get("checklist_signoff")
+
+        if signoff and isinstance(signoff, dict) and signoff.get("inspector"):
+            signoffs_count += 1
+
+        app_checklists = get_checklists_for_domain(domain, type_tag)
+        if not app_checklists:
+            continue
+
+        node_total_items = 0
+        node_evaluated_items = 0
+        node_passed_items = 0
+        node_deficient_items = 0
+
+        for chk in app_checklists:
+            cid = chk["id"]
+            c_items = chk.get("items", [])
+            node_saved_chk = checklists_data.get(cid, {}) if isinstance(checklists_data, dict) else {}
+
+            for it in c_items:
+                node_total_items += 1
+                total_facility_chk_items += 1
+                item_no = it.get("item_no")
+                it_state = node_saved_chk.get(str(item_no)) or node_saved_chk.get(item_no) or {}
+                status = (it_state.get("status") if isinstance(it_state, dict) else it_state) or "pending"
+                notes = (it_state.get("notes") if isinstance(it_state, dict) else "") or ""
+
+                if status == "pass":
+                    node_passed_items += 1
+                    passed_facility_chk_items += 1
+                    node_evaluated_items += 1
+                    evaluated_facility_chk_items += 1
+                elif status in ["deficient", "fail"]:
+                    node_deficient_items += 1
+                    deficient_facility_chk_items += 1
+                    node_evaluated_items += 1
+                    evaluated_facility_chk_items += 1
+
+                    # Flag specific code deficiency finding!
+                    sev = "critical" if it.get("severity") == "Critical" else "warning"
+                    std_ref = it.get("standard_ref") or "NEC/NFPA Code"
+                    prompt = it.get("inspection_prompt") or "Code Deficient Condition"
+                    notes_desc = f' Field Notes: "{notes}"' if notes else ""
+                    add_finding(
+                        severity=sev,
+                        category="Checklists & Code",
+                        asset_tag=tag,
+                        asset_name=name,
+                        room=room,
+                        asset_id=nid,
+                        title=f"Code Deficiency: {std_ref} ({prompt})",
+                        description=f"Equipment [{tag}] failed inspection criteria for {std_ref}: {prompt}.{notes_desc}",
+                        recommendation=f"Remediate non-compliant installation per {std_ref} specifications."
+                    )
+                elif status == "na":
+                    node_evaluated_items += 1
+                    evaluated_facility_chk_items += 1
+
+        # Check if asset has incomplete checklists
+        if node_total_items > 0:
+            if node_evaluated_items == 0:
+                add_finding(
+                    severity="info",
+                    category="Checklists & Code",
+                    asset_tag=tag,
+                    asset_name=name,
+                    room=room,
+                    asset_id=nid,
+                    title="Inspection Checklist Not Started",
+                    description=f"Equipment [{tag}] has {node_total_items} applicable code inspection items with 0% evaluated.",
+                    recommendation="Perform physical walkdown and complete standard checklist."
+                )
+            elif node_evaluated_items < node_total_items:
+                rem = node_total_items - node_evaluated_items
+                add_finding(
+                    severity="info",
+                    category="Checklists & Code",
+                    asset_tag=tag,
+                    asset_name=name,
+                    room=room,
+                    asset_id=nid,
+                    title=f"Incomplete Inspection Checklist ({node_evaluated_items}/{node_total_items} Evaluated)",
+                    description=f"Equipment [{tag}] has {rem} remaining checklist items pending inspector review.",
+                    recommendation="Complete outstanding checklist items in equipment drawer."
+                )
+            elif node_evaluated_items == node_total_items and not signoff:
+                add_finding(
+                    severity="info",
+                    category="Checklists & Code",
+                    asset_tag=tag,
+                    asset_name=name,
+                    room=room,
+                    asset_id=nid,
+                    title="Inspection Complete - Awaiting Inspector Sign-Off",
+                    description=f"Equipment [{tag}] has 100% of checklist items evaluated but has not been signed off by the lead inspector.",
+                    recommendation="Review findings and sign off in equipment drawer."
+                )
+
     # Compute Facility Health Score (0 - 100)
     critical_count = sum(1 for f in findings if f["severity"] == "critical")
     warning_count = sum(1 for f in findings if f["severity"] == "warning")
@@ -365,6 +481,9 @@ def audit_facility_system_integrity(nodes: List[Dict[str, Any]], client: str = "
         health_grade = "D (Critical Attention Needed)"
         status_color = "rose"
 
+    chk_completion_pct = round((evaluated_facility_chk_items / total_facility_chk_items * 100)) if total_facility_chk_items > 0 else 0
+    chk_compliance_pct = round((passed_facility_chk_items / evaluated_facility_chk_items * 100)) if evaluated_facility_chk_items > 0 else 100
+
     return {
         "client": client,
         "facility": facility,
@@ -376,7 +495,17 @@ def audit_facility_system_integrity(nodes: List[Dict[str, Any]], client: str = "
         "warning_count": warning_count,
         "info_count": info_count,
         "total_findings": len(findings),
-        "findings": findings
+        "findings": findings,
+        "checklist_summary": {
+            "total_items": total_facility_chk_items,
+            "evaluated_items": evaluated_facility_chk_items,
+            "passed_items": passed_facility_chk_items,
+            "deficient_items": deficient_facility_chk_items,
+            "pending_items": max(0, total_facility_chk_items - evaluated_facility_chk_items),
+            "signoffs_count": signoffs_count,
+            "completion_pct": chk_completion_pct,
+            "compliance_pct": chk_compliance_pct
+        }
     }
 
 
@@ -404,7 +533,8 @@ def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", fac
         "- [3. Critical Electrical Deficiencies](#3-critical-electrical-deficiencies-)",
         "- [4. Warnings & Capacity Headroom](#4-warnings--capacity-headroom-)",
         "- [5. Field Documentation & Informational Observations](#5-field-documentation--informational-observations-)",
-        "- [6. Prioritized Remediation Action Plan](#6-prioritized-remediation-action-plan)",
+        "- [6. Field Inspection Checklists & Code Compliance Summary](#6-field-inspection-checklists--code-compliance-summary-)",
+        "- [7. Prioritized Remediation Action Plan](#7-prioritized-remediation-action-plan)",
         "",
         "---",
         "",
@@ -485,11 +615,25 @@ def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", fac
         "",
         "---",
         "",
-        "## 6. Prioritized Remediation Action Plan",
+        "## 6. Field Inspection Checklists & Code Compliance Summary 📋",
         "",
-        "1. **Immediate Focus (Critical)**: Resolve all voltage mismatches and assign power feeds to orphaned equipment.",
-        "2. **Secondary Focus (Warnings)**: Verify secondary/emergency feeds for transfer switches and confirm upstream bus sizing.",
-        "3. **Field Data Polish (Info)**: Attach missing nameplate photos and populate breaker schedule descriptions.",
+        f"Facility inspection evaluation across NEC 110, NEC 408, NEC 450, and NFPA 70E checklists:",
+        "",
+        "| Metric | Value | Status |",
+        "| :--- | :--- | :--- |",
+        f"| **Total Checklist Inspection Points** | `{audit_result.get('checklist_summary', {}).get('total_items', 0)}` Items | Defined across active equipment |",
+        f"| **Evaluated Inspection Points** | `{audit_result.get('checklist_summary', {}).get('evaluated_items', 0)}` Items | `{audit_result.get('checklist_summary', {}).get('completion_pct', 0)}% Complete` |",
+        f"| **Passed Items** | `{audit_result.get('checklist_summary', {}).get('passed_items', 0)}` Items | `{audit_result.get('checklist_summary', {}).get('compliance_pct', 0)}% Compliant` |",
+        f"| **Open Code Deficiencies** | `{audit_result.get('checklist_summary', {}).get('deficient_items', 0)}` Items | {'⚠️ Action Required' if audit_result.get('checklist_summary', {}).get('deficient_items', 0) > 0 else '✓ None'} |",
+        f"| **Certified Inspector Sign-Offs** | `{audit_result.get('checklist_summary', {}).get('signoffs_count', 0)}` Assets | Stamped & Signed |",
+        "",
+        "---",
+        "",
+        "## 7. Prioritized Remediation Action Plan",
+        "",
+        "1. **Immediate Focus (Critical)**: Resolve all voltage mismatches, unassigned feeds, and Critical NFPA 70E/NEC code deficiencies.",
+        "2. **Secondary Focus (Warnings)**: Remediate Major code deficiencies, verify secondary/emergency feeds, and confirm upstream bus sizing.",
+        "3. **Field Survey Polish (Info)**: Complete remaining field inspection checklists, capture inspector sign-offs, and attach nameplate photos.",
         "",
         f"---",
         f"*Report generated by Building Aware System Integrity Audit Engine • Client: {c_name} • Facility: {f_name}*"
@@ -531,6 +675,7 @@ def generate_txt_report(audit_result: Dict[str, Any], client: str = "", facility
         f"BUILDING AWARE • SYSTEM INTEGRITY AUDIT REPORT",
         f"Facility: {c_name} / {f_name}",
         f"Health Score: {score}/100 ({grade})",
+        f"Checklist Compliance: {audit_result.get('checklist_summary', {}).get('completion_pct', 0)}% Complete ({audit_result.get('checklist_summary', {}).get('evaluated_items', 0)}/{audit_result.get('checklist_summary', {}).get('total_items', 0)} pts) • {audit_result.get('checklist_summary', {}).get('deficient_items', 0)} Deficiencies",
         f"Total Findings: {len(findings)} (Critical: {audit_result.get('critical_count', 0)}, Warning: {audit_result.get('warning_count', 0)}, Info: {audit_result.get('info_count', 0)})",
         "=" * 70,
         ""
