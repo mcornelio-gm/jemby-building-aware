@@ -487,6 +487,7 @@ def audit_facility_system_integrity(nodes: List[Dict[str, Any]], client: str = "
     return {
         "client": client,
         "facility": facility,
+        "nodes": nodes,
         "total_nodes": len(nodes),
         "health_score": health_score,
         "health_grade": health_grade,
@@ -509,13 +510,14 @@ def audit_facility_system_integrity(nodes: List[Dict[str, Any]], client: str = "
     }
 
 
-def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", facility: str = "") -> str:
-    """Generate publication-grade Markdown System Integrity Audit report with Table of Contents."""
+def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", facility: str = "", nodes: Optional[List[Dict[str, Any]]] = None) -> str:
+    """Generate publication-grade Markdown System Integrity Audit report with Table of Contents and full equipment tables."""
     c_name = (client or audit_result.get("client") or "Facility").upper()
     f_name = (facility or audit_result.get("facility") or "Digital Twin").upper()
     score = audit_result.get("health_score", 100)
     grade = audit_result.get("health_grade", "A")
-    total_nodes = audit_result.get("total_nodes", 0)
+    nodes_list = nodes if nodes is not None else audit_result.get("nodes", [])
+    total_nodes = len(nodes_list) if nodes_list else audit_result.get("total_nodes", 0)
     crit = audit_result.get("critical_count", 0)
     warn = audit_result.get("warning_count", 0)
     info = audit_result.get("info_count", 0)
@@ -553,12 +555,31 @@ def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", fac
         "---",
         "",
         "## 2. Audit Scope & Equipment Inventory",
-        f"The facility model contains `{total_nodes}` assets analyzed against IEEE and NEC electrical topology rules.",
+        f"The facility digital twin model contains `{total_nodes}` verified assets analyzed against IEEE 141, IEEE 242, NEC 110, NEC 240, NEC 408, and NEC 450 electrical standards.",
         "",
+    ]
+
+    if nodes_list:
+        lines.extend([
+            "| Tag | Equipment Name / Type | Domain | Room / Location | Voltage / Amps / AIC | Fed From | Status |",
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
+        ])
+        for n in nodes_list:
+            v_str = str(n.get("voltage") or "—")
+            a_str = f"{n.get('amps')}A" if n.get("amps") else "—"
+            aic_str = f"{n.get('aic')}kA" if n.get("aic") else "—"
+            specs = f"{v_str} • {a_str} • {aic_str}"
+            fed = n.get("fed_from") or "—"
+            signoff = n.get("attributes", {}).get("checklist_signoff", {})
+            status_str = f"✓ Signed ({signoff.get('inspector', 'PE')})" if signoff else (n.get("status") or "Active")
+            lines.append(f"| **`{n.get('tag', '—')}`** | {n.get('name', '—')} (`{n.get('type_tag', '—')}`) | {n.get('domain', '—')} | {n.get('room', '—')} | {specs} | `{fed}` | {status_str} |")
+        lines.append("")
+
+    lines.extend([
         "---",
         "",
         "## 3. Critical Electrical Deficiencies 🔴",
-    ]
+    ])
 
     crit_findings = [f for f in findings if f.get("severity") == "critical"]
     if not crit_findings:
@@ -692,13 +713,14 @@ def generate_txt_report(audit_result: Dict[str, Any], client: str = "", facility
     return "\n".join(lines)
 
 
-def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility: str = "") -> bytes:
-    """Generate publication-ready PDF System Integrity Audit report using ReportLab."""
+def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility: str = "", nodes: Optional[List[Dict[str, Any]]] = None) -> bytes:
+    """Generate comprehensive, publication-ready PDF System Integrity Audit report using ReportLab."""
     c_name = (client or audit_result.get("client") or "FACILITY").upper()
     f_name = (facility or audit_result.get("facility") or "FACILITY").upper()
     score = audit_result.get("health_score", 100)
     grade = audit_result.get("health_grade", "A")
-    total_nodes = audit_result.get("total_nodes", 0)
+    nodes_list = nodes if nodes is not None else audit_result.get("nodes", [])
+    total_nodes = len(nodes_list) if nodes_list else audit_result.get("total_nodes", 0)
     crit = audit_result.get("critical_count", 0)
     warn = audit_result.get("warning_count", 0)
     info = audit_result.get("info_count", 0)
@@ -732,10 +754,10 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
             self.saveState()
             self.setFont("Helvetica", 8)
             self.setFillColor(HexColor("#64748B"))
-            self.setStrokeColor(HexColor("#E2E8F0"))
+            self.setStrokeColor(HexColor("#CBD5E1"))
             self.setLineWidth(0.5)
             self.line(36, 36, letter[0] - 36, 36)
-            self.drawString(36, 24, f"Building Aware • System Integrity Audit • {c_name} / {f_name}")
+            self.drawString(36, 24, f"Building Aware • System Integrity Audit • Client: {c_name} • Facility: {f_name}")
             page_str = f"Page {self._pageNumber} of {page_count}"
             self.drawRightString(letter[0] - 36, 24, page_str)
             self.restoreState()
@@ -756,8 +778,8 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         "AuditTitle",
         parent=styles["Heading1"],
         fontName="Helvetica-Bold",
-        fontSize=20,
-        leading=24,
+        fontSize=18,
+        leading=22,
         textColor=HexColor("#1E1B4B")
     )
 
@@ -765,21 +787,21 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         "AuditH2",
         parent=styles["Heading2"],
         fontName="Helvetica-Bold",
-        fontSize=12,
+        fontSize=11.5,
         leading=15,
         textColor=HexColor("#312E81"),
-        spaceBefore=12,
-        spaceAfter=5
+        spaceBefore=10,
+        spaceAfter=4
     )
 
     h3_style = ParagraphStyle(
         "AuditH3",
         parent=styles["Heading3"],
         fontName="Helvetica-Bold",
-        fontSize=9.5,
+        fontSize=9,
         leading=12,
         textColor=HexColor("#0F172A"),
-        spaceBefore=6,
+        spaceBefore=4,
         spaceAfter=2
     )
 
@@ -787,18 +809,18 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         "AuditBody",
         parent=styles["Normal"],
         fontName="Helvetica",
-        fontSize=8.5,
-        leading=11.5,
+        fontSize=8,
+        leading=11,
         textColor=HexColor("#334155")
     )
 
-    def wrap_cell(txt, is_header=False, align="left", color=None):
+    def wrap_cell(txt, is_header=False, align="left", color=None, font_size=7.5):
         st = ParagraphStyle(
-            "Cell",
+            f"Cell_{is_header}_{align}_{font_size}",
             parent=body_style,
             fontName="Helvetica-Bold" if is_header else "Helvetica",
-            fontSize=8,
-            leading=10,
+            fontSize=font_size,
+            leading=font_size + 2.5,
             alignment=0 if align == "left" else (1 if align == "center" else 2),
             textColor=HexColor(color) if color else (HexColor("#FFFFFF") if is_header else HexColor("#1E293B"))
         )
@@ -808,9 +830,9 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
 
     # Title & Header
     story.append(Paragraph("Electrical System Integrity Audit Report", title_style))
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 2))
     story.append(Paragraph(f"<b>Client:</b> {c_name} &nbsp;•&nbsp; <b>Facility:</b> {f_name} &nbsp;•&nbsp; <b>Digital Twin Verification</b>", body_style))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 6))
 
     # Executive Scorecard Hero Box
     score_bg = "#ECFDF5" if score >= 90 else ("#EEF2FF" if score >= 80 else ("#FFFBEB" if score >= 65 else "#FFF1F2"))
@@ -819,30 +841,53 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
 
     score_card_data = [
         [
-            Paragraph(f"<font size=20><b>{score}/100</b></font><br/><font size=8.5 color='{score_txt}'><b>Overall Health Score</b></font>", ParagraphStyle("Score", parent=body_style, alignment=1)),
-            Paragraph(f"<font size=12><b>{grade}</b></font><br/><font size=7.5 color='#64748B'>Health Grade</font>", ParagraphStyle("Grade", parent=body_style, alignment=1)),
-            Paragraph(f"<font size=12 color='#E11D48'><b>{crit}</b></font><br/><font size=7.5 color='#64748B'>Critical Defects</font>", ParagraphStyle("Crit", parent=body_style, alignment=1)),
-            Paragraph(f"<font size=12 color='#D97706'><b>{warn}</b></font><br/><font size=7.5 color='#64748B'>Warnings</font>", ParagraphStyle("Warn", parent=body_style, alignment=1)),
-            Paragraph(f"<font size=12 color='#3B82F6'><b>{info}</b></font><br/><font size=7.5 color='#64748B'>Field Notes</font>", ParagraphStyle("Info", parent=body_style, alignment=1))
+            Paragraph(f"<font size=17><b>{score}/100</b></font><br/><font size=7.5 color='{score_txt}'><b>Overall Health Score</b></font>", ParagraphStyle("Score", parent=body_style, alignment=1)),
+            Paragraph(f"<font size=11><b>{grade}</b></font><br/><font size=7 color='#64748B'>Health Grade</font>", ParagraphStyle("Grade", parent=body_style, alignment=1)),
+            Paragraph(f"<font size=11 color='#E11D48'><b>{crit}</b></font><br/><font size=7 color='#64748B'>Critical Defects</font>", ParagraphStyle("Crit", parent=body_style, alignment=1)),
+            Paragraph(f"<font size=11 color='#D97706'><b>{warn}</b></font><br/><font size=7 color='#64748B'>Warnings</font>", ParagraphStyle("Warn", parent=body_style, alignment=1)),
+            Paragraph(f"<font size=11 color='#3B82F6'><b>{info}</b></font><br/><font size=7 color='#64748B'>Field Notes</font>", ParagraphStyle("Info", parent=body_style, alignment=1))
         ]
     ]
 
-    t_score = Table(score_card_data, colWidths=[120, 110, 100, 100, 110])
+    t_score = Table(score_card_data, colWidths=[115, 105, 105, 105, 110])
     t_score.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), HexColor(score_bg)),
         ('BOX', (0, 0), (-1, -1), 1, HexColor(score_border)),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, HexColor("#E2E8F0")),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(t_score)
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 6))
+
+    # Table of Contents
+    toc_data = [
+        [
+            wrap_cell("<b>Report Table of Contents</b>", is_header=True, font_size=7.5),
+            wrap_cell("<b>Engineering Scope & Standards</b>", is_header=True, font_size=7.5)
+        ],
+        [
+            wrap_cell("1. Executive Summary & Health Scorecard<br/>2. Audit Scope & Equipment Inventory (Full Table)<br/>3. Critical Electrical Deficiencies<br/>4. Warnings & Capacity Headroom", font_size=7),
+            wrap_cell("5. Field Documentation & Informational Observations<br/>6. Field Inspection Checklists & Code Compliance<br/>7. Prioritized Remediation Action Plan<br/><i>Standards: IEEE 141/242, NEC 110/240/408/450, NFPA 70E</i>", font_size=7)
+        ]
+    ]
+    t_toc = Table(toc_data, colWidths=[270, 270])
+    t_toc.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#1E1B4B")),
+        ('BACKGROUND', (0, 1), (-1, 1), HexColor("#F8FAFC")),
+        ('BOX', (0, 0), (-1, -1), 0.5, HexColor("#CBD5E1")),
+        ('INNERGRID', (0, 0), (-1, -1), 0.5, HexColor("#E2E8F0")),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+    ]))
+    story.append(t_toc)
+    story.append(Spacer(1, 6))
 
     # 1. Executive Summary Table
     story.append(Paragraph("1. Executive Summary & Facility Scope", h2_style))
-    story.append(Paragraph(f"This automated audit evaluated <b>{total_nodes} electrical digital twin equipment assets</b> against IEEE, NEC 110, NEC 240, NEC 408, NEC 450, and NFPA 70E electrical engineering rules.", body_style))
-    story.append(Spacer(1, 6))
+    story.append(Paragraph(f"Automated evaluation across <b>{total_nodes} electrical digital twin assets</b> against IEEE, NEC 110, NEC 240, NEC 408, NEC 450, and NFPA 70E rules:", body_style))
+    story.append(Spacer(1, 3))
 
     summary_table_data = [
         [wrap_cell("Audit Metric", is_header=True), wrap_cell("Scope & Findings", is_header=True), wrap_cell("Compliance Status", is_header=True)],
@@ -857,48 +902,136 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         ('BACKGROUND', (0, 0), (-1, 0), HexColor("#312E81")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), HexColor("#F8FAFC")]),
         ('GRID', (0, 0), (-1, -1), 0.5, HexColor("#CBD5E1")),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
     ]))
     story.append(t_summary)
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 6))
 
-    # 2. Critical Deficiencies
-    story.append(Paragraph("2. Critical Electrical Deficiencies 🔴", h2_style))
+    # 2. Audit Scope & Equipment Inventory (Full Table)
+    story.append(Paragraph("2. Audit Scope & Equipment Inventory", h2_style))
+    story.append(Paragraph(f"Complete verified asset schedule across power distribution, transformation, switching, and branch panels:", body_style))
+    story.append(Spacer(1, 3))
+
+    if nodes_list:
+        inv_headers = [
+            wrap_cell("Tag", is_header=True),
+            wrap_cell("Equipment Name / Type", is_header=True),
+            wrap_cell("Room / Location", is_header=True),
+            wrap_cell("Rating & Specs", is_header=True),
+            wrap_cell("Fed From", is_header=True),
+            wrap_cell("Status", is_header=True)
+        ]
+        inv_rows = [inv_headers]
+        for n in nodes_list:
+            tag = n.get("tag", "—")
+            name = f"<b>{n.get('name', '—')}</b><br/><font size=6.5 color='#64748B'>{n.get('type_tag', '')} • {n.get('domain', '')}</font>"
+            room = n.get("room", "—")
+            v_str = str(n.get("voltage") or "—")
+            a_str = f"{n.get('amps')}A" if n.get("amps") else "—"
+            aic_str = f"{n.get('aic')}kA" if n.get("aic") else "—"
+            specs = f"{v_str}<br/>{a_str} • {aic_str}"
+            fed = f"<b>{n.get('fed_from') or '—'}</b>"
+            signoff = n.get("attributes", {}).get("checklist_signoff", {})
+            if signoff:
+                status_txt = f"<font color='#059669'><b>✓ Signed</b></font><br/><font size=6 color='#64748B'>{signoff.get('inspector', 'PE')}</font>"
+            else:
+                status_txt = f"<font color='#6366F1'>{n.get('status') or 'Active'}</font>"
+
+            inv_rows.append([
+                wrap_cell(f"<b>{tag}</b>"),
+                wrap_cell(name),
+                wrap_cell(room),
+                wrap_cell(specs),
+                wrap_cell(fed),
+                wrap_cell(status_txt)
+            ])
+
+        t_inv = Table(inv_rows, colWidths=[65, 135, 115, 95, 65, 65], repeatRows=1)
+        t_inv.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), HexColor("#312E81")),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), HexColor("#F8FAFC")]),
+            ('GRID', (0, 0), (-1, -1), 0.5, HexColor("#CBD5E1")),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        story.append(t_inv)
+        story.append(Spacer(1, 6))
+
+    # 3. Critical Deficiencies
+    story.append(Paragraph("3. Critical Electrical Deficiencies", h2_style))
     crit_findings = [f for f in findings if f.get("severity") == "critical"]
     if not crit_findings:
         story.append(Paragraph("✓ <b>No critical electrical defects detected.</b> All voltage transformations and primary distribution paths are structurally sound.", body_style))
     else:
         for idx, f in enumerate(crit_findings, 1):
             finding_block = [
-                Paragraph(f"<b>2.{idx}. [{f['asset_tag']}] {f['title']}</b> &nbsp; <font color='#E11D48'>[CRITICAL]</font>", h3_style),
+                Paragraph(f"<b>3.{idx}. [{f['asset_tag']}] {f['title']}</b> &nbsp; <font color='#E11D48'><b>[CRITICAL]</b></font>", h3_style),
                 Paragraph(f"<b>Category:</b> {f['category']} &nbsp;|&nbsp; <b>Location:</b> {f['room']} &nbsp;|&nbsp; <b>Asset:</b> {f['asset_name']}", body_style),
                 Paragraph(f"<b>Deficiency:</b> {f['description']}", body_style),
                 Paragraph(f"<b>Action Required:</b> <font color='#1E1B4B'><b>{f['recommendation']}</b></font>", body_style),
-                Spacer(1, 3)
+                Spacer(1, 2)
             ]
             story.append(KeepTogether(finding_block))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # 3. Warnings
-    story.append(Paragraph("3. Warnings & Capacity Headroom 🟡", h2_style))
+    # 4. Warnings
+    story.append(Paragraph("4. Warnings & Capacity Headroom", h2_style))
     warn_findings = [f for f in findings if f.get("severity") == "warning"]
     if not warn_findings:
         story.append(Paragraph("✓ <b>No capacity or dual-source warnings detected.</b>", body_style))
     else:
         for idx, f in enumerate(warn_findings, 1):
             finding_block = [
-                Paragraph(f"<b>3.{idx}. [{f['asset_tag']}] {f['title']}</b> &nbsp; <font color='#D97706'>[WARNING]</font>", h3_style),
+                Paragraph(f"<b>4.{idx}. [{f['asset_tag']}] {f['title']}</b> &nbsp; <font color='#D97706'><b>[WARNING]</b></font>", h3_style),
                 Paragraph(f"<b>Category:</b> {f['category']} &nbsp;|&nbsp; <b>Location:</b> {f['room']} &nbsp;|&nbsp; <b>Asset:</b> {f['asset_name']}", body_style),
                 Paragraph(f"<b>Finding:</b> {f['description']}", body_style),
                 Paragraph(f"<b>Recommendation:</b> {f['recommendation']}", body_style),
-                Spacer(1, 3)
+                Spacer(1, 2)
             ]
             story.append(KeepTogether(finding_block))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # 4. Field Inspection Checklists & Code Compliance Summary
-    story.append(Paragraph("4. Field Inspection Checklists & Code Compliance Summary 📋", h2_style))
+    # 5. Field Documentation & Informational Observations (Full Table of all Info findings)
+    story.append(Paragraph("5. Field Documentation & Informational Observations", h2_style))
+    info_findings = [f for f in findings if f.get("severity") == "info"]
+    if not info_findings:
+        story.append(Paragraph("✓ <b>All field documentation, nameplate captures, and schedules are 100% complete.</b>", body_style))
+    else:
+        story.append(Paragraph(f"The audit identified <b>{len(info_findings)} field documentation notes</b> to be addressed during survey and maintenance updates:", body_style))
+        story.append(Spacer(1, 3))
+        info_headers = [
+            wrap_cell("Tag", is_header=True),
+            wrap_cell("Category", is_header=True),
+            wrap_cell("Location", is_header=True),
+            wrap_cell("Observation & Finding", is_header=True),
+            wrap_cell("Action Required", is_header=True)
+        ]
+        info_rows = [info_headers]
+        for f in info_findings:
+            info_rows.append([
+                wrap_cell(f"<b>{f.get('asset_tag', '—')}</b>"),
+                wrap_cell(f.get("category", "—")),
+                wrap_cell(f.get("room", "—")),
+                wrap_cell(f"<b>{f.get('title', '—')}</b><br/>{f.get('description', '')}"),
+                wrap_cell(f.get("recommendation", "—"))
+            ])
+
+        t_info = Table(info_rows, colWidths=[55, 70, 95, 175, 145], repeatRows=1)
+        t_info.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), HexColor("#312E81")),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), HexColor("#F8FAFC")]),
+            ('GRID', (0, 0), (-1, -1), 0.5, HexColor("#CBD5E1")),
+            ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        story.append(t_info)
+    story.append(Spacer(1, 6))
+
+    # 6. Field Inspection Checklists & Code Compliance Summary
+    story.append(Paragraph("6. Field Inspection Checklists & Code Compliance Summary", h2_style))
     chk_table_data = [
         [wrap_cell("Inspection Metric", is_header=True), wrap_cell("Quantity / Score", is_header=True), wrap_cell("Status / Code Benchmark", is_header=True)],
         [wrap_cell("Total Standard Inspection Points"), wrap_cell(f"{chk_summary.get('total_items', 0)} Items"), wrap_cell("NEC & NFPA 70E Checklists")],
@@ -912,20 +1045,46 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         ('BACKGROUND', (0, 0), (-1, 0), HexColor("#312E81")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), HexColor("#F8FAFC")]),
         ('GRID', (0, 0), (-1, -1), 0.5, HexColor("#CBD5E1")),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
     ]))
     story.append(t_chk)
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 6))
 
-    # 5. Prioritized Remediation Action Plan
-    story.append(Paragraph("5. Prioritized Remediation Action Plan", h2_style))
-    plan_text = """
-    <b>1. Immediate Focus (Critical):</b> Resolve any voltage mismatches, unassigned upstream feeds, and Critical NFPA 70E/NEC code deficiencies.<br/>
-    <b>2. Secondary Focus (Warnings):</b> Remediate Major code deficiencies, verify secondary/emergency feeds on ATS units, and confirm busbar sizing.<br/>
-    <b>3. Field Survey Polish (Info):</b> Complete remaining walkdown checklists, capture lead inspector sign-offs, and attach nameplate photographs.
-    """
-    story.append(Paragraph(plan_text, body_style))
+    # 7. Prioritized Remediation Action Plan
+    story.append(Paragraph("7. Prioritized Remediation Action Plan", h2_style))
+    plan_data = [
+        [
+            wrap_cell("<b>Phase / Priority</b>", is_header=True),
+            wrap_cell("<b>Remediation Scope</b>", is_header=True),
+            wrap_cell("<b>Target Timeline</b>", is_header=True)
+        ],
+        [
+            wrap_cell("<b>Phase 1: Immediate</b><br/><font color='#E11D48'>Critical Engineering</font>"),
+            wrap_cell("Resolve any direct voltage mismatches, assign missing upstream sources, and remediate Critical NFPA 70E/NEC safety deficiencies."),
+            wrap_cell("Within 24 Hours", align="center")
+        ],
+        [
+            wrap_cell("<b>Phase 2: Secondary</b><br/><font color='#D97706'>Capacity & Headroom</font>"),
+            wrap_cell("Remediate Major code deficiencies, verify secondary/emergency feeds on ATS units, and confirm upstream bus sizing coordination."),
+            wrap_cell("1 - 2 Weeks", align="center")
+        ],
+        [
+            wrap_cell("<b>Phase 3: Field Polish</b><br/><font color='#3B82F6'>Documentation Quality</font>"),
+            wrap_cell("Complete remaining walkdown checklists, capture lead inspector sign-offs, and attach high-resolution nameplate photographs."),
+            wrap_cell("Next Survey Cycle", align="center")
+        ]
+    ]
+    t_plan = Table(plan_data, colWidths=[120, 320, 100])
+    t_plan.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), HexColor("#312E81")),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), HexColor("#F8FAFC")]),
+        ('GRID', (0, 0), (-1, -1), 0.5, HexColor("#CBD5E1")),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+    story.append(t_plan)
 
     doc.build(story, canvasmaker=NumberedCanvas)
     return buf.getvalue()
