@@ -1031,10 +1031,11 @@
           this.updateCustomAttrsList();
 
           if (isPanel) {
+            const slotCount = Number(this.form.slots) || 42;
             if (Array.isArray(attrs.schedule) && attrs.schedule.length > 0) {
-              this.scheduleRows = JSON.parse(JSON.stringify(attrs.schedule));
+              this.scheduleRows = this.normalizeScheduleRows ? this.normalizeScheduleRows(attrs.schedule, slotCount) : JSON.parse(JSON.stringify(attrs.schedule));
             } else {
-              this.generateInitialScheduleRows(Number(this.form.slots) || 42);
+              this.generateInitialScheduleRows(slotCount);
             }
           } else {
             this.scheduleRows = [];

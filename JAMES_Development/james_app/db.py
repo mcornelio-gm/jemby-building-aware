@@ -198,39 +198,48 @@ def get_verified_demo_assets() -> List[Dict[str, Any]]:
                 "schedule": [
                     {
                         "leftSlot": 1, "leftDesc": "Feeder to Transformer T-1", "leftTrip": "100", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "T-1", "leftParentSlot": None, "leftIsGanged": False
+                        "leftType": "MCCB", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "T-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
                     },
                     {
                         "leftSlot": 3, "leftDesc": "↳ Ganged with Slot #1 (Phase B)", "leftTrip": "100", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "T-1", "leftParentSlot": 1, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "T-1", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
                     },
                     {
                         "leftSlot": 5, "leftDesc": "↳ Ganged with Slot #1 (Phase C)", "leftTrip": "100", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "T-1", "leftParentSlot": 1, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "T-1", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
                     },
                     {
                         "leftSlot": 7, "leftDesc": "Feeder to Motor Control Center MCC-1", "leftTrip": "400", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "MCC-1", "leftParentSlot": None, "leftIsGanged": False
+                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "MCC-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
                     },
                     {
                         "leftSlot": 9, "leftDesc": "↳ Ganged with Slot #7 (Phase B)", "leftTrip": "400", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "MCC-1", "leftParentSlot": 7, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "MCC-1", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
                     },
                     {
                         "leftSlot": 11, "leftDesc": "↳ Ganged with Slot #7 (Phase C)", "leftTrip": "400", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "MCC-1", "leftParentSlot": 7, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "MCC-1", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
                     },
                     {
                         "leftSlot": 13, "leftDesc": "Feeder to Data Center UPS-1", "leftTrip": "350", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "350 kcmil Cu", "leftTargetLoad": "UPS-1", "leftParentSlot": None, "leftIsGanged": False
+                        "leftType": "MCCB", "leftWire": "350 kcmil Cu", "leftTargetLoad": "UPS-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
                     },
                     {
                         "leftSlot": 15, "leftDesc": "↳ Ganged with Slot #13 (Phase B)", "leftTrip": "350", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "350 kcmil Cu", "leftTargetLoad": "UPS-1", "leftParentSlot": 13, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "350 kcmil Cu", "leftTargetLoad": "UPS-1", "leftParentSlot": 13, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
                     },
                     {
                         "leftSlot": 17, "leftDesc": "↳ Ganged with Slot #13 (Phase C)", "leftTrip": "350", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "350 kcmil Cu", "leftTargetLoad": "UPS-1", "leftParentSlot": 13, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "350 kcmil Cu", "leftTargetLoad": "UPS-1", "leftParentSlot": 13, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
                     }
                 ],
                 "notes": [
@@ -266,26 +275,32 @@ def get_verified_demo_assets() -> List[Dict[str, Any]]:
                 "schedule": [
                     {
                         "leftSlot": 1, "leftDesc": "Water Heater WH-1", "leftTrip": "30", "leftPoles": 2, "leftType": "MCCB", "leftWire": "10 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500",
                         "rightSlot": 2, "rightDesc": "Office 101-105 Lighting", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
                     },
                     {
                         "leftSlot": 3, "leftDesc": "↳ Ganged with Slot #1 (Phase B)", "leftTrip": "30", "leftPoles": 2, "leftType": "MCCB", "leftWire": "10 AWG Cu", "leftTargetLoad": "", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500",
                         "rightSlot": 4, "rightDesc": "Corridor & Restroom Lighting", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
                     },
                     {
                         "leftSlot": 5, "leftDesc": "", "leftTrip": "", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "C", "phaseColor": "text-emerald-500",
                         "rightSlot": 6, "rightDesc": "Emergency Egress Lighting", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
                     },
                     {
                         "leftSlot": 7, "leftDesc": "Breakroom Kitchenette Receptacles", "leftTrip": "20", "leftPoles": 2, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500",
                         "rightSlot": 8, "rightDesc": "Air Handler AHU-1", "rightTrip": "50", "rightPoles": 3, "rightType": "MCCB", "rightWire": "8 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
                     },
                     {
                         "leftSlot": 9, "leftDesc": "↳ Ganged with Slot #7 (Phase B)", "leftTrip": "20", "leftPoles": 2, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500",
                         "rightSlot": 10, "rightDesc": "↳ Ganged with Slot #8 (Phase B)", "rightTrip": "50", "rightPoles": 3, "rightType": "MCCB", "rightWire": "8 AWG Cu", "rightTargetLoad": "", "rightParentSlot": 8, "rightIsGanged": True
                     },
                     {
                         "leftSlot": 11, "leftDesc": "", "leftTrip": "", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "C", "phaseColor": "text-emerald-500",
                         "rightSlot": 12, "rightDesc": "↳ Ganged with Slot #8 (Phase C)", "rightTrip": "50", "rightPoles": 3, "rightType": "MCCB", "rightWire": "8 AWG Cu", "rightTargetLoad": "", "rightParentSlot": 8, "rightIsGanged": True
                     }
                 ]
@@ -304,27 +319,33 @@ def get_verified_demo_assets() -> List[Dict[str, Any]]:
                 "schedule": [
                     {
                         "leftSlot": 1, "leftDesc": "Central Plant Chiller CH-1", "leftTrip": "400", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "CH-1", "leftParentSlot": None, "leftIsGanged": False
+                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "CH-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
                     },
                     {
                         "leftSlot": 3, "leftDesc": "↳ Ganged with Bucket #1 (Phase B)", "leftTrip": "400", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "CH-1", "leftParentSlot": 1, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "CH-1", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
                     },
                     {
                         "leftSlot": 5, "leftDesc": "↳ Ganged with Bucket #1 (Phase C)", "leftTrip": "400", "leftPoles": 3,
-                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "CH-1", "leftParentSlot": 1, "leftIsGanged": True
+                        "leftType": "MCCB", "leftWire": "500 kcmil Cu", "leftTargetLoad": "CH-1", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
                     },
                     {
                         "leftSlot": 7, "leftDesc": "Chilled Water Pump P-1", "leftTrip": "100", "leftPoles": 3,
-                        "leftType": "FVNR", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "P-1", "leftParentSlot": None, "leftIsGanged": False
+                        "leftType": "FVNR", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "P-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
                     },
                     {
                         "leftSlot": 9, "leftDesc": "↳ Ganged with Bucket #7 (Phase B)", "leftTrip": "100", "leftPoles": 3,
-                        "leftType": "FVNR", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "P-1", "leftParentSlot": 7, "leftIsGanged": True
+                        "leftType": "FVNR", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "P-1", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
                     },
                     {
                         "leftSlot": 11, "leftDesc": "↳ Ganged with Bucket #7 (Phase C)", "leftTrip": "100", "leftPoles": 3,
-                        "leftType": "FVNR", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "P-1", "leftParentSlot": 7, "leftIsGanged": True
+                        "leftType": "FVNR", "leftWire": "1/0 AWG Cu", "leftTargetLoad": "P-1", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
                     }
                 ]
             }

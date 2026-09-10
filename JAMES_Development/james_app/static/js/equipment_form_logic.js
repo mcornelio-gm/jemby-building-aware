@@ -236,6 +236,51 @@
       return { total, passed, deficient, na, pending, pct, isComplete, status };
     },
 
+    normalizeScheduleRows(rawSchedule, slotCount = 42) {
+      const slots = Number(slotCount) || 42;
+      const phases = ['A', 'B', 'C'];
+      const phaseColors = ['text-red-500 font-bold', 'text-blue-500 font-bold', 'text-emerald-500 font-bold'];
+      const rawList = Array.isArray(rawSchedule) ? rawSchedule : [];
+      const rawMap = {};
+      rawList.forEach(r => {
+        if (r && r.leftSlot) {
+          rawMap[r.leftSlot] = r;
+        }
+      });
+
+      const normalized = [];
+      for (let i = 1; i <= slots; i += 2) {
+        const phaseIdx = Math.floor((i - 1) / 2) % 3;
+        const existing = rawMap[i] || {};
+        normalized.push({
+          leftSlot: i,
+          leftDesc: existing.leftDesc || '',
+          leftTrip: existing.leftTrip || '',
+          leftPoles: existing.leftPoles || 1,
+          leftType: existing.leftType || 'MCCB',
+          leftWire: existing.leftWire || '12 AWG Cu',
+          leftTargetLoad: existing.leftTargetLoad || '',
+          leftParentSlot: existing.leftParentSlot !== undefined ? existing.leftParentSlot : null,
+          leftIsGanged: !!existing.leftIsGanged,
+          rightSlot: existing.rightSlot || (i + 1),
+          rightDesc: existing.rightDesc || '',
+          rightTrip: existing.rightTrip || '',
+          rightPoles: existing.rightPoles || 1,
+          rightType: existing.rightType || 'MCCB',
+          rightWire: existing.rightWire || '12 AWG Cu',
+          rightTargetLoad: existing.rightTargetLoad || '',
+          rightParentSlot: existing.rightParentSlot !== undefined ? existing.rightParentSlot : null,
+          rightIsGanged: !!existing.rightIsGanged,
+          ...existing,
+          leftSlot: i,
+          rightSlot: i + 1,
+          phase: phases[phaseIdx],
+          phaseColor: phaseColors[phaseIdx]
+        });
+      }
+      return normalized;
+    },
+
     getChecklistSignoff() {
       if (!this.form) return null;
       if (this.form.checklist_signoff && typeof this.form.checklist_signoff === 'object') {

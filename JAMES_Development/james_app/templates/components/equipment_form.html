@@ -1164,7 +1164,13 @@
                 ></td>
 
                 <!-- Phase Marker -->
-                <td class="p-1.5 text-center font-bold text-xs border-r border-slate-200/70 dark:border-slate-800/70 bg-slate-100/40 dark:bg-slate-900/50" :class="row.phaseColor" x-text="row.phase"></td>
+                <td class="p-1 text-center font-bold text-xs border-r border-slate-200/70 dark:border-slate-800/70 bg-slate-100/50 dark:bg-slate-900/60">
+                  <span 
+                    class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-mono font-black shadow-xs" 
+                    :class="(row.phase || (['A','B','C'][Math.floor(((row.leftSlot || 1) - 1) / 2) % 3])) === 'A' ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800' : ((row.phase || (['A','B','C'][Math.floor(((row.leftSlot || 1) - 1) / 2) % 3])) === 'B' ? 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-300 dark:border-blue-800' : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800')" 
+                    x-text="row.phase || (['A','B','C'][Math.floor(((row.leftSlot || 1) - 1) / 2) % 3])"
+                  ></span>
+                </td>
 
                 <!-- Right Trip Rating -->
                 <td 
