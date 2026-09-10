@@ -1,4 +1,3 @@
-```markdown
 # Product & Technical Specification: Interactive Electrical Single-Line Diagram (SLD) Builder
 
 ## 1. System Overview & Architecture
@@ -226,7 +225,3 @@ digraph SLD {
 4. `GET /api/projects/{project_id}/nodes/{node_id}/form` → Returns an HTMX-rendered HTML form populated with the equipment's current data and catalog validation rules.
 5. `POST /api/projects/{project_id}/nodes/{node_id}` → Saves updated form attributes and returns an HTMX trigger or updated DOT to re-render the canvas.
 6. `POST /api/projects/{project_id}/edges` → Connects two node ports and updates the topology.
-
-```
-
-```
