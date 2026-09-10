@@ -114,13 +114,14 @@
 
     getChecklistItemState(chkId, itemNo) {
       const root = this.ensureChecklistsObject();
-      if (!root[chkId]) return { status: 'pending', notes: '' };
+      if (!root[chkId]) return { status: 'pending', notes: '', show_note: false };
       const item = root[chkId][itemNo] || root[chkId][String(itemNo)];
-      if (!item) return { status: 'pending', notes: '' };
-      if (typeof item === 'string') return { status: item, notes: '' };
+      if (!item) return { status: 'pending', notes: '', show_note: false };
+      if (typeof item === 'string') return { status: item, notes: '', show_note: false };
       return {
         status: item.status || 'pending',
         notes: item.notes || '',
+        show_note: !!item.show_note,
         timestamp: item.timestamp || ''
       };
     },
@@ -129,9 +130,11 @@
       const root = this.ensureChecklistsObject();
       if (!root[chkId]) root[chkId] = {};
       const current = this.getChecklistItemState(chkId, itemNo);
+      const newStatus = current.status === status ? 'pending' : status;
       root[chkId][itemNo] = {
         ...current,
-        status: current.status === status ? 'pending' : status,
+        status: newStatus,
+        show_note: (newStatus === 'deficient' || newStatus === 'fail') ? true : current.show_note,
         timestamp: new Date().toISOString()
       };
       if (this.form) {
@@ -151,6 +154,32 @@
       if (this.form) {
         this.form.checklists = { ...root };
       }
+    },
+
+    toggleChecklistNote(chkId, itemNo) {
+      const root = this.ensureChecklistsObject();
+      if (!root[chkId]) root[chkId] = {};
+      const current = this.getChecklistItemState(chkId, itemNo);
+      root[chkId][itemNo] = {
+        ...current,
+        show_note: !current.show_note
+      };
+      if (this.form) {
+        this.form.checklists = { ...root };
+      }
+    },
+
+    appendChecklistPresetNote(chkId, itemNo, preset) {
+      const current = this.getChecklistItemState(chkId, itemNo);
+      let updated = (current.notes || '').trim();
+      if (updated) {
+        if (!updated.includes(preset)) {
+          updated = `${updated}; ${preset}`;
+        }
+      } else {
+        updated = preset;
+      }
+      this.setChecklistNotes(chkId, itemNo, updated);
     },
 
     markAllChecklist(chkId, status) {
