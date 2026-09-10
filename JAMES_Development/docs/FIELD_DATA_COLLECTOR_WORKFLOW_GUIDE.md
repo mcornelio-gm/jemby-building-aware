@@ -98,10 +98,61 @@ When a distribution panel, lighting panel, or switchboard is selected, the cente
 
 ---
 
-## 4. Pro-Tips for Field Technicians
+## 4. Inspection Checklists, Deficiency Notes & Field Sign-Off
+
+Field technicians can perform standards-compliant physical and safety audits directly within the equipment drawer:
+
+### Key Features:
+- **Domain & Archetype-Specific Protocols**: Checklists automatically load based on domain (e.g. *Panels, Transformers, Switches, Sources*) and equipment type (e.g. *Visual Condition, Working Space & NEC 110.26 Clearance, Arc Flash Labeling, Torque Verification, Grounding & Bonding*).
+- **One-Tap Status Lifecycle**: Cycle items between **Pass (✓)**, **Deficient (⚠️)**, **N/A (—)**, and **Pending (○)**.
+- **Auto-Revealed Deficiency Notes**: Marking any checklist item as `Deficient` immediately expands the notes textarea and triggers visual warning highlights.
+- **One-Tap Preset Defect Chips**: Accelerate field note taking on tablets with pre-composed pithy deficiency tags:
+  - `+ Label Missing`
+  - `+ Torque Unverified`
+  - `+ Clearance < 36"`
+  - `+ Missing Filler Plate`
+  - `+ Arc Flash Expired`
+  - `+ Torqued & Marked`
+  - `+ Clean & Vacuumed`
+- **Live Compliance Scoring**: Displays a real-time progress meter (e.g., `90% Compliant`) across all completed and passed items.
+- **Inspector Sign-Off**: Record the certified field surveyor name, timestamp, and final compliance disposition.
+
+---
+
+## 5. System Integrity Audit & Publication PDF Reports
+
+The **System Integrity Audit** engine performs real-time engineering and code validation across the entire facility distribution network:
+
+```mermaid
+flowchart TD
+    A["Facility Digital Twin\n(SQLite + JSONL)"] --> B["Deterministic Audit Engine"]
+    B --> C["1. Voltage Continuity\n(480V to 208V without XFMR)"]
+    B --> D["2. Capacity Headroom\n(Upstream Breaker vs Downstream Load)"]
+    B --> E["3. AIC Withstand\n(Fault Current Bracing)"]
+    B --> F["4. Single Point of Failure\n(Topology Gaps)"]
+    C & D & E & F --> G["Live Facility Health Score\n(0 - 100)"]
+    G --> H["🖨️ Publication PDF Report"]
+    G --> I["📝 Markdown Report (TOC)"]
+    G --> J["📊 Excel CSV & JSONL"]
+```
+
+### Key Capabilities:
+- **Voltage Continuity Validation**: Detects unstepped voltage drops (e.g., a 480V panel feeding a 208V panel without an intermediate step-down transformer).
+- **Capacity & Headroom Analysis**: Verifies that upstream feeding breakers provide sufficient ampacity headroom for connected downstream equipment FLA / MCA ratings.
+- **AIC Rating Checks**: Flags devices with inadequate interrupting ratings relative to upstream available fault currents.
+- **Interactive Finding Inspection**: Click **Inspect Asset ↗** on any finding card to immediately open the equipment drawer for on-the-spot remediation.
+- **Multi-Format Reporting**:
+  - **🖨️ Publication-Ready PDF**: Server-side styled PDF with formal cover page, executive health scorecard, summary tables, detailed finding logs, and complete facility hierarchy.
+  - **📝 Markdown with TOC**: GitHub-flavored markdown documentation with interactive Table of Contents.
+  - **📊 Excel CSV**: Spreadsheet export for work-order tracking and external compliance records.
+
+---
+
+## 6. Pro-Tips for Field Technicians
 
 1. **Tag Integrity**: Duplicate equipment tags are blocked automatically; let archetype auto-incrementing speed up panel tagging (`LP-1`, `LP-2`, `LP-3`).
 2. **Maximize Screen Real-Estate**: Use `◀ Hide Domains` on tablets to focus on the active breaker matrix and stack.
 3. **Fast Guide Access**: Press `?` on a physical keyboard or tap `📖 Field Guide` in the header.
 4. **Emergency Discard**: Press `Esc` to instantly dismiss any open modal or photo lightbox.
 5. **Lighting Conditions**: Switch between `🌙 Dark Mode` (for dark electrical rooms) and `☀️ Light Mode` (for bright outdoor substations).
+6. **One-Tap Deficiency Logging**: When marking an inspection item deficient, tap a preset chip (`+ Label Missing`, `+ Clearance < 36"`) to log issues in under 2 seconds.

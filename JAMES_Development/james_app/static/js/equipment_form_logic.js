@@ -718,16 +718,34 @@
         categoryName: 'System Integrity & Audit',
         icon: '🛡️',
         question: 'How does the System Integrity Audit check voltage, AIC, and capacity headroom?',
-        summary: 'Run automated NEC and IEEE engineering rule checks across the entire facility distribution topology.',
-        tags: ['audit', 'integrity', 'health score', 'nec', 'ieee', 'voltage', 'aic', 'capacity', 'overload', 'export'],
+        summary: 'Run automated NEC and IEEE engineering rule checks across the entire facility distribution topology and generate PDF/Markdown reports.',
+        tags: ['audit', 'integrity', 'health score', 'nec', 'ieee', 'voltage', 'aic', 'capacity', 'overload', 'export', 'pdf', 'print'],
         steps: [
           'Open the Toolbox (🧰) in the top header and click "Run Integrity Audit" on the hero tile.',
           'The engine deterministically checks voltage class continuity (flagging unstepped 480V→208V drops), upstream breaker headroom vs downstream loads, and low-AIC withstand ratings.',
           'View the live Health Score (0-100) and categorized Critical, Warning, and Info findings.',
           'Click "Inspect Asset ↗" on any finding to jump directly into the equipment drawer for instant correction.',
-          'Download reports as Markdown with Table of Contents, Excel CSV, or companion JSONL.'
+          'Click "🖨️ Print / PDF" to generate a publication-ready PDF report with cover page, health scorecard, and executive findings.',
+          'Or download reports as Markdown with Table of Contents, Excel CSV, or companion JSONL.'
         ],
         action: { label: '🛡️ Run Integrity Audit', key: 'open_audit' }
+      },
+      {
+        id: 'inspection_checklists',
+        category: 'assets',
+        categoryName: 'Checklists & Inspections',
+        icon: '📋',
+        question: 'How do I perform equipment inspection checklists and record deficiencies?',
+        summary: 'Execute domain-specific NEC, NFPA, and IEEE inspection items with one-tap status toggling, auto-revealed deficiency notes, preset defect chips, and field sign-offs.',
+        tags: ['checklist', 'inspection', 'deficient', 'deficiency', 'pass', 'signoff', 'notes', 'chips', 'preset', 'nec', 'nfpa'],
+        steps: [
+          'Open any equipment in the Survey or SLD drawer and navigate to the "Inspection Checklists" tab.',
+          'Applicable checklists for the equipment domain and archetype load dynamically (e.g. Visual Inspection, NEC Clearance, Arc Flash, Conductor Torquing).',
+          'Tap "Pass", "Deficient", or "N/A" on each item. Marking an item as "Deficient" automatically expands the deficiency notes field.',
+          'Tap one-click preset chips (e.g., "+ Label Missing", "+ Torque Unverified", "+ Clearance < 36\"", "+ Missing Filler Plate", "+ Arc Flash Expired") or type custom field observations.',
+          'Filter by "All", "Deficient", "Pending", or "Passed" to quickly track remaining work.',
+          'Review the live Compliance Percentage meter and enter the Inspector name to sign off the inspection.'
+        ]
       },
       {
         id: 'nameplate_photos',
