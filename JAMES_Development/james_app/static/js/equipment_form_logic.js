@@ -1041,26 +1041,74 @@
       if (typeof feederOrId === 'object' && feederOrId !== null) {
         feeder = { ...feederOrId };
       } else if (typeof feederOrId === 'string') {
-        const query = feederOrId.trim();
-        // Try exact edge ID or parse edge_from_to
+        const rawQuery = feederOrId.trim();
+        const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const qNorm = norm(rawQuery);
+
+        // 1. Direct match in feederScheduleList
         feeder = this.feederScheduleList.find(f => 
-          f.id === query || 
-          f.edge_id === query ||
-          `edge_${f.from_node}_${f.to_node}`.toLowerCase() === query.toLowerCase() ||
-          `edge_${f.from_tag}_${f.to_tag}`.toLowerCase() === query.toLowerCase()
+          f.id === rawQuery || 
+          f.edge_id === rawQuery ||
+          `edge_${f.from_node}_${f.to_node}`.toLowerCase() === rawQuery.toLowerCase() ||
+          `edge_${f.from_tag}_${f.to_tag}`.toLowerCase() === rawQuery.toLowerCase() ||
+          norm(`edge_${f.from_node}_${f.to_node}`) === qNorm ||
+          norm(`edge_${f.from_tag}_${f.to_tag}`) === qNorm
         );
 
-        // Fallback: check if query is from_tag -> to_tag
-        if (!feeder && query.includes('_')) {
-          const parts = query.replace(/^edge_/, '').split('_');
-          if (parts.length >= 2) {
-            const pFrom = parts[0].toLowerCase();
-            const pTo = parts[1].toLowerCase();
+        // 2. Parse Arrow syntax (e.g. "UTIL_1->MSB" or "MSB:s->TX_1:n" or "Feeder: GEN -> ATS")
+        if (!feeder && (rawQuery.includes('->') || rawQuery.includes('➔') || rawQuery.includes('-->') || rawQuery.includes('&#45;&gt;'))) {
+          const arrowParts = rawQuery.replace(/^.*Feeder:\s*/i, '').replace(/&#45;&gt;/g, '->').split(/(?:->|➔|-->)/);
+          if (arrowParts.length >= 2) {
+            const cleanFrom = norm(arrowParts[0].split(':')[0]);
+            const cleanTo = norm(arrowParts[1].split(':')[0]);
             feeder = this.feederScheduleList.find(f => 
-              (f.from_node.toLowerCase() === pFrom || f.from_tag.toLowerCase() === pFrom) &&
-              (f.to_node.toLowerCase() === pTo || f.to_tag.toLowerCase() === pTo)
+              (norm(f.from_node) === cleanFrom || norm(f.from_tag) === cleanFrom) &&
+              (norm(f.to_node) === cleanTo || norm(f.to_tag) === cleanTo)
             );
           }
+        }
+
+        // 3. Parse edge_From_To syntax (e.g. "edge_util_1_msb" or "edge_msb_tx_1")
+        if (!feeder && rawQuery.startsWith('edge_')) {
+          const stripped = rawQuery.replace(/^edge_/, '');
+          const pool = (typeof this.getNodePool === 'function') ? this.getNodePool() : (this.stack || this.allNodes || window.facilityNodes || []);
+          
+          for (const fromN of pool) {
+            const fromNorm = norm(fromN.tag || fromN.id);
+            if (stripped.toLowerCase().startsWith(fromNorm)) {
+              const remainder = stripped.substring(fromNorm.length).replace(/^_/, '');
+              for (const toN of pool) {
+                const toNorm = norm(toN.tag || toN.id);
+                if (remainder.toLowerCase().startsWith(toNorm)) {
+                  feeder = this.feederScheduleList.find(f => 
+                    (norm(f.from_node) === fromNorm || norm(f.from_tag) === fromNorm) &&
+                    (norm(f.to_node) === toNorm || norm(f.to_tag) === toNorm)
+                  );
+                  if (!feeder) {
+                    feeder = {
+                      id: `edge_${fromN.tag || fromN.id}_${toN.tag || toN.id}`,
+                      from_node: fromN.tag || fromN.id,
+                      from_tag: fromN.tag || fromN.id,
+                      to_node: toN.tag || toN.id,
+                      to_tag: toN.tag || toN.id,
+                      voltage: toN.voltage || '480V 3Ø',
+                      current_amps: Number(toN.amps) || 100
+                    };
+                  }
+                  break;
+                }
+              }
+              if (feeder) break;
+            }
+          }
+        }
+
+        // 4. Fuzzy fallback search against feeder schedule list
+        if (!feeder && this.feederScheduleList.length > 0) {
+          feeder = this.feederScheduleList.find(f => 
+            qNorm.includes(norm(f.from_tag || f.from_node)) && 
+            qNorm.includes(norm(f.to_tag || f.to_node))
+          );
         }
       }
 

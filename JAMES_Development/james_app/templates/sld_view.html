@@ -95,6 +95,22 @@
     g.cluster:hover {
       filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.4));
     }
+    .edge, .feeder-edge, .edge *, .feeder-edge * {
+      cursor: pointer !important;
+    }
+    .edge:hover path:not(.hit-area) {
+      stroke: #F59E0B !important;
+      stroke-width: 3.5px !important;
+      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8)) !important;
+    }
+    .edge:hover polygon {
+      fill: #F59E0B !important;
+      stroke: #F59E0B !important;
+    }
+    .edge:hover text {
+      fill: #B45309 !important;
+      font-weight: bold !important;
+    }
     [x-cloak] { display: none !important; }
   </style>
 </head>
@@ -760,30 +776,74 @@
         const edgeId = el.attr("id") || "";
         const titleEl = el.select("title");
         const titleText = titleEl.empty() ? "" : titleEl.text().trim();
+        const edgeTarget = edgeId || titleText;
+
+        // Insert wide invisible hit-stroke on the main path if not already present
+        const mainPath = el.select("path:not(.hit-area)");
+        if (!mainPath.empty() && el.select("path.hit-area").empty()) {
+          const pathD = mainPath.attr("d");
+          if (pathD) {
+            el.insert("path", ":first-child")
+              .attr("class", "hit-area")
+              .attr("d", pathD)
+              .style("stroke", "transparent")
+              .style("stroke-width", "20px")
+              .style("fill", "none")
+              .style("cursor", "pointer")
+              .style("pointer-events", "stroke");
+          }
+        }
 
         el.style("cursor", "pointer");
-        el.on("click", (e) => {
+        el.selectAll("path, polygon, text, g").style("cursor", "pointer");
+
+        const handleEdgeClick = (e) => {
           if (e.defaultPrevented) return;
           e.stopPropagation();
 
           // Highlight selected edge with gold glow
-          svg.selectAll("g.edge path, g.edge polygon")
+          svg.selectAll("g.edge path:not(.hit-area), g.edge polygon")
             .style("stroke-width", null)
             .style("stroke", null)
             .style("filter", null);
 
-          el.selectAll("path, polygon")
+          el.selectAll("path:not(.hit-area), polygon")
             .style("stroke-width", "4.0px")
             .style("stroke", "#F59E0B")
             .style("filter", "drop-shadow(0 0 8px rgba(245, 158, 11, 0.9))");
 
           if (window.alpineApp && typeof window.alpineApp.openCableDrawer === 'function') {
-            window.alpineApp.openCableDrawer(edgeId || titleText);
+            window.alpineApp.openCableDrawer(edgeTarget);
           } else if (typeof window.openCableDrawer === 'function') {
-            window.openCableDrawer(edgeId || titleText);
+            window.openCableDrawer(edgeTarget);
           }
-        });
+        };
+
+        el.on("click", handleEdgeClick);
+        el.selectAll("text, polygon, path").on("click", handleEdgeClick);
       });
+
+      // Global Canvas Event Delegation Fallback for Edge Clicks
+      const containerEl = document.getElementById("graph-container");
+      if (containerEl && !containerEl._edgeClickBound) {
+        containerEl._edgeClickBound = true;
+        containerEl.addEventListener("click", function(e) {
+          const edgeG = e.target.closest("g.edge");
+          if (edgeG) {
+            const edgeId = edgeG.getAttribute("id") || "";
+            const titleEl = edgeG.querySelector("title");
+            const titleText = titleEl ? titleEl.textContent.trim() : "";
+            const target = edgeId || titleText;
+            if (target) {
+              if (window.alpineApp && typeof window.alpineApp.openCableDrawer === 'function') {
+                window.alpineApp.openCableDrawer(target);
+              } else if (typeof window.openCableDrawer === 'function') {
+                window.openCableDrawer(target);
+              }
+            }
+          }
+        }, true);
+      }
     }
 
     async function refreshDiagram() {
