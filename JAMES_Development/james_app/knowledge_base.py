@@ -480,7 +480,10 @@ class KnowledgeBaseManager:
         return inserted_count
 
     def ingest_directory(self, dir_path: str, recursive: bool = True, category: Optional[str] = None) -> Dict[str, int]:
-        """Scans a directory and ingests all supported files."""
+        """Scans a directory and ingests all supported files.
+        When both a .pdf and a companion .md exist with the same name, prefers the .pdf
+        to avoid duplicate search results and provide direct page-level PDF viewer links.
+        """
         dir_p = Path(dir_path)
         if not dir_p.exists() or not dir_p.is_dir():
             raise NotADirectoryError(f"Directory not found: {dir_path}")
@@ -489,14 +492,22 @@ class KnowledgeBaseManager:
         supported_exts = {".md", ".markdown", ".pdf", ".html", ".htm", ".txt", ".csv", ".xlsx"}
         results: Dict[str, int] = {}
 
-        for file_p in dir_p.glob(pattern):
-            if file_p.is_file() and file_p.suffix.lower() in supported_exts:
-                try:
-                    count = self.ingest_file(str(file_p), category=category)
-                    results[file_p.name] = count
-                except Exception as e:
-                    print(f"Error ingesting {file_p}: {e}")
-                    results[file_p.name] = 0
+        all_files = [f for f in dir_p.glob(pattern) if f.is_file() and f.suffix.lower() in supported_exts]
+        pdf_stems = {f.stem.lower() for f in all_files if f.suffix.lower() == ".pdf"}
+
+        for file_p in all_files:
+            # If a companion .pdf exists for this markdown file, prefer the PDF
+            if file_p.suffix.lower() in (".md", ".markdown") and file_p.stem.lower() in pdf_stems:
+                # Ensure any stale markdown chunks are removed from the database
+                self.remove_file(file_p.name)
+                continue
+
+            try:
+                count = self.ingest_file(str(file_p), category=category)
+                results[file_p.name] = count
+            except Exception as e:
+                print(f"Error ingesting {file_p}: {e}")
+                results[file_p.name] = 0
 
         return results
 
