@@ -561,8 +561,8 @@ def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", fac
 
     if nodes_list:
         lines.extend([
-            "| Tag | Equipment Name / Type | Domain | Room / Location | Voltage / Amps / AIC | Fed From | Status |",
-            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
+            "| Tag | Equipment Name / Type | Domain | Room / Location | Voltage / Amps / AIC | Fed From | Survey State | Checklist Status |",
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
         ])
         for n in nodes_list:
             v_str = str(n.get("voltage") or "—")
@@ -570,9 +570,27 @@ def generate_markdown_report(audit_result: Dict[str, Any], client: str = "", fac
             aic_str = f"{n.get('aic')}kA" if n.get("aic") else "—"
             specs = f"{v_str} • {a_str} • {aic_str}"
             fed = n.get("fed_from") or "—"
+            raw_status = (n.get("status") or "").upper()
+            survey_state = "Field Verified" if raw_status == "VERIFIED" else ("Staged" if raw_status == "STAGED" else (n.get("status") or "Active"))
             signoff = n.get("attributes", {}).get("checklist_signoff", {})
-            status_str = f"✓ Signed ({signoff.get('inspector', 'PE')})" if signoff else (n.get("status") or "Active")
-            lines.append(f"| **`{n.get('tag', '—')}`** | {n.get('name', '—')} (`{n.get('type_tag', '—')}`) | {n.get('domain', '—')} | {n.get('room', '—')} | {specs} | `{fed}` | {status_str} |")
+            if signoff:
+                chk_state = f"✓ Signed ({signoff.get('inspector', 'PE')})"
+            else:
+                domain = n.get("domain") or "panels"
+                dom_chks = get_checklists_for_domain(domain)
+                tot_items = sum(len(c.get("items", [])) for c in dom_chks)
+                saved_chks = n.get("attributes", {}).get("checklists", {}) if isinstance(n.get("attributes"), dict) else {}
+                eval_items = 0
+                if isinstance(saved_chks, dict):
+                    for cid, cdict in saved_chks.items():
+                        if isinstance(cdict, dict):
+                            for it_k, it_v in cdict.items():
+                                st = it_v.get("status") if isinstance(it_v, dict) else it_v
+                                if st in ["pass", "fail", "deficient", "na"]:
+                                    eval_items += 1
+                chk_state = f"In Progress ({eval_items}/{tot_items})" if eval_items > 0 else (f"Pending (0/{tot_items})" if tot_items > 0 else "None")
+
+            lines.append(f"| **`{n.get('tag', '—')}`** | {n.get('name', '—')} (`{n.get('type_tag', '—')}`) | {n.get('domain', '—')} | {n.get('room', '—')} | {specs} | `{fed}` | `{survey_state}` | {chk_state} |")
         lines.append("")
 
     lines.extend([
@@ -737,6 +755,10 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self._saved_page_states = []
+            self.setTitle(f"Electrical System Integrity Audit - {c_name} ({f_name})")
+            self.setAuthor("Building Aware Engineering")
+            self.setSubject(f"System Integrity Audit Report for {c_name} / {f_name}")
+            self.setCreator("Building Aware Engine")
 
         def showPage(self):
             self._saved_page_states.append(dict(self.__dict__))
@@ -746,6 +768,10 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
             num_pages = len(self._saved_page_states)
             for state in self._saved_page_states:
                 self.__dict__.update(state)
+                self.setTitle(f"Electrical System Integrity Audit - {c_name} ({f_name})")
+                self.setAuthor("Building Aware Engineering")
+                self.setSubject(f"System Integrity Audit Report for {c_name} / {f_name}")
+                self.setCreator("Building Aware Engine")
                 self.draw_page_number(num_pages)
                 canvas.Canvas.showPage(self)
             canvas.Canvas.save(self)
@@ -769,7 +795,10 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
         leftMargin=36,
         rightMargin=36,
         topMargin=36,
-        bottomMargin=48
+        bottomMargin=48,
+        title=f"Electrical System Integrity Audit - {c_name} ({f_name})",
+        author="Building Aware Engineering",
+        subject=f"System Integrity Audit Report for {c_name} / {f_name}"
     )
 
     styles = getSampleStyleSheet()
@@ -920,7 +949,7 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
             wrap_cell("Room / Location", is_header=True),
             wrap_cell("Rating & Specs", is_header=True),
             wrap_cell("Fed From", is_header=True),
-            wrap_cell("Status", is_header=True)
+            wrap_cell("Survey & Code Status", is_header=True)
         ]
         inv_rows = [inv_headers]
         for n in nodes_list:
@@ -932,11 +961,46 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
             aic_str = f"{n.get('aic')}kA" if n.get("aic") else "—"
             specs = f"{v_str}<br/>{a_str} • {aic_str}"
             fed = f"<b>{n.get('fed_from') or '—'}</b>"
+
+            # Survey State
+            raw_status = (n.get("status") or "").upper()
+            if raw_status == "VERIFIED":
+                survey_badge = "<font color='#059669'><b>● Field Verified</b></font>"
+            elif raw_status == "STAGED":
+                survey_badge = "<font color='#D97706'><b>○ Staged Twin</b></font>"
+            else:
+                survey_badge = f"<font color='#6366F1'><b>{n.get('status') or 'Active'}</b></font>"
+
+            # Checklist Walkdown & Certified Sign-off
             signoff = n.get("attributes", {}).get("checklist_signoff", {})
             if signoff:
-                status_txt = f"<font color='#059669'><b>✓ Signed</b></font><br/><font size=6 color='#64748B'>{signoff.get('inspector', 'PE')}</font>"
+                chk_badge = f"<font color='#059669'>✓ Signed ({signoff.get('inspector', 'PE')})</font>"
             else:
-                status_txt = f"<font color='#6366F1'>{n.get('status') or 'Active'}</font>"
+                domain = n.get("domain") or "panels"
+                dom_chks = get_checklists_for_domain(domain)
+                tot_items = sum(len(c.get("items", [])) for c in dom_chks)
+                saved_chks = n.get("attributes", {}).get("checklists", {}) if isinstance(n.get("attributes"), dict) else {}
+                eval_items = 0
+                def_items = 0
+                if isinstance(saved_chks, dict):
+                    for cid, cdict in saved_chks.items():
+                        if isinstance(cdict, dict):
+                            for it_k, it_v in cdict.items():
+                                st = it_v.get("status") if isinstance(it_v, dict) else it_v
+                                if st in ["pass", "fail", "deficient", "na"]:
+                                    eval_items += 1
+                                if st in ["fail", "deficient"]:
+                                    def_items += 1
+                if def_items > 0:
+                    chk_badge = f"<font color='#E11D48'>⚠️ {def_items} Deficiencies</font>"
+                elif eval_items > 0:
+                    chk_badge = f"<font color='#3B82F6'>In Progress ({eval_items}/{tot_items})</font>"
+                elif tot_items > 0:
+                    chk_badge = f"<font size=6 color='#64748B'>Pending (0/{tot_items} pts)</font>"
+                else:
+                    chk_badge = "<font size=6 color='#64748B'>No Checklist</font>"
+
+            status_cell = f"{survey_badge}<br/>{chk_badge}"
 
             inv_rows.append([
                 wrap_cell(f"<b>{tag}</b>"),
@@ -944,10 +1008,10 @@ def generate_pdf_report(audit_result: Dict[str, Any], client: str = "", facility
                 wrap_cell(room),
                 wrap_cell(specs),
                 wrap_cell(fed),
-                wrap_cell(status_txt)
+                wrap_cell(status_cell)
             ])
 
-        t_inv = Table(inv_rows, colWidths=[65, 135, 115, 95, 65, 65], repeatRows=1)
+        t_inv = Table(inv_rows, colWidths=[55, 125, 100, 90, 55, 115], repeatRows=1)
         t_inv.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), HexColor("#312E81")),
             ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), HexColor("#F8FAFC")]),
