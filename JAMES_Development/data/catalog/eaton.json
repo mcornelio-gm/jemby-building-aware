@@ -5250,6 +5250,237 @@
         "cut_sheet": null,
         "upc": null
       }
+    },
+    {
+      "part_number": "BAB1015",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 1-Pole 15A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 15.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1015.html",
+        "upc": "786679301159"
+      }
+    },
+    {
+      "part_number": "BAB1020",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 1-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 20.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1020.html",
+        "upc": "786679301203"
+      }
+    },
+    {
+      "part_number": "BAB1030",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 1-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 30.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1030.html",
+        "upc": "786679301302"
+      }
+    },
+    {
+      "part_number": "BAB2020",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 2-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 20.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2020.html",
+        "upc": "786679302200"
+      }
+    },
+    {
+      "part_number": "BAB2030",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 2-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 30.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2030.html",
+        "upc": "786679302309"
+      }
+    },
+    {
+      "part_number": "BAB2050",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 2-Pole 50A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 50.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2050.html",
+        "upc": "786679302507"
+      }
+    },
+    {
+      "part_number": "BAB3020",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 20A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 20.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3020.html",
+        "upc": "786679303207"
+      }
+    },
+    {
+      "part_number": "BAB3030",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 30A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 30.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3030.html",
+        "upc": "786679303306"
+      }
+    },
+    {
+      "part_number": "BAB3050",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 50A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 50.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3050.html",
+        "upc": "786679303504"
+      }
+    },
+    {
+      "part_number": "BAB3060",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 60A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3060.html",
+        "upc": "786679303603"
+      }
+    },
+    {
+      "part_number": "BAB3100",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 100A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3100.html",
+        "upc": "786679303993"
+      }
     }
   ]
 }

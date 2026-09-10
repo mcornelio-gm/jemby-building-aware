@@ -489,3 +489,104 @@ def create_client_facility(client_id: str, facility_id: str, seed: bool = True) 
     }
 
 
+def delete_client_facility(client_id: str, facility_id: str) -> bool:
+    """Delete a facility directory and its databases."""
+    import shutil
+    clean_client = re.sub(r'[^a-zA-Z0-9_\-]', '_', client_id.strip().lower())
+    clean_facility = re.sub(r'[^a-zA-Z0-9_\-]', '_', facility_id.strip().lower())
+    target_dir = CLIENTS_DATA_DIR / clean_client / clean_facility
+    if target_dir.exists():
+        shutil.rmtree(target_dir, ignore_errors=True)
+        return True
+    return False
+
+
+def get_custom_breakers(client_id: Optional[str] = None, facility_id: Optional[str] = None) -> List[Dict[str, Any]]:
+    """Scan facility SQLite databases and aggregate all custom / uncataloged breakers across panel schedules."""
+    discovered = {}
+    
+    if client_id and facility_id:
+        targets = [(client_id, facility_id)]
+    else:
+        # Scan all client facilities
+        targets = []
+        if CLIENTS_DATA_DIR.exists():
+            for c_dir in sorted(CLIENTS_DATA_DIR.iterdir()):
+                if c_dir.is_dir() and not c_dir.name.startswith("."):
+                    for f_dir in sorted(c_dir.iterdir()):
+                        if f_dir.is_dir() and not f_dir.name.startswith("."):
+                            if (f_dir / "model.db").exists():
+                                targets.append((c_dir.name, f_dir.name))
+
+    for c, f in targets:
+        with get_session(c, f) as session:
+            nodes = session.query(NodeRecord).all()
+            for node in nodes:
+                attrs = node.attributes if isinstance(node.attributes, dict) else {}
+                sched = attrs.get("schedule", [])
+                if not sched or not isinstance(sched, list):
+                    continue
+                for row in sched:
+                    if not isinstance(row, dict):
+                        continue
+                    # Check left side
+                    if row.get("leftTrip") and (row.get("leftPartNo") or row.get("leftPartNumber")):
+                        part_no = (row.get("leftPartNo") or row.get("leftPartNumber") or "").strip()
+                        is_custom = row.get("leftIsCustom") or row.get("leftCatalogStatus") == "custom_pending"
+                        if part_no:
+                            key = (part_no.upper(), (row.get("leftMfr") or "").strip().upper())
+                            if key not in discovered:
+                                discovered[key] = {
+                                    "part_number": part_no,
+                                    "manufacturer": (row.get("leftMfr") or "").strip() or "Custom / Generic",
+                                    "poles": int(row.get("leftPoles") or 1),
+                                    "trip_amps": float(row.get("leftTrip") or 20.0),
+                                    "trip_type": row.get("leftType") or "MCCB",
+                                    "wire": row.get("leftWire") or "",
+                                    "is_custom": bool(is_custom),
+                                    "catalog_status": row.get("leftCatalogStatus") or ("custom_pending" if is_custom else "verified"),
+                                    "occurrences": 0,
+                                    "discovered_locations": []
+                                }
+                            discovered[key]["occurrences"] += 1
+                            discovered[key]["discovered_locations"].append({
+                                "client": c,
+                                "facility": f,
+                                "panel_tag": node.tag,
+                                "panel_name": node.name,
+                                "slot": row.get("leftSlot")
+                            })
+
+                    # Check right side
+                    if row.get("rightTrip") and (row.get("rightPartNo") or row.get("rightPartNumber")):
+                        part_no = (row.get("rightPartNo") or row.get("rightPartNumber") or "").strip()
+                        is_custom = row.get("rightIsCustom") or row.get("rightCatalogStatus") == "custom_pending"
+                        if part_no:
+                            key = (part_no.upper(), (row.get("rightMfr") or "").strip().upper())
+                            if key not in discovered:
+                                discovered[key] = {
+                                    "part_number": part_no,
+                                    "manufacturer": (row.get("rightMfr") or "").strip() or "Custom / Generic",
+                                    "poles": int(row.get("rightPoles") or 1),
+                                    "trip_amps": float(row.get("rightTrip") or 20.0),
+                                    "trip_type": row.get("rightType") or "MCCB",
+                                    "wire": row.get("rightWire") or "",
+                                    "is_custom": bool(is_custom),
+                                    "catalog_status": row.get("rightCatalogStatus") or ("custom_pending" if is_custom else "verified"),
+                                    "occurrences": 0,
+                                    "discovered_locations": []
+                                }
+                            discovered[key]["occurrences"] += 1
+                            discovered[key]["discovered_locations"].append({
+                                "client": c,
+                                "facility": f,
+                                "panel_tag": node.tag,
+                                "panel_name": node.name,
+                                "slot": row.get("rightSlot")
+                            })
+
+    return sorted(list(discovered.values()), key=lambda x: (-x["occurrences"], x["part_number"]))
+
+
+
+

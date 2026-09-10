@@ -1,19 +1,32 @@
 """FastAPI Web Application Routes and HTMX API Controllers."""
 
+import os
+import re
 import uuid
+import logging
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, Form, HTTPException, Request, Response
-from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse
+logger = logging.getLogger(__name__)
+
+from fastapi import FastAPI, Form, File, UploadFile, HTTPException, Request, Response
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm.attributes import flag_modified
 
 from james_app.catalog import get_catalog, get_equipment_schema
 from james_app.master_catalog import get_master_catalog
 from james_app.dot_compiler import compile_project_to_dot, compile_facility_to_dot
 from james_app.models import Edge, Node, Project
 from james_app import storage, db
+from james_app.knowledge_base import KnowledgeBaseManager
+from james_app.integrity_audit import (
+    audit_facility_system_integrity,
+    generate_markdown_report,
+    generate_csv_report,
+    generate_txt_report
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -87,6 +100,20 @@ def api_get_catalog_items(
         type_tag=type_tag,
         query=q
     )
+
+
+@app.get("/api/catalog/custom-breakers")
+def api_get_all_custom_breakers():
+    """Retrieve deduplicated list of uncataloged/custom breakers discovered across all facility schedules."""
+    return db.get_custom_breakers()
+
+
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/custom-breakers")
+def api_get_facility_custom_breakers(client_id: str, facility_id: str):
+    """Retrieve custom breakers discovered in a specific client facility's panel schedules."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    return db.get_custom_breakers(client_id=clean_c, facility_id=clean_f)
 
 
 @app.get("/api/catalog/items/{part_number}")
@@ -627,17 +654,9 @@ def get_equipment_selector_view():
     raise HTTPException(status_code=404, detail="Popup template not found")
 
 
-@app.get("/field-collector", response_class=HTMLResponse)
-def get_field_collector_cockpit_view():
-    """Serve persistent 4-Column Field Data Collector Cockpit."""
-    cockpit_path = Path(__file__).resolve().parent.parent / "docs" / "field_data_collector_cockpit.html"
-    if cockpit_path.exists():
-        return HTMLResponse(content=cockpit_path.read_text(encoding="utf-8"))
-    raise HTTPException(status_code=404, detail="Cockpit template not found")
-
-
 @app.get("/survey", response_class=HTMLResponse)
 @app.get("/cockpit", response_class=HTMLResponse)
+@app.get("/field-collector", response_class=HTMLResponse)
 @app.get("/field-collector-htmx", response_class=HTMLResponse)
 def get_survey_view(
     request: Request,
@@ -705,7 +724,7 @@ def api_get_client_nodes(client_id: str, facility_id: str):
 
     with db.get_session(clean_c, clean_f) as session:
         records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
-        return [
+        nodes_list = [
             {
                 "id": r.id,
                 "tag": r.tag,
@@ -727,6 +746,27 @@ def api_get_client_nodes(client_id: str, facility_id: str):
             }
             for r in records
         ]
+        return JSONResponse(content=nodes_list, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+
+
+def _safe_float(val, default: float = 0.0) -> float:
+    if val is None or val == "":
+        return default
+    try:
+        cleaned = re.sub(r"[^\d.]+", "", str(val))
+        return float(cleaned) if cleaned else default
+    except (ValueError, TypeError):
+        return default
+
+
+def _safe_int(val, default: int = 0) -> int:
+    if val is None or val == "":
+        return default
+    try:
+        cleaned = re.sub(r"[^\d]+", "", str(val))
+        return int(cleaned) if cleaned else default
+    except (ValueError, TypeError):
+        return default
 
 
 @app.post("/api/clients/{client_id}/facilities/{facility_id}/nodes")
@@ -766,13 +806,13 @@ async def api_upsert_client_node(request: Request, client_id: str, facility_id: 
                 room=data.get("room", "Main Electrical Room 101"),
                 fed_from=data.get("fed_from"),
                 voltage=data.get("voltage", "480Y/277V"),
-                amps=float(data.get("amps", 225.0)),
-                aic=float(data.get("aic", 65.0)),
+                amps=_safe_float(data.get("amps"), 225.0),
+                aic=_safe_float(data.get("aic"), 65.0),
                 is_panel=1 if data.get("is_panel") else 0,
-                slots=int(data.get("slots", 42)),
+                slots=_safe_int(data.get("slots"), 42),
                 survey_sequence=count + 1,
                 status=data.get("status", "STAGED"),
-                attributes=data.get("attributes", {}),
+                attributes=dict(data.get("attributes", {})),
             )
             session.add(node)
         else:
@@ -782,13 +822,14 @@ async def api_upsert_client_node(request: Request, client_id: str, facility_id: 
             node.type_tag = data.get("type_tag", node.type_tag)
             node.type_name = data.get("type_name", node.type_name)
             node.room = data.get("room", node.room)
-            node.fed_from = data.get("fed_from", node.fed_from)
+            node.fed_from = data.get("fed_from")
             node.voltage = data.get("voltage", node.voltage)
-            node.amps = float(data.get("amps", node.amps))
-            node.aic = float(data.get("aic", node.aic))
+            node.amps = _safe_float(data.get("amps"), node.amps if node.amps is not None else 225.0)
+            node.aic = _safe_float(data.get("aic"), node.aic if node.aic is not None else 65.0)
             node.is_panel = 1 if data.get("is_panel") else 0
-            node.slots = int(data.get("slots", node.slots))
-            node.attributes = data.get("attributes", node.attributes)
+            node.slots = _safe_int(data.get("slots"), node.slots if node.slots is not None else 42)
+            node.attributes = dict(data.get("attributes", {}))
+            flag_modified(node, "attributes")
         session.commit()
 
     db.export_to_jsonl(client_id, facility_id)
@@ -814,8 +855,111 @@ def api_export_jsonl(client_id: str, facility_id: str):
     return PlainTextResponse(content=jsonl_path.read_text(encoding="utf-8"), media_type="application/x-ndjson")
 
 
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/audit")
+def api_get_facility_audit(client_id: str, facility_id: str):
+    """Execute System Integrity Audit over facility equipment nodes and return scorecard."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    if clean_c == "zoetis" and clean_f == "b4":
+        db.seed_demo_facility(clean_c, clean_f)
+    else:
+        db.get_engine(clean_c, clean_f)
+
+    with db.get_session(clean_c, clean_f) as session:
+        records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
+        node_dicts = [
+            {
+                "id": r.id,
+                "tag": r.tag,
+                "name": r.name,
+                "object_class": r.object_class,
+                "domain": r.domain,
+                "type_tag": r.type_tag,
+                "type_name": r.type_name,
+                "room": r.room,
+                "fed_from": r.fed_from,
+                "voltage": r.voltage,
+                "amps": r.amps,
+                "aic": r.aic,
+                "is_panel": bool(r.is_panel),
+                "slots": r.slots,
+                "survey_sequence": r.survey_sequence,
+                "status": r.status,
+                "attributes": r.attributes or {},
+            }
+            for r in records
+        ]
+        return audit_facility_system_integrity(node_dicts, client=clean_c, facility=clean_f)
+
+
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/audit/export")
+def api_export_facility_audit(client_id: str, facility_id: str, format: str = "md"):
+    """Export System Integrity Audit in Markdown (with TOC), CSV, JSON, or Plain Text."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    if clean_c == "zoetis" and clean_f == "b4":
+        db.seed_demo_facility(clean_c, clean_f)
+    else:
+        db.get_engine(clean_c, clean_f)
+
+    with db.get_session(clean_c, clean_f) as session:
+        records = session.query(db.NodeRecord).order_by(db.NodeRecord.survey_sequence.asc()).all()
+        node_dicts = [
+            {
+                "id": r.id,
+                "tag": r.tag,
+                "name": r.name,
+                "object_class": r.object_class,
+                "domain": r.domain,
+                "type_tag": r.type_tag,
+                "type_name": r.type_name,
+                "room": r.room,
+                "fed_from": r.fed_from,
+                "voltage": r.voltage,
+                "amps": r.amps,
+                "aic": r.aic,
+                "is_panel": bool(r.is_panel),
+                "slots": r.slots,
+                "survey_sequence": r.survey_sequence,
+                "status": r.status,
+                "attributes": r.attributes or {},
+            }
+            for r in records
+        ]
+        audit_data = audit_facility_system_integrity(node_dicts, client=clean_c, facility=clean_f)
+
+    fmt = format.strip().lower()
+    filename_base = f"{clean_c}_{clean_f}_system_integrity_audit"
+
+    if fmt == "csv":
+        csv_content = generate_csv_report(audit_data)
+        return Response(
+            content=csv_content,
+            media_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename_base}.csv"'}
+        )
+    elif fmt == "json":
+        return JSONResponse(
+            content=audit_data,
+            headers={"Content-Disposition": f'attachment; filename="{filename_base}.json"'}
+        )
+    elif fmt == "txt":
+        txt_content = generate_txt_report(audit_data, client=clean_c, facility=clean_f)
+        return PlainTextResponse(
+            content=txt_content,
+            headers={"Content-Disposition": f'attachment; filename="{filename_base}.txt"'}
+        )
+    else:  # Default to Markdown with TOC (.md)
+        md_content = generate_markdown_report(audit_data, client=clean_c, facility=clean_f)
+        return PlainTextResponse(
+            content=md_content,
+            media_type="text/markdown; charset=utf-8",
+            headers={"Content-Disposition": f'attachment; filename="{filename_base}.md"'}
+        )
+
+
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/dot", response_class=PlainTextResponse)
-def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "detailed"):
+def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "macro"):
     """Compile and return Graphviz record-and-port DOT text representation of facility digital twin."""
     clean_c = client_id.strip().lower()
     clean_f = facility_id.strip().lower()
@@ -848,7 +992,8 @@ def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "d
             }
             for r in records
         ]
-        return compile_facility_to_dot(node_dicts, mode=mode)
+        dot_content = compile_facility_to_dot(node_dicts, mode=mode)
+        return PlainTextResponse(content=dot_content, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
 @app.get("/clients/{client_id}/facilities/{facility_id}/sld", response_class=HTMLResponse)
@@ -859,7 +1004,8 @@ def get_client_facility_sld(request: Request, client_id: str, facility_id: str):
         name="sld_view.html",
         context={
             "client_id": client_id,
-            "facility_id": facility_id
+            "facility_id": facility_id,
+            "master_catalog_items": get_master_catalog().get_all_items(),
         }
     )
 
@@ -879,13 +1025,233 @@ async def api_create_workspace_facility(request: Request):
         data = {}
     client_id = str(data.get("client_id", "")).strip()
     facility_id = str(data.get("facility_id", "")).strip()
-    seed = bool(data.get("seed", True))
+    seed = bool(data.get("seed", False))
 
     if not client_id or not facility_id:
         raise HTTPException(status_code=400, detail="client_id and facility_id are required.")
 
     result = db.create_client_facility(client_id, facility_id, seed=seed)
     return result
+
+
+@app.delete("/api/workspace/facilities/{client_id}/{facility_id}")
+def api_delete_workspace_facility(client_id: str, facility_id: str):
+    """Delete a client facility folder and its SQLite model.db database."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    if clean_c == "zoetis" and clean_f == "b4":
+        raise HTTPException(status_code=400, detail="Cannot delete default demo facility 'zoetis/b4'.")
+    
+    deleted = db.delete_client_facility(clean_c, clean_f)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Facility '{clean_f}' under client '{clean_c}' not found.")
+    return {"status": "success", "message": f"Facility '{clean_f}' deleted successfully."}
+
+
+# =============================================================================
+# KNOWLEDGE BASE & FULL-TEXT SEARCH (FTS5) API
+# =============================================================================
+
+from james_app.knowledge_base import KnowledgeBaseManager
+_kb_manager = None
+
+
+def get_kb() -> KnowledgeBaseManager:
+    global _kb_manager
+    if _kb_manager is None:
+        _kb_manager = KnowledgeBaseManager()
+    return _kb_manager
+
+
+@app.get("/api/kb/search")
+def api_kb_search(
+    q: str,
+    category: Optional[str] = None,
+    limit: int = 10
+):
+    """
+    Full-Text Search against the Build Aware Knowledge Base with BM25 ranking and snippet highlighting.
+    """
+    query_str = (q or "").strip()
+    if not query_str:
+        return {"query": "", "count": 0, "results": []}
+
+    kb = get_kb()
+    results = kb.search(query=query_str, category=category, limit=limit)
+    return {
+        "query": query_str,
+        "count": len(results),
+        "results": results
+    }
+
+
+@app.get("/api/kb/stats")
+def api_kb_stats():
+    """Returns Knowledge Base indexing statistics."""
+    kb = get_kb()
+    return kb.get_stats()
+
+
+@app.post("/api/kb/ingest/text")
+async def api_kb_ingest_text(request: Request):
+    """Ingest a single text document or FAQ chunk into the Knowledge Base."""
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON body")
+
+    title = str(data.get("title", "")).strip()
+    body_text = str(data.get("body_text", "")).strip()
+    if not title or not body_text:
+        raise HTTPException(status_code=400, detail="'title' and 'body_text' are required.")
+
+    kb = get_kb()
+    chunk_id = kb.ingest_chunk(
+        source_file=data.get("source_file", "adhoc_faq.txt"),
+        source_type=data.get("source_type", "faq"),
+        category=data.get("category", "workflow"),
+        title=title,
+        section_heading=data.get("section_heading", "General"),
+        body_text=body_text,
+        tags=data.get("tags", ""),
+        page_number=data.get("page_number")
+    )
+    return {"status": "success", "chunk_id": chunk_id, "message": f"Ingested chunk into KB with ID {chunk_id}."}
+
+
+@app.post("/api/kb/ingest/file")
+async def api_kb_ingest_file(
+    file: UploadFile = File(...),
+    category: Optional[str] = Form(None)
+):
+    """Upload and parse a document file (.md, .pdf, .html, .txt) into the Knowledge Base."""
+    import tempfile
+    ext = Path(file.filename).suffix.lower()
+    if ext not in (".md", ".markdown", ".pdf", ".html", ".htm", ".txt", ".json"):
+        raise HTTPException(status_code=400, detail=f"Unsupported file format '{ext}'. Supported: .md, .pdf, .html, .txt, .json")
+
+    PROJECT_ROOT = BASE_DIR.parent
+    kb_storage_dir = PROJECT_ROOT / "data" / "knowledge_base"
+    kb_storage_dir.mkdir(parents=True, exist_ok=True)
+    permanent_path = kb_storage_dir / file.filename
+
+    with open(permanent_path, "wb") as f_perm:
+        content = await file.read()
+        f_perm.write(content)
+
+    try:
+        kb = get_kb()
+        count = kb.ingest_file(str(permanent_path), category=category)
+        with kb._get_connection() as con:
+            con.execute("UPDATE kb_documents SET source_file = ? WHERE source_file = ?", (file.filename, permanent_path.name))
+            con.commit()
+    except Exception as e:
+        logger.error(f"Failed to ingest uploaded KB file {file.filename}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to process and index file: {str(e)}")
+
+    return {
+        "status": "success",
+        "filename": file.filename,
+        "chunks_indexed": count,
+        "message": f"Successfully indexed {count} chunks from '{file.filename}' into Knowledge Base."
+    }
+
+
+@app.get("/api/kb/view/{filename:path}")
+def api_kb_view_file(filename: str):
+    """
+    Serve knowledge base documents (PDFs, Markdown, HTML, text) inline for in-browser viewing.
+    Browsers natively support deep-linking to specific PDF pages using the URL hash '#page=N'.
+    """
+    clean_name = os.path.basename(filename.strip())
+    if not clean_name:
+        raise HTTPException(status_code=400, detail="Invalid filename")
+
+    PROJECT_ROOT = BASE_DIR.parent
+    # Search potential source directories
+    search_dirs = [
+        PROJECT_ROOT / "faq",
+        PROJECT_ROOT / "data" / "faq",
+        PROJECT_ROOT / "data" / "knowledge_base",
+        PROJECT_ROOT / "docs" / "faq",
+        PROJECT_ROOT / "docs",
+        PROJECT_ROOT,
+        PROJECT_ROOT.parent,
+        BASE_DIR / "static",
+    ]
+
+    target_path = None
+    # 1. Direct candidates
+    for s_dir in search_dirs:
+        candidate = s_dir / clean_name
+        if candidate.exists() and candidate.is_file():
+            target_path = candidate
+            break
+
+    # 2. Recursive fallback for nested subfolders (e.g. faq/safety/...)
+    if not target_path:
+        for s_dir in search_dirs:
+            if s_dir.exists() and s_dir.is_dir():
+                found = list(s_dir.rglob(clean_name))
+                if found and found[0].is_file():
+                    target_path = found[0]
+                    break
+
+    if not target_path:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Document '{clean_name}' not found in Knowledge Base repository."
+        )
+
+    ext = target_path.suffix.lower()
+    media_types = {
+        ".pdf": "application/pdf",
+        ".md": "text/plain; charset=utf-8",
+        ".markdown": "text/plain; charset=utf-8",
+        ".txt": "text/plain; charset=utf-8",
+        ".html": "text/html; charset=utf-8",
+        ".htm": "text/html; charset=utf-8",
+        ".json": "application/json",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+    }
+    media_type = media_types.get(ext, "application/octet-stream")
+
+    return FileResponse(
+        path=str(target_path),
+        media_type=media_type,
+        headers={
+            "Content-Disposition": f'inline; filename="{clean_name}"',
+            "Cache-Control": "public, max-age=3600",
+        }
+    )
+
+
+@app.get("/kb/viewer/{filename:path}", response_class=HTMLResponse)
+def kb_web_viewer(
+    request: Request,
+    filename: str,
+    page: int = 1,
+    title: Optional[str] = None,
+    section: Optional[str] = None
+):
+    """
+    Dedicated in-browser Web PDF Viewer powered by Mozilla PDF.js.
+    Renders pure HTML5 Canvas in the browser tab, preventing external Adobe Acrobat desktop/plugin hijack.
+    """
+    clean_name = os.path.basename(filename.strip())
+    return templates.TemplateResponse(
+        request=request,
+        name="pdf_viewer.html",
+        context={
+            "filename": clean_name,
+            "initial_page": max(1, page),
+            "title": title or clean_name,
+            "section": section
+        }
+    )
+
 
 
 

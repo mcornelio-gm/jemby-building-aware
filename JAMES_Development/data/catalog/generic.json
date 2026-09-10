@@ -1,0 +1,677 @@
+{
+  "manufacturer": "Generic",
+  "items": [
+    {
+      "part_number": "BAB1015",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 1-Pole 15A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 15.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1015.html",
+        "upc": "786679301159"
+      }
+    },
+    {
+      "part_number": "BAB1020",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 1-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 20.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1020.html",
+        "upc": "786679301203"
+      }
+    },
+    {
+      "part_number": "BAB1030",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 1-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 30.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1030.html",
+        "upc": "786679301302"
+      }
+    },
+    {
+      "part_number": "BAB2020",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 2-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 20.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2020.html",
+        "upc": "786679302200"
+      }
+    },
+    {
+      "part_number": "BAB2030",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 2-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 30.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2030.html",
+        "upc": "786679302309"
+      }
+    },
+    {
+      "part_number": "BAB2050",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 2-Pole 50A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 50.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2050.html",
+        "upc": "786679302507"
+      }
+    },
+    {
+      "part_number": "BAB3020",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 20A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 20.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3020.html",
+        "upc": "786679303207"
+      }
+    },
+    {
+      "part_number": "BAB3030",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 30A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 30.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3030.html",
+        "upc": "786679303306"
+      }
+    },
+    {
+      "part_number": "BAB3050",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 50A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 50.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3050.html",
+        "upc": "786679303504"
+      }
+    },
+    {
+      "part_number": "BAB3060",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 60A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3060.html",
+        "upc": "786679303603"
+      }
+    },
+    {
+      "part_number": "BAB3100",
+      "series": "Quicklag Industrial Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Eaton Quicklag BAB 3-Pole 100A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "BAB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3100.html",
+        "upc": "786679303993"
+      }
+    },
+    {
+      "part_number": "EDB34020",
+      "series": "E-Frame 480Y/277V Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D EDB 3-Pole 20A 480Y/277V Bolt-On Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 20.0,
+        "poles": 3,
+        "aic": 18.0,
+        "frame": "E-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EDB34020",
+        "upc": "785901875247"
+      }
+    },
+    {
+      "part_number": "EDB34030",
+      "series": "E-Frame 480Y/277V Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D EDB 3-Pole 30A 480Y/277V Bolt-On Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 30.0,
+        "poles": 3,
+        "aic": 18.0,
+        "frame": "E-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EDB34030",
+        "upc": "785901875261"
+      }
+    },
+    {
+      "part_number": "EDB34050",
+      "series": "E-Frame 480Y/277V Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D EDB 3-Pole 50A 480Y/277V Bolt-On Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 50.0,
+        "poles": 3,
+        "aic": 18.0,
+        "frame": "E-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EDB34050",
+        "upc": "785901875308"
+      }
+    },
+    {
+      "part_number": "EDB34100",
+      "series": "E-Frame 480Y/277V Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D EDB 3-Pole 100A 480Y/277V Bolt-On Circuit Breaker",
+      "specs": {
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 18.0,
+        "frame": "E-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/EDB34100",
+        "upc": "785901875407"
+      }
+    },
+    {
+      "part_number": "HDL36030",
+      "series": "PowerPact H-Frame Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D PowerPact H-Frame 3-Pole 30A 600V Thermal Magnetic Breaker",
+      "specs": {
+        "voltage": "600V",
+        "amps": 30.0,
+        "poles": 3,
+        "aic": 25.0,
+        "frame": "H-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/HDL36030",
+        "upc": "785901577905"
+      }
+    },
+    {
+      "part_number": "HDL36060",
+      "series": "PowerPact H-Frame Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D PowerPact H-Frame 3-Pole 60A 600V Thermal Magnetic Breaker",
+      "specs": {
+        "voltage": "600V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 25.0,
+        "frame": "H-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/HDL36060",
+        "upc": "785901577943"
+      }
+    },
+    {
+      "part_number": "HDL36100",
+      "series": "PowerPact H-Frame Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D PowerPact H-Frame 3-Pole 100A 600V Thermal Magnetic Breaker",
+      "specs": {
+        "voltage": "600V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 25.0,
+        "frame": "H-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/HDL36100",
+        "upc": "785901578001"
+      }
+    },
+    {
+      "part_number": "HDL36150",
+      "series": "PowerPact H-Frame Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D PowerPact H-Frame 3-Pole 150A 600V Thermal Magnetic Breaker",
+      "specs": {
+        "voltage": "600V",
+        "amps": 150.0,
+        "poles": 3,
+        "aic": 25.0,
+        "frame": "H-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/HDL36150",
+        "upc": "785901578063"
+      }
+    },
+    {
+      "part_number": "JDL36225",
+      "series": "PowerPact J-Frame Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D PowerPact J-Frame 3-Pole 225A 600V Thermal Magnetic Breaker",
+      "specs": {
+        "voltage": "600V",
+        "amps": 225.0,
+        "poles": 3,
+        "aic": 25.0,
+        "frame": "J-Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/JDL36225",
+        "upc": "785901578209"
+      }
+    },
+    {
+      "part_number": "QOB115",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 1-Pole 15A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 15.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB115",
+        "upc": "785901416709"
+      }
+    },
+    {
+      "part_number": "QOB120",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 1-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 20.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB120",
+        "upc": "785901416723"
+      }
+    },
+    {
+      "part_number": "QOB130",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 1-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 30.0,
+        "poles": 1,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB130",
+        "upc": "785901416747"
+      }
+    },
+    {
+      "part_number": "QOB220",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 2-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 20.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB220",
+        "upc": "785901416860"
+      }
+    },
+    {
+      "part_number": "QOB230",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 2-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 30.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB230",
+        "upc": "785901416884"
+      }
+    },
+    {
+      "part_number": "QOB250",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 2-Pole 50A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 50.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB250",
+        "upc": "785901416921"
+      }
+    },
+    {
+      "part_number": "QOB260",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 2-Pole 60A 120/240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "120/240V",
+        "amps": 60.0,
+        "poles": 2,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB260",
+        "upc": "785901416945"
+      }
+    },
+    {
+      "part_number": "QOB3100",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 3-Pole 100A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 100.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB3100",
+        "upc": "785901417201"
+      }
+    },
+    {
+      "part_number": "QOB320",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 3-Pole 20A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 20.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB320",
+        "upc": "785901417065"
+      }
+    },
+    {
+      "part_number": "QOB330",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 3-Pole 30A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 30.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB330",
+        "upc": "785901417089"
+      }
+    },
+    {
+      "part_number": "QOB350",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 3-Pole 50A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 50.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB350",
+        "upc": "785901417126"
+      }
+    },
+    {
+      "part_number": "QOB360",
+      "series": "QO/QOB Bolt-On Series",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Molded Case Circuit Breaker",
+      "description": "Square D QOB 3-Pole 60A 240V Bolt-On Branch Breaker",
+      "specs": {
+        "voltage": "240V",
+        "amps": 60.0,
+        "poles": 3,
+        "aic": 10.0,
+        "frame": "QOB Frame",
+        "trip_type": "Thermal Magnetic",
+        "nema_rating": "NEMA 1"
+      },
+      "docs": {
+        "cut_sheet": "https://www.se.com/us/en/product/QOB360",
+        "upc": "785901417140"
+      }
+    }
+  ]
+}

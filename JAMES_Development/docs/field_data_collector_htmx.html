@@ -1771,7 +1771,6 @@
   >
     <div 
       class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col"
-      @click.away="showBreakerModal = false"
     >
       <!-- Modal Header -->
       <div class="h-12 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
@@ -1786,33 +1785,137 @@
       <!-- Modal Body -->
       <div class="p-5 space-y-4 text-xs">
         
-        <!-- Master Catalog Breaker Selector (Eaton Power Defense) -->
-        <div class="p-2.5 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 space-y-1.5" x-show="catalogBreakers.length > 0">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-indigo-700 dark:text-indigo-300 text-[11px] flex items-center gap-1">
-              <span>⚡</span><span>Master Catalog Breaker Picker</span>
-            </span>
-            <span class="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 font-bold" x-text="catalogBreakers.length + ' Available'"></span>
+        <!-- 1. Poles & Gang Configuration (Top-Level Primary Choice) -->
+        <div>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+            Poles & Gang Configuration
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              type="button" 
+              @click="activeBreaker.poles = 1" 
+              class="h-11 px-3 rounded-xl border font-bold flex flex-col items-center justify-center transition cursor-pointer"
+              :class="activeBreaker.poles === 1 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 ring-2 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+            >
+              <span class="text-xs">1-Pole</span>
+              <span class="text-[9px] font-normal opacity-80">1 Slot • 120V / 277V</span>
+            </button>
+
+            <button 
+              type="button" 
+              @click="activeBreaker.poles = 2" 
+              class="h-11 px-3 rounded-xl border font-bold flex flex-col items-center justify-center transition cursor-pointer"
+              :class="activeBreaker.poles === 2 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 ring-2 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+            >
+              <span class="text-xs">2-Pole</span>
+              <span class="text-[9px] font-normal opacity-80">2 Slots • 208V / 480V</span>
+            </button>
+
+            <button 
+              type="button" 
+              @click="activeBreaker.poles = 3" 
+              class="h-11 px-3 rounded-xl border font-bold flex flex-col items-center justify-center transition cursor-pointer"
+              :class="activeBreaker.poles === 3 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 ring-2 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+            >
+              <span class="text-xs">3-Pole</span>
+              <span class="text-[9px] font-normal opacity-80">3 Slots • 3Ø 208/480V</span>
+            </button>
           </div>
+        </div>
+
+        <!-- 2. Master Catalog Breaker & Custom Part Number Selector -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800 dark:text-slate-200 text-[11px] flex items-center gap-1.5">
+              <span>⚡</span><span>Breaker Model & Catalog Identity (Optional)</span>
+            </span>
+            <span 
+              class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold"
+              :class="activeBreaker.is_custom_part ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800' : (activeBreaker.part_no ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-500')"
+              x-text="activeBreaker.is_custom_part ? '🟡 Uncataloged / Staged' : (activeBreaker.part_no ? '✓ Master Catalog' : 'Standard Generic')"
+            ></span>
+          </div>
+
+          <!-- Quick Dropdown from Master Catalog (dynamically filtered by selected poles) -->
+          <div>
+            <div class="flex items-center justify-between mb-0.5">
+              <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400" x-text="'Pick from Master Catalog (' + (activeBreaker.poles || 1) + '-Pole)'"></label>
+              <span class="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 font-bold" x-text="(catalogBreakers ? catalogBreakers.length : 0) + ' Available'"></span>
+            </div>
+            <select 
+              :value="activeBreaker ? (activeBreaker.is_custom_part ? '' : (activeBreaker.part_no || '')) : ''" 
+              @change="onBreakerCatalogSelect($event.target.value)"
+              class="w-full h-8 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono cursor-pointer focus:outline-none focus:border-indigo-500"
+            >
+              <option value="">-- Quick Select from Verified Master Catalog Breakers --</option>
+              <template x-for="b in (catalogBreakers || [])" :key="b.part_number">
+                <option :value="b.part_number" x-text="b.part_number + ' • ' + (b.manufacturer || '') + ' ' + ((b.specs && b.specs.poles) || b.poles || 1) + 'P ' + ((b.specs && b.specs.amps) || b.amps || '') + 'A (' + ((b.specs && b.specs.frame) || b.description || '') + ')'" :selected="activeBreaker && activeBreaker.part_no === b.part_number"></option>
+              </template>
+            </select>
+          </div>
+
+          <!-- Custom / Physical Part Number & Brand Fields -->
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                Breaker Part / Model #
+              </label>
+              <input 
+                type="text" 
+                :value="activeBreaker ? (activeBreaker.part_no || '') : ''" 
+                @input="onCustomPartNoInput($event.target.value)"
+                placeholder="e.g. QOB320, BAB2020, THQL32020" 
+                class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
+              >
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                Breaker Brand / OEM
+              </label>
+              <select 
+                x-model="activeBreaker.mfr" 
+                class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer focus:outline-none focus:border-indigo-500"
+              >
+                <option value="">-- None / Select Brand --</option>
+                <option value="Square D / Schneider Electric">Square D / Schneider Electric</option>
+                <option value="Eaton / Cutler-Hammer">Eaton / Cutler-Hammer</option>
+                <option value="Siemens">Siemens</option>
+                <option value="ABB / GE (General Electric)">ABB / GE (General Electric)</option>
+                <option value="Federal Pacific (FPE)">Federal Pacific (FPE)</option>
+                <option value="Zinsco / Sylvania">Zinsco / Sylvania</option>
+                <option value="Murray">Murray</option>
+                <option value="Challenger">Challenger</option>
+                <option value="Bussmann (Eaton)">Bussmann (Eaton)</option>
+                <option value="Leviton">Leviton</option>
+                <option value="Custom / Generic">Custom / Generic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Target Downstream Asset Link -->
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Downstream Equipment / Load (Optional)</label>
           <select 
-            x-model="activeBreaker.part_no" 
-            @change="onBreakerCatalogSelect(activeBreaker.part_no)"
-            class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+            :value="activeBreaker ? (activeBreaker.targetLoad || '') : ''" 
+            @change="onBreakerTargetLoadChange($event.target.value)"
+            class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer"
           >
-            <option value="">-- Custom / Pick from Power Defense Catalog --</option>
-            <template x-for="b in catalogBreakers" :key="b.part_number">
-              <option :value="b.part_number" x-text="b.part_number + ' • ' + b.specs.poles + 'P ' + b.specs.amps + 'A (' + b.specs.frame + ')'"></option>
+            <option value="">-- No Specific Downstream Asset Linked --</option>
+            <template x-for="item in eligibleDownstreamEquipment" :key="item.id">
+              <option :value="item.tag" x-text="item.tag + ' — ' + (item.name || item.type_name || item.tag) + ' (' + (item.room || 'Room') + ')'" :selected="activeBreaker && activeBreaker.targetLoad === item.tag"></option>
             </template>
           </select>
         </div>
 
-        <!-- Circuit Description / Load Tag -->
+        <!-- 4. Circuit / Downstream Load Description -->
         <div>
-          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Circuit / Load Description</label>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Circuit / Downstream Load Description</label>
           <input 
             type="text" 
             x-model="activeBreaker.desc" 
-            placeholder="e.g. Receptacles RM 102, Server Rack 1A, Lighting L-1..." 
+            placeholder="e.g. Distribution Panel (DP-1), Step-Down Transformer (T-1), Receptacles RM 102..." 
             class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
           >
         </div>
@@ -1842,18 +1945,14 @@
             </select>
           </div>
 
-          <!-- Poles & Multi-Slot Ganging -->
+          <!-- Conductor Wire Sizing -->
           <div>
-            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Poles & Gang Configuration</label>
-            <select x-model.number="activeBreaker.poles" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer">
-              <option :value="1">1-Pole (1 Slot • 120V/277V)</option>
-              <option :value="2">2-Pole (2 Slots • 208V/480V)</option>
-              <option :value="3">3-Pole (3 Slots • 3Ø 208V/480V)</option>
-            </select>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Conductor Wire Sizing</label>
+            <input type="text" x-model="activeBreaker.wire" placeholder="e.g. 12 AWG Cu" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
           </div>
 
           <!-- Breaker Protection Type -->
-          <div>
+          <div class="col-span-2">
             <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Breaker Protection Type</label>
             <select x-model="activeBreaker.type" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer">
               <option value="MCCB">Thermal-Magnetic (MCCB)</option>
@@ -1864,23 +1963,6 @@
               <option value="LSI">Electronic Trip (LSI/LSIG)</option>
             </select>
           </div>
-
-          <!-- Conductor Wire Sizing -->
-          <div>
-            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Conductor Wire Sizing</label>
-            <input type="text" x-model="activeBreaker.wire" placeholder="e.g. 12 AWG Cu" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
-          </div>
-        </div>
-
-        <!-- Target Downstream Asset Link -->
-        <div>
-          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Downstream Equipment / Load (Optional)</label>
-          <select x-model="activeBreaker.targetLoad" class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer">
-            <option value="">-- No Specific Downstream Asset Linked --</option>
-            <template x-for="item in eligibleDownstreamEquipment" :key="item.id">
-              <option :value="item.tag" x-text="item.tag + ' — ' + item.name + ' (' + (item.room || 'Room') + ')'"></option>
-            </template>
-          </select>
         </div>
       </div>
 
@@ -1990,10 +2072,10 @@
           </div>
           <div>
             <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>JAMES Field Collector Workflow & Field Guide</span>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-semibold">Digital Twin Guide</span>
+              <span>JAMES Field Assistant & Knowledge Base</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-semibold">Building-Aware AI/FAQ</span>
             </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Step-by-step instructions for physical field surveys, panel schedules, photo notes, and hierarchy mapping.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Searchable answers, step-by-step guides, and Building-Aware workflow walkthroughs.</p>
           </div>
         </div>
         <button 
@@ -2005,11 +2087,52 @@
         </button>
       </div>
 
+      <!-- Live Search & Natural Question Bar -->
+      <div class="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shrink-0">
+        <div class="relative flex items-center">
+          <span class="absolute left-3.5 text-slate-400 text-sm">🔍</span>
+          <input 
+            type="text" 
+            x-model="helpSearch"
+            @input="onHelpSearchInput()"
+            placeholder="Ask a question or search keywords (e.g. 'How do I add a breaker?', 'Add device', 'Resolve loads', 'Fed from', 'Photos')..." 
+            class="w-full pl-10 pr-24 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition shadow-inner"
+          >
+          <div class="absolute right-2.5 flex items-center gap-1.5">
+            <button 
+              type="button" 
+              x-show="helpSearch.length > 0" 
+              @click="helpSearch = ''; onHelpSearchInput()" 
+              class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 transition cursor-pointer"
+              title="Clear search"
+            >
+              ✕ Clear
+            </button>
+            <span x-show="helpSearch.length === 0" class="text-[10px] text-slate-400 font-mono hidden sm:inline-block px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 border border-slate-300/40 dark:border-slate-700">Instant FAQ</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Navigation Tabs -->
       <div class="px-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-[#0E1626] flex gap-1 overflow-x-auto shrink-0 py-2">
         <button 
           type="button"
-          @click="activeHelpTab = 'flow'"
+          @click="activeHelpTab = 'faq'"
+          :class="activeHelpTab === 'faq' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+          class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+        >
+          <span>❓</span>
+          <span>Searchable FAQ</span>
+          <span 
+            class="px-1.5 py-0.2 rounded-full text-[10px] font-mono"
+            :class="activeHelpTab === 'faq' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
+            x-text="filteredFaqs.length"
+          ></span>
+        </button>
+
+        <button 
+          type="button"
+          @click="activeHelpTab = 'flow'; helpSearch = ''"
           :class="activeHelpTab === 'flow' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
           class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
         >
@@ -2019,7 +2142,7 @@
 
         <button 
           type="button"
-          @click="activeHelpTab = 'panels'"
+          @click="activeHelpTab = 'panels'; helpSearch = ''"
           :class="activeHelpTab === 'panels' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
           class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
         >
@@ -2029,7 +2152,7 @@
 
         <button 
           type="button"
-          @click="activeHelpTab = 'photos'"
+          @click="activeHelpTab = 'photos'; helpSearch = ''"
           :class="activeHelpTab === 'photos' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
           class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
         >
@@ -2039,7 +2162,7 @@
 
         <button 
           type="button"
-          @click="activeHelpTab = 'stack'"
+          @click="activeHelpTab = 'stack'; helpSearch = ''"
           :class="activeHelpTab === 'stack' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
           class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
         >
@@ -2049,7 +2172,7 @@
 
         <button 
           type="button"
-          @click="activeHelpTab = 'diagram'"
+          @click="activeHelpTab = 'diagram'; helpSearch = ''"
           :class="activeHelpTab === 'diagram' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
           class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
         >
@@ -2059,7 +2182,7 @@
 
         <button 
           type="button"
-          @click="activeHelpTab = 'tips'"
+          @click="activeHelpTab = 'tips'; helpSearch = ''"
           :class="activeHelpTab === 'tips' ? 'bg-indigo-600 text-white font-semibold shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
           class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
         >
@@ -2070,6 +2193,201 @@
 
       <!-- Tab Content Area -->
       <div class="p-6 overflow-y-auto flex-1 space-y-5 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+        
+        <!-- TAB 0: SEARCHABLE FAQ ACCORDION -->
+        <div x-show="activeHelpTab === 'faq'" class="space-y-4">
+          <!-- Category Filter Pills -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'all'"
+              :class="helpFaqCategory === 'all' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 cursor-pointer"
+            >
+              All Topics
+            </button>
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'assets'"
+              :class="helpFaqCategory === 'assets' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+            >
+              <span>⚡</span>
+              <span>Assets & Hierarchy</span>
+            </button>
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'breakers'"
+              :class="helpFaqCategory === 'breakers' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+            >
+              <span>🗄️</span>
+              <span>Breakers & Panels</span>
+            </button>
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'connected_loads'"
+              :class="helpFaqCategory === 'connected_loads' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+            >
+              <span>⚠️</span>
+              <span>Connected Loads</span>
+            </button>
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'photos'"
+              :class="helpFaqCategory === 'photos' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+            >
+              <span>📷</span>
+              <span>Photos & Notes</span>
+            </button>
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'facility'"
+              :class="helpFaqCategory === 'facility' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+            >
+              <span>🏢</span>
+              <span>Facility Twins & SLD</span>
+            </button>
+            <button 
+              type="button" 
+              @click="helpFaqCategory = 'field_tips'"
+              :class="helpFaqCategory === 'field_tips' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+              class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+            >
+              <span>📱</span>
+              <span>Field Tips & Offline</span>
+            </button>
+          </div>
+
+          <!-- FAQ Cards List -->
+          <div class="space-y-3">
+            <template x-for="faq in filteredFaqs" :key="faq.id">
+              <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/40 hover:border-indigo-300 dark:hover:border-indigo-700/70 transition shadow-2xs">
+                <!-- Card Header -->
+                <button 
+                  type="button"
+                  @click="toggleFaq(faq.id)"
+                  class="w-full px-4 py-3 text-left flex items-start justify-between gap-3 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition"
+                >
+                  <div class="flex items-start gap-2.5">
+                    <span class="text-base shrink-0 mt-0.5" x-text="faq.icon"></span>
+                    <div>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-xs" x-text="faq.question"></h4>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="faq.categoryName"></span>
+                      </div>
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" x-text="faq.summary"></p>
+                    </div>
+                  </div>
+                  <span 
+                    class="text-slate-400 transform transition-transform duration-200 text-xs shrink-0 mt-1"
+                    :class="isFaqExpanded(faq.id) ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''"
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                <!-- Card Content (Accordion Body) -->
+                <div x-show="isFaqExpanded(faq.id)" x-cloak class="px-4 pb-3.5 pt-1 border-t border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-[#0B1220] space-y-3">
+                  <!-- Steps List -->
+                  <div class="space-y-1.5 pt-2">
+                    <template x-for="(step, idx) in faq.steps" :key="idx">
+                      <div class="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+                        <span class="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-bold font-mono text-[10px] flex items-center justify-center shrink-0 mt-0.5" x-text="idx + 1"></span>
+                        <span class="leading-relaxed" x-text="step"></span>
+                      </div>
+                    </template>
+                  </div>
+
+                  <!-- Actions & Tags Footer -->
+                  <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <template x-for="tag in faq.tags" :key="tag">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono" x-text="'#' + tag"></span>
+                      </template>
+                    </div>
+                    <template x-if="faq.action">
+                      <button 
+                        type="button" 
+                        @click="runFaqAction(faq.action.key)"
+                        class="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition shadow-2xs cursor-pointer flex items-center gap-1"
+                      >
+                        <span x-text="faq.action.label"></span>
+                      </button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- FTS5 Documentation Knowledge Base Matches -->
+            <div x-show="kbSearchResults.length > 0" class="pt-3 space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">📚</span>
+                  <h4 class="font-bold text-slate-900 dark:text-white text-xs">Knowledge Base & Technical Spec Matches (FTS5)</h4>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-semibold" x-text="kbSearchResults.length + ' found'"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span x-show="kbSearchLoading" class="text-[10px] text-indigo-500 font-mono animate-pulse">Searching FTS5...</span>
+                  <span class="text-[10px] text-slate-400 font-mono hidden sm:inline-block">SQLite FTS5 Ranked</span>
+                </div>
+              </div>
+
+              <div class="space-y-2.5">
+                <template x-for="kb in kbSearchResults" :key="kb.id">
+                  <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B1220] hover:border-indigo-400 dark:hover:border-indigo-600 transition shadow-2xs space-y-1.5">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-bold text-slate-900 dark:text-white text-xs" x-text="kb.title"></span>
+                        <span class="text-slate-400">›</span>
+                        <span class="text-slate-600 dark:text-slate-300 text-xs font-semibold" x-text="kb.section_heading"></span>
+                        <span x-show="kb.page_number" class="px-1.5 py-0.2 rounded text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono" x-text="'p. ' + kb.page_number"></span>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="kb.source_type"></span>
+                        <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-mono font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-800/50" x-text="kb.category"></span>
+                        <span class="text-[10px] text-slate-400 font-mono truncate max-w-[140px]" x-text="kb.source_file"></span>
+                      </div>
+                    </div>
+                    <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans" x-html="kb.snippet"></p>
+                    <div class="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-100 dark:border-slate-800/80">
+                      <button type="button"
+                              x-show="kb.source_file"
+                              @click="openDocumentViewer(kb.source_file, kb.page_number, kb.title, kb.section_heading)"
+                              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-xs hover:shadow transition cursor-pointer group"
+                      >
+                        <span>📖</span>
+                        <span x-text="kb.source_type === 'pdf' ? (kb.page_number ? 'Open PDF (Page ' + kb.page_number + ') ↗' : 'Open PDF ↗') : 'Open Document ↗'"></span>
+                        <svg class="w-3.5 h-3.5 text-indigo-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                      </button>
+                      <span class="text-[10px] text-slate-400 font-mono truncate max-w-[200px]" x-text="kb.source_file"></span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Empty Search State -->
+            <div x-show="filteredFaqs.length === 0 && kbSearchResults.length === 0" class="p-8 text-center space-y-3 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/30">
+              <div class="text-3xl">🔍</div>
+              <div class="space-y-1">
+                <h4 class="font-bold text-slate-900 dark:text-white text-xs">No matching questions or documents found</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Try searching for common terms like "breaker", "add device", "fed from", or "unresolved".</p>
+              </div>
+              <div class="flex items-center justify-center gap-2 flex-wrap pt-2">
+                <button type="button" @click="helpSearch = 'device'; onHelpSearchInput()" class="px-2 py-1 rounded text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 cursor-pointer">Add Device</button>
+                <button type="button" @click="helpSearch = 'breaker'; onHelpSearchInput()" class="px-2 py-1 rounded text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 cursor-pointer">Breakers & Poles</button>
+                <button type="button" @click="helpSearch = 'unresolved'; onHelpSearchInput()" class="px-2 py-1 rounded text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 cursor-pointer">Unresolved Loads</button>
+                <button type="button" @click="helpSearch = 'fed from'; onHelpSearchInput()" class="px-2 py-1 rounded text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 cursor-pointer">Fed From Source</button>
+                <button type="button" @click="helpSearch = 'photo'; onHelpSearchInput()" class="px-2 py-1 rounded text-xs bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 cursor-pointer">Photos & Notes</button>
+              </div>
+            </div>
+          </div>
+        </div>
         
         <!-- TAB 1: SURVEY FLOW -->
         <div x-show="activeHelpTab === 'flow'" class="space-y-4">
@@ -2420,9 +2738,186 @@
         stack: config.initialStack || [],
         masterCatalog: config.masterCatalog || [],
         
-        // Help Modal State
+        // Help & Searchable FAQ Modal State
         showHelpModal: false,
-        activeHelpTab: 'flow',
+        activeHelpTab: 'faq',
+        helpSearch: '',
+        helpFaqCategory: 'all',
+        helpExpandedFaqs: {},
+        kbSearchResults: [],
+        kbSearchLoading: false,
+        kbDebounceTimer: null,
+
+        // In-Browser PDF & Document Viewer State
+        showPdfModal: false,
+        pdfModalUrl: '',
+        pdfModalTitle: '',
+        pdfModalPage: null,
+        pdfModalFilename: '',
+        faqItems: [
+          {
+            id: 'add_device',
+            category: 'assets',
+            categoryName: 'Assets & Hierarchy',
+            icon: '⚡',
+            question: 'How do I add a new electrical device, panel, or transformer?',
+            summary: 'Create a physical asset in the facility digital twin and connect it into the power distribution tree.',
+            tags: ['add', 'device', 'equipment', 'asset', 'panel', 'transformer', 'switchboard', 'new', 'create'],
+            steps: [
+              'Click the blue "+ New Asset" button in the top navigation bar or sidebar.',
+              'Select an Equipment Type (e.g., Panelboard, Switchboard, Dry-Type Transformer, Generator) or pick a template from the Catalog.',
+              'Enter the unique Equipment Tag (e.g., MDP-1, T-1, LP-A), Equipment Name, and physical Location (Floor, Room).',
+              'Set the "Fed From / Upstream Source" dropdown to link it to its parent power source.',
+              'Click "💾 Save Asset" to record it into your facility survey stack.'
+            ],
+            action: { label: '+ Add New Asset', key: 'new_asset' }
+          },
+          {
+            id: 'add_breaker',
+            category: 'breakers',
+            categoryName: 'Breakers & Panels',
+            icon: '🗄️',
+            question: 'How do I add a circuit breaker to a panelboard or switchboard?',
+            summary: 'Configure circuit breaker poles, trip ratings, catalog models, and downstream load descriptions in the panel schedule.',
+            tags: ['breaker', 'add breaker', 'schedule', 'poles', '1p', '2p', '3p', 'trip rating', 'catalog', 'circuit'],
+            steps: [
+              'Open the target Panelboard or Switchboard in the equipment editor.',
+              'Scroll to the "Panel Schedule & Breakers" section and tap "+ Add Breaker".',
+              'Select the Pole configuration (1-Pole, 2-Pole, or 3-Pole) in the segmented top selector.',
+              'Enter the Trip Amperage (e.g., 20A, 100A, 225A) or choose a verified OEM model from the Master Catalog dropdown.',
+              'Select the downstream connected asset (or enter a branch circuit description like "HVAC Chiller-1").',
+              'Click "Save Breaker" to append it to the panel schedule.'
+            ],
+            action: { label: '📖 View Panel Guide', key: 'view_panels' }
+          },
+          {
+            id: 'unresolved_loads',
+            category: 'connected_loads',
+            categoryName: 'Connected Loads',
+            icon: '⚠️',
+            question: 'What is an "Unresolved Connected Load" and how do I resolve it?',
+            summary: 'Downstream equipment referencing this panel as its upstream feed that has not yet been assigned a specific breaker slot.',
+            tags: ['unresolved', 'connected loads', 'uplink', 'downstream', 'resolve', 'fed from', 'assign breaker', 'missing breaker'],
+            steps: [
+              'When another equipment item lists this panel in its "Fed From" field, JAMES tracks the upstream electrical connection.',
+              'If no breaker slot in the panel schedule currently points to that downstream asset, an amber "⚠️ Unresolved Connected Loads" card appears above the schedule.',
+              'Click the "Resolve" button next to the unassigned load.',
+              'The Breaker Inspector opens with the downstream load pre-selected and recommended 3-Pole / trip ratings pre-filled.',
+              'Review and tap "Save Breaker" to permanently link the breaker slot to the downstream equipment.'
+            ]
+          },
+          {
+            id: 'upstream_feed',
+            category: 'assets',
+            categoryName: 'Assets & Hierarchy',
+            icon: '🔌',
+            question: 'How do I connect equipment upstream (Fed From) to build the power tree?',
+            summary: 'Establish digital twin parent-child hierarchy from the utility service entrance down to branch panels.',
+            tags: ['fed from', 'upstream', 'parent', 'hierarchy', 'source', 'service entrance', 'utility', 'feed'],
+            steps: [
+              'In the equipment editor, locate the "Electrical Ratings & Supply" section.',
+              'Open the "Fed From / Upstream Source" dropdown list.',
+              'Select the feeding panel, switchboard, or transformer that supplies power to this equipment.',
+              'For the primary utility connection (e.g. MSB or Utility Service), select "Main Service / Utility Feed".',
+              'JAMES automatically draws connected topology lines on the Single-Line Diagram (SLD) based on these feeds.'
+            ]
+          },
+          {
+            id: 'nameplate_photos',
+            category: 'photos',
+            categoryName: 'Photos & Notes',
+            icon: '📷',
+            question: 'How do I capture nameplate photos and attach field observation notes?',
+            summary: 'Attach high-resolution physical nameplate photos and notes for engineering verification.',
+            tags: ['photo', 'camera', 'nameplate', 'notes', 'observation', 'upload', 'ipad', 'lightbox', 'field'],
+            steps: [
+              'In the equipment editor, select the "Nameplate & Site Photos" tab.',
+              'Tap "📷 Take Photo / Upload" to take a picture with your mobile device or select an existing photo file.',
+              'Add field notes in the text box (e.g., "Enclosure rusted at base; nameplate stamped 208Y/120V 3Ph 4W").',
+              'Tap "Add Field Note" to save the timestamped entry.',
+              'Click any thumbnail image to inspect it in high resolution using the zoomable Lightbox.'
+            ]
+          },
+          {
+            id: 'master_catalog',
+            category: 'breakers',
+            categoryName: 'Breakers & Panels',
+            icon: '📚',
+            question: 'How do I pick breakers from the Master Catalog?',
+            summary: 'Use verified manufacturer catalogs (Square D, Eaton, Schneider) with pre-filled frame sizes, AIC ratings, and mounting types.',
+            tags: ['catalog', 'master catalog', 'square d', 'eaton', 'schneider', 'bolt-on', 'plug-in', 'aic', 'frame'],
+            steps: [
+              'In the Breaker Inspector modal, select the Pole count (1P, 2P, or 3P).',
+              'Open the "Master Catalog Breaker" dropdown.',
+              'The list dynamically filters to match the selected pole count and manufacturer series.',
+              'Selecting an item automatically populates the Brand, Mounting type (Bolt-on/Plug-in), Frame, and Interrupting Capacity (AIC).',
+              'You can also customize trip amperage or enter non-catalog custom ratings as needed.'
+            ]
+          },
+          {
+            id: 'facility_twin',
+            category: 'facility',
+            categoryName: 'Facility Twins & SLD',
+            icon: '🏢',
+            question: 'How do I switch facilities or create a new client digital twin?',
+            summary: 'Manage multi-client facility datasets, switch between site projects, or create a clean industrial model.',
+            tags: ['facility', 'client', 'switch', 'database', 'new facility', 'model', 'twin', 'workspace', 'seed'],
+            steps: [
+              'Click the Facility Selector button (e.g., "Acme Industrial / Plant Alpha") in the top header.',
+              'Search through existing facilities across all clients or click "+ New Facility / Client Model".',
+              'Enter the Client Name and Facility Name.',
+              'Optionally check "Seed with standard industrial hierarchy templates" to pre-load a starter electrical tree.',
+              'Click "Launch Model" to load the workspace.'
+            ],
+            action: { label: '📁 Open Facility Finder', key: 'open_finder' }
+          },
+          {
+            id: 'single_line_diagram',
+            category: 'facility',
+            categoryName: 'Facility Twins & SLD',
+            icon: '⚡',
+            question: 'How do I generate and view the Single-Line Diagram (SLD)?',
+            summary: 'Visualize the full electrical distribution single-line diagram schematic and power flow hierarchy.',
+            tags: ['sld', 'single line diagram', 'schematic', 'topology', 'visualizer', 'power flow', 'export', 'svg'],
+            steps: [
+              'Click "⚡ Single-Line Diagram" in the top navigation bar.',
+              'JAMES computes the tree topology from Utility Feeds down to branch panels and generates an interactive SVG single-line schematic.',
+              'Click any equipment node on the diagram to open the slide-over Inspector and edit ratings in real time.',
+              'Use the Zoom & Pan controls or Export buttons to save SVG schematics and documentation.'
+            ],
+            action: { label: '⚡ Open SLD', key: 'open_sld' }
+          },
+          {
+            id: 'offline_mode',
+            category: 'field_tips',
+            categoryName: 'Field Tips & Offline',
+            icon: '📱',
+            question: 'How do I work offline in electrical basements or shielded vaults?',
+            summary: 'Survey smoothly without cellular reception, with local in-browser caching and instant export backups.',
+            tags: ['offline', 'basement', 'vault', 'connectivity', 'cache', 'backup', 'export json', 'safety'],
+            steps: [
+              'JAMES runs as a Progressive Web Application (PWA); once the page is loaded, the survey form works completely offline.',
+              'Changes are tracked locally with unsaved modifications safely flagged in the status bar.',
+              'When leaving the vault or reconnecting to network, tap "Export JSON" to create an offline snapshot backup.',
+              'Use the dark mode toggle (🌙) to optimize screen visibility in low-light switchgear rooms.'
+            ]
+          },
+          {
+            id: 'custom_attributes',
+            category: 'assets',
+            categoryName: 'Assets & Hierarchy',
+            icon: '🏷️',
+            question: 'What are Custom Attributes and when should I use them?',
+            summary: 'Add flexible, project-specific metadata fields to any equipment item.',
+            tags: ['custom attributes', 'metadata', 'arc flash', 'nema', 'enclosure', 'lock', 'metering', 'extra fields'],
+            steps: [
+              'In the equipment editor, scroll to the "Custom Attributes" section.',
+              'Tap "+ Add Field" to create an ad-hoc key-value row.',
+              'Enter the Attribute Name (e.g., "Arc Flash Hazard Category", "NEMA Enclosure", "Key Lock #") and its Value.',
+              'Custom attributes are preserved across all exports, reports, and digital twin models.'
+            ]
+          }
+        ],
 
         // Form & Editing State
         editingId: null,
@@ -2948,6 +3443,36 @@
           this.showBreakerModal = true;
         },
 
+        onBreakerTargetLoadChange(selectedTag) {
+          if (!this.activeBreaker) return;
+          this.activeBreaker.targetLoad = selectedTag || '';
+          if (!selectedTag) return;
+          
+          const pool = (typeof this.eligibleDownstreamEquipment !== 'undefined') ? this.eligibleDownstreamEquipment : [];
+          const targetItem = pool.find(item => item.tag === selectedTag || item.id === selectedTag);
+          if (targetItem) {
+            const formattedDesc = targetItem.name ? `${targetItem.name} (${targetItem.tag})` : targetItem.tag;
+            // Auto-populate circuit description with downstream target name and tag
+            this.activeBreaker.desc = formattedDesc;
+            
+            // Auto-suggest trip rating if available and activeBreaker trip is standard 20A default
+            if (targetItem.amps && (!this.activeBreaker.trip || this.activeBreaker.trip === '20')) {
+              const numericAmps = Math.round(Number(targetItem.amps));
+              if (!isNaN(numericAmps) && numericAmps > 0) {
+                this.activeBreaker.trip = String(numericAmps);
+                this.activeBreaker.wire = this.getConductor(numericAmps);
+              }
+            }
+            
+            // Auto-suggest poles if 3-phase or high voltage
+            if (targetItem.voltage && (targetItem.voltage.includes('3Ø') || targetItem.voltage.includes('480') || targetItem.voltage.includes('208Y'))) {
+              if (['transformers', 'switches', 'power_quality', 'panels'].includes(targetItem.domain) || targetItem.voltage.includes('480')) {
+                this.activeBreaker.poles = 3;
+              }
+            }
+          }
+        },
+
         saveBreakerAttributes() {
           const b = this.activeBreaker;
           const rIdx = b.rowIdx;
@@ -3400,9 +3925,270 @@
           });
         },
 
+        get unresolvedLoads() {
+          if (!this.isPanelEquipment() || !this.form || !this.form.tag) return [];
+          const panelTag = (this.form.tag || '').trim().toLowerCase();
+          const panelId = (this.editingId || this.form.id || '').trim().toLowerCase();
+          
+          const pool = (this.stack && this.stack.length > 0) ? this.stack : [];
+          
+          // Find child items claiming this panel as upstream feed
+          const claimedChildren = pool.filter(item => {
+            if (!item || !item.tag || item.id === panelId || item.tag.toLowerCase() === panelTag) return false;
+            const fedFrom = (item.fed_from || '').trim().toLowerCase();
+            const upstreamSources = (item.attributes && item.attributes.upstream_sources) 
+              ? item.attributes.upstream_sources.map(s => String(s).trim().toLowerCase()) 
+              : [];
+            return fedFrom === panelTag || fedFrom === panelId || upstreamSources.includes(panelTag) || upstreamSources.includes(panelId);
+          });
+          
+          // Check which claimed children are already assigned to a breaker slot in scheduleRows
+          const schedule = this.scheduleRows || [];
+          const assignedTags = new Set();
+          
+          schedule.forEach(r => {
+            if (!r) return;
+            const lt = (r.leftTargetLoad || '').trim().toLowerCase();
+            const rt = (r.rightTargetLoad || '').trim().toLowerCase();
+            const ld = (r.leftDesc || '').trim().toLowerCase();
+            const rd = (r.rightDesc || '').trim().toLowerCase();
+            
+            if (lt) assignedTags.add(lt);
+            if (rt) assignedTags.add(rt);
+            
+            claimedChildren.forEach(child => {
+              const cTag = (child.tag || '').trim().toLowerCase();
+              if (cTag && (lt === cTag || rt === cTag || (ld && ld.includes(cTag)) || (rd && rd.includes(cTag)))) {
+                assignedTags.add(cTag);
+              }
+            });
+          });
+          
+          return claimedChildren.filter(child => {
+            const cTag = (child.tag || '').trim().toLowerCase();
+            const cId = (child.id || '').trim().toLowerCase();
+            return !assignedTags.has(cTag) && !assignedTags.has(cId);
+          });
+        },
+
+        resolveUnresolvedLoad(loadItem) {
+          if (!loadItem || !this.scheduleRows || this.scheduleRows.length === 0) return;
+          
+          // 1. Determine suggested poles
+          let suggestedPoles = 1;
+          const v = (loadItem.voltage || '').toLowerCase();
+          const d = (loadItem.domain || '').toLowerCase();
+          if (v.includes('3ø') || v.includes('3 phase') || v.includes('480') || d === 'transformers' || d === 'switches' || d === 'power_quality' || Number(loadItem.amps) >= 60) {
+            suggestedPoles = 3;
+          } else if (v.includes('208') || v.includes('240') || Number(loadItem.amps) >= 30) {
+            suggestedPoles = 2;
+          }
+          
+          // 2. Find first available slot in schedule that fits suggestedPoles
+          let targetRowIdx = -1;
+          let targetSide = 'left';
+          let targetSlot = 1;
+          
+          // Search left side first
+          for (let i = 0; i <= this.scheduleRows.length - suggestedPoles; i++) {
+            let fits = true;
+            for (let p = 0; p < suggestedPoles; p++) {
+              const r = this.scheduleRows[i + p];
+              if (!r || r.leftTrip || r.leftIsGanged) {
+                fits = false;
+                break;
+              }
+            }
+            if (fits) {
+              targetRowIdx = i;
+              targetSide = 'left';
+              targetSlot = this.scheduleRows[i].leftSlot;
+              break;
+            }
+          }
+          
+          // If no fit on left, search right side
+          if (targetRowIdx === -1) {
+            for (let i = 0; i <= this.scheduleRows.length - suggestedPoles; i++) {
+              let fits = true;
+              for (let p = 0; p < suggestedPoles; p++) {
+                const r = this.scheduleRows[i + p];
+                if (!r || r.rightTrip || r.rightIsGanged) {
+                  fits = false;
+                  break;
+                }
+              }
+              if (fits) {
+                targetRowIdx = i;
+                targetSide = 'right';
+                targetSlot = this.scheduleRows[i].rightSlot;
+                break;
+              }
+            }
+          }
+          
+          // Fallback to slot 1 if all occupied
+          if (targetRowIdx === -1) {
+            targetRowIdx = 0;
+            targetSide = 'left';
+            targetSlot = this.scheduleRows[0].leftSlot;
+          }
+          
+          const targetRow = this.scheduleRows[targetRowIdx];
+          const targetAmps = Math.round(Number(loadItem.amps)) || (d === 'transformers' ? 100 : 20);
+          const formattedDesc = loadItem.name ? `${loadItem.name} (${loadItem.tag})` : loadItem.tag;
+          
+          this.activeBreaker = {
+            rowIdx: targetRowIdx,
+            side: targetSide,
+            slot: targetSlot,
+            desc: formattedDesc,
+            trip: String(targetAmps),
+            poles: suggestedPoles,
+            type: 'MCCB',
+            wire: this.getConductor(targetAmps),
+            targetLoad: loadItem.tag,
+            part_no: '',
+            mfr: '',
+            is_custom_part: false,
+            catalog_status: 'verified',
+            phase: targetRow.phase,
+            phaseColor: targetRow.phaseColor,
+            isOccupied: false
+          };
+          
+          this.showBreakerModal = true;
+        },
+
+        // Searchable FAQ Getters & Handlers
+        get filteredFaqs() {
+          const query = (this.helpSearch || '').trim().toLowerCase();
+          const category = this.helpFaqCategory || 'all';
+          return (this.faqItems || []).filter(item => {
+            const matchesCategory = (category === 'all' || item.category === category);
+            if (!matchesCategory) return false;
+            if (!query) return true;
+            const matchQuestion = item.question && item.question.toLowerCase().includes(query);
+            const matchSummary = item.summary && item.summary.toLowerCase().includes(query);
+            const matchTags = item.tags && item.tags.some(t => t.toLowerCase().includes(query));
+            const matchSteps = item.steps && item.steps.some(s => s.toLowerCase().includes(query));
+            return matchQuestion || matchSummary || matchTags || matchSteps;
+          });
+        },
+
+        toggleFaq(id) {
+          if (this.helpExpandedFaqs[id] === undefined) {
+            if ((this.helpSearch || '').trim().length > 0) {
+              this.helpExpandedFaqs[id] = false;
+              return;
+            }
+          }
+          this.helpExpandedFaqs[id] = !this.helpExpandedFaqs[id];
+        },
+
+        isFaqExpanded(id) {
+          if ((this.helpSearch || '').trim().length > 0) {
+            return this.helpExpandedFaqs[id] !== false;
+          }
+          return !!this.helpExpandedFaqs[id];
+        },
+
+        runFaqAction(key) {
+          this.showHelpModal = false;
+          if (key === 'new_asset') {
+            this.resetForm();
+          } else if (key === 'open_finder') {
+            if (typeof this.openFinderModal === 'function') this.openFinderModal();
+          } else if (key === 'open_sld') {
+            window.location.href = `/sld/${encodeURIComponent(this.client)}/${encodeURIComponent(this.facility)}`;
+          } else if (key === 'view_panels') {
+            this.showHelpModal = true;
+            this.activeHelpTab = 'panels';
+            this.helpSearch = '';
+          } else if (key === 'view_flow') {
+            this.showHelpModal = true;
+            this.activeHelpTab = 'flow';
+            this.helpSearch = '';
+          }
+        },
+
+        onHelpSearchInput() {
+          if ((this.helpSearch || '').trim().length > 0 && this.activeHelpTab !== 'faq') {
+            this.activeHelpTab = 'faq';
+          }
+
+          clearTimeout(this.kbDebounceTimer);
+          const q = (this.helpSearch || '').trim();
+          if (q.length < 2) {
+            this.kbSearchResults = [];
+            return;
+          }
+
+          this.kbDebounceTimer = setTimeout(async () => {
+            try {
+              this.kbSearchLoading = true;
+              const catParam = (this.helpFaqCategory && this.helpFaqCategory !== 'all') ? `&category=${encodeURIComponent(this.helpFaqCategory)}` : '';
+              const res = await fetch(`/api/kb/search?q=${encodeURIComponent(q)}${catParam}&limit=8`);
+              if (res.ok) {
+                const data = await res.json();
+                this.kbSearchResults = data.results || [];
+              }
+            } catch (err) {
+              console.error('KB FTS Search failed:', err);
+            } finally {
+              this.kbSearchLoading = false;
+            }
+          }, 250);
+        },
+
+        openDocumentViewer(filename, page = 1, title = '', section = '') {
+          if (!filename) return;
+          const cleanFilename = (filename || '').trim().split('/').pop();
+          const ext = (cleanFilename || '').split('.').pop().toLowerCase();
+          const pageNum = parseInt(page, 10) || 1;
+          const targetName = 'kb_doc_' + cleanFilename.replace(/[^a-zA-Z0-9_]/g, '_');
+          const url = ext === 'pdf'
+            ? `/kb/viewer/${encodeURIComponent(cleanFilename)}?page=${pageNum}&title=${encodeURIComponent(title || '')}&section=${encodeURIComponent(section || '')}`
+            : `/api/kb/view/${encodeURIComponent(cleanFilename)}`;
+
+          try {
+            const bc = new BroadcastChannel('build_aware_kb_channel');
+            bc.postMessage({
+              filename: cleanFilename,
+              page: pageNum,
+              title: title || cleanFilename,
+              section: section || ''
+            });
+            setTimeout(() => { try { bc.close(); } catch(e) {} }, 1000);
+          } catch (e) {
+            console.warn('BroadcastChannel not supported', e);
+          }
+
+          const win = window.open(url, targetName);
+          if (win) {
+            try { win.focus(); } catch (e) {}
+          }
+        },
+
+        openPdfModal(filename, page = 1, title = '', section = '') {
+          if (!filename) return;
+          const ext = (filename || '').split('.').pop().toLowerCase();
+          if (ext === 'pdf') {
+            this.pdfModalUrl = `/kb/viewer/${encodeURIComponent(filename)}?page=${page || 1}&title=${encodeURIComponent(title || '')}&section=${encodeURIComponent(section || '')}`;
+          } else {
+            this.pdfModalUrl = `/api/kb/view/${encodeURIComponent(filename)}`;
+          }
+          this.pdfModalFilename = filename;
+          this.pdfModalTitle = title || filename;
+          this.pdfModalPage = page;
+          this.showPdfModal = true;
+        },
+
         // Master Catalog Getters & Handlers
         get masterCatalogList() {
-          return this.masterCatalog || [];
+          if (Array.isArray(this.masterCatalog)) return this.masterCatalog;
+          if (this.masterCatalog && Array.isArray(this.masterCatalog.items)) return this.masterCatalog.items;
+          return [];
         },
 
         get catalogManufacturers() {
@@ -3447,13 +4233,37 @@
         },
 
         get catalogBreakers() {
-          const list = this.masterCatalogList.filter(item => item.domain === 'breakers' || item.type_tag === 'CB');
-          if (!this.activeBreaker) return list;
-          const targetPoles = Number(this.activeBreaker.poles) || 1;
-          
-          return list.filter(item => {
-            const p = (item.specs && item.specs.poles) || 1;
-            return p === targetPoles;
+          const currentPoles = this.activeBreaker ? (Number(this.activeBreaker.poles) || 1) : null;
+          const currentMfr = this.activeBreaker && this.activeBreaker.mfr ? this.activeBreaker.mfr.toLowerCase().trim() : '';
+
+          let list = (this.masterCatalogList || []).filter(item => {
+            return item.domain === 'breakers' || item.type_tag === 'CB' || (item.domain === 'distribution' && item.type_tag === 'CB');
+          });
+
+          // Match selected Poles & Gang Configuration
+          if (currentPoles) {
+            list = list.filter(item => {
+              const itemPoles = Number((item.specs && item.specs.poles) || item.poles || 1);
+              return itemPoles === currentPoles;
+            });
+          }
+
+          // If a brand is explicitly selected, filter by that brand
+          if (currentMfr) {
+            const mfrFiltered = list.filter(item => {
+              const m = (item.manufacturer || '').toLowerCase();
+              return m.includes(currentMfr) || currentMfr.includes(m);
+            });
+            if (mfrFiltered.length > 0) {
+              list = mfrFiltered;
+            }
+          }
+
+          return list.slice().sort((a, b) => {
+            const ampsA = Number((a.specs && a.specs.amps) || a.amps || 0);
+            const ampsB = Number((b.specs && b.specs.amps) || b.amps || 0);
+            if (ampsA !== ampsB) return ampsA - ampsB;
+            return (a.part_number || '').localeCompare(b.part_number || '');
           });
         },
 

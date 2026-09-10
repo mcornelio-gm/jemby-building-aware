@@ -122,3 +122,33 @@ def test_survey_and_catalog_client_param_routing():
     assert "PFIZER_BIOTECH" in res_cat.text
     assert "LAB_BUILDING_9" in res_cat.text
 
+
+def test_api_create_unseeded_workspace_facility():
+    """Verify creating a facility without seeding produces an empty (0 assets) database."""
+    res = client.post("/api/workspace/facilities", json={"client_id": "test_client", "facility_id": "empty_building"})
+    assert res.status_code == 200
+    data = res.json()
+    assert data["asset_count"] == 0
+
+    # Verify nodes API returns empty list
+    res_nodes = client.get("/api/clients/test_client/facilities/empty_building/nodes")
+    assert res_nodes.status_code == 200
+    assert res_nodes.json() == []
+
+
+def test_api_delete_workspace_facility():
+    """Verify DELETE /api/workspace/facilities/{client_id}/{facility_id} removes the database and directory."""
+    # Create a facility first
+    create_res = client.post("/api/workspace/facilities", json={"client_id": "test_client", "facility_id": "to_delete"})
+    assert create_res.status_code == 200
+
+    # Verify it exists
+    del_res = client.delete("/api/workspace/facilities/test_client/to_delete")
+    assert del_res.status_code == 200
+    assert del_res.json()["status"] == "success"
+
+    # Verify protected default demo cannot be deleted
+    demo_del = client.delete("/api/workspace/facilities/zoetis/b4")
+    assert demo_del.status_code == 400
+
+

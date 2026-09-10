@@ -1,0 +1,391 @@
+<!-- JAMES Searchable Field Guide & FAQ Modal Component -->
+<div 
+  x-show="showHelpModal" 
+  x-cloak 
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-6"
+  @keydown.escape.window="showHelpModal = false"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="help-modal-title"
+>
+  <!-- Glassmorphic Modal Card -->
+  <div 
+    class="bg-white dark:bg-[#0E1626] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden text-slate-800 dark:text-slate-200"
+    @click.away="showHelpModal = false"
+  >
+    <!-- 1. Modal Header -->
+    <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-[#090E1A] shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl font-bold border border-indigo-200 dark:border-indigo-800 shadow-2xs">
+          📖
+        </div>
+        <div>
+          <h3 id="help-modal-title" class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>JAMES Field Guide & Knowledge Base</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-semibold">Building-Aware AI/FAQ</span>
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Searchable answers, step-by-step field workflows, and electrical digital twin guides.</p>
+        </div>
+      </div>
+      <button 
+        type="button" 
+        @click="showHelpModal = false" 
+        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        title="Close Guide (Esc)"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- 2. Live Search & Keyword Bar -->
+    <div class="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] shrink-0">
+      <div class="relative flex items-center">
+        <span class="absolute left-3.5 text-slate-400 text-sm">🔍</span>
+        <input 
+          type="text" 
+          x-model="helpSearch"
+          @input="onHelpSearchInput()"
+          placeholder="Ask a question or search keywords (e.g. 'arc flash', 'add breaker', 'fed from', 'unresolved', 'audit', 'photos')..." 
+          class="w-full pl-10 pr-24 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition shadow-inner"
+        >
+        <div class="absolute right-2.5 flex items-center gap-1.5">
+          <button 
+            type="button" 
+            x-show="helpSearch && helpSearch.length > 0" 
+            @click="helpSearch = ''; kbSearchResults = [];" 
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 transition cursor-pointer"
+          >
+            ✕ Clear
+          </button>
+          <span x-show="!helpSearch || helpSearch.length === 0" class="text-[10px] text-slate-400 font-mono hidden sm:inline-block px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 border border-slate-300/40 dark:border-slate-700">FTS5 Search</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Navigation Tabs -->
+    <div class="px-6 border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-[#0B101E] flex gap-1 overflow-x-auto shrink-0 py-2">
+      <button 
+        type="button"
+        @click="activeHelpTab = 'faq'"
+        :class="activeHelpTab === 'faq' ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+        class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+      >
+        <span>❓</span>
+        <span>Searchable FAQ & Specs</span>
+        <span 
+          class="px-1.5 py-0.2 rounded-full text-[10px] font-mono"
+          :class="activeHelpTab === 'faq' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
+          x-text="(filteredFaqs || []).length + (kbSearchResults || []).length"
+        ></span>
+      </button>
+
+      <button 
+        type="button"
+        @click="activeHelpTab = 'shortcuts'; helpSearch = ''; kbSearchResults = [];"
+        :class="activeHelpTab === 'shortcuts' ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+        class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+      >
+        <span>⌨️</span>
+        <span>Keyboard & Gestures</span>
+      </button>
+
+      <button 
+        type="button"
+        @click="activeHelpTab = 'flow'; helpSearch = ''; kbSearchResults = [];"
+        :class="activeHelpTab === 'flow' ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+        class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+      >
+        <span>🚀</span>
+        <span>Twin Flow</span>
+      </button>
+
+      <button 
+        type="button"
+        @click="activeHelpTab = 'panels'; helpSearch = ''; kbSearchResults = [];"
+        :class="activeHelpTab === 'panels' ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800'"
+        class="px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+      >
+        <span>🗄️</span>
+        <span>Panel Schedules</span>
+      </button>
+    </div>
+
+    <!-- 4. Tab Content Area -->
+    <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-4 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+      
+      <!-- TAB 0: SEARCHABLE FAQ ACCORDION -->
+      <div x-show="activeHelpTab === 'faq'" class="space-y-3.5">
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'all'; onHelpSearchInput();"
+            :class="helpFaqCategory === 'all' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 cursor-pointer"
+          >
+            All Topics
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'safety'; onHelpSearchInput();"
+            :class="helpFaqCategory === 'safety' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>⚡</span>
+            <span>Safety & Arc Flash</span>
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'assets'; onHelpSearchInput();"
+            :class="helpFaqCategory === 'assets' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>⚡</span>
+            <span>Assets & Hierarchy</span>
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'breakers'"
+            :class="helpFaqCategory === 'breakers' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>🗄️</span>
+            <span>Breakers & Panels</span>
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'connected_loads'"
+            :class="helpFaqCategory === 'connected_loads' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>⚠️</span>
+            <span>Connected Loads</span>
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'photos'"
+            :class="helpFaqCategory === 'photos' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>📷</span>
+            <span>Photos & Notes</span>
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'facility'"
+            :class="helpFaqCategory === 'facility' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>🏢</span>
+            <span>Facility Twins & SLD</span>
+          </button>
+          <button 
+            type="button" 
+            @click="helpFaqCategory = 'field_tips'"
+            :class="helpFaqCategory === 'field_tips' ? 'bg-indigo-600 text-white font-semibold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+            class="px-2.5 py-1 rounded-lg transition shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span>📱</span>
+            <span>Field Tips & Offline</span>
+          </button>
+        </div>
+
+        <!-- FAQ Cards List -->
+        <div class="space-y-2.5">
+          <template x-for="faq in filteredFaqs" :key="faq.id">
+            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/40 hover:border-indigo-300 dark:hover:border-indigo-700/70 transition shadow-2xs">
+              <!-- Card Header -->
+              <button 
+                type="button"
+                @click="toggleFaq(faq.id)"
+                class="w-full px-4 py-3 text-left flex items-start justify-between gap-3 cursor-pointer hover:bg-slate-100/50 dark:hover:bg-slate-800/40 transition"
+              >
+                <div class="flex items-start gap-2.5">
+                  <span class="text-base shrink-0 mt-0.5" x-text="faq.icon"></span>
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <h4 class="font-bold text-slate-900 dark:text-white text-xs" x-text="faq.question"></h4>
+                      <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="faq.categoryName"></span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" x-text="faq.summary"></p>
+                  </div>
+                </div>
+                <span 
+                  class="text-slate-400 transform transition-transform duration-200 text-xs shrink-0 mt-1"
+                  :class="isFaqExpanded(faq.id) ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''"
+                >
+                  ▼
+                </span>
+              </button>
+
+              <!-- Card Content (Accordion Body) -->
+              <div x-show="isFaqExpanded(faq.id)" x-cloak class="px-4 pb-3.5 pt-1 border-t border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-[#090E1A] space-y-3">
+                <!-- Steps List -->
+                <div class="space-y-1.5 pt-2">
+                  <template x-for="(step, idx) in faq.steps" :key="idx">
+                    <div class="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+                      <span class="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-bold font-mono text-[10px] flex items-center justify-center shrink-0 mt-0.5" x-text="idx + 1"></span>
+                      <span class="leading-relaxed" x-text="step"></span>
+                    </div>
+                  </template>
+                </div>
+
+                <!-- Actions & Tags Footer -->
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <template x-for="tag in faq.tags" :key="tag">
+                      <span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono" x-text="'#' + tag"></span>
+                    </template>
+                  </div>
+                  <template x-if="faq.action">
+                    <button 
+                      type="button" 
+                      @click="showHelpModal = false; runFaqAction(faq.action.key)"
+                      class="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition shadow-2xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span x-text="faq.action.label"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </template>
+
+        <!-- FTS5 Documentation Knowledge Base Matches (e.g. Arc Flash QSG PDF) -->
+        <div x-show="kbSearchResults && kbSearchResults.length > 0" class="pt-3 space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-sm">📚</span>
+              <h4 class="font-bold text-slate-900 dark:text-white text-xs">Knowledge Base & Technical Spec Matches (FTS5)</h4>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-indigo-100 dark:bg-indigo-900/80 text-indigo-700 dark:text-indigo-300 font-semibold" x-text="(kbSearchResults || []).length + ' found'"></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span x-show="kbSearchLoading" class="text-[10px] text-indigo-500 font-mono animate-pulse">Searching FTS5...</span>
+              <span class="text-[10px] text-slate-400 font-mono hidden sm:inline-block">SQLite FTS5 Ranked</span>
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <template x-for="kb in kbSearchResults" :key="kb.id">
+              <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B1220] hover:border-indigo-400 dark:hover:border-indigo-600 transition shadow-2xs space-y-1.5">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-bold text-slate-900 dark:text-white text-xs" x-text="kb.title"></span>
+                    <span class="text-slate-400">›</span>
+                    <span class="text-slate-600 dark:text-slate-300 text-xs font-semibold" x-text="kb.section_heading"></span>
+                    <span x-show="kb.page_number" class="px-1.5 py-0.2 rounded text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono" x-text="'p. ' + kb.page_number"></span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="kb.source_type"></span>
+                    <span class="px-1.5 py-0.5 rounded text-[9px] uppercase font-mono font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-800/50" x-text="kb.category"></span>
+                    <span class="text-[10px] text-slate-400 font-mono truncate max-w-[140px]" x-text="kb.source_file"></span>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans" x-html="kb.snippet"></p>
+                <div class="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-100 dark:border-slate-800/80">
+                  <button type="button"
+                          x-show="kb.source_file"
+                          @click="openDocumentViewer(kb.source_file, kb.page_number, kb.title, kb.section_heading)"
+                          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white shadow-xs hover:shadow transition cursor-pointer group"
+                  >
+                    <span>📖</span>
+                    <span x-text="kb.source_type === 'pdf' ? (kb.page_number ? 'Open PDF (Page ' + kb.page_number + ') ↗' : 'Open PDF ↗') : 'Open Document ↗'"></span>
+                    <svg class="w-3.5 h-3.5 text-indigo-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  </button>
+                  <span class="text-[10px] text-slate-400 font-mono truncate max-w-[200px]" x-text="kb.source_file"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Empty Search State -->
+        <div x-show="(!filteredFaqs || filteredFaqs.length === 0) && (!kbSearchResults || kbSearchResults.length === 0)" class="p-8 text-center space-y-3 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/30">
+          <div class="text-3xl">🔍</div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-slate-900 dark:text-white text-xs">No matching questions or documents found</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Try searching for terms like "arc flash", "breaker", "add device", "fed from", or "unresolved".</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- TAB 1: KEYBOARD & GESTURES -->
+      <div x-show="activeHelpTab === 'shortcuts'" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
+            <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>⌨️</span>
+              <span>General Hotkeys</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">N</strong> <span>Add Equipment Archetype</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">Cmd/Ctrl + O</strong> <span>Facility Database Finder</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">?</strong> <span>Toggle Field Guide & FAQ</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">Esc</strong> <span>Close Drawer / Modals</span></li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
+            <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Diagram Controls</span>
+            </h4>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">F</strong> <span>Reset Fit to Viewport</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">+ / -</strong> <span>Zoom In / Out</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">H</strong> <span>Toggle Flow (Top-Down / Left-Right)</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">M</strong> <span>Toggle Macro / Detailed Mode</span></li>
+              <li class="flex items-center justify-between"><strong class="text-indigo-600 dark:text-indigo-400">R</strong> <span>Reload / Recompile Diagram</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/60 dark:border-indigo-800/60 space-y-1.5">
+          <h4 class="font-bold text-indigo-950 dark:text-indigo-200 text-xs flex items-center gap-1.5">
+            <span>📱</span>
+            <span>iPad & Tablet Touch Gestures</span>
+          </h4>
+          <ul class="space-y-1 text-slate-600 dark:text-slate-400 text-[11px]">
+            <li><strong>Row Tap (Survey)</strong> : Tap anywhere on a survey row to instantly slide open the edit drawer.</li>
+            <li><strong>Box Tap (Diagram)</strong> : Tap any cluster box or equipment node to open inspection drawer.</li>
+            <li><strong>Breaker Tap</strong> : Tap any breaker row in the panel schedule to open the multi-pole inspector.</li>
+            <li><strong>Pinch & Pan</strong> : Pinch on screen to zoom and drag canvas with one finger.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 2: TWIN FLOW -->
+      <div x-show="activeHelpTab === 'flow'" class="space-y-4">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+          <h4 class="font-bold text-slate-900 dark:text-white text-xs">Electrical Digital Twin Lifecycle</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div class="p-3 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-1">
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 text-xs">1. Catalog Archetypes</span>
+              <p class="text-[11px] text-slate-500">Standard OEM equipment ratings, voltage specs, and cut-sheet specs.</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-1">
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 text-xs">2. Survey Ledger</span>
+              <p class="text-[11px] text-slate-500">Field data collection, room locations, photo captures, and upstream feeds.</p>
+            </div>
+            <div class="p-3 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-1">
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 text-xs">3. SLD Compilation</span>
+              <p class="text-[11px] text-slate-500">Automated topological hierarchy graph with live System Integrity Auditing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PANEL SCHEDULES -->
+      <div x-show="activeHelpTab === 'panels'" class="space-y-4">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
+          <h4 class="font-bold text-slate-900 dark:text-white text-xs">Panel Schedule Management</h4>
+          <p class="text-slate-600 dark:text-slate-400 text-[11px]">
+            JAMES supports 1-Pole, 2-Pole, and 3-Pole branch and feeder breakers with odd/even slot interleaving (e.g. Poles 1, 3, 5 vs 2, 4, 6). Connected loads and AIC short-circuit ratings are automatically reconciled during single-line generation.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

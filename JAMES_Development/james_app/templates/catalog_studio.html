@@ -76,57 +76,11 @@
 
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
-      <!-- Unified Global Navigation Segment -->
-      <nav class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-[11px] font-medium shrink-0">
-        <!-- 1. Catalog (Active) -->
-        <a 
-          href="/catalog?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
-          class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 font-bold shadow-2xs border border-slate-200/80 dark:border-slate-700/80 flex items-center gap-1 transition"
-          title="Master Catalog Studio & Archetype Specs (Active)"
-        >
-          <span>📚</span>
-          <span class="hidden sm:inline">Catalog</span>
-        </a>
-
-        <!-- 2. Survey -->
-        <a 
-          href="/survey?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" 
-          class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1 transition"
-          title="Field Survey & Digital Twin Modeler"
-        >
-          <span>📋</span>
-          <span class="hidden sm:inline">Survey</span>
-        </a>
-
-        <!-- 3. Diagram -->
-        <a 
-          href="/clients/{{ client_id | default('zoetis') }}/facilities/{{ facility_id | default('b4') }}/sld" 
-          class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1.5 transition"
-          title="Single-Line Hierarchy & SLD Schematic Viewer"
-        >
-          <i class="fa-solid fa-sitemap text-[11px] text-amber-500"></i>
-          <span class="hidden sm:inline">Diagram</span>
-        </a>
-
-        <!-- 4. Files (Finder) -->
-        <button 
-          type="button"
-          @click="openFinderModal()" 
-          class="px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 flex items-center gap-1 transition cursor-pointer"
-          title="Workspace Database Finder (Cmd+O / Ctrl+O)"
-        >
-          <span>📁</span>
-          <span class="hidden sm:inline">Files</span>
-        </button>
-      </nav>
-
-      <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
-
       <!-- Multi-Tenant Client DB Path Pill & Finder Trigger -->
       <button 
         type="button"
         @click="openFinderModal()"
-        class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-emerald-50/80 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 hover:border-emerald-400 dark:hover:border-emerald-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
+        class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-emerald-50/80 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 hover:border-emerald-400 dark:hover:border-emerald-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
         title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
       >
         <span>🏢</span>
@@ -200,6 +154,29 @@
 
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
 
+      <!-- [ 🧰 Toolbox ] Bento Box Popover Trigger -->
+      <button 
+        type="button" 
+        @click="showToolboxModal = true" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        title="Open Field Toolbox (Views, Audit, Exports, Display & Settings)"
+      >
+        <span>🧰</span>
+        <span class="hidden sm:inline">Toolbox</span>
+      </button>
+
+      <!-- Help & Catalog Studio Guide Modal Toggle (?) -->
+      <button 
+        type="button" 
+        @click="showHelpModal = true" 
+        class="w-7 h-7 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-xs transition shadow-2xs cursor-pointer select-none"
+        title="Master Catalog & Archetype Specs Guide (Press ?)"
+      >
+        <span>?</span>
+      </button>
+
+      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
+
       <!-- Font Size Stepper [ A⁻ | 100% | A⁺ ] -->
       <div class="flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shadow-2xs overflow-hidden select-none" title="Adjust text size">
         <button 
@@ -235,23 +212,13 @@
 
       <!-- Dark / Light Theme Toggle -->
       <button 
-        type="button"
+        type="button" 
         @click="toggleTheme()" 
         class="w-7 h-7 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
         :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
       >
         <span x-show="isDark" class="text-xs">🌙</span>
         <span x-show="!isDark" class="text-xs" x-cloak>☀️</span>
-      </button>
-
-      <!-- Help & Catalog Studio Guide Modal Toggle (?) -->
-      <button 
-        type="button"
-        @click="showHelpModal = true" 
-        class="w-7 h-7 rounded-md border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 flex items-center justify-center font-bold text-xs transition shadow-2xs cursor-pointer select-none"
-        title="Master Catalog & Archetype Specs Guide (Press ?)"
-      >
-        <span>?</span>
       </button>
     </div>
   </header>
@@ -767,8 +734,7 @@
        x-cloak
        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
        @keydown.escape.window="showCloneModal = false">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 text-slate-800 dark:text-slate-200"
-         @click.away="showCloneModal = false">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 text-slate-800 dark:text-slate-200">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm">
           <i class="fa-solid fa-copy"></i>
@@ -818,8 +784,7 @@
        x-cloak
        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
        @keydown.escape.window="showImportModal = false">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4 text-slate-800 dark:text-slate-200"
-         @click.away="showImportModal = false">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4 text-slate-800 dark:text-slate-200">
       <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
           <i class="fa-solid fa-file-import"></i>
@@ -1219,7 +1184,6 @@
   >
     <div 
       class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
-      @click.away="showFinderModal = false"
     >
       <!-- Modal Header -->
       <div class="h-14 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
@@ -1419,6 +1383,15 @@
                     >
                       <span x-text="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase()) ? '✓ Current Twin' : '⚡ Open Twin'"></span>
                     </button>
+                    <button
+                      type="button"
+                      x-show="!(c.client_id.toLowerCase() === 'zoetis' && f.facility_id.toLowerCase() === 'b4')"
+                      @click.stop="deleteFacility(c.client_id, f.facility_id)"
+                      title="Delete Facility Database"
+                      class="px-2 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 border border-transparent hover:border-rose-200 dark:hover:border-rose-800/60 transition cursor-pointer"
+                    >
+                      🗑️
+                    </button>
                   </div>
                 </div>
               </template>
@@ -1447,6 +1420,12 @@
     </div>
   </div>
 
+  <!-- Bento Box Toolbox Modal Include -->
+  {% include "components/toolbox_bento_modal.html" %}
+
+  <!-- System Integrity Audit Modal Include -->
+  {% include "components/system_integrity_modal.html" %}
+
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     function catalogStudio() {
@@ -1465,6 +1444,12 @@
         // Global UI state
         isDark: true,
         fontScale: 100,
+        showToolboxModal: false,
+        showAuditModal: false,
+        isAuditing: false,
+        auditResult: null,
+        auditFilterSeverity: 'all',
+        auditSearch: '',
         showHelpModal: false,
         showSidebar: window.innerWidth >= 1024,
         activeHelpTab: 'flow',
@@ -1479,7 +1464,7 @@
         finderNewClient: '{{ client_id | default("zoetis") }}',
         finderIsCustomClient: false,
         finderNewFacility: '',
-        finderSeedData: true,
+        finderSeedData: false,
         finderCreating: false,
 
         // Drawer state
@@ -1605,9 +1590,59 @@
             this.openFinderModal();
           }
           if (e.key === 'Escape') {
+            if (this.showToolboxModal) this.showToolboxModal = false;
+            if (this.showAuditModal) this.showAuditModal = false;
             if (this.showHelpModal) this.showHelpModal = false;
             if (this.showFinderModal) this.showFinderModal = false;
+            if (this.drawerOpen) this.closeDrawer();
+            if (this.showCloneModal) this.showCloneModal = false;
+            if (this.showImportModal) this.showImportModal = false;
+            if (this.showDeleteModal) this.showDeleteModal = false;
           }
+        },
+
+        // System Integrity Audit Engine Methods
+        async openSystemAudit() {
+          this.showAuditModal = true;
+          this.isAuditing = true;
+          try {
+            const res = await fetch(`/api/clients/${encodeURIComponent(this.client || 'zoetis')}/facilities/${encodeURIComponent(this.facility || 'b4')}/audit?_t=${Date.now()}`);
+            if (res.ok) {
+              this.auditResult = await res.json();
+            }
+          } catch (e) {
+            console.error('Audit fetch error:', e);
+          } finally {
+            this.isAuditing = false;
+          }
+        },
+
+        get filteredAuditFindings() {
+          if (!this.auditResult || !this.auditResult.findings) return [];
+          let list = this.auditResult.findings;
+          if (this.auditFilterSeverity !== 'all') {
+            list = list.filter(f => f.severity === this.auditFilterSeverity);
+          }
+          if (this.auditSearch && this.auditSearch.trim()) {
+            const q = this.auditSearch.toLowerCase().trim();
+            list = list.filter(f => 
+              (f.asset_tag || '').toLowerCase().includes(q) ||
+              (f.title || '').toLowerCase().includes(q) ||
+              (f.description || '').toLowerCase().includes(q) ||
+              (f.category || '').toLowerCase().includes(q) ||
+              (f.room || '').toLowerCase().includes(q)
+            );
+          }
+          return list;
+        },
+
+        openAssetFromAudit(assetIdOrTag) {
+          this.showAuditModal = false;
+          window.location.href = `/survey?client=${encodeURIComponent(this.client || 'zoetis')}&facility=${encodeURIComponent(this.facility || 'b4')}`;
+        },
+
+        openEquipmentPicker() {
+          this.openCreateDrawer();
         },
 
         get domainCounts() {
@@ -1969,6 +2004,30 @@
         selectFacility(client_id, facility_id) {
           this.showFinderModal = false;
           window.location.href = '/catalog?client=' + encodeURIComponent(client_id) + '&facility=' + encodeURIComponent(facility_id);
+        },
+
+        async deleteFacility(client_id, facility_id) {
+          if (!confirm(`Are you sure you want to delete facility '${facility_id}' for client '${client_id}'?\n\nThis will permanently remove the SQLite model.db and companion files.`)) {
+            return;
+          }
+          try {
+            const res = await fetch(`/api/workspace/facilities/${encodeURIComponent(client_id)}/${encodeURIComponent(facility_id)}`, {
+              method: 'DELETE'
+            });
+            const data = await res.json();
+            if (res.ok) {
+              if ((this.client || '').toLowerCase() === client_id.toLowerCase() && (this.facility || '').toLowerCase() === facility_id.toLowerCase()) {
+                window.location.href = '/catalog?client=zoetis&facility=b4';
+              } else {
+                await this.openFinderModal();
+              }
+            } else {
+              alert(data.detail || 'Failed to delete facility');
+            }
+          } catch (e) {
+            console.error('Error deleting facility:', e);
+            alert('Network error while deleting facility');
+          }
         },
 
         async createFacilityDatabase() {

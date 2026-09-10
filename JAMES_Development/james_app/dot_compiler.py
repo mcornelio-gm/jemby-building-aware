@@ -212,6 +212,95 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
     return "\\n".join(lines)
 
 
+def _find_feeder_slot_in_parent(parent_node: Dict[str, Any], child_node: Dict[str, Any]):
+    """Search the parent's panel schedule for a breaker targeting child_node."""
+    schedule = (parent_node.get("attributes") or {}).get("schedule", [])
+    if not schedule or not isinstance(schedule, list):
+        return None, 1, "", None
+
+    c_tag = (child_node.get("tag") or "").strip().upper()
+    c_id = (child_node.get("id") or "").strip().upper()
+    c_name = (child_node.get("name") or "").strip().upper()
+
+    for row in schedule:
+        if not isinstance(row, dict):
+            continue
+        # Check left side
+        left_target = str(row.get("leftTargetLoad") or "").strip().upper()
+        left_desc = str(row.get("leftDesc") or row.get("leftDescription") or "").strip().upper()
+        left_trip = row.get("leftTrip") or row.get("leftAmps")
+        if left_trip:
+            matched = False
+            if left_target and (left_target == c_tag or left_target == c_id):
+                matched = True
+            elif left_desc and (left_desc == c_name or (c_tag and c_tag in left_desc)):
+                matched = True
+            
+            if matched:
+                slot_num = int(row.get("leftParentSlot") or row.get("leftSlot") or 1)
+                poles = int(row.get("leftPoles") or 1)
+                amps = str(left_trip).strip()
+                return slot_num, poles, amps, "left"
+
+        # Check right side
+        right_target = str(row.get("rightTargetLoad") or "").strip().upper()
+        right_desc = str(row.get("rightDesc") or row.get("rightDescription") or "").strip().upper()
+        right_trip = row.get("rightTrip") or row.get("rightAmps")
+        if right_trip:
+            matched = False
+            if right_target and (right_target == c_tag or right_target == c_id):
+                matched = True
+            elif right_desc and (right_desc == c_name or (c_tag and c_tag in right_desc)):
+                matched = True
+
+            if matched:
+                slot_num = int(row.get("rightParentSlot") or row.get("rightSlot") or 2)
+                poles = int(row.get("rightPoles") or 1)
+                amps = str(right_trip).strip()
+                return slot_num, poles, amps, "right"
+
+    return None, 1, "", None
+
+
+def _get_node_upstream_sources(n: Dict[str, Any], all_nodes: List[Dict[str, Any]]) -> List[str]:
+    """Gather all upstream source tags for a node, combining fed_from, upstream_sources, and panel schedule breaker links."""
+    sources_list = []
+    if n.get("fed_from"):
+        sources_list.append(str(n.get("fed_from")).strip())
+    raw_sources = (n.get("attributes") or {}).get("upstream_sources") or []
+    for s in raw_sources:
+        s_clean = str(s).strip()
+        if s_clean and s_clean not in sources_list:
+            sources_list.append(s_clean)
+    if (n.get("attributes") or {}).get("emergency_source"):
+        em_clean = str((n.get("attributes") or {}).get("emergency_source")).strip()
+        if em_clean and em_clean not in sources_list:
+            sources_list.append(em_clean)
+
+    # Bidirectional discovery: scan all panels to check if any breaker explicitly targets this node
+    child_tag = (n.get("tag") or "").strip().upper()
+    child_id = (n.get("id") or "").strip().upper()
+    for parent in all_nodes:
+        if parent.get("id") == n.get("id"):
+            continue
+        p_tag = (parent.get("tag") or "").strip()
+        if not p_tag:
+            continue
+        schedule = (parent.get("attributes") or {}).get("schedule", [])
+        if schedule and isinstance(schedule, list):
+            for row in schedule:
+                if not isinstance(row, dict):
+                    continue
+                lt = str(row.get("leftTargetLoad") or "").strip().upper()
+                rt = str(row.get("rightTargetLoad") or "").strip().upper()
+                if (lt and (lt == child_tag or lt == child_id)) or (rt and (rt == child_tag or rt == child_id)):
+                    if p_tag not in sources_list and (parent.get("id") not in sources_list):
+                        sources_list.append(p_tag)
+                    break
+
+    return sources_list
+
+
 def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed") -> str:
     """Compile a list of facility equipment nodes into Graphviz DOT single-line diagram.
     
@@ -250,112 +339,115 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             )
         
         dot_lines.append("")
-        
         # 2. Render Direct Edges with Arrowtail & Arrowhead Labels (Parent -> Child)
+        rendered_edges = set()
         for n in nodes:
             node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
-            fed_from = n.get("fed_from")
             type_tag = n.get("type_tag", "")
             child_domain = n.get("domain", "")
 
-            if fed_from:
-                parent_node = nodes_by_tag.get(fed_from)
-                if parent_node:
-                    parent_id = _sanitize_id(parent_node.get("id", parent_node.get("tag", "eq")))
-                    parent_domain = parent_node.get("domain", "")
-                    parent_type = parent_node.get("type_tag", "")
+            # Gather all configured upstream sources (including breaker targetLoad links)
+            sources_list = _get_node_upstream_sources(n, nodes)
 
-                    # 1. Determine Tail Label (Upstream Breaker / Output Port)
-                    tail_parts = []
-                    if parent_node.get("is_panel") or parent_domain == "panels":
-                        schedule = (parent_node.get("attributes") or {}).get("schedule", [])
-                        matched_slot = None
-                        if schedule and isinstance(schedule, list):
-                            for row in schedule:
-                                if row.get("leftTargetLoad") == n.get("tag"):
-                                    slot_num = int(row.get("leftParentSlot") or row.get("leftSlot", 1))
-                                    poles = int(row.get("leftPoles", 1))
-                                    amps = row.get("leftAmps") or row.get("leftTrip", "")
-                                    poles_str = f"/{poles}P" if poles > 1 else ""
-                                    slot_str = _format_slot_range(slot_num, poles, type_tag=parent_type)
-                                    matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
-                                    break
-                                elif row.get("rightTargetLoad") == n.get("tag"):
-                                    slot_num = int(row.get("rightParentSlot") or row.get("rightSlot", 2))
-                                    poles = int(row.get("rightPoles", 1))
-                                    amps = row.get("rightAmps") or row.get("rightTrip", "")
-                                    poles_str = f"/{poles}P" if poles > 1 else ""
-                                    slot_str = _format_slot_range(slot_num, poles, type_tag=parent_type)
-                                    matched_slot = f"{slot_str} • {amps}A{poles_str}" if amps else slot_str
-                                    break
-                        tail_parts.append(matched_slot if matched_slot else "Feeder Out")
-                    elif parent_domain == "transformers" or parent_type in ["XFMR", "PAD"]:
-                        tail_parts.append("Secondary Out")
-                    elif parent_domain == "sources" or parent_type in ["UTIL", "GEN", "PV"]:
-                        port_label = "Mtr / Main Out" if parent_type == "UTIL" else ("Gen Breaker" if parent_type == "GEN" else "Inverter Out")
-                        tail_parts.append(port_label)
-                    elif parent_domain == "switches" or parent_type in ["ATS", "MTS", "DISC"]:
-                        tail_parts.append("Load Out")
-                    elif parent_domain == "power_quality" or parent_type == "UPS":
-                        tail_parts.append("Inverter Out")
-                    elif parent_domain == "cables" or parent_type in ["CABLE", "FEEDER"]:
-                        tail_parts.append("Load Out")
+            for s_idx, fed_from in enumerate(sources_list):
+                parent_node = nodes_by_tag.get(fed_from) or nodes_by_id.get(fed_from)
+                if not parent_node:
+                    continue
+                parent_id = _sanitize_id(parent_node.get("id", parent_node.get("tag", "eq")))
+                parent_domain = parent_node.get("domain", "")
+                parent_type = parent_node.get("type_tag", "")
+
+                edge_key = (parent_id, node_id)
+                if edge_key in rendered_edges:
+                    continue
+                rendered_edges.add(edge_key)
+
+                # 1. Determine Tail Label (Upstream Breaker / Output Port)
+                tail_parts = []
+                if parent_node.get("is_panel") or parent_domain == "panels":
+                    slot_num, poles, amps, side = _find_feeder_slot_in_parent(parent_node, n)
+                    if slot_num:
+                        poles_str = f"/{poles}P" if poles > 1 else ""
+                        slot_str = _format_slot_range(slot_num, poles, type_tag=parent_type)
+                        tail_parts.append(f"{slot_str} • {amps}A{poles_str}" if amps else slot_str)
                     else:
-                        tail_parts.append("Out")
+                        tail_parts.append("Feeder Out")
+                elif parent_domain == "transformers" or parent_type in ["XFMR", "PAD"]:
+                    tail_parts.append("Secondary Out")
+                elif parent_domain == "sources" or parent_type in ["UTIL", "GEN", "PV"]:
+                    port_label = "Mtr / Main Out" if parent_type == "UTIL" else ("Gen Breaker" if parent_type == "GEN" else "Inverter Out")
+                    tail_parts.append(port_label)
+                elif parent_domain == "switches" or parent_type in ["ATS", "MTS", "DISC"]:
+                    tail_parts.append("Load Out")
+                elif parent_domain == "power_quality" or parent_type == "UPS":
+                    tail_parts.append("Inverter Out")
+                elif parent_domain == "cables" or parent_type in ["CABLE", "FEEDER"]:
+                    tail_parts.append("Load Out")
+                else:
+                    tail_parts.append("Out")
 
-                    tail_label = _clean_str(" • ".join(tail_parts))
+                tail_label = _clean_str(" • ".join(tail_parts))
 
-                    # 2. Determine Head Label (Downstream Input Terminal)
-                    head_parts = []
-                    if type_tag in ["ATS", "MTS"]:
-                        head_parts.append("Normal In")
-                    elif type_tag in ["XFMR", "PAD"]:
-                        head_parts.append("Primary In")
-                    elif n.get("is_panel") or child_domain == "panels" or type_tag in ["LP", "MDP", "MCC", "PP", "REC", "PDU"]:
-                        main_type = (n.get("attributes") or {}).get("main_type", "Main Lugs")
-                        head_parts.append(main_type)
-                    elif child_domain == "power_quality" or type_tag == "UPS":
-                        head_parts.append("UPS Input")
-                    elif child_domain == "loads" or type_tag in ["HVAC", "MOTOR", "EV", "PUMP"]:
-                        head_parts.append("Disconnect / Lugs")
-                    elif child_domain == "metering" or type_tag in ["METER", "MTR"]:
-                        head_parts.append("CT / Voltage Sense In")
-                    elif child_domain == "renewables" or type_tag in ["BESS", "SOLAR"]:
-                        head_parts.append("Bi-Directional AC In/Out")
-                    elif child_domain == "cables" or type_tag in ["CABLE", "FEEDER"]:
-                        head_parts.append("Line In")
-                    else:
-                        head_parts.append("In")
+                # 2. Determine Head Label (Downstream Input Terminal)
+                is_emergency = (s_idx == 1 and type_tag in ["ATS", "MTS", "STS"]) or (parent_type == "GEN" and type_tag in ["ATS", "MTS", "STS"])
+                head_parts = []
+                if type_tag in ["ATS", "MTS", "STS"]:
+                    head_parts.append("Emerg In" if is_emergency else ("Normal In" if s_idx == 0 else f"Source {s_idx+1} In"))
+                elif type_tag in ["XFMR", "PAD"]:
+                    head_parts.append("Primary In" if s_idx == 0 else f"Feeder {s_idx+1} In")
+                elif n.get("is_panel") or child_domain == "panels" or type_tag in ["LP", "MDP", "MCC", "PP", "REC", "PDU"]:
+                    main_type = (n.get("attributes") or {}).get("main_type", "Main Lugs")
+                    head_parts.append(main_type if s_idx == 0 else f"Feeder {s_idx+1}")
+                elif child_domain == "power_quality" or type_tag == "UPS":
+                    head_parts.append("UPS Input" if s_idx == 0 else "Bypass Input")
+                elif child_domain == "loads" or type_tag in ["HVAC", "MOTOR", "EV", "PUMP"]:
+                    head_parts.append("Disconnect / Lugs")
+                elif child_domain == "metering" or type_tag in ["METER", "MTR"]:
+                    head_parts.append("CT / Voltage Sense In")
+                elif child_domain == "renewables" or type_tag in ["BESS", "SOLAR"]:
+                    head_parts.append("Bi-Directional AC In/Out")
+                elif child_domain == "cables" or type_tag in ["CABLE", "FEEDER"]:
+                    head_parts.append("Line In")
+                else:
+                    head_parts.append(f"In {s_idx+1}" if s_idx > 0 else "In")
 
-                    head_label = _clean_str(" • ".join(head_parts))
+                head_label = _clean_str(" • ".join(head_parts))
 
-                    # 3. Conductor Wire Label (Center)
-                    conductor = (n.get("attributes") or {}).get("conductor") or n.get("conductor")
-                    cond_attr = f'label={_make_silver_badge(conductor, font_size=8, font_color="#1E293B", bg_color="#F1F5F9", border_color="#94A3B8")}, ' if conductor else ''
+                # 3. Conductor Wire Label (Center)
+                conductor = (n.get("attributes") or {}).get("conductor") or n.get("conductor")
+                cond_attr = f'label={_make_silver_badge(conductor, font_size=8, font_color="#1E293B", bg_color="#F1F5F9", border_color="#94A3B8")}, ' if conductor else ''
 
-                    tail_badge = _make_silver_badge(tail_label, font_size=8, font_color="#0F172A", bg_color="#E2E8F0", border_color="#94A3B8")
-                    head_badge = _make_silver_badge(head_label, font_size=8, font_color="#0F172A", bg_color="#E2E8F0", border_color="#94A3B8")
+                edge_color = "#B45309" if is_emergency else "#0F172A"
+                edge_penwidth = "2.2" if is_emergency else "2.0"
+                tail_badge = _make_silver_badge(tail_label, font_size=8, font_color="#9A3412" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#E2E8F0", border_color="#D97706" if is_emergency else "#94A3B8")
+                head_badge = _make_silver_badge(head_label, font_size=8, font_color="#9A3412" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#E2E8F0", border_color="#D97706" if is_emergency else "#94A3B8")
 
-                    dot_lines.append(
-                        f'    {parent_id} -> {node_id} ['
-                        f'color="#0F172A", penwidth=2.0, {cond_attr}'
-                        f'taillabel={tail_badge}, headlabel={head_badge}, '
-                        f'labeldistance=2.4, labelangle=25];'
-                    )
+                dot_lines.append(
+                    f'    {parent_id} -> {node_id} ['
+                    f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
+                    f'taillabel={tail_badge}, headlabel={head_badge}, '
+                    f'labeldistance=2.4, labelangle={"-25" if is_emergency else "25"}];'
+                )
 
-            # Special connection: Emergency Generator to ATS
-            if type_tag == "GEN":
+        # Fallback for standalone GEN to ATS if ATS has not been explicitly connected to an emergency source
+        for n in nodes:
+            if n.get("type_tag") == "GEN":
+                gen_id = _sanitize_id(n.get("id", n.get("tag", "gen")))
                 for candidate in nodes:
-                    if candidate.get("type_tag") == "ATS" or candidate.get("domain") == "switches":
+                    if candidate.get("type_tag") in ["ATS", "MTS", "STS"] or candidate.get("domain") == "switches":
                         ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
-                        gen_tail_badge = _make_silver_badge("Gen Breaker", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
-                        emerg_head_badge = _make_silver_badge("Emerg In", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
-                        dot_lines.append(
-                            f'    {node_id} -> {ats_id} ['
-                            f'color="#B45309", penwidth=2.2, '
-                            f'taillabel={gen_tail_badge}, headlabel={emerg_head_badge}, '
-                            f'labeldistance=2.4, labelangle=-25];'
-                        )
+                        edge_key = (gen_id, ats_id)
+                        if edge_key not in rendered_edges:
+                            rendered_edges.add(edge_key)
+                            tail_badge = _make_silver_badge("Gen Breaker", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
+                            head_badge = _make_silver_badge("Emerg In", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
+                            dot_lines.append(
+                                f'    {gen_id} -> {ats_id} ['
+                                f'color="#B45309", penwidth=2.2, '
+                                f'taillabel={tail_badge}, headlabel={head_badge}, '
+                                f'labeldistance=2.4, labelangle=-25];'
+                            )
+                            break
 
         dot_lines.append("}")
         return "\n".join(dot_lines)
@@ -505,7 +597,8 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                     f'        fillcolor = "{palette["bg"]}";',
                     f'        fontcolor = "{palette["text"]}";',
                     '        penwidth = 1.8;',
-                    f'        {node_id}_in [label="{main_type}", {PORT_STYLE}];',
+                    f'        {node_id}_in  [label="{main_type}", {PORT_STYLE}];',
+                    f'        {node_id}_out [label="Feeder / Aux Out", {PORT_STYLE}];',
                     *breaker_nodes,
                     f'        {{ rank=same; {rank_same}; }}',
                     f'        {node_id}_in -> {breaker_ids[0]} [style=invis];',
@@ -629,47 +722,55 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
     dot_lines.append("")
 
     # 2. Render Edges between Discrete Port Nodes (South -> North)
+    detailed_rendered_edges = set()
     for n in nodes:
         node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
-        fed_from = n.get("fed_from")
         type_tag = n.get("type_tag", "")
+        child_domain = n.get("domain", "")
+        attrs = n.get("attributes") or {}
 
-        if fed_from:
-            parent_node = nodes_by_tag.get(fed_from)
-            if parent_node:
-                parent_id = _sanitize_id(parent_node.get("id", parent_node.get("tag", "eq")))
-                parent_domain = parent_node.get("domain", "")
-                parent_type = parent_node.get("type_tag", "")
-                dest_port = f"{node_id}_norm" if type_tag in ["ATS", "MTS"] else f"{node_id}_in"
+        # Gather all configured upstream sources (including breaker targetLoad links)
+        sources_list = _get_node_upstream_sources(n, nodes)
 
-                # If parent is panel, connect from the corresponding breaker if defined, else from Load Out
-                if parent_node.get("is_panel") or parent_domain == "panels":
-                    schedule = (parent_node.get("attributes") or {}).get("schedule", [])
-                    slot_port = None
-                    if schedule and isinstance(schedule, list):
-                        for row in schedule:
-                            left_trip = row.get("leftAmps") or row.get("leftTrip")
-                            if left_trip and (row.get("leftTargetLoad") == n.get("tag") or row.get("leftDescription") == n.get("name")):
-                                slot_port = str(row.get("leftParentSlot") or row.get("leftSlot", "1"))
-                                break
-                            right_trip = row.get("rightAmps") or row.get("rightTrip")
-                            if right_trip and (row.get("rightTargetLoad") == n.get("tag") or row.get("rightDescription") == n.get("name")):
-                                slot_port = str(row.get("rightParentSlot") or row.get("rightSlot", "2"))
-                                break
-                    if slot_port:
-                        dot_lines.append(f'    {parent_id}_b{slot_port}:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
-                    else:
-                        dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
+        for s_idx, fed_from in enumerate(sources_list):
+            parent_node = nodes_by_tag.get(fed_from) or nodes_by_id.get(fed_from)
+            if not parent_node:
+                continue
+            parent_id = _sanitize_id(parent_node.get("id", parent_node.get("tag", "eq")))
+            parent_domain = parent_node.get("domain", "")
+            parent_type = parent_node.get("type_tag", "")
+
+            is_emergency = (s_idx == 1 and type_tag in ["ATS", "MTS", "STS"]) or (parent_type == "GEN" and type_tag in ["ATS", "MTS", "STS"])
+            dest_port = f"{node_id}_emerg" if is_emergency else (f"{node_id}_norm" if type_tag in ["ATS", "MTS", "STS"] else f"{node_id}_in")
+            edge_color = "#B45309" if is_emergency else "#0F172A"
+            edge_penwidth = "2.2" if is_emergency else "2.0"
+
+            edge_key = (parent_id, dest_port)
+            if edge_key in detailed_rendered_edges:
+                continue
+            detailed_rendered_edges.add(edge_key)
+
+            # If parent is panel, connect from the corresponding breaker if defined, else from Load Out
+            if parent_node.get("is_panel") or parent_domain == "panels":
+                slot_num, poles, amps, side = _find_feeder_slot_in_parent(parent_node, n)
+                if slot_num:
+                    dot_lines.append(f'    {parent_id}_b{slot_num}:s -> {dest_port}:n [color="{edge_color}", penwidth={edge_penwidth}];')
                 else:
-                    dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="#0F172A", penwidth=2.0];')
+                    dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="{edge_color}", penwidth={edge_penwidth}];')
+            else:
+                dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="{edge_color}", penwidth={edge_penwidth}];')
 
-        # Special connection: Emergency Generator to ATS emergency port
+        # Fallback for standalone GEN to ATS emergency port
         if type_tag == "GEN":
             for candidate in nodes:
-                if candidate.get("type_tag") == "ATS" or candidate.get("domain") == "switches":
+                if candidate.get("type_tag") in ["ATS", "MTS", "STS"] or candidate.get("domain") == "switches":
                     ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
-                    dot_lines.append(f'    {node_id}_out:s -> {ats_id}_emerg:n [color="#B45309", penwidth=2.2];')
-                    break
+                    dest_port = f"{ats_id}_emerg"
+                    edge_key = (node_id, dest_port)
+                    if edge_key not in detailed_rendered_edges:
+                        detailed_rendered_edges.add(edge_key)
+                        dot_lines.append(f'    {node_id}_out:s -> {dest_port}:n [color="#B45309", penwidth=2.2];')
+                        break
 
     dot_lines.append("}\n")
     return "\n".join(dot_lines)

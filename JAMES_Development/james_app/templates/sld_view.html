@@ -53,14 +53,33 @@
   <script src="https://unpkg.com/@hpcc-js/wasm/index.min.js"></script>
   <script src="https://unpkg.com/d3-graphviz@5.1.0/build/d3-graphviz.min.js"></script>
 
-  <!-- Alpine.js for Finder Modal -->
+  <!-- Alpine.js for Finder Modal & Slide-Over Edit Drawer -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
+  <!-- Shared Equipment Form & Electrical Hierarchy Logic -->
+  <script src="/static/js/equipment_form_logic.js"></script>
+
   <style>
+    #graph-container {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #graph-container:active {
+      cursor: grabbing;
+    }
     #graph-container svg {
       width: 100% !important;
       height: 100% !important;
       background-color: #CBD5E1 !important;
+      cursor: grab;
+      touch-action: none;
+    }
+    #graph-container svg:active {
+      cursor: grabbing;
     }
     .node {
       cursor: pointer;
@@ -69,15 +88,77 @@
     .node:hover {
       filter: drop-shadow(0 4px 12px rgba(15, 23, 42, 0.35));
     }
+    g.cluster {
+      cursor: pointer;
+      transition: filter 0.18s ease-in-out;
+    }
+    g.cluster:hover {
+      filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.4));
+    }
     [x-cloak] { display: none !important; }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans bg-[#CBD5E1] text-slate-900 overflow-hidden select-none" x-data="sldFinderApp()">
+<body class="h-full flex flex-col font-sans bg-[#CBD5E1] text-slate-900 overflow-hidden select-none" x-data="sldApp()">
+
+  <!-- Hidden Photo File Inputs (Camera Snap & Gallery Multi-Upload) -->
+  <input 
+    type="file" 
+    id="survey-camera-input"
+    x-ref="cameraInput" 
+    accept="image/*" 
+    capture="environment" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'staged')"
+  >
+  <input 
+    type="file" 
+    id="survey-gallery-input"
+    x-ref="galleryInput" 
+    accept="image/*" 
+    multiple 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'staged')"
+  >
+  <input 
+    type="file" 
+    id="survey-nameplate-camera-input"
+    x-ref="nameplateCameraInput" 
+    accept="image/*" 
+    capture="environment" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'nameplate')"
+  >
+  <input 
+    type="file" 
+    id="survey-nameplate-gallery-input"
+    x-ref="nameplateGalleryInput" 
+    accept="image/*" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'nameplate')"
+  >
+  <input 
+    type="file" 
+    id="survey-edit-camera-input"
+    x-ref="editCameraInput" 
+    accept="image/*" 
+    capture="environment" 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'editing', editingNoteIndex)"
+  >
+  <input 
+    type="file" 
+    id="survey-edit-gallery-input"
+    x-ref="editGalleryInput" 
+    accept="image/*" 
+    multiple 
+    class="sr-only" 
+    @change="handlePhotoUpload($event, 'editing', editingNoteIndex)"
+  >
 
   <!-- Top Navigation Bar -->
   <header class="h-11 px-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-xs z-10 text-white select-none">
     <div class="flex items-center gap-2">
-      <a href="/survey?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Return to Survey Workbench">
+      <a href="/survey?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Return to Survey">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
         <div class="hidden sm:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
@@ -85,59 +166,13 @@
         </div>
       </a>
 
-      <div class="hidden md:block h-3.5 w-[1px] bg-slate-800"></div>
-
-      <!-- Unified Global Navigation Segment -->
-      <nav class="flex items-center p-0.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] font-medium shrink-0">
-        <!-- 1. Catalog -->
-        <a 
-          href="/catalog?client={{ client_id }}&facility={{ facility_id }}" 
-          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
-          title="Master Catalog Studio & Archetype Specs"
-        >
-          <span>📚</span>
-          <span class="hidden sm:inline">Catalog</span>
-        </a>
-
-        <!-- 2. Survey -->
-        <a 
-          href="/survey?client={{ client_id }}&facility={{ facility_id }}" 
-          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition"
-          title="Field Survey & Digital Twin Modeler"
-        >
-          <span>📋</span>
-          <span class="hidden sm:inline">Survey</span>
-        </a>
-
-        <!-- 3. Diagram (Active) -->
-        <a 
-          href="/clients/{{ client_id }}/facilities/{{ facility_id }}/sld" 
-          class="px-2.5 py-1 rounded-md bg-slate-800 text-amber-400 font-bold shadow-2xs border border-slate-700/80 flex items-center gap-1.5 transition"
-          title="Interactive Single-Line Hierarchy Diagram (Active)"
-        >
-          <i class="fa-solid fa-sitemap text-[11px]"></i>
-          <span class="hidden sm:inline">Diagram</span>
-        </a>
-
-        <!-- 4. Files (Finder) -->
-        <button 
-          type="button"
-          @click="openFinderModal()" 
-          class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 flex items-center gap-1 transition cursor-pointer"
-          title="Workspace Database Finder (Cmd+O / Ctrl+O)"
-        >
-          <span>📁</span>
-          <span class="hidden sm:inline">Files</span>
-        </button>
-      </nav>
-
-      <div class="hidden md:block h-3.5 w-[1px] bg-slate-800"></div>
+      <div class="hidden sm:block h-3.5 w-[1px] bg-slate-800"></div>
 
       <!-- Multi-Tenant Client DB Path Pill & Finder Trigger -->
       <button 
         type="button"
         @click="openFinderModal()"
-        class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 hover:bg-indigo-900/80 hover:border-indigo-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
+        class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-indigo-950/60 border border-indigo-800/80 text-indigo-300 hover:bg-indigo-900/80 hover:border-indigo-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
         title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
       >
         <span>🏢</span>
@@ -149,6 +184,81 @@
 
     <!-- Viewer Controls -->
     <div class="flex items-center gap-1.5 shrink-0">
+      <button 
+        onclick="zoomIn()" 
+        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
+        title="Zoom In (+)"
+      >
+        +
+      </button>
+      <button 
+        onclick="zoomOut()" 
+        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
+        title="Zoom Out (-)"
+      >
+        -
+      </button>
+      <button 
+        onclick="resetFit()" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+        title="Fit Diagram to Viewport (F)"
+      >
+        <span class="hidden md:inline">Reset </span>Fit
+      </button>
+      <button 
+        onclick="window.location.reload()" 
+        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition cursor-pointer"
+        title="Reload / Refresh Diagram (R)"
+      >
+        🔄
+      </button>
+      <!-- Flow Direction Toggle (TB / LR) -->
+      <button 
+        id="btn-layout-dir"
+        onclick="toggleFlowDirection()" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+        title="Toggle Power Flow: Top-Down (TB) vs Left-Right (LR) [Press H]"
+      >
+        <span id="layout-dir-icon" class="font-bold text-amber-400">↕</span>
+        <span id="layout-dir-text">Top-Down</span>
+      </button>
+
+      <!-- Level of Detail Toggle (Macro vs Detailed) -->
+      <button 
+        id="btn-detail-mode"
+        onclick="toggleDetailMode()" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+        title="Toggle Level of Detail: Macro (Equipment Only) vs Detailed (Slots/Breakers) [Press M]"
+      >
+        <span id="detail-mode-icon" class="text-[10px]">🔍</span>
+        <span id="detail-mode-text">Detailed</span>
+      </button>
+
+      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
+
+      <!-- [ 🧰 Toolbox ] Bento Box Popover Trigger -->
+      <button 
+        type="button" 
+        @click="showToolboxModal = true" 
+        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        title="Open Field Toolbox (Views, Audit, Exports, Display & Settings)"
+      >
+        <span>🧰</span>
+        <span class="hidden sm:inline">Toolbox</span>
+      </button>
+
+      <!-- [ ? ] Field Guide / Help Trigger -->
+      <button 
+        type="button" 
+        @click="showHelpModal = true" 
+        class="w-7 h-7 rounded-md text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 shadow-2xs flex items-center justify-center transition cursor-pointer select-none"
+        title="Diagram Guide & Shortcuts (?)"
+      >
+        ?
+      </button>
+
+      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
+
       <!-- Font Size Stepper [ A⁻ | 100% | A⁺ ] -->
       <div class="flex items-center rounded-md border border-slate-700 bg-slate-800 text-slate-300 shadow-2xs overflow-hidden select-none" title="Adjust text size">
         <button 
@@ -179,51 +289,6 @@
           A⁺
         </button>
       </div>
-
-      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
-
-      <button 
-        onclick="zoomIn()" 
-        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
-        title="Zoom In (+)"
-      >
-        +
-      </button>
-      <button 
-        onclick="zoomOut()" 
-        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
-        title="Zoom Out (-)"
-      >
-        -
-      </button>
-      <button 
-        onclick="resetFit()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Fit Diagram to Viewport (F)"
-      >
-        <span class="hidden md:inline">Reset </span>Fit
-      </button>
-      <!-- Flow Direction Toggle (TB / LR) -->
-      <button 
-        id="btn-layout-dir"
-        onclick="toggleFlowDirection()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
-        title="Toggle Power Flow: Top-Down (TB) vs Left-Right (LR) [Press H]"
-      >
-        <span id="layout-dir-icon" class="font-bold text-amber-400">↕</span>
-        <span id="layout-dir-text">Top-Down</span>
-      </button>
-
-      <!-- Level of Detail Toggle (Macro vs Detailed) -->
-      <button 
-        id="btn-detail-mode"
-        onclick="toggleDetailMode()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
-        title="Toggle Level of Detail: Macro (Equipment Only) vs Detailed (Slots/Breakers) [Press M]"
-      >
-        <span id="detail-mode-icon" class="text-[10px]">🔍</span>
-        <span id="detail-mode-text">Detailed</span>
-      </button>
     </div>
   </header>
 
@@ -268,8 +333,21 @@
         </div>
       </div>
 
+      <!-- [+ Add Equipment] Archetype Picker Trigger inside DOMAINS Palette -->
+      <button 
+        type="button" 
+        id="legend-add-btn"
+        @click="openEquipmentPicker()" 
+        class="w-full py-1.5 px-2 rounded-xl text-[11px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs flex items-center justify-center gap-1.5 transition cursor-pointer select-none shrink-0"
+        title="Add Equipment Archetype (Press N)"
+      >
+        <span>➕</span>
+        <span>Add Equipment</span>
+        <span class="text-[9px] font-mono text-indigo-200">(N)</span>
+      </button>
+
       <!-- Dynamic Domain Pills Container (Vertical Stack) -->
-      <div id="domain-legend-pills" class="flex flex-col gap-1 overflow-y-auto pr-0.5 max-h-[calc(100vh-170px)]"></div>
+      <div id="domain-legend-pills" class="flex flex-col gap-1 overflow-y-auto pr-0.5 max-h-[calc(100vh-210px)]"></div>
     </div>
   </main>
 
@@ -295,6 +373,14 @@
   </div>
 
   <script>
+    // Configuration object for Single-Line Diagram viewer
+    window.__SLD_CONFIG__ = {
+      // Default view mode: 'macro' (equipment overview) or 'detailed' (expanded breakers & slots)
+      defaultMode: 'macro',
+      // Default diagram flow orientation: 'TB' (Top-to-Bottom) or 'LR' (Left-to-Right)
+      defaultRankDir: 'TB',
+    };
+
     const DOMAIN_DEFS = [
       { id: 'sources', name: 'Sources', icon: '⚡', bg: '#FEF3C7', border: '#D97706', text: '#0F172A', glow: 'rgba(217, 119, 6, 0.9)' },
       { id: 'transformers', name: 'Transformers', icon: '🔄', bg: '#F3E8FF', border: '#9333EA', text: '#0F172A', glow: 'rgba(147, 51, 234, 0.9)' },
@@ -341,31 +427,46 @@
       const facilityId = "{{ facility_id }}";
       const loading = document.getElementById("loading");
 
+      // Sync UI button states with persisted settings
+      applyDetailModeUI(currentDetailMode);
+      applyRankDirUI(currentRankDir);
+
       try {
-        // 1. Fetch DOT and Nodes in parallel
+        // 1. Fetch DOT and Nodes in parallel with active mode
         const [dotRes, nodesRes] = await Promise.all([
-          fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot`),
+          fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}`),
           fetch(`/api/clients/${clientId}/facilities/${facilityId}/nodes`)
         ]);
 
         if (!dotRes.ok) throw new Error("Failed to load DOT graph");
         rawDotString = await dotRes.text();
-        document.getElementById("dot-code").innerText = rawDotString;
+        const modifiedDot = rawDotString.replace(/rankdir\s*=\s*["']?(TB|LR|BT|RL)["']?/gi, `rankdir=${currentRankDir}`);
+        const dotEl = document.getElementById("dot-code");
+        if (dotEl) dotEl.innerText = modifiedDot;
 
         if (nodesRes.ok) {
           facilityNodes = await nodesRes.json();
+          window.facilityNodes = facilityNodes;
           buildNodeDomainMap(facilityNodes);
           renderDomainLegend(facilityNodes);
         }
 
-        // 2. Render Graph with D3 Graphviz
+        // 2. Render Graph with D3 Graphviz (disable shape/path tweening for instant reliable updates)
         graphvizInstance = d3.select("#graph-container")
-          .graphviz({ useWorker: false })
+          .graphviz({ useWorker: false, tweenShapes: false, tweenPaths: false })
           .fit(true)
           .zoom(true)
-          .renderDot(rawDotString, () => {
+          .zoomScaleExtent([0.05, 20])
+          .zoomTranslateExtent([[-Infinity, -Infinity], [Infinity, Infinity]])
+          .onerror((err) => console.error("d3-graphviz initialization error:", err))
+          .renderDot(modifiedDot, () => {
             loading.classList.add("opacity-0", "pointer-events-none");
             setTimeout(() => { loading.style.display = "none"; }, 300);
+            const svg = d3.select("#graph-container svg");
+            const zb = graphvizInstance.zoomBehavior();
+            if (zb && !svg.empty()) {
+              svg.call(zb);
+            }
             attachCanvasClickListeners();
           });
       } catch (err) {
@@ -396,10 +497,12 @@
     function toggleLegendCollapse() {
       legendCollapsed = !legendCollapsed;
       const pills = document.getElementById("domain-legend-pills");
+      const addBtn = document.getElementById("legend-add-btn");
       const icon = document.getElementById("legend-collapse-icon");
       const bar = document.getElementById("legend-bar");
       if (legendCollapsed) {
         if (pills) pills.classList.add("hidden");
+        if (addBtn) addBtn.classList.add("hidden");
         if (icon) {
           icon.classList.remove("fa-chevron-up");
           icon.classList.add("fa-chevron-down");
@@ -407,6 +510,7 @@
         if (bar) bar.classList.remove("w-44");
       } else {
         if (pills) pills.classList.remove("hidden");
+        if (addBtn) addBtn.classList.remove("hidden");
         if (icon) {
           icon.classList.remove("fa-chevron-down");
           icon.classList.add("fa-chevron-up");
@@ -581,15 +685,87 @@
 
     function attachCanvasClickListeners() {
       const svg = d3.select("#graph-container svg");
-      if (!svg.empty()) {
-        svg.on("click", (e) => {
-          // If user clicked background canvas (not a node/cluster)
-          if (e.target.tagName === 'svg' || e.target.id === 'graph0' || (e.target.tagName === 'polygon' && d3.select(e.target.parentNode).attr('id') === 'graph0')) {
-            if (activeHighlightDomain) {
-              clearDomainHighlight();
-            }
+      if (svg.empty()) return;
+
+      // 1. Canvas background click (clear domain highlights)
+      svg.on("click", (e) => {
+        if (e.defaultPrevented) return;
+        if (e.target.tagName === 'svg' || e.target.id === 'graph0' || (e.target.tagName === 'polygon' && d3.select(e.target.parentNode).attr('id') === 'graph0')) {
+          if (activeHighlightDomain) {
+            clearDomainHighlight();
           }
-        });
+        }
+      });
+
+      // 2. Attach click handlers to Detailed Mode Equipment Clusters
+      svg.selectAll("g.cluster").each(function() {
+        const el = d3.select(this);
+        const titleEl = el.select("title");
+        const titleText = titleEl.empty() ? "" : titleEl.text().trim();
+        if (titleText.startsWith("cluster_") || titleText.startsWith("clust_")) {
+          const rawId = titleText.replace(/^clust(er)?_/, "");
+          el.style("cursor", "pointer");
+          el.on("click", (e) => {
+            if (e.defaultPrevented) return;
+            // If the user specifically clicked a breaker node inside the cluster, don't hijack
+            const targetNode = e.target.closest("g.node");
+            if (targetNode) {
+              const nodeTitle = d3.select(targetNode).select("title").text().trim();
+              if (nodeTitle.includes('_b')) {
+                return;
+              }
+            }
+            e.stopPropagation();
+            if (window.openEquipmentDrawer) {
+              window.openEquipmentDrawer(rawId);
+            }
+          });
+        }
+      });
+
+      // 3. Attach click handlers to Device Nodes (Macro Mode and Detailed Ports)
+      svg.selectAll("g.node").each(function() {
+        const el = d3.select(this);
+        const titleEl = el.select("title");
+        const titleText = titleEl.empty() ? "" : titleEl.text().trim();
+        const isBreaker = titleText.includes('_b') || /_b\d+$/.test(titleText);
+        if (!isBreaker && titleText) {
+          const cleanId = titleText.replace(/_(in|out|norm|emerg|emergency|bypass|load)$/, '');
+          el.style("cursor", "pointer");
+          el.on("click", (e) => {
+            if (e.defaultPrevented) return;
+            e.stopPropagation();
+            if (window.openEquipmentDrawer) {
+              window.openEquipmentDrawer(cleanId || titleText);
+            }
+          });
+        }
+      });
+    }
+
+    async function refreshDiagram() {
+      const clientId = "{{ client_id }}";
+      const facilityId = "{{ facility_id }}";
+      try {
+        const [dotRes, nodesRes] = await Promise.all([
+          fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}&_t=${Date.now()}`),
+          fetch(`/api/clients/${clientId}/facilities/${facilityId}/nodes?_t=${Date.now()}`)
+        ]);
+
+        if (dotRes.ok) {
+          rawDotString = await dotRes.text();
+        }
+
+        if (nodesRes.ok) {
+          facilityNodes = await nodesRes.json();
+          window.facilityNodes = facilityNodes;
+          buildNodeDomainMap(facilityNodes);
+          renderDomainLegend(facilityNodes);
+        }
+
+        renderCurrentDot();
+      } catch (err) {
+        console.error("Error refreshing SLD diagram:", err);
       }
     }
 
@@ -657,19 +833,15 @@
       alert("Graphviz DOT copied to clipboard!");
     }
 
-    let currentRankDir = 'TB';
-    let currentDetailMode = 'detailed';
+    let currentRankDir = localStorage.getItem('james-sld-rankdir') || window.__SLD_CONFIG__?.defaultRankDir || 'TB';
+    let currentDetailMode = localStorage.getItem('james-sld-mode') || window.__SLD_CONFIG__?.defaultMode || 'macro';
 
-    function toggleFlowDirection() {
-      if (!rawDotString || !graphvizInstance) return;
-
-      currentRankDir = (currentRankDir === 'TB') ? 'LR' : 'TB';
-
+    function applyRankDirUI(dir) {
       const icon = document.getElementById("layout-dir-icon");
       const text = document.getElementById("layout-dir-text");
       const btn = document.getElementById("btn-layout-dir");
 
-      if (currentRankDir === 'LR') {
+      if (dir === 'LR') {
         if (icon) { icon.textContent = '↔'; icon.className = 'font-bold text-cyan-400'; }
         if (text) text.textContent = 'Left-Right';
         if (btn) btn.title = "Current: Left-Right (LR). Click to switch to Top-Down (TB) [Press H]";
@@ -678,21 +850,24 @@
         if (text) text.textContent = 'Top-Down';
         if (btn) btn.title = "Current: Top-Down (TB). Click to switch to Left-Right (LR) [Press H]";
       }
+    }
+
+    function toggleFlowDirection() {
+      if (!rawDotString || !graphvizInstance) return;
+
+      currentRankDir = (currentRankDir === 'TB') ? 'LR' : 'TB';
+      localStorage.setItem('james-sld-rankdir', currentRankDir);
+      applyRankDirUI(currentRankDir);
 
       renderCurrentDot();
     }
 
-    async function toggleDetailMode() {
-      const clientId = "{{ client_id }}";
-      const facilityId = "{{ facility_id }}";
-
-      currentDetailMode = (currentDetailMode === 'detailed') ? 'macro' : 'detailed';
-
+    function applyDetailModeUI(mode) {
       const icon = document.getElementById("detail-mode-icon");
       const text = document.getElementById("detail-mode-text");
       const btn = document.getElementById("btn-detail-mode");
 
-      if (currentDetailMode === 'macro') {
+      if (mode === 'macro') {
         if (icon) icon.textContent = '📦';
         if (text) text.textContent = 'Macro';
         if (btn) {
@@ -707,6 +882,15 @@
           btn.classList.remove("text-amber-300", "border-amber-500/60");
         }
       }
+    }
+
+    async function toggleDetailMode() {
+      const clientId = "{{ client_id }}";
+      const facilityId = "{{ facility_id }}";
+
+      currentDetailMode = (currentDetailMode === 'detailed') ? 'macro' : 'detailed';
+      localStorage.setItem('james-sld-mode', currentDetailMode);
+      applyDetailModeUI(currentDetailMode);
 
       try {
         const dotRes = await fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}`);
@@ -720,17 +904,38 @@
     }
 
     function renderCurrentDot() {
-      if (!rawDotString || !graphvizInstance) return;
+      if (!rawDotString) return;
 
       const modifiedDot = rawDotString.replace(/rankdir\s*=\s*["']?(TB|LR|BT|RL)["']?/gi, `rankdir=${currentRankDir}`);
-      document.getElementById("dot-code").innerText = modifiedDot;
+      const dotEl = document.getElementById("dot-code");
+      if (dotEl) dotEl.innerText = modifiedDot;
 
       try {
+        if (!graphvizInstance) {
+          graphvizInstance = d3.select("#graph-container")
+            .graphviz({ useWorker: false, tweenShapes: false, tweenPaths: false })
+            .fit(true)
+            .zoom(true)
+            .zoomScaleExtent([0.05, 20])
+            .zoomTranslateExtent([[-Infinity, -Infinity], [Infinity, Infinity]])
+            .onerror((err) => console.warn("d3-graphviz render notice:", err));
+        }
+
         graphvizInstance
           .renderDot(modifiedDot, () => {
-            attachCanvasClickListeners();
-            if (activeHighlightDomain) {
-              applyDomainHighlight(activeHighlightDomain);
+            try {
+              // Ensure d3.zoom behavior is securely wired to the active SVG
+              const svg = d3.select("#graph-container svg");
+              const zb = graphvizInstance.zoomBehavior();
+              if (zb && !svg.empty()) {
+                svg.call(zb);
+              }
+              attachCanvasClickListeners();
+              if (activeHighlightDomain) {
+                applyDomainHighlight(activeHighlightDomain);
+              }
+            } catch (err) {
+              console.warn("Canvas click listeners attach notice:", err);
             }
           });
       } catch (err) {
@@ -740,7 +945,7 @@
 
     // Keyboard Shortcuts for SLD Navigation (+ / - / 0 / r / h / m / Esc)
     window.addEventListener("keydown", (e) => {
-      if (document.activeElement && ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+      if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
       if (e.key === "+" || e.key === "=") {
         e.preventDefault();
         zoomIn();
@@ -806,10 +1011,25 @@
       initSLD();
     });
 
-    function sldFinderApp() {
-      return {
+    function sldApp() {
+      const app = {
         client: "{{ client_id }}",
         facility: "{{ facility_id }}",
+
+        // Toolbox & Help Popover state
+        showToolboxModal: false,
+        showHelpModal: false,
+        fontScale: 100,
+        isDark: false,
+
+        // System Integrity Audit State
+        showAuditModal: false,
+        isAuditing: false,
+        auditResult: null,
+        auditFilterSeverity: 'all',
+        auditSearch: '',
+
+        // Workspace Finder state
         showFinderModal: false,
         finderLoading: false,
         finderClients: [],
@@ -819,18 +1039,1446 @@
         finderNewClient: '{{ client_id }}',
         finderIsCustomClient: false,
         finderNewFacility: '',
-        finderSeedData: true,
+        finderSeedData: false,
         finderCreating: false,
 
+        // Slide-over Edit Drawer & Shared Equipment Form state
+        showScheduleMatrix: true,
+        showEditDrawer: false,
+        drawerTab: 'details',
+        editingNode: null,
+        editingNodeOriginalTag: '',
+        editingId: null,
+        selectedDomain: null,
+        selectedType: null,
+        customAttrsList: [],
+        stagedPhotos: [],
+        newNoteText: '',
+        editingNoteId: null,
+        editingNoteIndex: null,
+        editingNoteText: '',
+        showDeleteNoteModal: false,
+        noteToDelete: null,
+        showLightboxModal: false,
+        activeLightboxPhoto: null,
+        lightboxCaption: '',
+        isSaving: false,
+        toastMessage: '',
+        toastTimer: null,
+        allNodes: [],
+        masterCatalog: {{ master_catalog_items | tojson if master_catalog_items else "[]" }},
+
+        // Panel Schedule & Breaker Inspector Modal State
+        scheduleRows: [],
+        showBreakerModal: false,
+        activeBreaker: {
+          rowIdx: 0,
+          side: 'left',
+          slot: 1,
+          desc: '',
+          trip: '20',
+          poles: 1,
+          type: 'MCCB',
+          wire: '12 AWG Cu',
+          targetLoad: '',
+          part_no: '',
+          mfr: '',
+          is_custom_part: false,
+          catalog_status: 'verified',
+          phase: 'A',
+          phaseColor: 'text-red-500',
+          isOccupied: false
+        },
+
+        form: {
+          id: '',
+          tag: '',
+          name: '',
+          domain: 'panels',
+          object_class: '',
+          type_tag: '',
+          type_name: '',
+          room: '',
+          fed_from: '',
+          upstream_sources: [''],
+          voltage: '480V',
+          amps: 225,
+          aic: 22,
+          enclosure: 'NEMA 1',
+          is_panel: 1,
+          slots: 42,
+          main_type: 'MCB',
+          mounting: 'Surface',
+          manufacturer: 'Square D / Schneider Electric',
+          model_no: '',
+          asset_tag: '',
+          serial_no: '',
+          year_installed: null,
+          criticality: 'Medium',
+          condition: '1',
+          environment: 'Clean',
+          operational_status: 'Active',
+          inspection_freq: 'Annual',
+          last_inspection: '',
+          next_inspection: '',
+          arc_flash_date: '',
+          infrared_date: '',
+          torque_check_date: '',
+          megger_phase_a: '',
+          megger_phase_b: '',
+          megger_phase_c: '',
+          nameplate_photo: null,
+          vendor_attrs: {},
+          notes: []
+        },
+
         init() {
+          window.notify = (msg) => this.toast(msg);
+          window.openEquipmentDrawer = (idOrTag) => {
+            this.openEditDrawer(idOrTag);
+          };
+          window.refreshDiagram = async () => {
+            if (typeof refreshDiagram === 'function') {
+              return await refreshDiagram();
+            }
+          };
+
+          const savedTheme = localStorage.getItem('james-theme');
+          this.isDark = savedTheme === 'dark';
+          const savedScale = localStorage.getItem('james-font-scale');
+          if (savedScale) this.fontScale = parseInt(savedScale, 10);
+
           window.addEventListener('keydown', (e) => {
+            if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+              this.showHelpModal = !this.showHelpModal;
+            }
+            if ((e.key === 'n' || e.key === 'N') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showToolboxModal && !this.showHelpModal && !this.showEditDrawer && !this.showBreakerModal && !this.showLightboxModal) {
+              e.preventDefault();
+              this.openEquipmentPicker();
+            }
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'o') {
               e.preventDefault();
               this.openFinderModal();
             }
+            if (e.key === 'Escape') {
+              if (this.showToolboxModal) {
+                this.showToolboxModal = false;
+              } else if (this.showHelpModal) {
+                this.showHelpModal = false;
+              } else if (this.showEquipmentPicker) {
+                this.closeEquipmentPicker();
+              } else if (this.showLightboxModal) {
+                this.showLightboxModal = false;
+              } else if (this.showEditDrawer) {
+                this.closeEditDrawer();
+              }
+            }
+          });
+
+          this.fetchNodes();
+          this.fetchCatalog();
+        },
+
+        async fetchNodes() {
+          try {
+            const res = await fetch(`/api/clients/${encodeURIComponent(this.client)}/facilities/${encodeURIComponent(this.facility)}/nodes`);
+            if (res.ok) {
+              this.allNodes = await res.json();
+            }
+          } catch (err) {
+            console.error('Failed to fetch facility nodes:', err);
+          }
+        },
+
+        async fetchCatalog() {
+          try {
+            const res = await fetch('/api/catalog/items');
+            if (res.ok) {
+              this.masterCatalog = await res.json();
+            }
+          } catch (err) {
+            console.error('Failed to fetch master catalog:', err);
+          }
+        },
+
+        onSelectArchetypeFromPicker(item) {
+          this.closeEquipmentPicker();
+          const nextTag = this.generateNextTag ? this.generateNextTag(item.defaultTag) : (item.defaultTag || 'EQ-1');
+          const isPanel = !!(item.is_panel || item.domainId === 'panels');
+          
+          const newDraft = {
+            id: 'node_' + Date.now(),
+            tag: nextTag,
+            name: item.name,
+            domain: item.domainId,
+            type_tag: item.tag,
+            type_name: item.name,
+            room: 'Main Electrical Room',
+            fed_from: '',
+            upstream_sources: [''],
+            voltage: item.volts || '480Y/277V 3Ø 4W',
+            amps: item.amps || 100,
+            aic: item.aic || 22,
+            enclosure: 'NEMA 1',
+            is_panel: isPanel ? 1 : 0,
+            slots: isPanel ? (item.defaultSlots || 42) : 0,
+            main_type: 'MCB',
+            mounting: 'Surface',
+            manufacturer: '',
+            model_no: '',
+            asset_tag: '',
+            serial_no: '',
+            year_installed: null,
+            criticality: 'Medium',
+            condition: '1',
+            environment: 'Clean',
+            operational_status: 'Active',
+            inspection_freq: 'Annual',
+            last_inspection: '',
+            next_inspection: '',
+            arc_flash_date: '',
+            infrared_date: '',
+            torque_check_date: '',
+            megger_phase_a: '',
+            megger_phase_b: '',
+            megger_phase_c: '',
+            nameplate_photo: null,
+            vendor_attrs: {},
+            notes: []
+          };
+
+          this.editingNode = newDraft;
+          this.editingNodeOriginalTag = '';
+          this.editingId = newDraft.id;
+
+          this.form = JSON.parse(JSON.stringify(newDraft));
+          this.selectedDomain = {
+            id: item.domainId,
+            name: item.domainName
+          };
+          this.selectedType = item;
+
+          if (isPanel) {
+            this.generateInitialScheduleRows(item.defaultSlots || 42);
+          } else {
+            this.scheduleRows = [];
+          }
+
+          this.customAttrsList = [];
+          this.stagedPhotos = [];
+          this.newNoteText = '';
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.editingNoteText = '';
+          this.drawerTab = 'details';
+          this.showEditDrawer = true;
+          this.toast(`➕ Created new device draft: ${nextTag} (${item.name})`);
+        },
+
+        openEditDrawer(idOrTag) {
+          if (!idOrTag) return;
+          const targetStr = String(idOrTag).trim();
+          const pool = (this.allNodes && this.allNodes.length > 0) ? this.allNodes : (window.facilityNodes || []);
+          this.allNodes = pool;
+          const match = pool.find(n => 
+            n.id === targetStr || 
+            n.tag === targetStr || 
+            (n.id && n.id.toLowerCase() === targetStr.toLowerCase()) || 
+            (n.tag && n.tag.toLowerCase() === targetStr.toLowerCase())
+          );
+
+          if (!match) {
+            console.warn('Equipment not found in node dataset for target:', targetStr);
+            this.toast(`⚠️ Equipment "${targetStr}" not found in model.`);
+            return;
+          }
+
+          // Deep clone node data
+          this.editingNode = JSON.parse(JSON.stringify(match));
+          this.editingNodeOriginalTag = this.editingNode.tag || '';
+          this.editingId = this.editingNode.id;
+          
+          if (!this.editingNode.attributes) {
+            this.editingNode.attributes = {};
+          }
+          const attrs = this.editingNode.attributes;
+          
+          // Upstream sources array
+          let sources = [];
+          if (Array.isArray(attrs.upstream_sources) && attrs.upstream_sources.length > 0) {
+            sources = [...attrs.upstream_sources];
+          } else if (this.editingNode.fed_from || attrs.fed_from) {
+            sources = [this.editingNode.fed_from || attrs.fed_from];
+          }
+          if (this.isDualSourceEquipment() && sources.length < 2) {
+            if (attrs.emergency_source) {
+              sources.push(attrs.emergency_source);
+            } else {
+              while (sources.length < 2) sources.push('');
+            }
+          }
+          if (sources.length === 0) {
+            sources.push('');
+          }
+          attrs.upstream_sources = sources;
+
+          // Populate form state for shared equipment_form.html subtemplate
+          const isPanel = !!(this.editingNode.is_panel || (this.editingNode.domain || '').toLowerCase() === 'panels');
+          this.form = {
+            id: this.editingNode.id,
+            tag: this.editingNode.tag || this.editingNode.id,
+            name: this.editingNode.name || this.editingNode.type_name || this.editingNode.tag || '',
+            domain: this.editingNode.domain || 'panels',
+            object_class: this.editingNode.object_class || '',
+            type_tag: this.editingNode.type_tag || '',
+            type_name: this.editingNode.type_name || this.editingNode.name || '',
+            room: this.editingNode.room || '',
+            fed_from: sources[0] || '',
+            upstream_sources: sources,
+            voltage: this.editingNode.voltage || attrs.voltage || '480V',
+            amps: this.editingNode.amps || attrs.amps || 225,
+            aic: this.editingNode.aic || attrs.aic || 22,
+            enclosure: attrs.enclosure || 'NEMA 1',
+            is_panel: isPanel ? 1 : 0,
+            slots: isPanel ? (Number(this.editingNode.slots || attrs.slots) || 42) : 0,
+            main_type: attrs.main_type || 'MCB',
+            mounting: attrs.mounting || 'Surface',
+            manufacturer: attrs.manufacturer || '',
+            model_no: attrs.model_no || '',
+            asset_tag: attrs.asset_tag || '',
+            serial_no: attrs.serial_no || '',
+            year_installed: attrs.year_installed || null,
+            criticality: attrs.criticality || 'Medium',
+            condition: attrs.condition || '1',
+            environment: attrs.environment || 'Clean',
+            operational_status: attrs.operational_status || 'Active',
+            inspection_freq: attrs.inspection_freq || 'Annual',
+            last_inspection: attrs.last_inspection || '',
+            next_inspection: attrs.next_inspection || '',
+            arc_flash_date: attrs.arc_flash_date || '',
+            infrared_date: attrs.infrared_date || '',
+            torque_check_date: attrs.torque_check_date || '',
+            megger_phase_a: attrs.megger_phase_a || '',
+            megger_phase_b: attrs.megger_phase_b || '',
+            megger_phase_c: attrs.megger_phase_c || '',
+            nameplate_photo: attrs.nameplate_photo || null,
+            vendor_attrs: attrs.vendor_attrs || {},
+            notes: Array.isArray(attrs.notes) ? attrs.notes : (Array.isArray(this.editingNode.notes) ? this.editingNode.notes : [])
+          };
+
+          const domStr = this.form.domain || 'panels';
+          this.selectedDomain = {
+            id: domStr,
+            name: domStr.charAt(0).toUpperCase() + domStr.slice(1)
+          };
+          this.selectedType = {
+            tag: this.form.type_tag || '',
+            name: this.form.type_name || this.form.name || ''
+          };
+
+          // Custom vendor attributes key-value list
+          this.updateCustomAttrsList();
+
+          // Initialize schedule rows if panel equipment
+          if (isPanel) {
+            if (Array.isArray(attrs.schedule) && attrs.schedule.length > 0) {
+              this.scheduleRows = JSON.parse(JSON.stringify(attrs.schedule));
+            } else {
+              this.generateInitialScheduleRows(Number(this.form.slots) || 42);
+            }
+          } else {
+            this.scheduleRows = [];
+          }
+
+          this.stagedPhotos = [];
+          this.newNoteText = '';
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.editingNoteText = '';
+          this.drawerTab = 'details';
+          this.showEditDrawer = true;
+        },
+
+        closeEditDrawer() {
+          this.showEditDrawer = false;
+          this.editingNode = null;
+          this.editingId = null;
+          this.customAttrsList = [];
+          this.stagedPhotos = [];
+          this.newNoteText = '';
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.editingNoteText = '';
+          this.scheduleRows = [];
+          this.showBreakerModal = false;
+        },
+
+        get isDuplicateTag() {
+          if (!this.form || !this.form.tag) return false;
+          const currentTag = this.form.tag.trim().toLowerCase();
+          const origTag = (this.editingNodeOriginalTag || '').trim().toLowerCase();
+          if (currentTag === origTag) return false;
+          return (this.allNodes || []).some(n => n.id !== this.form.id && (n.tag || '').trim().toLowerCase() === currentTag);
+        },
+
+        isPanelEquipment() {
+          return !!(this.form?.is_panel || (this.form?.domain || '').toLowerCase() === 'panels' || (this.editingNode && (this.editingNode.is_panel || (this.editingNode.domain || '').toLowerCase() === 'panels')));
+        },
+
+        isDualSourceEquipment() {
+          const typeTag = (this.form && (this.form.type_tag || this.form.type_code || '')) || (this.selectedType ? this.selectedType.tag : '');
+          const typeName = (this.form && (this.form.type_name || this.form.name || '')) || (this.selectedType ? this.selectedType.name : '');
+          const domain = (this.form && this.form.domain) || (this.selectedDomain ? this.selectedDomain.id : '');
+          const combined = `${typeTag} ${typeName} ${domain}`.toUpperCase();
+          return combined.includes('ATS') || combined.includes('MTS') || combined.includes('STS') || combined.includes('TRANSFER SWITCH') || combined.includes('DUAL');
+        },
+
+        getSourceLabel(sIdx) {
+          if (this.isDualSourceEquipment()) {
+            return sIdx === 0 ? 'Normal Power Source' : (sIdx === 1 ? 'Emergency Power Source' : `Alternate Source #${sIdx + 1}`);
+          }
+          return sIdx === 0 ? 'Primary Upstream Feed' : `Secondary Feed #${sIdx + 1}`;
+        },
+
+        addUpstreamSource() {
+          if (!this.form) return;
+          const sources = Array.isArray(this.form.upstream_sources) ? [...this.form.upstream_sources] : (this.form.fed_from ? [this.form.fed_from] : ['']);
+          sources.push('');
+          this.form.upstream_sources = sources;
+        },
+
+        removeUpstreamSource(sIdx) {
+          if (!this.form || !Array.isArray(this.form.upstream_sources)) return;
+          const sources = [...this.form.upstream_sources];
+          sources.splice(sIdx, 1);
+          if (sources.length === 0) {
+            sources.push('');
+          }
+          this.form.upstream_sources = sources;
+          this.form.fed_from = sources[0] || '';
+        },
+
+        onUpstreamSourceChange(sIdx, val) {
+          if (!this.form) return;
+          const cleanVal = val ? String(val).trim() : '';
+          const sources = Array.isArray(this.form.upstream_sources) ? [...this.form.upstream_sources] : [''];
+          while (sources.length <= sIdx) {
+            sources.push('');
+          }
+          sources[sIdx] = cleanVal;
+          this.form.upstream_sources = sources;
+          if (sIdx === 0) {
+            this.form.fed_from = cleanVal;
+          }
+        },
+
+        updateCustomAttrsList() {
+          this.customAttrsList = [];
+          if (this.form.vendor_attrs && typeof this.form.vendor_attrs === 'object') {
+            Object.entries(this.form.vendor_attrs).forEach(([k, v]) => {
+              this.customAttrsList.push({ key: k, val: v !== null && v !== undefined ? String(v) : '' });
+            });
+          }
+        },
+
+        updateCustomAttrsFromList() {
+          const obj = {};
+          (this.customAttrsList || []).forEach(item => {
+            if (item.key && item.key.trim()) {
+              obj[item.key.trim()] = item.val;
+            }
+          });
+          this.form.vendor_attrs = obj;
+        },
+
+        addCustomAttr() {
+          this.customAttrsList.push({ key: '', val: '' });
+        },
+
+        removeCustomAttr(idx) {
+          this.customAttrsList.splice(idx, 1);
+          this.updateCustomAttrsFromList();
+        },
+
+        // Panel Schedule & Breaker Matrix Methods
+        generateInitialScheduleRows(slotCount = 42) {
+          const phases = ['A', 'B', 'C'];
+          const phaseColors = ['text-red-500', 'text-blue-500', 'text-emerald-500'];
+          const rows = [];
+          for (let i = 1; i <= slotCount; i += 2) {
+            const phaseIdx = Math.floor((i - 1) / 2) % 3;
+            rows.push({
+              leftSlot: i,
+              leftDesc: '',
+              leftTrip: '',
+              leftPoles: 1,
+              leftType: 'MCCB',
+              leftWire: '12 AWG Cu',
+              leftTargetLoad: '',
+              leftParentSlot: null,
+              leftIsGanged: false,
+              phase: phases[phaseIdx],
+              phaseColor: phaseColors[phaseIdx],
+              rightSlot: i + 1,
+              rightDesc: '',
+              rightTrip: '',
+              rightPoles: 1,
+              rightType: 'MCCB',
+              rightWire: '12 AWG Cu',
+              rightTargetLoad: '',
+              rightParentSlot: null,
+              rightIsGanged: false,
+            });
+          }
+          this.scheduleRows = rows;
+        },
+
+        updateSlotCount() {
+          const newSlotCount = Number(this.form.slots) || 42;
+          const phases = ['A', 'B', 'C'];
+          const phaseColors = ['text-red-500', 'text-blue-500', 'text-emerald-500'];
+          const newRows = [];
+          const existingMap = {};
+          (this.scheduleRows || []).forEach(r => {
+            existingMap[r.leftSlot] = r;
+          });
+
+          for (let i = 1; i <= newSlotCount; i += 2) {
+            const phaseIdx = Math.floor((i - 1) / 2) % 3;
+            if (existingMap[i]) {
+              newRows.push(existingMap[i]);
+            } else {
+              newRows.push({
+                leftSlot: i,
+                leftDesc: '',
+                leftTrip: '',
+                leftPoles: 1,
+                leftType: 'MCCB',
+                leftWire: '12 AWG Cu',
+                leftTargetLoad: '',
+                leftParentSlot: null,
+                leftIsGanged: false,
+                phase: phases[phaseIdx],
+                phaseColor: phaseColors[phaseIdx],
+                rightSlot: i + 1,
+                rightDesc: '',
+                rightTrip: '',
+                rightPoles: 1,
+                rightType: 'MCCB',
+                rightWire: '12 AWG Cu',
+                rightTargetLoad: '',
+                rightParentSlot: null,
+                rightIsGanged: false,
+              });
+            }
+          }
+          this.scheduleRows = newRows;
+          this.toast(`Adjusted panel schedule to ${newSlotCount} slots`);
+        },
+
+        openBreakerInspector(row, side, rIdx) {
+          let targetRowIdx = rIdx;
+          let targetRow = row;
+          let slotNum = side === 'left' ? row.leftSlot : row.rightSlot;
+          const parentSlot = side === 'left' ? row.leftParentSlot : row.rightParentSlot;
+
+          // If clicking a ganged slave slot, auto-navigate to the parent breaker
+          if (parentSlot) {
+            const foundIdx = this.scheduleRows.findIndex(r => (side === 'left' ? r.leftSlot : r.rightSlot) === parentSlot);
+            if (foundIdx !== -1) {
+              targetRowIdx = foundIdx;
+              targetRow = this.scheduleRows[foundIdx];
+              slotNum = side === 'left' ? targetRow.leftSlot : targetRow.rightSlot;
+            }
+          }
+
+          const desc = side === 'left' ? targetRow.leftDesc : targetRow.rightDesc;
+          const trip = side === 'left' ? targetRow.leftTrip : targetRow.rightTrip;
+          const poles = (side === 'left' ? targetRow.leftPoles : targetRow.rightPoles) || 1;
+          const type = (side === 'left' ? targetRow.leftType : targetRow.rightType) || 'MCCB';
+          const wire = (side === 'left' ? targetRow.leftWire : targetRow.rightWire) || this.getConductor(Number(trip) || 20);
+          const targetLoad = (side === 'left' ? targetRow.leftTargetLoad : targetRow.rightTargetLoad) || '';
+          const partNo = (side === 'left' ? (targetRow.leftPartNo || targetRow.leftPartNumber) : (targetRow.rightPartNo || targetRow.rightPartNumber)) || '';
+          const mfr = (side === 'left' ? targetRow.leftMfr : targetRow.rightMfr) || '';
+          const isCustom = Boolean(side === 'left' ? targetRow.leftIsCustom : targetRow.rightIsCustom);
+          const catalogStatus = (side === 'left' ? targetRow.leftCatalogStatus : targetRow.rightCatalogStatus) || (isCustom ? 'custom_pending' : 'verified');
+
+          this.activeBreaker = {
+            rowIdx: targetRowIdx,
+            side: side,
+            slot: slotNum,
+            desc: desc || '',
+            trip: trip || '20',
+            poles: poles,
+            type: type,
+            wire: wire,
+            targetLoad: targetLoad,
+            part_no: partNo,
+            mfr: mfr,
+            is_custom_part: isCustom,
+            catalog_status: catalogStatus,
+            phase: targetRow.phase,
+            phaseColor: targetRow.phaseColor,
+            isOccupied: Boolean(trip && String(trip).trim())
+          };
+          this.showBreakerModal = true;
+        },
+
+        onBreakerTargetLoadChange(selectedTag) {
+          if (!this.activeBreaker) return;
+          this.activeBreaker.targetLoad = selectedTag || '';
+          if (!selectedTag) return;
+          
+          const pool = (typeof this.eligibleDownstreamEquipment !== 'undefined') ? this.eligibleDownstreamEquipment : [];
+          const targetItem = pool.find(item => item.tag === selectedTag || item.id === selectedTag);
+          if (targetItem) {
+            const formattedDesc = targetItem.name ? `${targetItem.name} (${targetItem.tag})` : targetItem.tag;
+            // Auto-populate circuit description with downstream target name and tag
+            this.activeBreaker.desc = formattedDesc;
+            
+            // Auto-suggest trip rating if available and activeBreaker trip is standard 20A default
+            if (targetItem.amps && (!this.activeBreaker.trip || this.activeBreaker.trip === '20')) {
+              const numericAmps = Math.round(Number(targetItem.amps));
+              if (!isNaN(numericAmps) && numericAmps > 0) {
+                this.activeBreaker.trip = String(numericAmps);
+                this.activeBreaker.wire = this.getConductor(numericAmps);
+              }
+            }
+            
+            // Auto-suggest poles if 3-phase or high voltage
+            if (targetItem.voltage && (targetItem.voltage.includes('3Ø') || targetItem.voltage.includes('480') || targetItem.voltage.includes('208Y'))) {
+              if (['transformers', 'switches', 'power_quality', 'panels'].includes(targetItem.domain) || targetItem.voltage.includes('480')) {
+                this.activeBreaker.poles = 3;
+              }
+            }
+          }
+        },
+
+        saveBreakerAttributes() {
+          const b = this.activeBreaker;
+          const rIdx = b.rowIdx;
+          const poles = parseInt(b.poles) || 1;
+          const side = b.side;
+          
+          if (rIdx < 0 || rIdx >= this.scheduleRows.length) {
+            this.showBreakerModal = false;
+            return;
+          }
+
+          // Check if multi-pole fits within panel height
+          if (rIdx + (poles - 1) >= this.scheduleRows.length) {
+            this.toast(`Cannot fit a ${poles}-pole breaker starting at Slot #${b.slot} (exceeds panel spaces)`);
+            return;
+          }
+
+          // Clear any previous slave slots linked to this parent slot
+          this.scheduleRows.forEach(r => {
+            if (side === 'left' && r.leftParentSlot === b.slot) {
+              r.leftDesc = '';
+              r.leftTrip = '';
+              r.leftPoles = 1;
+              r.leftType = 'MCCB';
+              r.leftWire = '12 AWG Cu';
+              r.leftTargetLoad = '';
+              r.leftPartNo = '';
+              r.leftMfr = '';
+              r.leftIsCustom = false;
+              r.leftCatalogStatus = 'verified';
+              r.leftParentSlot = null;
+              r.leftIsGanged = false;
+            } else if (side === 'right' && r.rightParentSlot === b.slot) {
+              r.rightDesc = '';
+              r.rightTrip = '';
+              r.rightPoles = 1;
+              r.rightType = 'MCCB';
+              r.rightWire = '12 AWG Cu';
+              r.rightTargetLoad = '';
+              r.rightPartNo = '';
+              r.rightMfr = '';
+              r.rightIsCustom = false;
+              r.rightCatalogStatus = 'verified';
+              r.rightParentSlot = null;
+              r.rightIsGanged = false;
+            }
+          });
+
+          // Set parent pole
+          const parentRow = this.scheduleRows[rIdx];
+          const desc = b.desc.trim() || `Circuit #${b.slot}`;
+          const partNo = (b.part_no || '').trim();
+          const mfr = (b.mfr || '').trim();
+          const isCustom = Boolean(b.is_custom_part);
+          const catalogStatus = b.catalog_status || (isCustom ? 'custom_pending' : 'verified');
+
+          if (side === 'left') {
+            parentRow.leftDesc = desc;
+            parentRow.leftTrip = b.trip;
+            parentRow.leftPoles = poles;
+            parentRow.leftType = b.type;
+            parentRow.leftWire = b.wire;
+            parentRow.leftTargetLoad = b.targetLoad;
+            parentRow.leftPartNo = partNo;
+            parentRow.leftMfr = mfr;
+            parentRow.leftIsCustom = isCustom;
+            parentRow.leftCatalogStatus = catalogStatus;
+            parentRow.leftParentSlot = null;
+            parentRow.leftIsGanged = false;
+          } else {
+            parentRow.rightDesc = desc;
+            parentRow.rightTrip = b.trip;
+            parentRow.rightPoles = poles;
+            parentRow.rightType = b.type;
+            parentRow.rightWire = b.wire;
+            parentRow.rightTargetLoad = b.targetLoad;
+            parentRow.rightPartNo = partNo;
+            parentRow.rightMfr = mfr;
+            parentRow.rightIsCustom = isCustom;
+            parentRow.rightCatalogStatus = catalogStatus;
+            parentRow.rightParentSlot = null;
+            parentRow.rightIsGanged = false;
+          }
+
+          // Set slave poles if multi-pole (2P or 3P)
+          for (let p = 1; p < poles; p++) {
+            const slaveRow = this.scheduleRows[rIdx + p];
+            if (slaveRow) {
+              const slavePhase = slaveRow.phase || (p === 1 ? 'Phase B' : 'Phase C');
+              const slaveDesc = `↳ Ganged with Slot #${b.slot} (${slavePhase})`;
+              if (side === 'left') {
+                slaveRow.leftDesc = slaveDesc;
+                slaveRow.leftTrip = b.trip;
+                slaveRow.leftPoles = poles;
+                slaveRow.leftType = b.type;
+                slaveRow.leftWire = b.wire;
+                slaveRow.leftTargetLoad = b.targetLoad;
+                slaveRow.leftPartNo = partNo;
+                slaveRow.leftMfr = mfr;
+                slaveRow.leftIsCustom = isCustom;
+                slaveRow.leftCatalogStatus = catalogStatus;
+                slaveRow.leftParentSlot = b.slot;
+                slaveRow.leftIsGanged = true;
+              } else {
+                slaveRow.rightDesc = slaveDesc;
+                slaveRow.rightTrip = b.trip;
+                slaveRow.rightPoles = poles;
+                slaveRow.rightType = b.type;
+                slaveRow.rightWire = b.wire;
+                slaveRow.rightTargetLoad = b.targetLoad;
+                slaveRow.rightPartNo = partNo;
+                slaveRow.rightMfr = mfr;
+                slaveRow.rightIsCustom = isCustom;
+                slaveRow.rightCatalogStatus = catalogStatus;
+                slaveRow.rightParentSlot = b.slot;
+                slaveRow.rightIsGanged = true;
+              }
+            }
+          }
+
+          const partStatusMsg = isCustom && partNo ? ` [Custom: ${partNo} (${mfr})]` : (partNo ? ` [${partNo}]` : '');
+          this.toast(`Saved Breaker at Slot #${b.slot} (${b.trip}A ${poles}P)${partStatusMsg}`);
+          this.showBreakerModal = false;
+        },
+
+        removeBreakerFromSlot() {
+          const b = this.activeBreaker;
+          const side = b.side;
+          const parentSlot = b.slot;
+
+          // Clear parent and all associated slave slots
+          this.scheduleRows.forEach(r => {
+            const isTargetParentLeft = side === 'left' && r.leftSlot === parentSlot;
+            const isTargetSlaveLeft = side === 'left' && r.leftParentSlot === parentSlot;
+            if (isTargetParentLeft || isTargetSlaveLeft) {
+              r.leftDesc = '';
+              r.leftTrip = '';
+              r.leftPoles = 1;
+              r.leftType = 'MCCB';
+              r.leftWire = '12 AWG Cu';
+              r.leftTargetLoad = '';
+              r.leftPartNo = '';
+              r.leftMfr = '';
+              r.leftIsCustom = false;
+              r.leftCatalogStatus = 'verified';
+              r.leftParentSlot = null;
+              r.leftIsGanged = false;
+            }
+
+            const isTargetParentRight = side === 'right' && r.rightSlot === parentSlot;
+            const isTargetSlaveRight = side === 'right' && r.rightParentSlot === parentSlot;
+            if (isTargetParentRight || isTargetSlaveRight) {
+              r.rightDesc = '';
+              r.rightTrip = '';
+              r.rightPoles = 1;
+              r.rightType = 'MCCB';
+              r.rightWire = '12 AWG Cu';
+              r.rightTargetLoad = '';
+              r.rightPartNo = '';
+              r.rightMfr = '';
+              r.rightIsCustom = false;
+              r.rightCatalogStatus = 'verified';
+              r.rightParentSlot = null;
+              r.rightIsGanged = false;
+            }
+          });
+
+          this.toast(`Cleared Slot #${b.slot} (Converted to Space)`);
+          this.showBreakerModal = false;
+        },
+
+        onBreakerCatalogSelect(partNo) {
+          if (!this.activeBreaker) return;
+          if (!partNo) {
+            this.activeBreaker.part_no = '';
+            this.activeBreaker.is_custom_part = false;
+            this.activeBreaker.catalog_status = 'verified';
+            return;
+          }
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === partNo.trim().toUpperCase());
+          if (!item) return;
+
+          this.activeBreaker.part_no = item.part_number;
+          this.activeBreaker.mfr = item.manufacturer || '';
+          this.activeBreaker.is_custom_part = false;
+          this.activeBreaker.catalog_status = 'verified';
+
+          const specs = item.specs || {};
+          if (specs.amps) {
+            this.activeBreaker.trip = String(Math.round(specs.amps));
+            this.activeBreaker.wire = this.getConductor(Number(specs.amps));
+          }
+          if (specs.poles) this.activeBreaker.poles = specs.poles;
+          if (specs.trip_type) this.activeBreaker.type = specs.trip_type.includes('Electronic') ? 'LSI' : 'MCCB';
+          if (!this.activeBreaker.desc) {
+            this.activeBreaker.desc = item.description || `Circuit ${this.activeBreaker.slot}`;
+          }
+
+          this.toast(`⚡ Master Catalog breaker loaded: ${item.part_number} (${item.manufacturer || ''} ${specs.poles || 1}P ${specs.amps || ''}A)`);
+        },
+
+        onCustomPartNoInput(val) {
+          if (!this.activeBreaker) return;
+          const trimmed = (val || '').trim();
+          this.activeBreaker.part_no = trimmed;
+          if (!trimmed) {
+            this.activeBreaker.is_custom_part = false;
+            this.activeBreaker.catalog_status = 'verified';
+            return;
+          }
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === trimmed.toUpperCase());
+          if (item) {
+            this.activeBreaker.is_custom_part = false;
+            this.activeBreaker.catalog_status = 'verified';
+            if (item.manufacturer) this.activeBreaker.mfr = item.manufacturer;
+          } else {
+            this.activeBreaker.is_custom_part = true;
+            this.activeBreaker.catalog_status = 'custom_pending';
+          }
+        },
+
+        // Panel Schedule Getters
+        get occupiedSlotsCount() {
+          let count = 0;
+          (this.scheduleRows || []).forEach(r => {
+            if (r.leftTrip) count += (r.leftPoles || 1);
+            if (r.rightTrip) count += (r.rightPoles || 1);
+          });
+          return Math.min(count, this.form.slots || 42);
+        },
+
+        get catalogBreakers() {
+          const currentPoles = this.activeBreaker ? (Number(this.activeBreaker.poles) || 1) : null;
+          const currentMfr = this.activeBreaker && this.activeBreaker.mfr ? this.activeBreaker.mfr.toLowerCase().trim() : '';
+
+          let list = (this.masterCatalogList || []).filter(item => {
+            return item.domain === 'breakers' || item.type_tag === 'CB' || (item.domain === 'distribution' && item.type_tag === 'CB');
+          });
+
+          // Match selected Poles & Gang Configuration
+          if (currentPoles) {
+            list = list.filter(item => {
+              const itemPoles = Number((item.specs && item.specs.poles) || item.poles || 1);
+              return itemPoles === currentPoles;
+            });
+          }
+
+          // If a brand is explicitly selected, filter by that brand
+          if (currentMfr) {
+            const mfrFiltered = list.filter(item => {
+              const m = (item.manufacturer || '').toLowerCase();
+              return m.includes(currentMfr) || currentMfr.includes(m);
+            });
+            if (mfrFiltered.length > 0) {
+              list = mfrFiltered;
+            }
+          }
+
+          return list.slice().sort((a, b) => {
+            const ampsA = Number((a.specs && a.specs.amps) || a.amps || 0);
+            const ampsB = Number((b.specs && b.specs.amps) || b.amps || 0);
+            if (ampsA !== ampsB) return ampsA - ampsB;
+            return (a.part_number || '').localeCompare(b.part_number || '');
           });
         },
 
+        resolveUnresolvedLoad(loadItem) {
+          if (!loadItem || !this.scheduleRows || this.scheduleRows.length === 0) return;
+          
+          // 1. Determine suggested poles
+          let suggestedPoles = 1;
+          const v = (loadItem.voltage || '').toLowerCase();
+          const d = (loadItem.domain || '').toLowerCase();
+          if (v.includes('3ø') || v.includes('3 phase') || v.includes('480') || d === 'transformers' || d === 'switches' || d === 'power_quality' || Number(loadItem.amps) >= 60) {
+            suggestedPoles = 3;
+          } else if (v.includes('208') || v.includes('240') || Number(loadItem.amps) >= 30) {
+            suggestedPoles = 2;
+          }
+          
+          // 2. Find first available slot in schedule that fits suggestedPoles
+          let targetRowIdx = -1;
+          let targetSide = 'left';
+          let targetSlot = 1;
+          
+          // Search left side first
+          for (let i = 0; i <= this.scheduleRows.length - suggestedPoles; i++) {
+            let fits = true;
+            for (let p = 0; p < suggestedPoles; p++) {
+              const r = this.scheduleRows[i + p];
+              if (!r || r.leftTrip || r.leftIsGanged) {
+                fits = false;
+                break;
+              }
+            }
+            if (fits) {
+              targetRowIdx = i;
+              targetSide = 'left';
+              targetSlot = this.scheduleRows[i].leftSlot;
+              break;
+            }
+          }
+          
+          // If no fit on left, search right side
+          if (targetRowIdx === -1) {
+            for (let i = 0; i <= this.scheduleRows.length - suggestedPoles; i++) {
+              let fits = true;
+              for (let p = 0; p < suggestedPoles; p++) {
+                const r = this.scheduleRows[i + p];
+                if (!r || r.rightTrip || r.rightIsGanged) {
+                  fits = false;
+                  break;
+                }
+              }
+              if (fits) {
+                targetRowIdx = i;
+                targetSide = 'right';
+                targetSlot = this.scheduleRows[i].rightSlot;
+                break;
+              }
+            }
+          }
+          
+          // Fallback to slot 1 if all occupied
+          if (targetRowIdx === -1) {
+            targetRowIdx = 0;
+            targetSide = 'left';
+            targetSlot = this.scheduleRows[0].leftSlot;
+          }
+          
+          const targetRow = this.scheduleRows[targetRowIdx];
+          const targetAmps = Math.round(Number(loadItem.amps)) || (d === 'transformers' ? 100 : 20);
+          const formattedDesc = loadItem.name ? `${loadItem.name} (${loadItem.tag})` : loadItem.tag;
+          
+          this.activeBreaker = {
+            rowIdx: targetRowIdx,
+            side: targetSide,
+            slot: targetSlot,
+            desc: formattedDesc,
+            trip: String(targetAmps),
+            poles: suggestedPoles,
+            type: 'MCCB',
+            wire: this.getConductor(targetAmps),
+            targetLoad: loadItem.tag,
+            part_no: '',
+            mfr: '',
+            is_custom_part: false,
+            catalog_status: 'verified',
+            phase: targetRow.phase,
+            phaseColor: targetRow.phaseColor,
+            isOccupied: false
+          };
+          
+          this.showBreakerModal = true;
+        },
+
+        getScheduleTitle() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'MCC Bucket Schedule';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Switchboard Feeder Schedule';
+          if (['PDU', 'RPP'].includes(t)) return 'PDU Distribution Schedule';
+          return 'Panel Slot Schedule';
+        },
+
+        getScheduleSubtitle() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Click any bucket to insert or edit motor starter units, VFDs, multi-pole ganging, and downstream loads.';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Click any space to insert or edit feeder breakers, multi-pole ganging, and downstream loads.';
+          if (['PDU', 'RPP'].includes(t)) return 'Click any pole to insert or edit branch circuits, multi-pole ganging, and downstream loads.';
+          return 'Click any slot to insert or edit circuit breakers, multi-pole ganging, trip ratings, and downstream loads.';
+        },
+
+        getScheduleConfigHeader() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'MCC Structure & Bucket Configuration';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Switchboard Structure & Feeder Configuration';
+          if (['PDU', 'RPP'].includes(t)) return 'PDU Bus & Physical Configuration';
+          return 'Panel Bus & Physical Configuration';
+        },
+
+        getScheduleUnitSingular() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Bucket';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Space';
+          if (['PDU', 'RPP'].includes(t)) return 'Pole';
+          return 'Slot';
+        },
+
+        getScheduleUnitPlural(type_tag = null) {
+          const t = type_tag || (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Buckets';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Spaces';
+          if (['PDU', 'RPP'].includes(t)) return 'Poles';
+          return 'Slots';
+        },
+
+        getScheduleLeftColHeader() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Left Bucket / Starter';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Left Feeder / Breaker';
+          if (['PDU', 'RPP'].includes(t)) return 'Left Branch / Circuit';
+          return 'Left Breaker / Circuit';
+        },
+
+        getScheduleRightColHeader() {
+          const t = (this.selectedType && this.selectedType.tag) || this.form.type_tag || '';
+          if (t === 'MCC') return 'Right Bucket / Starter';
+          if (['MDP', 'SWBD', 'SWGR', 'MSB'].includes(t)) return 'Right Feeder / Breaker';
+          if (['PDU', 'RPP'].includes(t)) return 'Right Branch / Circuit';
+          return 'Right Breaker / Circuit';
+        },
+
+        // Master Catalog Getters & Handlers
+        get masterCatalogList() {
+          if (Array.isArray(this.masterCatalog)) return this.masterCatalog;
+          if (this.masterCatalog && Array.isArray(this.masterCatalog.items)) return this.masterCatalog.items;
+          return [];
+        },
+
+        get catalogManufacturers() {
+          const currentDomain = this.selectedDomain ? this.selectedDomain.id : (this.form.domain || '');
+          const currentType = this.selectedType ? this.selectedType.tag : (this.form.type_tag || '');
+          const list = this.masterCatalogList;
+          const mfgs = new Set();
+          
+          list.forEach(item => {
+            const domMatch = !currentDomain || item.domain === currentDomain;
+            const typeMatch = !currentType || item.type_tag === currentType;
+            if (domMatch || typeMatch) {
+              if (item.manufacturer) mfgs.add(item.manufacturer);
+            }
+          });
+
+          const defaultOems = [
+            'Square D / Schneider Electric', 'Eaton', 'Siemens', 'ABB',
+            'Generac Power Systems', 'Bussmann (Eaton)', 'Leviton',
+            'Southwire / Encore', 'Allied Tube & Conduit / Atkore',
+            'Cooper Lighting / Acuity Brands', 'ASCO Power Technologies',
+            'Caterpillar', 'Cummins Power Generation', 'Kohler Power'
+          ];
+          defaultOems.forEach(m => mfgs.add(m));
+
+          return Array.from(mfgs).sort();
+        },
+
+        get catalogModels() {
+          const currentMfr = (this.form.manufacturer || '').toLowerCase().trim();
+          const currentDomain = this.selectedDomain ? this.selectedDomain.id : (this.form.domain || '');
+          const currentType = this.selectedType ? this.selectedType.tag : (this.form.type_tag || '');
+          const list = this.masterCatalogList;
+
+          return list.filter(item => {
+            const mfrMatch = !currentMfr || (item.manufacturer || '').toLowerCase().includes(currentMfr) || currentMfr.includes((item.manufacturer || '').toLowerCase());
+            const domMatch = !currentDomain || item.domain === currentDomain;
+            const typeMatch = !currentType || item.type_tag === currentType;
+            return mfrMatch && (domMatch || typeMatch);
+          });
+        },
+
+        get isCatalogItemActive() {
+          if (!this.form || !this.form.model_no) return false;
+          const modelUpper = this.form.model_no.trim().toUpperCase();
+          return this.masterCatalogList.some(item => item.part_number && item.part_number.toUpperCase() === modelUpper);
+        },
+
+        get activeCatalogItemUrl() {
+          if (!this.form || !this.form.model_no) return null;
+          const modelUpper = this.form.model_no.trim().toUpperCase();
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === modelUpper);
+          if (item && item.docs && item.docs.cut_sheet && item.docs.cut_sheet.trim()) {
+            return item.docs.cut_sheet.trim();
+          }
+          if (item && item.cut_sheet_url && item.cut_sheet_url.trim()) {
+            return item.cut_sheet_url.trim();
+          }
+          const m = (this.form.manufacturer || (item && item.manufacturer) || 'Electrical').trim();
+          const p = this.form.model_no.trim();
+          return `https://www.google.com/search?q=${encodeURIComponent(`${m} "${p}" cut sheet pdf`)}`;
+        },
+
+        onCatalogManufacturerChange() {
+          // Handled via reactivity
+        },
+
+        onCatalogModelSelect(partNo) {
+          if (!partNo) return;
+          const item = this.masterCatalogList.find(i => i.part_number && i.part_number.toUpperCase() === partNo.trim().toUpperCase());
+          if (!item) return;
+
+          this.form.model_no = item.part_number;
+          if (item.manufacturer) this.form.manufacturer = item.manufacturer;
+
+          const specs = item.specs || {};
+          if (specs.voltage) this.form.voltage = specs.voltage;
+          if (specs.amps) this.form.amps = specs.amps;
+          if (specs.aic) this.form.aic = specs.aic;
+          if (specs.enclosure) this.form.enclosure = specs.enclosure;
+          if (specs.mounting) this.form.mounting = specs.mounting;
+          if (specs.main_type) this.form.main_type = specs.main_type;
+          if (specs.slots) this.form.slots = specs.slots;
+
+          const standardKeys = new Set(['voltage', 'amps', 'aic', 'enclosure', 'mounting', 'main_type', 'slots', 'poles', 'trip_type', 'frame_size']);
+          const vAttrs = { ...(this.form.vendor_attrs || {}) };
+          Object.entries(specs).forEach(([k, v]) => {
+            if (!standardKeys.has(k) && v !== null && v !== undefined) {
+              vAttrs[k] = v;
+            }
+          });
+          this.form.vendor_attrs = vAttrs;
+          this.updateCustomAttrsList();
+
+          if (this.isPanelEquipment() && specs.slots) {
+            this.updateSlotCount();
+          }
+
+          this.toast(`⚡ Auto-filled specs from Master Catalog: ${item.part_number} (${item.manufacturer || ''})`);
+        },
+
+        // Photo Upload, Drag & Drop, Clipboard Paste & Optimization
+        processPhotoFiles(files, target = 'staged', noteIdx = null) {
+          if (!files || files.length === 0) return;
+          Array.from(files).forEach(file => {
+            if (!file.type || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const rawData = ev.target.result;
+              const img = new Image();
+              img.onload = () => {
+                const maxDim = 1200;
+                let w = img.width;
+                let h = img.height;
+                if (w > maxDim || h > maxDim) {
+                  if (w > h) {
+                    h = Math.round((h * maxDim) / w);
+                    w = maxDim;
+                  } else {
+                    w = Math.round((w * maxDim) / h);
+                    h = maxDim;
+                  }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+                const photoObj = {
+                  id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                  name: file.name || 'Field Photo',
+                  dataUrl: optimizedDataUrl,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+
+                if (target === 'nameplate') {
+                  this.form.nameplate_photo = photoObj;
+                  this.toast('📸 Nameplate photo attached!');
+                } else if (target === 'staged') {
+                  this.stagedPhotos = [...this.stagedPhotos, photoObj];
+                  this.toast('📷 Observation photo attached!');
+                } else if (target === 'editing' && noteIdx !== null && this.form.notes && this.form.notes[noteIdx]) {
+                  const currentPhotos = this.form.notes[noteIdx].photos || [];
+                  this.form.notes[noteIdx].photos = [...currentPhotos, photoObj];
+                  this.toast('📷 Photo added to note!');
+                }
+              };
+              img.onerror = () => {
+                const photoObj = {
+                  id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                  name: file.name || 'Field Photo',
+                  dataUrl: rawData,
+                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                if (target === 'nameplate') {
+                  this.form.nameplate_photo = photoObj;
+                } else if (target === 'staged') {
+                  this.stagedPhotos = [...this.stagedPhotos, photoObj];
+                } else if (target === 'editing' && noteIdx !== null && this.form.notes && this.form.notes[noteIdx]) {
+                  const currentPhotos = this.form.notes[noteIdx].photos || [];
+                  this.form.notes[noteIdx].photos = [...currentPhotos, photoObj];
+                }
+              };
+              img.src = rawData;
+            };
+            reader.readAsDataURL(file);
+          });
+        },
+
+        handlePhotoUpload(e, target = 'staged', noteIdx = null) {
+          const files = e.target.files;
+          this.processPhotoFiles(files, target, noteIdx);
+          e.target.value = '';
+        },
+
+        handlePhotoDrop(e, target = 'staged', noteIdx = null) {
+          const files = e.dataTransfer ? e.dataTransfer.files : null;
+          if (files && files.length > 0) {
+            this.processPhotoFiles(files, target, noteIdx);
+          }
+        },
+
+        handlePhotoPaste(e, target = 'staged', noteIdx = null) {
+          const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+          if (!items) return;
+          const files = [];
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') === 0) {
+              const file = items[i].getAsFile();
+              if (file) files.push(file);
+            }
+          }
+          if (files.length > 0) {
+            this.processPhotoFiles(files, target, noteIdx);
+          }
+        },
+
+        removeStagedPhoto(pIdx) {
+          this.stagedPhotos = this.stagedPhotos.filter((_, idx) => idx !== pIdx);
+        },
+
+        removeNotePhoto(nIdx, pIdx) {
+          if (this.form.notes && this.form.notes[nIdx] && this.form.notes[nIdx].photos) {
+            this.form.notes[nIdx].photos = this.form.notes[nIdx].photos.filter((_, idx) => idx !== pIdx);
+            this.toast('Photo removed from note');
+          }
+        },
+
+        openLightbox(photo, caption = '') {
+          if (!photo) return;
+          if (typeof photo === 'string') {
+            this.activeLightboxPhoto = {
+              name: 'Field Observation Photo',
+              dataUrl: photo,
+              timestamp: ''
+            };
+          } else {
+            this.activeLightboxPhoto = {
+              name: photo.name || 'Field Observation Photo',
+              dataUrl: photo.dataUrl || photo.url || photo.src || '',
+              timestamp: photo.timestamp || ''
+            };
+          }
+          this.lightboxCaption = caption;
+          this.showLightboxModal = true;
+        },
+
+        // Note Management
+        addNote() {
+          const txt = this.newNoteText.trim();
+          if (!txt && this.stagedPhotos.length === 0) return;
+          if (!this.form.notes) this.form.notes = [];
+          const now = new Date();
+          const dateStr = (now.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                          now.getDate().toString().padStart(2, '0') + ' ' + 
+                          now.getHours().toString().padStart(2, '0') + ':' + 
+                          now.getMinutes().toString().padStart(2, '0');
+          this.form.notes.push({
+            id: 'note_' + Date.now(),
+            text: txt || (this.stagedPhotos.length > 0 ? `Field Photo Observation (${this.stagedPhotos.length} photo(s))` : ''),
+            date: dateStr,
+            author: 'Field Survey',
+            photos: [...this.stagedPhotos]
+          });
+          this.newNoteText = '';
+          this.stagedPhotos = [];
+          this.toast('Added field note with photo(s)');
+        },
+
+        startEditNote(note, nIdx) {
+          this.editingNoteId = note.id;
+          this.editingNoteIndex = nIdx;
+          this.editingNoteText = note.text;
+        },
+
+        saveNoteEdit(nIdx) {
+          if (!this.editingNoteText.trim()) return;
+          if (this.form.notes && this.form.notes[nIdx]) {
+            this.form.notes[nIdx].text = this.editingNoteText.trim();
+          }
+          this.editingNoteId = null;
+          this.editingNoteIndex = null;
+          this.editingNoteText = '';
+          this.toast('Updated note');
+        },
+
+        promptDeleteNote(nIdx, note) {
+          if (confirm(`Delete field note: "${(note.text || 'Photo note').substring(0, 40)}..."?`)) {
+            this.removeNote(nIdx);
+          }
+        },
+
+        removeNote(idx) {
+          if (!this.form.notes) return;
+          this.form.notes.splice(idx, 1);
+          this.toast('Deleted field note');
+        },
+
+        async saveDrawerAsset() {
+          const tag = (this.form.tag || '').trim();
+          if (!tag) {
+            this.toast('⚠️ Equipment Tag is required.');
+            return;
+          }
+
+          if (tag.toLowerCase() !== (this.editingNodeOriginalTag || '').toLowerCase()) {
+            const pool = this.allNodes || [];
+            const dup = pool.find(n => n.id !== this.form.id && (n.tag || '').toLowerCase() === tag.toLowerCase());
+            if (dup) {
+              this.toast(`⚠️ Tag [${tag}] already exists in facility!`);
+              return;
+            }
+          }
+
+          this.isSaving = true;
+
+          if (this.stagedPhotos.length > 0 || (this.newNoteText && this.newNoteText.trim())) {
+            this.addNote();
+          }
+
+          this.updateCustomAttrsFromList();
+
+          const isPanel = this.isPanelEquipment() ? 1 : 0;
+          const rawSources = this.form.upstream_sources || [];
+          const cleanedSources = rawSources.map(s => (s ? String(s).trim() : '')).filter(s => s.length > 0);
+
+          const primaryFedFrom = (this.form.domain === 'sources') ? null : (cleanedSources[0] || (this.form.fed_from ? this.form.fed_from.trim() : null) || null);
+          const emergencySource = (this.isDualSourceEquipment() && cleanedSources.length > 1) ? cleanedSources[1] : null;
+
+          const attrs = this.editingNode ? (this.editingNode.attributes || {}) : {};
+          const payload = {
+            id: this.form.id || `node_${Date.now()}`,
+            tag: tag,
+            name: this.form.name || tag,
+            domain: this.form.domain || 'panels',
+            object_class: this.form.object_class || (this.form.domain === 'switches' ? 'AutomaticTransferSwitchObject' : (isPanel ? 'LightingBranchPanelObject' : 'GenericElectricalObject')),
+            type_tag: this.form.type_tag || (this.form.type_name ? this.form.type_name.toLowerCase().replace(/\s+/g, '_') : 'panel'),
+            type_name: this.form.type_name || this.form.name || tag,
+            room: this.form.room || '',
+            fed_from: primaryFedFrom,
+            voltage: this.form.voltage || '',
+            amps: this.form.amps || '',
+            aic: this.form.aic || '',
+            is_panel: isPanel,
+            slots: isPanel ? (Number(this.form.slots) || 42) : 0,
+            survey_sequence: this.editingNode ? (this.editingNode.survey_sequence || 1) : 1,
+            attributes: {
+              ...attrs,
+              tag: tag,
+              fed_from: primaryFedFrom,
+              upstream_sources: cleanedSources,
+              emergency_source: emergencySource,
+              slots: isPanel ? (Number(this.form.slots) || 42) : 0,
+              schedule: isPanel ? (this.scheduleRows || []) : [],
+              manufacturer: this.form.manufacturer || '',
+              model_no: this.form.model_no || '',
+              asset_tag: this.form.asset_tag || '',
+              serial_no: this.form.serial_no || '',
+              year_installed: this.form.year_installed || null,
+              mounting: this.form.mounting || 'Surface',
+              criticality: this.form.criticality || 'Medium',
+              condition: this.form.condition || '1',
+              environment: this.form.environment || 'Clean',
+              operational_status: this.form.operational_status || 'Active',
+              inspection_freq: this.form.inspection_freq || 'Annual',
+              last_inspection: this.form.last_inspection || '',
+              next_inspection: this.form.next_inspection || '',
+              arc_flash_date: this.form.arc_flash_date || '',
+              infrared_date: this.form.infrared_date || '',
+              torque_check_date: this.form.torque_check_date || '',
+              megger_phase_a: this.form.megger_phase_a || '',
+              megger_phase_b: this.form.megger_phase_b || '',
+              megger_phase_c: this.form.megger_phase_c || '',
+              nameplate_photo: this.form.nameplate_photo || null,
+              vendor_attrs: this.form.vendor_attrs || {},
+              notes: this.form.notes || []
+            },
+            notes: this.form.notes || []
+          };
+
+          let saveSuccess = false;
+          try {
+            const res = await fetch(`/api/clients/${encodeURIComponent(this.client)}/facilities/${encodeURIComponent(this.facility)}/nodes`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              this.toast(`❌ ${err.detail || err.message || err.error || 'Failed to save equipment'}`);
+              this.isSaving = false;
+              return;
+            }
+
+            saveSuccess = true;
+            this.toast(`✓ Saved [${tag}]! Updating diagram...`);
+            this.editingNodeOriginalTag = tag;
+            this.closeEditDrawer();
+            
+            setTimeout(() => {
+              window.location.reload();
+            }, 300);
+          } catch (err) {
+            console.error('Error saving equipment from SLD drawer:', err);
+            this.toast('❌ Network error while saving equipment.');
+            this.isSaving = false;
+            return;
+          } finally {
+            this.isSaving = false;
+          }
+        },
+
+        openInSurveyWorkbench() {
+          const targetParam = encodeURIComponent(this.form.tag || this.form.id || (this.editingNode && (this.editingNode.tag || this.editingNode.id)) || '');
+          window.location.href = `/survey?client=${encodeURIComponent(this.client)}&facility=${encodeURIComponent(this.facility)}&edit=${targetParam}`;
+        },
+
+        toast(msg) {
+          this.toastMessage = msg;
+          if (this.toastTimer) clearTimeout(this.toastTimer);
+          this.toastTimer = setTimeout(() => {
+            this.toastMessage = '';
+          }, 4000);
+        },
+
+        // Finder modal methods
         openFinderModal() {
           this.showFinderModal = true;
           this.fetchFinderClients();
@@ -877,6 +2525,30 @@
           window.location.href = '/clients/' + encodeURIComponent(client_id) + '/facilities/' + encodeURIComponent(facility_id) + '/sld';
         },
 
+        async deleteFacility(client_id, facility_id) {
+          if (!confirm(`Are you sure you want to delete facility '${facility_id}' for client '${client_id}'?\n\nThis will permanently remove the SQLite model.db and companion files.`)) {
+            return;
+          }
+          try {
+            const res = await fetch(`/api/workspace/facilities/${encodeURIComponent(client_id)}/${encodeURIComponent(facility_id)}`, {
+              method: 'DELETE'
+            });
+            const data = await res.json();
+            if (res.ok) {
+              if ((this.client || '').toLowerCase() === client_id.toLowerCase() && (this.facility || '').toLowerCase() === facility_id.toLowerCase()) {
+                window.location.href = '/clients/zoetis/facilities/b4/sld';
+              } else {
+                await this.openFinderModal();
+              }
+            } else {
+              alert(data.detail || 'Failed to delete facility');
+            }
+          } catch (e) {
+            console.error('Error deleting facility:', e);
+            alert('Network error while deleting facility');
+          }
+        },
+
         async createFacilityDatabase() {
           const client = (this.finderNewClient || '').trim();
           const facility = (this.finderNewFacility || '').trim();
@@ -906,10 +2578,109 @@
           } finally {
             this.finderCreating = false;
           }
+        },
+
+        // System Integrity Audit Engine Methods
+        async openSystemAudit() {
+          this.showAuditModal = true;
+          this.isAuditing = true;
+          try {
+            const res = await fetch(`/api/clients/${encodeURIComponent(this.client)}/facilities/${encodeURIComponent(this.facility)}/audit?_t=${Date.now()}`);
+            if (res.ok) {
+              this.auditResult = await res.json();
+            } else {
+              this.toast('❌ Failed to execute System Integrity Audit');
+            }
+          } catch (e) {
+            console.error('Audit fetch error:', e);
+            this.toast('❌ Network error executing audit');
+          } finally {
+            this.isAuditing = false;
+          }
+        },
+
+        get filteredAuditFindings() {
+          if (!this.auditResult || !this.auditResult.findings) return [];
+          let list = this.auditResult.findings;
+          if (this.auditFilterSeverity !== 'all') {
+            list = list.filter(f => f.severity === this.auditFilterSeverity);
+          }
+          if (this.auditSearch && this.auditSearch.trim()) {
+            const q = this.auditSearch.toLowerCase().trim();
+            list = list.filter(f => 
+              (f.asset_tag || '').toLowerCase().includes(q) ||
+              (f.title || '').toLowerCase().includes(q) ||
+              (f.description || '').toLowerCase().includes(q) ||
+              (f.category || '').toLowerCase().includes(q) ||
+              (f.room || '').toLowerCase().includes(q)
+            );
+          }
+          return list;
+        },
+
+        openAssetFromAudit(assetIdOrTag) {
+          this.showAuditModal = false;
+          this.openEditDrawer(assetIdOrTag);
+        },
+
+        // Theme & Font Scaling
+        toggleTheme() {
+          this.isDark = !this.isDark;
+          localStorage.setItem('james-theme', this.isDark ? 'dark' : 'light');
+          if (this.isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        },
+        increaseFontSize() {
+          if (this.fontScale >= 130) return;
+          this.fontScale += 5;
+          this.applyFontSize(this.fontScale);
+        },
+        decreaseFontSize() {
+          if (this.fontScale <= 85) return;
+          this.fontScale -= 5;
+          this.applyFontSize(this.fontScale);
+        },
+        resetFontSize() {
+          this.fontScale = 100;
+          this.applyFontSize(100);
+        },
+        applyFontSize(scale) {
+          this.fontScale = scale;
+          localStorage.setItem('james-font-scale', scale);
+          if (typeof applyFontSize === 'function') {
+            applyFontSize(scale);
+          }
         }
       };
+
+      if (window.EquipmentFormSharedLogic) {
+        window.EquipmentFormSharedLogic.attachTo(app);
+      }
+
+      return app;
     }
   </script>
+
+  <!-- Toast Notification Pill -->
+  <div 
+    x-show="toastMessage" 
+    x-cloak
+    x-transition:enter="transition ease-out duration-300 transform"
+    x-transition:enter-start="opacity-0 translate-y-4"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-200 transform"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 translate-y-4"
+    class="fixed bottom-6 right-6 z-50 max-w-md px-4 py-3 bg-slate-900/95 text-white rounded-xl shadow-2xl border border-slate-700/80 flex items-center gap-3 backdrop-blur-md"
+  >
+    <span class="text-lg">⚡</span>
+    <span class="text-xs font-semibold" x-text="toastMessage"></span>
+  </div>
 
   <!-- Workspace Database Finder Modal -->
   <div 
@@ -919,130 +2690,122 @@
     @keydown.escape.window="showFinderModal = false"
   >
     <div 
-      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
-      @click.away="showFinderModal = false"
+      class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
     >
       <!-- Modal Header -->
-      <div class="h-14 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-900/80 shrink-0">
         <div class="flex items-center gap-2.5">
-          <span class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-base border border-indigo-200 dark:border-indigo-800 shadow-2xs">📁</span>
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            🗄️
+          </div>
           <div>
-            <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Workspace Database Finder</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 font-bold" x-text="finderClients.reduce((sum, c) => sum + (c.facility_count || 0), 0) + ' Databases'"></span>
-            </h3>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Browse company folders and switch or create SQLite digital twin models.</p>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Workspace Digital Twins</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Switch active client facility or initialize a new electrical model</p>
           </div>
         </div>
         <button 
           type="button" 
           @click="showFinderModal = false" 
-          class="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-base p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
         >
           ✕
         </button>
       </div>
 
-      <!-- Action Bar / Search Filter & New Button -->
-      <div class="p-3.5 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0">
+      <!-- Search & Quick Action Bar -->
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center gap-3 shrink-0">
         <div class="relative flex-1">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-xs">🔍</span>
           <input 
             type="text" 
             x-model="finderSearch" 
-            placeholder="🔍 Search companies or facilities (e.g. Zoetis, B4, Pfizer)..." 
-            class="w-full h-8 pl-8 pr-7 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 font-mono"
-          >
-          <span class="absolute left-2.5 top-2 text-xs text-slate-400">🔍</span>
-          <button 
-            x-show="finderSearch" 
-            @click="finderSearch = ''" 
-            class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-          >
-            ✕
-          </button>
+            placeholder="Search clients or facilities (e.g., zoetis, b4)..." 
+            class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+          />
         </div>
-
         <button 
           type="button" 
           @click="finderNewMode = !finderNewMode" 
-          class="h-8 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs"
-          :class="finderNewMode ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200' : 'bg-indigo-600 hover:bg-indigo-500 text-white'"
+          class="px-3 py-1.5 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+          :class="finderNewMode ? 'bg-amber-500 text-white border-amber-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'"
         >
-          <span x-text="finderNewMode ? '✕ Close Form' : '➕ New Database'"></span>
+          <span x-text="finderNewMode ? '✕ Cancel' : '+ New Database'"></span>
         </button>
       </div>
 
-      <!-- Collapsible Create New Database Panel -->
-      <div x-show="finderNewMode" x-cloak class="p-4 bg-indigo-50/40 dark:bg-indigo-950/30 border-b border-indigo-200 dark:border-indigo-900/50 space-y-3 shrink-0">
+      <!-- Inline New Facility Creator -->
+      <div 
+        x-show="finderNewMode" 
+        x-cloak 
+        class="p-4 bg-indigo-50/70 dark:bg-indigo-950/40 border-b border-indigo-200 dark:border-indigo-900/60 text-xs space-y-3 shrink-0"
+      >
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
-            <span>⚡</span>
-            <span>Create New Client Company & Facility Digital Twin</span>
-          </span>
-          <span class="text-[10px] font-mono text-slate-500">Initializes isolated SQLite model.db</span>
+          <h4 class="font-bold text-indigo-950 dark:text-indigo-200 uppercase tracking-wider text-[11px]">Create New Facility SQLite Database</h4>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400">Isolated workspace: <code class="font-mono">data/clients/{client}/{facility}/model.db</code></span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Company Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Client Selector / Custom -->
           <div>
-            <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Client</label>
-            <div class="space-y-1.5">
-              <select 
-                x-model="finderNewClientSelect" 
-                @change="if (finderNewClientSelect === '__custom__') { finderIsCustomClient = true; finderNewClient = ''; } else { finderIsCustomClient = false; finderNewClient = finderNewClientSelect; }"
-                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+            <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Client Organization</label>
+            <div class="flex items-center gap-1.5">
+              <template x-if="!finderIsCustomClient">
+                <select 
+                  x-model="finderNewClient" 
+                  class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5"
+                >
+                  <template x-for="c in finderClients" :key="c.client_id">
+                    <option :value="c.client_id" x-text="c.client_name + ' (' + c.client_id + ')'"></option>
+                  </template>
+                </select>
+              </template>
+              <template x-if="finderIsCustomClient">
+                <input 
+                  type="text" 
+                  x-model="finderNewClient" 
+                  placeholder="New client ID (e.g. pfizer)" 
+                  class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
+                />
+              </template>
+              <button 
+                type="button" 
+                @click="finderIsCustomClient = !finderIsCustomClient" 
+                class="px-2 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300 shrink-0 cursor-pointer"
+                :title="finderIsCustomClient ? 'Pick existing client' : 'Type new client'"
               >
-                <template x-for="c in finderClients" :key="c.client_id">
-                  <option :value="c.client_id" x-text="c.client_name + ' (' + c.client_id + ')'"></option>
-                </template>
-                <option value="__custom__">➕ [+ New Company / Client Folder...]</option>
-              </select>
-
-              <input 
-                x-show="finderIsCustomClient" 
-                x-cloak 
-                type="text" 
-                x-model="finderNewClient" 
-                placeholder="Enter new company name (e.g. Pfizer, Merck)..." 
-                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
-              >
+                <span x-text="finderIsCustomClient ? 'List' : '+ New'"></span>
+              </button>
             </div>
           </div>
 
-          <!-- Facility / Building Name -->
+          <!-- Facility ID Input -->
           <div>
-            <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Facility / Building Code</label>
+            <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Facility / Building ID</label>
             <input 
               type="text" 
               x-model="finderNewFacility" 
-              placeholder="e.g. b12_warehouse, pilot_plant, central_utility" 
-              class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
-            >
+              placeholder="e.g. b12, plant_north, lab_4" 
+              class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
+            />
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-1 text-xs">
-          <label class="flex items-center gap-2 cursor-pointer select-none text-slate-600 dark:text-slate-300 text-[11px]">
-            <input type="checkbox" x-model="finderSeedData" class="rounded text-indigo-600 focus:ring-indigo-500">
-            <span>Pre-seed verified starter equipment (MCB Switchboard, ATS, Transformer, Panel)</span>
+        <!-- Seeding Options & Submit Button -->
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" x-model="finderSeedData" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+            <span class="text-xs text-slate-700 dark:text-slate-300">Seed with demo facility electrical equipment & breakers</span>
           </label>
 
           <div class="flex items-center gap-2">
             <button 
               type="button" 
-              @click="finderNewMode = false" 
-              class="px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 font-medium transition cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button 
-              type="button" 
               @click="createFacilityDatabase()" 
               :disabled="!finderNewClient || !finderNewFacility || finderCreating" 
-              class="px-4 py-1.5 rounded-lg font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+              class="px-3 py-1.5 rounded-md text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
             >
-              <span x-show="finderCreating" class="animate-spin text-xs">⏳</span>
-              <span>💾 Create & Open Twin</span>
+              <span x-show="finderCreating" class="animate-spin">⏳</span>
+              <span>💾 Create Twin</span>
             </button>
           </div>
         </div>
@@ -1050,23 +2813,8 @@
 
       <!-- Modal Body / Client Directory Tree -->
       <div class="p-5 overflow-y-auto space-y-4 flex-1">
-        <!-- Loading State -->
-        <div x-show="finderLoading" class="py-12 text-center text-slate-400 space-y-2">
-          <div class="inline-block animate-spin text-2xl">⚡</div>
-          <p class="text-xs font-mono">Scanning workspace client directories...</p>
-        </div>
-
-        <!-- Empty Results State -->
-        <div x-show="!finderLoading && filteredFinderClients.length === 0" class="py-12 text-center text-slate-400 space-y-2">
-          <div class="text-3xl">📂</div>
-          <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">No matching companies or facilities found.</p>
-          <p class="text-[11px]">Click <strong>+ New Database</strong> to create a new client twin.</p>
-        </div>
-
-        <!-- Client Groups -->
         <template x-for="c in filteredFinderClients" :key="c.client_id">
           <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 overflow-hidden">
-            <!-- Company Header -->
             <div class="px-4 py-2 bg-slate-100/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="text-base">🏢</span>
@@ -1076,7 +2824,6 @@
               <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="c.facilities.length + ' facilities'"></span>
             </div>
 
-            <!-- Facilities List -->
             <div class="p-2 space-y-1.5">
               <template x-for="f in c.facilities" :key="f.facility_id">
                 <div 
@@ -1102,13 +2849,10 @@
                         <span class="font-semibold text-indigo-600 dark:text-indigo-400" x-text="f.asset_count + ' Assets'"></span>
                         <span>•</span>
                         <span x-text="f.file_size_str"></span>
-                        <span>•</span>
-                        <span x-text="'Updated: ' + f.modified_at"></span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Actions -->
                   <div class="flex items-center gap-1.5">
                     <button 
                       type="button" 
@@ -1119,6 +2863,15 @@
                         : 'bg-indigo-600 hover:bg-indigo-500 text-white'"
                     >
                       <span x-text="((client || '').toLowerCase() === c.client_id.toLowerCase() && (facility || '').toLowerCase() === f.facility_id.toLowerCase()) ? '✓ Current Twin' : '⚡ Open Twin'"></span>
+                    </button>
+                    <button 
+                      type="button" 
+                      x-show="!(c.client_id.toLowerCase() === 'zoetis' && f.facility_id.toLowerCase() === 'b4')"
+                      @click.stop="deleteFacility(c.client_id, f.facility_id)" 
+                      title="Delete Facility Database"
+                      class="px-2 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 border border-transparent hover:border-rose-200 dark:hover:border-rose-800/60 transition cursor-pointer"
+                    >
+                      🗑️
                     </button>
                   </div>
                 </div>
@@ -1133,9 +2886,6 @@
         <div class="flex items-center gap-1.5 font-mono text-[10px]">
           <span>💡 Shortcut: Press</span>
           <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Cmd+O</kbd>
-          <span>or</span>
-          <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">Ctrl+O</kbd>
-          <span>to open Finder</span>
         </div>
         <button 
           type="button" 
@@ -1145,6 +2895,423 @@
           Close
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Shared Equipment Archetype Picker Modal -->
+  {% include "components/equipment_picker_modal.html" %}
+
+  <!-- Searchable Help & Field FAQ Modal Include -->
+  {% include "components/help_faq_modal.html" %}
+
+  <!-- System Integrity Audit Modal Include -->
+  {% include "components/system_integrity_modal.html" %}
+
+  <!-- Bento Box Toolbox Modal Include -->
+  {% include "components/toolbox_bento_modal.html" %}
+
+  <!-- Slide-Over Equipment Edit Drawer -->
+  <div 
+    x-show="showEditDrawer" 
+    x-cloak 
+    class="fixed inset-0 z-50 overflow-hidden"
+    aria-labelledby="slide-over-title" 
+    role="dialog" 
+    aria-modal="true"
+  >
+    <!-- Background backdrop -->
+    <div 
+      x-show="showEditDrawer"
+      x-transition:enter="ease-in-out duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="ease-in-out duration-200"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+    ></div>
+
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div 
+        x-show="showEditDrawer"
+        x-transition:enter="transform transition ease-in-out duration-300"
+        x-transition:enter-start="translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave="transform transition ease-in-out duration-200"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="translate-x-full"
+        class="w-screen max-w-2xl bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col"
+      >
+        <template x-if="showEditDrawer && form">
+          <div class="flex flex-col h-full">
+            <!-- Drawer Header -->
+            <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center font-bold text-sm">
+                  ✎
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white font-mono" x-text="form.tag || form.id"></h3>
+                    <span 
+                      class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                      x-text="(selectedDomain && selectedDomain.name) || form.domain || 'Equipment'"
+                    ></span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-xs" x-text="form.name || form.type_name || 'Electrical Device'"></p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <!-- Deep Link Handoff Button -->
+                <button 
+                  type="button" 
+                  @click="openInSurveyWorkbench()" 
+                  title="Open this equipment in the Survey view"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-300 border border-slate-300 dark:border-slate-700 hover:border-indigo-300 transition flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Open in Survey</span>
+                  <span class="text-xs">↗</span>
+                </button>
+                <button 
+                  type="button" 
+                  @click="closeEditDrawer()" 
+                  class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <!-- Scrollable Common Equipment Form Body -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+              {% include "components/equipment_form.html" %}
+            </div>
+
+            <!-- Drawer Footer -->
+            <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between shrink-0">
+              <button 
+                type="button" 
+                @click="closeEditDrawer()" 
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <div class="flex items-center gap-2">
+                <button 
+                  type="button" 
+                  @click="openInSurveyWorkbench()" 
+                  title="Open this equipment in the Survey view"
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-800 transition cursor-pointer"
+                >
+                  Open in Survey ↗
+                </button>
+                <button 
+                  type="button" 
+                  @click="saveDrawerAsset()" 
+                  :disabled="isSaving" 
+                  class="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span x-show="isSaving" class="animate-spin text-xs">⏳</span>
+                  <span x-text="isSaving ? 'Saving...' : '💾 Save & Update SLD'"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Breaker Create / Edit Inspector Modal -->
+  <div 
+    x-show="showBreakerModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showBreakerModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col"
+    >
+      <!-- Modal Header -->
+      <div class="h-12 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded bg-indigo-600 text-white font-mono font-bold text-xs flex items-center justify-center" x-text="activeBreaker ? ('#' + activeBreaker.slot) : ''"></span>
+          <h3 class="font-bold text-xs text-slate-900 dark:text-white" x-text="activeBreaker && activeBreaker.isOccupied ? ('Edit ' + getScheduleUnitSingular() + ' #' + activeBreaker.slot + ' Device') : ('Insert ' + getScheduleUnitSingular() + ' #' + activeBreaker.slot + ' Device')"></h3>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold" :class="activeBreaker ? activeBreaker.phaseColor : ''" x-text="activeBreaker ? ('Phase ' + activeBreaker.phase) : ''"></span>
+        </div>
+        <button @click="showBreakerModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-sm cursor-pointer">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-4 text-xs">
+        
+        <!-- 1. Poles & Gang Configuration (Top-Level Primary Choice) -->
+        <div>
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+            Poles & Gang Configuration
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              type="button" 
+              @click="activeBreaker.poles = 1" 
+              class="h-11 px-3 rounded-xl border font-bold flex flex-col items-center justify-center transition cursor-pointer"
+              :class="activeBreaker.poles === 1 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 ring-2 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+            >
+              <span class="text-xs">1-Pole</span>
+              <span class="text-[9px] font-normal opacity-80">1 Slot • 120V / 277V</span>
+            </button>
+
+            <button 
+              type="button" 
+              @click="activeBreaker.poles = 2" 
+              class="h-11 px-3 rounded-xl border font-bold flex flex-col items-center justify-center transition cursor-pointer"
+              :class="activeBreaker.poles === 2 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 ring-2 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+            >
+              <span class="text-xs">2-Pole</span>
+              <span class="text-[9px] font-normal opacity-80">2 Slots • 208V / 480V</span>
+            </button>
+
+            <button 
+              type="button" 
+              @click="activeBreaker.poles = 3" 
+              class="h-11 px-3 rounded-xl border font-bold flex flex-col items-center justify-center transition cursor-pointer"
+              :class="activeBreaker.poles === 3 ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/30 ring-2 ring-indigo-500/20' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700'"
+            >
+              <span class="text-xs">3-Pole</span>
+              <span class="text-[9px] font-normal opacity-80">3 Slots • 3Ø 208/480V</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Master Catalog Breaker & Custom Part Number Selector -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800 dark:text-slate-200 text-[11px] flex items-center gap-1.5">
+              <span>⚡</span><span>Breaker Model & Catalog Identity (Optional)</span>
+            </span>
+            <span 
+              class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold"
+              :class="activeBreaker.is_custom_part ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800' : (activeBreaker.part_no ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-slate-100 dark:bg-slate-800 text-slate-500')"
+              x-text="activeBreaker.is_custom_part ? '🟡 Uncataloged / Staged' : (activeBreaker.part_no ? '✓ Master Catalog' : 'Standard Generic')"
+            ></span>
+          </div>
+
+          <!-- Quick Dropdown from Master Catalog (dynamically filtered by selected poles) -->
+          <div>
+            <div class="flex items-center justify-between mb-0.5">
+              <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400" x-text="'Pick from Master Catalog (' + (activeBreaker.poles || 1) + '-Pole)'"></label>
+              <span class="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 font-bold" x-text="(catalogBreakers ? catalogBreakers.length : 0) + ' Available'"></span>
+            </div>
+            <select 
+              :value="activeBreaker ? (activeBreaker.is_custom_part ? '' : (activeBreaker.part_no || '')) : ''" 
+              @change="onBreakerCatalogSelect($event.target.value)"
+              class="w-full h-8 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono cursor-pointer focus:outline-none focus:border-indigo-500"
+            >
+              <option value="">-- Quick Select from Verified Master Catalog Breakers --</option>
+              <template x-for="b in (catalogBreakers || [])" :key="b.part_number">
+                <option :value="b.part_number" x-text="b.part_number + ' • ' + (b.manufacturer || '') + ' ' + ((b.specs && b.specs.poles) || b.poles || 1) + 'P ' + ((b.specs && b.specs.amps) || b.amps || '') + 'A (' + ((b.specs && b.specs.frame) || b.description || '') + ')'" :selected="activeBreaker && activeBreaker.part_no === b.part_number"></option>
+              </template>
+            </select>
+          </div>
+
+          <!-- Custom / Physical Part Number & Brand Fields -->
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                Breaker Part / Model #
+              </label>
+              <input 
+                type="text" 
+                :value="activeBreaker ? (activeBreaker.part_no || '') : ''" 
+                @input="onCustomPartNoInput($event.target.value)"
+                placeholder="e.g. QOB320, BAB2020, THQL32020" 
+                class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
+              >
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 mb-0.5">
+                Breaker Brand / OEM
+              </label>
+              <select 
+                x-model="activeBreaker.mfr" 
+                class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer focus:outline-none focus:border-indigo-500"
+              >
+                <option value="">-- None / Select Brand --</option>
+                <option value="Square D / Schneider Electric">Square D / Schneider Electric</option>
+                <option value="Eaton / Cutler-Hammer">Eaton / Cutler-Hammer</option>
+                <option value="Siemens">Siemens</option>
+                <option value="ABB / GE (General Electric)">ABB / GE (General Electric)</option>
+                <option value="Federal Pacific (FPE)">Federal Pacific (FPE)</option>
+                <option value="Zinsco / Sylvania">Zinsco / Sylvania</option>
+                <option value="Murray">Murray</option>
+                <option value="Challenger">Challenger</option>
+                <option value="Bussmann (Eaton)">Bussmann (Eaton)</option>
+                <option value="Leviton">Leviton</option>
+                <option value="Custom / Generic">Custom / Generic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Target Downstream Asset Link -->
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Downstream Equipment / Load (Optional)</label>
+          <select 
+            :value="activeBreaker ? (activeBreaker.targetLoad || '') : ''" 
+            @change="onBreakerTargetLoadChange($event.target.value)"
+            class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+          >
+            <option value="">-- No Specific Downstream Asset Linked --</option>
+            <template x-for="item in eligibleDownstreamEquipment" :key="item.id">
+              <option :value="item.tag" x-text="item.tag + ' — ' + (item.name || item.type_name || item.tag) + ' (' + (item.room || 'Room') + ')'" :selected="activeBreaker && activeBreaker.targetLoad === item.tag"></option>
+            </template>
+          </select>
+        </div>
+
+        <!-- 4. Circuit / Downstream Load Description -->
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Circuit / Downstream Load Description</label>
+          <input 
+            type="text" 
+            x-model="activeBreaker.desc" 
+            placeholder="e.g. Distribution Panel (DP-1), Step-Down Transformer (T-1), Receptacles RM 102..." 
+            class="w-full h-8 px-3 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+          >
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Trip Rating -->
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Trip Rating (Amps)</label>
+            <select 
+              x-model="activeBreaker.trip" 
+              @change="activeBreaker.wire = getConductor(Number(activeBreaker.trip) || 20)"
+              class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold cursor-pointer"
+            >
+              <option value="15">15 A</option>
+              <option value="20">20 A (Standard Branch)</option>
+              <option value="30">30 A</option>
+              <option value="40">40 A</option>
+              <option value="50">50 A</option>
+              <option value="60">60 A</option>
+              <option value="70">70 A</option>
+              <option value="80">80 A</option>
+              <option value="100">100 A</option>
+              <option value="125">125 A</option>
+              <option value="150">150 A</option>
+              <option value="200">200 A</option>
+              <option value="225">225 A</option>
+            </select>
+          </div>
+
+          <!-- Conductor Wire Sizing -->
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Conductor Wire Sizing</label>
+            <input type="text" x-model="activeBreaker.wire" placeholder="e.g. 12 AWG Cu" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+          </div>
+
+          <!-- Breaker Protection Type -->
+          <div class="col-span-2">
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Breaker Protection Type</label>
+            <select x-model="activeBreaker.type" class="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white cursor-pointer">
+              <option value="MCCB">Thermal-Magnetic (MCCB)</option>
+              <option value="AFCI">AFCI (Arc-Fault)</option>
+              <option value="GFCI">GFCI (Ground-Fault Class A)</option>
+              <option value="DF">Dual Function (AFCI + GFCI)</option>
+              <option value="MCP">Motor Circuit Protector (MCP)</option>
+              <option value="LSI">Electronic Trip (LSI/LSIG)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="h-14 px-5 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shrink-0">
+        <div>
+          <button 
+            type="button" 
+            x-show="activeBreaker && activeBreaker.isOccupied"
+            @click="removeBreakerFromSlot()" 
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer flex items-center gap-1"
+          >
+            <span>🗑️ Remove / Make Space</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            @click="showBreakerModal = false" 
+            class="px-3.5 py-1.5 rounded-lg text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            @click="saveBreakerAttributes()" 
+            class="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm shadow-indigo-600/30 transition cursor-pointer flex items-center gap-1"
+          >
+            <span>💾 Save Breaker</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN PHOTO LIGHTBOX MODAL -->
+  <div 
+    x-show="showLightboxModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+    @keydown.escape.window="showLightboxModal = false"
+  >
+    <div 
+      class="relative flex flex-col items-center max-w-5xl max-h-[95vh] w-full"
+      @click.away="showLightboxModal = false"
+    >
+      <!-- Lightbox Header Controls -->
+      <div class="w-full flex items-center justify-between pb-3 text-white">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-sm">📷</span>
+          <span class="font-bold text-xs truncate" x-text="activeLightboxPhoto ? activeLightboxPhoto.name : 'Field Observation Photo'"></span>
+          <span class="text-[11px] text-slate-400 font-mono" x-text="activeLightboxPhoto ? ('• ' + activeLightboxPhoto.timestamp) : ''"></span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <!-- Download Photo -->
+          <a 
+            :href="activeLightboxPhoto ? (typeof activeLightboxPhoto === 'string' ? activeLightboxPhoto : (activeLightboxPhoto.dataUrl || activeLightboxPhoto.url || activeLightboxPhoto.src || '#')) : '#'" 
+            :download="(activeLightboxPhoto && activeLightboxPhoto.name ? activeLightboxPhoto.name : 'field_photo') + '.png'"
+            class="px-3 py-1 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white transition flex items-center gap-1 cursor-pointer"
+          >
+            <span>⬇️ Download</span>
+          </a>
+
+          <!-- Close Modal -->
+          <button 
+            type="button" 
+            @click="showLightboxModal = false" 
+            class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm transition cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Centered Full Resolution Image View -->
+      <div class="relative flex items-center justify-center rounded-2xl overflow-hidden bg-black/50 border border-white/10 shadow-2xl p-1">
+        <img 
+          :src="activeLightboxPhoto ? (typeof activeLightboxPhoto === 'string' ? activeLightboxPhoto : (activeLightboxPhoto.dataUrl || activeLightboxPhoto.url || activeLightboxPhoto.src || '')) : ''" 
+          :alt="activeLightboxPhoto && activeLightboxPhoto.name ? activeLightboxPhoto.name : 'Field Observation Photo'" 
+          class="max-h-[80vh] max-w-full object-contain rounded-xl select-auto"
+        >
+      </div>
+
+      <!-- Caption Subtitle -->
+      <p class="pt-2.5 text-xs text-slate-400 text-center font-sans max-w-2xl truncate" x-text="lightboxCaption || 'Field observation photo'"></p>
     </div>
   </div>
 </body>

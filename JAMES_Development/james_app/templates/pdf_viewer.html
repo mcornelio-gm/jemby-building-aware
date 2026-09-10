@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or filename }} — Build Aware Document Viewer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- PDF.js by Mozilla -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+
+  <style>
+    body { background-color: #0f172a; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #0b1220; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .pdf-page-card {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      background-color: #ffffff;
+      border-radius: 6px;
+      position: relative;
+      transition: box-shadow 0.2s ease;
+    }
+    .pdf-page-card.active-page {
+      box-shadow: 0 0 0 3px #6366f1, 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col text-slate-100 font-sans antialiased overflow-hidden select-none">
+
+  <!-- Top Navigation / Control Toolbar -->
+  <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-20 shrink-0 shadow-md">
+    <!-- Left: Branding & Document Title -->
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center gap-2 bg-indigo-950/80 border border-indigo-800/60 px-2.5 py-1 rounded-lg">
+        <span class="text-sm">⚡</span>
+        <span class="text-xs font-bold text-indigo-300 font-mono tracking-wide">BUILD AWARE</span>
+      </div>
+      <div class="h-4 w-px bg-slate-700 hidden sm:block"></div>
+      <div class="min-w-0">
+        <h1 class="text-xs sm:text-sm font-semibold text-slate-100 truncate flex items-center gap-2">
+          <span>{{ title or filename }}</span>
+          {% if section %}
+          <span class="text-slate-400 font-normal hidden md:inline">› {{ section }}</span>
+          {% endif %}
+        </h1>
+        <p class="text-[10px] text-slate-400 font-mono truncate hidden sm:block">{{ filename }}</p>
+      </div>
+    </div>
+
+    <!-- Center: Page Navigation & Current Page Indicator -->
+    <div class="flex items-center gap-2 bg-slate-800/80 border border-slate-700/70 px-2.5 py-1 rounded-lg">
+      <button id="prev-page" class="p-1 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer" title="Scroll to Previous Page">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <div class="flex items-center gap-1.5 text-xs font-mono">
+        <input type="number" id="page-num" min="1" value="{{ initial_page }}" class="w-12 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-center text-indigo-300 font-bold focus:outline-none focus:border-indigo-500">
+        <span class="text-slate-400">/</span>
+        <span id="page-count" class="text-slate-400">--</span>
+      </div>
+
+      <button id="next-page" class="p-1 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer" title="Scroll to Next Page">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- Right: Zoom, Download, Close Actions -->
+    <div class="flex items-center gap-2">
+      <!-- Zoom Controls -->
+      <div class="hidden sm:flex items-center gap-1 bg-slate-800/80 border border-slate-700/70 px-2 py-1 rounded-lg">
+        <button id="zoom-out" class="p-1 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer" title="Zoom Out (-)">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+        </button>
+        <span id="zoom-level" class="text-[11px] font-mono w-12 text-center text-slate-300">125%</span>
+        <button id="zoom-in" class="p-1 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer" title="Zoom In (+)">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+      </div>
+
+      <!-- Raw Download Link -->
+      <a href="/api/kb/view/{{ filename }}" download="{{ filename }}" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer flex items-center gap-1.5 text-xs font-semibold" title="Download Original Document">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        <span class="hidden md:inline">Download</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- PDF Main Viewer Canvas Container (Continuous Vertical Scroll) -->
+  <main id="viewer-container" class="flex-1 overflow-y-auto overflow-x-auto flex flex-col items-center bg-slate-950 scroll-smooth">
+    <div id="loading-spinner" class="my-auto flex flex-col items-center gap-3 text-indigo-400 animate-pulse p-12">
+      <svg class="w-8 h-8 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+      <span class="text-xs font-mono font-semibold tracking-wider uppercase">Loading Continuous PDF Document...</span>
+    </div>
+    
+    <!-- All Pages Container -->
+    <div id="pages-container" class="hidden flex flex-col items-center gap-6 py-6 w-full max-w-full">
+    </div>
+
+    <!-- Error State -->
+    <div id="error-box" class="hidden my-auto max-w-md p-6 rounded-2xl bg-red-950/40 border border-red-800 text-center space-y-2">
+      <div class="text-2xl">⚠️</div>
+      <h3 class="font-bold text-sm text-red-200">Failed to render PDF</h3>
+      <p id="error-msg" class="text-xs text-red-400 font-mono"></p>
+      <a href="/api/kb/view/{{ filename }}" target="_blank" class="inline-block mt-3 px-3 py-1.5 rounded-lg bg-red-800 hover:bg-red-700 text-white text-xs font-semibold transition">Open Directly ↗</a>
+    </div>
+  </main>
+
+  <script>
+    const url = '/api/kb/view/{{ filename }}';
+    let pdfDoc = null;
+    let targetInitialPage = parseInt('{{ initial_page }}', 10) || 1;
+    let currentVisiblePage = targetInitialPage;
+    let scale = 1.35;
+    const pageRenderTasks = {};
+    const renderedPages = new Set();
+
+    const viewerContainer = document.getElementById('viewer-container');
+    const pagesContainer = document.getElementById('pages-container');
+    const pageNumInput = document.getElementById('page-num');
+    const pageCountSpan = document.getElementById('page-count');
+    const zoomLevelSpan = document.getElementById('zoom-level');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const errorBox = document.getElementById('error-box');
+    const errorMsg = document.getElementById('error-msg');
+
+    function createPageSlot(num, width, height) {
+      const wrapper = document.createElement('div');
+      wrapper.id = `page-container-${num}`;
+      wrapper.dataset.pageNum = num;
+      wrapper.className = 'pdf-page-card flex flex-col items-center justify-center relative';
+      wrapper.style.width = width + 'px';
+      wrapper.style.minHeight = height + 'px';
+
+      // Page number badge
+      const badge = document.createElement('div');
+      badge.className = 'absolute bottom-2 right-2 px-2 py-0.5 rounded bg-slate-900/75 text-[10px] text-slate-300 font-mono pointer-events-none';
+      badge.textContent = `Page ${num}`;
+      wrapper.appendChild(badge);
+
+      const canvas = document.createElement('canvas');
+      canvas.id = `canvas-page-${num}`;
+      canvas.className = 'rounded-[4px]';
+      wrapper.appendChild(canvas);
+
+      return wrapper;
+    }
+
+    async function renderSinglePage(num) {
+      if (!pdfDoc || renderedPages.has(num)) return;
+      renderedPages.add(num);
+
+      try {
+        const page = await pdfDoc.getPage(num);
+        const viewport = page.getViewport({ scale: scale });
+        const canvas = document.getElementById(`canvas-page-${num}`);
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const outputScale = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(viewport.width * outputScale);
+        canvas.height = Math.floor(viewport.height * outputScale);
+        canvas.style.width = Math.floor(viewport.width) + "px";
+        canvas.style.height = Math.floor(viewport.height) + "px";
+
+        const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
+        const renderContext = {
+          canvasContext: ctx,
+          transform: transform,
+          viewport: viewport
+        };
+        await page.render(renderContext).promise;
+      } catch (e) {
+        console.error(`Error rendering page ${num}:`, e);
+      }
+    }
+
+    async function renderAllPageSlots() {
+      pagesContainer.innerHTML = '';
+      renderedPages.clear();
+
+      // Get first page to calculate aspect ratio
+      const firstPage = await pdfDoc.getPage(1);
+      const viewport = firstPage.getViewport({ scale: scale });
+      const defaultWidth = Math.floor(viewport.width);
+      const defaultHeight = Math.floor(viewport.height);
+
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const slot = createPageSlot(i, defaultWidth, defaultHeight);
+        pagesContainer.appendChild(slot);
+      }
+
+      setupIntersectionObserver();
+
+      // Scroll immediately to target page
+      scrollToPage(targetInitialPage, 'auto');
+    }
+
+    function setupIntersectionObserver() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const pageNum = parseInt(entry.target.dataset.pageNum, 10);
+          if (entry.isIntersecting) {
+            renderSinglePage(pageNum);
+            // Preload adjacent pages
+            if (pageNum > 1) renderSinglePage(pageNum - 1);
+            if (pageNum < pdfDoc.numPages) renderSinglePage(pageNum + 1);
+
+            // Update top bar with highest visibility page
+            if (entry.intersectionRatio > 0.4) {
+              currentVisiblePage = pageNum;
+              pageNumInput.value = pageNum;
+              document.querySelectorAll('.pdf-page-card').forEach(el => el.classList.remove('active-page'));
+              entry.target.classList.add('active-page');
+            }
+          }
+        });
+      }, {
+        root: viewerContainer,
+        threshold: [0.1, 0.5, 0.8]
+      });
+
+      document.querySelectorAll('.pdf-page-card').forEach(el => observer.observe(el));
+    }
+
+    function scrollToPage(num, behavior = 'smooth') {
+      const target = document.getElementById(`page-container-${num}`);
+      if (target) {
+        target.scrollIntoView({ behavior: behavior, block: 'start' });
+        pageNumInput.value = num;
+        currentVisiblePage = num;
+        renderSinglePage(num);
+      }
+    }
+
+    function onPrevPage() {
+      if (currentVisiblePage <= 1) return;
+      scrollToPage(currentVisiblePage - 1);
+    }
+
+    function onNextPage() {
+      if (currentVisiblePage >= pdfDoc.numPages) return;
+      scrollToPage(currentVisiblePage + 1);
+    }
+
+    document.getElementById('prev-page').addEventListener('click', onPrevPage);
+    document.getElementById('next-page').addEventListener('click', onNextPage);
+
+    pageNumInput.addEventListener('change', function() {
+      let val = parseInt(this.value, 10);
+      if (val >= 1 && val <= pdfDoc.numPages) {
+        scrollToPage(val);
+      } else {
+        this.value = currentVisiblePage;
+      }
+    });
+
+    document.getElementById('zoom-in').addEventListener('click', async function() {
+      if (scale >= 3.0) return;
+      scale += 0.2;
+      zoomLevelSpan.textContent = Math.round(scale / 1.35 * 100) + '%';
+      targetInitialPage = currentVisiblePage;
+      await renderAllPageSlots();
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', async function() {
+      if (scale <= 0.6) return;
+      scale -= 0.2;
+      zoomLevelSpan.textContent = Math.round(scale / 1.35 * 100) + '%';
+      targetInitialPage = currentVisiblePage;
+      await renderAllPageSlots();
+    });
+
+    // Keyboard Navigation (<kbd>PageUp</kbd>, <kbd>PageDown</kbd>, <kbd>Home</kbd>, <kbd>End</kbd>, <kbd>+</kbd>, <kbd>-</kbd>)
+    window.addEventListener('keydown', function(e) {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') onPrevPage();
+      else if (e.key === 'ArrowRight' || e.key === 'PageDown') onNextPage();
+      else if (e.key === 'Home') scrollToPage(1);
+      else if (e.key === 'End') scrollToPage(pdfDoc.numPages);
+      else if (e.key === '+' || e.key === '=') document.getElementById('zoom-in').click();
+      else if (e.key === '-') document.getElementById('zoom-out').click();
+    });
+
+    const currentDocName = ('{{ filename }}' || '').trim().split('/').pop().toLowerCase();
+
+    // Listen for BroadcastChannel messages from the main window to scroll instantly
+    try {
+      const bc = new BroadcastChannel('build_aware_kb_channel');
+      bc.onmessage = function(event) {
+        if (!event.data) return;
+        const msgFile = (event.data.filename || '').trim().split('/').pop().toLowerCase();
+        if (msgFile && msgFile === currentDocName && event.data.page) {
+          const newPage = parseInt(event.data.page, 10);
+          targetInitialPage = newPage;
+          if (pdfDoc && newPage >= 1 && newPage <= pdfDoc.numPages) {
+            scrollToPage(newPage, 'smooth');
+            try {
+              const currentUrl = new URL(window.location.href);
+              currentUrl.searchParams.set('page', newPage);
+              if (event.data.title) currentUrl.searchParams.set('title', event.data.title);
+              if (event.data.section) currentUrl.searchParams.set('section', event.data.section);
+              window.history.replaceState({}, '', currentUrl.toString());
+            } catch (e) {}
+          }
+        }
+      };
+    } catch (e) {
+      console.warn('BroadcastChannel not supported', e);
+    }
+
+    // Initialize PDF document
+    pdfjsLib.getDocument(url).promise.then(async function(pdfDoc_) {
+      pdfDoc = pdfDoc_;
+      pageCountSpan.textContent = pdfDoc.numPages;
+      pageNumInput.max = pdfDoc.numPages;
+
+      loadingSpinner.classList.add('hidden');
+      pagesContainer.classList.remove('hidden');
+
+      await renderAllPageSlots();
+    }).catch(function(err) {
+      console.error('Error loading PDF via PDF.js:', err);
+      loadingSpinner.classList.add('hidden');
+      errorBox.classList.remove('hidden');
+      errorMsg.textContent = err.message || 'Could not load PDF document.';
+    });
+  </script>
+</body>
+</html>

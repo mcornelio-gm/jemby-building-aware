@@ -1,0 +1,1076 @@
+<!-- COMMON SHARED EQUIPMENT FORM SUBTEMPLATE -->
+<!-- Used by both Survey Workbench (survey.html) and SLD Single-Line Diagram Viewer (sld_view.html) -->
+
+<div class="space-y-4">
+  <!-- 1. Active Equipment Identity Banner -->
+  <div class="p-3.5 rounded-xl bg-gradient-to-r from-indigo-500/10 via-sky-500/10 to-transparent border border-indigo-200 dark:border-indigo-900/50 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div 
+        class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-600/30 font-mono" 
+        x-text="(selectedType && selectedType.tag) || form.type_tag || 'EQ'"
+      >
+        EQ
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-slate-900 dark:text-white" x-text="(selectedType && selectedType.name) || form.type_name || form.name || 'Electrical Device'"></h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="'Domain: ' + ((selectedDomain && selectedDomain.name) || form.domain || 'Equipment')"></p>
+      </div>
+    </div>
+    <span 
+      class="text-xs px-2.5 py-1 rounded-full font-semibold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" 
+      x-text="isPanelEquipment() ? 'Panelboard / Distribution' : 'Stand-Alone Asset'"
+    ></span>
+  </div>
+
+  <!-- 2. Primary Form Fields Grid -->
+  <div class="grid grid-cols-2 gap-4">
+    <!-- Equipment Tag -->
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Equipment Tag *</label>
+        <template x-if="isDuplicateTag">
+          <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-800 rounded px-1.5 py-0.5 animate-pulse">
+            ⚠️ Tag in use
+          </span>
+        </template>
+      </div>
+      <input 
+        type="text" 
+        x-model="form.tag" 
+        :class="isDuplicateTag ? 'border-amber-500 dark:border-amber-500 ring-1 ring-amber-500 bg-amber-500/5' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900'"
+        class="w-full h-9 px-3 text-xs font-mono font-bold rounded-lg border focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+        placeholder="e.g. PANEL-A, ATS-1, XFMR-1"
+      >
+      <template x-if="isDuplicateTag">
+        <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium">Tag already exists in facility. Please use a unique tag.</p>
+      </template>
+    </div>
+
+    <!-- Room Location -->
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Room / Location</label>
+      <input 
+        type="text" 
+        x-model="form.room" 
+        placeholder="e.g. ELEC-101, Main Vault"
+        class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+      >
+    </div>
+
+    <!-- Description / Equipment Name -->
+    <div class="col-span-2">
+      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Equipment Name / Description</label>
+      <input 
+        type="text" 
+        x-model="form.name" 
+        placeholder="e.g. 480V Main Distribution Switchboard"
+        class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+      >
+    </div>
+
+    <!-- Fed From Upstream Asset(s) / Multi-Source -->
+    <div class="col-span-2">
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="flex items-center gap-2">
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <span x-text="isDualSourceEquipment() ? 'Dual Power Sources (ATS / MTS / STS)' : 'Fed From (Upstream Source)'"></span>
+          </label>
+          <span 
+            x-show="isDualSourceEquipment()" 
+            class="px-1.5 py-0.2 rounded text-[9px] font-bold font-mono bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
+          >
+            DUAL-SOURCE
+          </span>
+        </div>
+
+        <!-- Header Status / Add Source Button -->
+        <template x-if="selectedDomain && selectedDomain.id === 'sources'">
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 italic">Primary Source (No Upstream)</span>
+        </template>
+        <template x-if="!(selectedDomain && selectedDomain.id === 'sources')">
+          <button 
+            type="button" 
+            @click="addUpstreamSource()" 
+            class="px-2 py-0.5 rounded text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/80 flex items-center gap-1 transition cursor-pointer"
+            title="Add another upstream power source"
+          >
+            <span>➕ Add Source</span>
+          </button>
+        </template>
+      </div>
+
+      <!-- Disabled Primary Source message -->
+      <template x-if="selectedDomain && selectedDomain.id === 'sources'">
+        <div class="w-full h-9 px-3 text-xs rounded-lg bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center text-slate-400 dark:text-slate-500 font-mono italic">
+          -- Top-Level Source (Service Entrance / Generator / Utility) --
+        </div>
+      </template>
+
+      <!-- Dynamic Source Dropdowns -->
+      <template x-if="!(selectedDomain && selectedDomain.id === 'sources')">
+        <div class="space-y-2">
+          <template x-for="(src, sIdx) in (form.upstream_sources || [''])" :key="sIdx">
+            <div class="flex items-center gap-2">
+              <div class="w-36 shrink-0">
+                <span 
+                  class="text-[10px] font-mono font-bold block truncate"
+                  :class="(sIdx === 0) ? 'text-indigo-600 dark:text-indigo-400' : ((sIdx === 1 && isDualSourceEquipment()) ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400')"
+                  x-text="getSourceLabel(sIdx)"
+                ></span>
+              </div>
+
+              <select 
+                :value="(form.upstream_sources && form.upstream_sources[sIdx]) || ''" 
+                @change="onUpstreamSourceChange(sIdx, $event.target.value)"
+                class="flex-1 h-8 px-2.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+              >
+                <option value="">-- None / Select Upstream Feed --</option>
+                <template x-for="item in (eligibleUpstreamEquipment || allNodes || [])" :key="item.id">
+                  <option 
+                    :value="item.tag" 
+                    x-show="item.id !== editingId && item.tag !== form.tag"
+                    x-text="item.tag + ' — ' + (item.name || item.type_name || item.domain) + ' (' + (item.room || 'Main Electrical Room') + ')'" 
+                    :selected="form.upstream_sources && form.upstream_sources[sIdx] === item.tag"
+                  ></option>
+                </template>
+              </select>
+
+              <!-- Remove Source Button -->
+              <button 
+                type="button" 
+                x-show="form.upstream_sources && form.upstream_sources.length > (isDualSourceEquipment() ? 2 : 1)"
+                @click="removeUpstreamSource(sIdx)"
+                title="Remove this upstream source"
+                class="w-7 h-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs font-bold transition cursor-pointer shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+
+    <!-- Operating Voltage -->
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Voltage</label>
+      <select 
+        x-model="form.voltage" 
+        class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+      >
+        <option value="480Y/277V 3Ø 4W">480Y/277V 3Ø 4W</option>
+        <option value="208Y/120V 3Ø 4W">208Y/120V 3Ø 4W</option>
+        <option value="480V 3Ø 3W">480V 3Ø 3W</option>
+        <option value="120/240V 1Ø 3W">120/240V 1Ø 3W</option>
+        <option value="4160V 3Ø">4160V Medium Voltage</option>
+        <option value="13800V 3Ø">13.8 kV Primary</option>
+      </select>
+    </div>
+
+    <!-- Continuous Current (Amps) -->
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bus Rating (Amps)</label>
+      <input 
+        type="number" 
+        x-model.number="form.amps" 
+        placeholder="e.g. 100, 225, 400, 800"
+        class="w-full h-9 px-3 text-xs font-mono font-bold rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+      >
+    </div>
+
+    <!-- Short Circuit AIC -->
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">AIC Withstand Rating (kA)</label>
+      <input 
+        type="number" 
+        x-model.number="form.aic" 
+        placeholder="e.g. 10, 22, 65"
+        class="w-full h-9 px-3 text-xs font-mono rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+      >
+    </div>
+
+    <!-- Enclosure NEMA -->
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Enclosure Rating</label>
+      <select 
+        x-model="form.enclosure" 
+        class="w-full h-9 px-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+      >
+        <option value="NEMA 1">NEMA 1 (Indoor General)</option>
+        <option value="NEMA 3R">NEMA 3R (Outdoor Rainproof)</option>
+        <option value="NEMA 4X">NEMA 4X (Stainless Washdown)</option>
+        <option value="NEMA 12">NEMA 12 (Industrial Dusttight)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 3. NAMEPLATE, OEM & ASSET TRACKING SECTION -->
+  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+        <span>🏷️</span>
+        <span>Nameplate, OEM & Asset Registry</span>
+      </span>
+      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+        Master Catalog Linked
+      </span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3">
+      <!-- Manufacturer / Brand Cascading Dropdown -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">Manufacturer / OEM</label>
+          <span x-show="catalogManufacturers && catalogManufacturers.length > 0" class="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 font-bold">
+            <span x-text="catalogManufacturers.length"></span> OEMs
+          </span>
+        </div>
+        <div class="relative">
+          <input 
+            type="text" 
+            x-model="form.manufacturer" 
+            @change="onCatalogManufacturerChange && onCatalogManufacturerChange()"
+            list="mfr-presets" 
+            placeholder="Select or enter OEM..." 
+            class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+          >
+          <datalist id="mfr-presets">
+            <template x-for="mfg in (catalogManufacturers || ['Square D', 'Eaton', 'Siemens', 'ABB / GE', 'Schneider Electric', 'Cutler-Hammer', 'ASCO', 'Cummins', 'Caterpillar', 'Kohler'])" :key="mfg">
+              <option :value="mfg"></option>
+            </template>
+          </datalist>
+        </div>
+      </div>
+
+      <!-- Model / Catalog # with Cascading Autocomplete -->
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">Catalog / Model #</label>
+          <div class="flex items-center gap-1.5">
+            <span x-show="isCatalogItemActive" class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+              <span>⚡</span><span>Catalog Verified</span>
+            </span>
+            <template x-if="activeCatalogItemUrl">
+              <a :href="activeCatalogItemUrl" target="_blank"
+                 class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5"
+                 title="Open Official Manufacturer Specification Sheet">
+                <span>📄 Cut-Sheet ↗</span>
+              </a>
+            </template>
+          </div>
+        </div>
+        <div class="relative">
+          <input 
+            type="text" 
+            x-model="form.model_no" 
+            @change="onCatalogModelSelect && onCatalogModelSelect(form.model_no)"
+            list="catalog-models-list" 
+            placeholder="Select or enter part #..." 
+            class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono font-semibold"
+          >
+          <datalist id="catalog-models-list">
+            <template x-for="item in (catalogModels || [])" :key="item.part_number">
+              <option :value="item.part_number" :label="item.part_number + (item.description ? ' (' + item.description.substring(0, 40) + ')' : '')"></option>
+            </template>
+          </datalist>
+        </div>
+      </div>
+
+      <!-- Client Asset Tag / Barcode -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Client Asset Tag</label>
+        <input 
+          type="text" 
+          x-model="form.asset_tag" 
+          placeholder="e.g. AST-0042, QR-8910..." 
+          class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono font-semibold"
+        >
+      </div>
+
+      <!-- Quick Catalog Model Selector Pill -->
+      <div class="col-span-3 -mt-1" x-show="catalogModels && catalogModels.length > 0">
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-xs">
+          <span class="text-indigo-600 dark:text-indigo-400 font-bold shrink-0 flex items-center gap-1">
+            <span>⚡</span><span>Master Catalog:</span>
+          </span>
+          <select 
+            @change="if ($event.target.value) { onCatalogModelSelect && onCatalogModelSelect($event.target.value); $event.target.value = ''; }"
+            class="flex-1 h-6 px-2 text-[11px] rounded bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono cursor-pointer"
+          >
+            <option value="">-- Quick Select from <span x-text="(catalogModels || []).length"></span> Verified OEM Parts --</option>
+            <template x-for="item in (catalogModels || [])" :key="item.part_number">
+              <option :value="item.part_number" x-text="item.part_number + ' • ' + (item.description || item.series)"></option>
+            </template>
+          </select>
+        </div>
+      </div>
+
+      <!-- Serial Number -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Serial Number (Optional)</label>
+        <input 
+          type="text" 
+          x-model="form.serial_no" 
+          placeholder="e.g. SN-894021..." 
+          class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+        >
+      </div>
+
+      <!-- Year Installed / Commissioned -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Year Commissioned</label>
+        <input 
+          type="number" 
+          x-model.number="form.year_installed" 
+          placeholder="e.g. 2018" 
+          class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+        >
+      </div>
+
+      <!-- Enclosure Mounting Reference -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Mounting Environment</label>
+        <select 
+          x-model="form.mounting" 
+          class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+        >
+          <option value="Surface">Surface Wall Mount</option>
+          <option value="Flush">Flush Recessed</option>
+          <option value="Freestanding">Free-Standing Pad</option>
+          <option value="Skid">Skid / Unit Substation</option>
+        </select>
+      </div>
+
+      <!-- Dedicated Nameplate Photo Slot -->
+      <div 
+        class="col-span-3 pt-2.5 border-t border-slate-200 dark:border-slate-800 space-y-2"
+        @dragover.prevent
+        @drop.prevent="handlePhotoDrop && handlePhotoDrop($event, 'nameplate')"
+      >
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+            <span>📸</span>
+            <span>Equipment Nameplate Photo</span>
+            <span class="text-[10px] text-slate-400 font-normal">(Drag & drop or snap)</span>
+          </label>
+          <div class="flex items-center gap-1.5">
+            <label 
+              for="survey-nameplate-camera-input"
+              title="Snap Nameplate Photo with Camera"
+              class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 cursor-pointer transition"
+            >
+              <span>📷 Camera</span>
+            </label>
+            <label 
+              for="survey-nameplate-gallery-input"
+              title="Upload Nameplate Photo from Device"
+              class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 cursor-pointer transition font-bold"
+            >
+              <span>➕ File</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Nameplate Photo Preview Card (if present) -->
+        <template x-if="form.nameplate_photo && (form.nameplate_photo.dataUrl || typeof form.nameplate_photo === 'string')">
+          <div class="relative group/nameplate flex items-center gap-3 p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 shadow-sm">
+            <div class="w-16 h-12 rounded overflow-hidden bg-black/20 shrink-0 border border-indigo-200 dark:border-indigo-700">
+              <img 
+                :src="typeof form.nameplate_photo === 'string' ? form.nameplate_photo : form.nameplate_photo.dataUrl" 
+                :alt="form.nameplate_photo.name || 'Nameplate Photo'"
+                @click="openLightbox && openLightbox(form.nameplate_photo, 'Nameplate Photo: ' + form.tag)" 
+                class="w-full h-full object-cover cursor-pointer hover:scale-105 transition"
+              >
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate" x-text="form.nameplate_photo.name || 'Nameplate Image'"></p>
+              <p class="text-[10px] text-slate-400 font-mono" x-text="'Captured ' + (form.nameplate_photo.timestamp || 'Today')"></p>
+            </div>
+            <div class="flex items-center gap-1">
+              <button 
+                type="button" 
+                @click="openLightbox && openLightbox(form.nameplate_photo, 'Nameplate Photo: ' + form.tag)"
+                class="px-2 py-1 rounded text-[10px] font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:text-indigo-600 cursor-pointer"
+              >
+                🔍 View
+              </button>
+              <button 
+                type="button" 
+                @click="form.nameplate_photo = null; if (window.notify) window.notify('Nameplate photo removed')"
+                class="w-6 h-6 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs font-bold cursor-pointer"
+                title="Remove nameplate photo"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SPECIALIZED EQUIPMENT ATTRIBUTES & DYNAMIC SLOTS -->
+  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+        <span>⚙️</span>
+        <span>Dynamic Equipment Specifications</span>
+      </span>
+      <button 
+        type="button" 
+        @click="addCustomAttr()" 
+        class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-950 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 flex items-center gap-1 cursor-pointer transition"
+      >
+        <span>➕ Add Field Attribute</span>
+      </button>
+    </div>
+
+    <!-- Generator Specifics -->
+    <template x-if="(selectedType && selectedType.tag === 'GEN') || form.type_tag === 'GEN' || (form.domain === 'sources' && (form.type_name || '').toLowerCase().includes('generator'))">
+      <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20">
+        <div>
+          <label class="block text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-1">Fuel Type</label>
+          <select x-model="form.vendor_attrs.fuel_type" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="Diesel #2">Diesel #2</option>
+            <option value="Natural Gas">Natural Gas</option>
+            <option value="Propane (LP)">Propane (LP)</option>
+            <option value="Dual Fuel">Dual Fuel</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-1">Standby/Prime kW</label>
+          <input type="number" x-model.number="form.vendor_attrs.kw_rating" placeholder="750" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-1">Engine Controller</label>
+          <input type="text" x-model="form.vendor_attrs.controller" placeholder="EMCP 4.2B" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+      </div>
+    </template>
+
+    <!-- Transformer Specifics -->
+    <template x-if="(selectedDomain && selectedDomain.id === 'transformers') || form.domain === 'transformers'">
+      <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-purple-500/5 border border-purple-500/20">
+        <div>
+          <label class="block text-[10px] font-bold text-purple-700 dark:text-purple-300 mb-1">Impedance (%Z)</label>
+          <input type="text" x-model="form.vendor_attrs.impedance_z" placeholder="5.75%" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-purple-700 dark:text-purple-300 mb-1">Temp Rise</label>
+          <select x-model="form.vendor_attrs.temp_rise" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="150°C">150°C Rise</option>
+            <option value="115°C">115°C Rise (Energy Efficient)</option>
+            <option value="80°C">80°C Rise (Low Loss)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-purple-700 dark:text-purple-300 mb-1">Cooling Class</label>
+          <select x-model="form.vendor_attrs.cooling_class" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="AA">AA (Dry-type Natural Air)</option>
+            <option value="FA">FA (Forced Air Fans)</option>
+            <option value="ONAN">ONAN (Liquid-Filled)</option>
+          </select>
+        </div>
+      </div>
+    </template>
+
+    <!-- ATS / Switch Specifics -->
+    <template x-if="isDualSourceEquipment()">
+      <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20">
+        <div>
+          <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Transition Mode</label>
+          <select x-model="form.vendor_attrs.transition" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="Open Transition">Open Transition</option>
+            <option value="Closed Transition">Closed Transition (Soft Load)</option>
+            <option value="Delayed Transition">Delayed Transition</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Bypass Isolation</label>
+          <select x-model="form.vendor_attrs.bypass_isolation" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="No">No Bypass</option>
+            <option value="Yes (Dual Drawout)">Yes (Dual Drawout)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Controller Logic</label>
+          <input type="text" x-model="form.vendor_attrs.controller" placeholder="e.g. Group G Controller" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+      </div>
+    </template>
+
+    <!-- Fused Switch Specifics -->
+    <template x-if="(selectedType && selectedType.tag === 'DISC') || form.type_tag === 'DISC'">
+      <div class="grid grid-cols-3 gap-3 p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20">
+        <div>
+          <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Fuse Class</label>
+          <select x-model="form.vendor_attrs.fuse_class" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="Class J">Class J (High Speed)</option>
+            <option value="Class R">Class R (RK1 / RK5)</option>
+            <option value="Class T">Class T (Compact)</option>
+            <option value="Class L">Class L (>600A)</option>
+            <option value="Class CC">Class CC</option>
+            <option value="Non-Fused">Non-Fused Disconnect</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Installed Fuse (A)</label>
+          <input type="number" x-model.number="form.vendor_attrs.fuse_amps" placeholder="100" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-blue-700 dark:text-blue-300 mb-1">Blown Indicator</label>
+          <select x-model="form.vendor_attrs.blown_indicators" class="w-full h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="Yes">Yes (LED / Flag)</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+    </template>
+
+    <!-- Ad-Hoc Key-Value Dynamic Attribute Rows -->
+    <template x-if="customAttrsList && customAttrsList.length > 0">
+      <div class="space-y-1.5 pt-1">
+        <span class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Custom Nameplate Tags</span>
+        <template x-for="(attr, aIdx) in customAttrsList" :key="aIdx">
+          <div class="flex items-center gap-2">
+            <input type="text" x-model="attr.key" placeholder="Parameter Name (e.g. Full Load RPM)" class="flex-1 h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-semibold">
+            <input type="text" x-model="attr.val" placeholder="Value (e.g. 1760 RPM)" class="flex-1 h-7 px-2 text-xs rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white">
+            <button type="button" @click="removeCustomAttr(aIdx)" class="w-7 h-7 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs cursor-pointer font-bold">✕</button>
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <!-- 5. OPERATIONS, CONDITION & LIFECYCLE TELEMETRY -->
+  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+        <span>🩺</span>
+        <span>Asset Health, Condition & Inspection</span>
+      </span>
+      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold" x-text="form.operational_status || 'Active'"></span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3">
+      <!-- Criticality Rating -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Criticality</label>
+        <select x-model="form.criticality" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+          <option value="High">High (Mission-Critical)</option>
+          <option value="Medium">Medium (Standard Distribution)</option>
+          <option value="Low">Low (Non-Essential Branch)</option>
+        </select>
+      </div>
+
+      <!-- Condition Assessment -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Condition Rating</label>
+        <select x-model="form.condition" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+          <option value="1">1 - Good (No Defects)</option>
+          <option value="2">2 - Fair (Minor Wear / Dust)</option>
+          <option value="3">3 - Poor (Immediate Service Needed)</option>
+        </select>
+      </div>
+
+      <!-- Operating Environment -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Environment</label>
+        <select x-model="form.environment" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+          <option value="Clean">Clean (Conditioned)</option>
+          <option value="Dusty">Dusty / Industrial</option>
+          <option value="Wet">Wet / Washdown</option>
+          <option value="Corrosive">Corrosive / Chemical</option>
+        </select>
+      </div>
+
+      <!-- Operating Status -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Status</label>
+        <select x-model="form.operational_status" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+          <option value="Active">Active (Energized)</option>
+          <option value="Locked Out">Locked Out / Tagged Out</option>
+          <option value="Standby">Standby (De-Energized)</option>
+          <option value="Retired">Retired / Out of Service</option>
+        </select>
+      </div>
+
+      <!-- Inspection Frequency -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Inspection Frequency</label>
+        <select x-model="form.inspection_freq" class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer">
+          <option value="Monthly">Monthly</option>
+          <option value="Quarterly">Quarterly</option>
+          <option value="Semi-Annual">Semi-Annual</option>
+          <option value="Annual">Annual</option>
+          <option value="5-Year">5-Year</option>
+        </select>
+      </div>
+
+      <!-- Next Inspection Date -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Next Inspection Date</label>
+        <input type="date" x-model="form.next_inspection" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+      </div>
+
+      <!-- Testing Telemetry: Arc Flash, Infrared, Torque -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Arc Flash Label Date</label>
+        <input type="date" x-model="form.arc_flash_date" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Last Infrared Scan</label>
+        <input type="date" x-model="form.infrared_date" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Torque Check Date</label>
+        <input type="date" x-model="form.torque_check_date" class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white">
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Panel-Specific Attributes & Dynamic Slots Configuration -->
+  <template x-if="isPanelEquipment()">
+    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-indigo-200 dark:border-indigo-900/40 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
+          <span>🗄️</span>
+          <span x-text="getScheduleConfigHeader()">Panel Bus & Physical Configuration</span>
+        </span>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold" x-text="form.slots + ' Physical ' + getScheduleUnitPlural()">
+          42 Slots
+        </span>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3">
+        <!-- # of Slots Dropdown -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1" x-text="'# of ' + getScheduleUnitPlural()"># of Slots</label>
+          <select 
+            x-model.number="form.slots" 
+            @change="updateSlotCount && updateSlotCount()"
+            class="w-full h-8 px-2.5 text-xs font-mono font-bold rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+          >
+            <option :value="12" x-text="'12 ' + getScheduleUnitPlural()"></option>
+            <option :value="18" x-text="'18 ' + getScheduleUnitPlural()"></option>
+            <option :value="24" x-text="'24 ' + getScheduleUnitPlural()"></option>
+            <option :value="30" x-text="'30 ' + getScheduleUnitPlural()"></option>
+            <option :value="42" x-text="'42 ' + getScheduleUnitPlural()"></option>
+            <option :value="54" x-text="'54 ' + getScheduleUnitPlural()"></option>
+            <option :value="72" x-text="'72 ' + getScheduleUnitPlural()"></option>
+            <option :value="84" x-text="'84 ' + getScheduleUnitPlural()"></option>
+          </select>
+        </div>
+
+        <!-- Main Type (MCB vs MLO) -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Main Device</label>
+          <select 
+            x-model="form.main_type" 
+            class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+          >
+            <option value="MCB">MCB (Main Breaker)</option>
+            <option value="MLO">MLO (Main Lug Only)</option>
+          </select>
+        </div>
+
+        <!-- Mounting -->
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Mounting</label>
+          <select 
+            x-model="form.mounting" 
+            class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white cursor-pointer"
+          >
+            <option value="Surface">Surface Mount</option>
+            <option value="Flush">Flush Mount</option>
+            <option value="Freestanding">Free Standing</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- 7. Live Electrical Rules & Engineering Telemetry -->
+  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+        <span>⚡</span>
+        <span>Live NEC Calculations</span>
+      </span>
+      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 font-bold">
+        Continuous Load (125%)
+      </span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 pt-1 font-mono text-xs">
+      <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+        <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Calculated FLA:</span>
+        <span class="font-bold text-slate-900 dark:text-white" x-text="(form.amps || 0) + ' A'">400 A</span>
+      </div>
+      <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+        <span class="text-[10px] text-slate-500 dark:text-slate-400 block">125% OCPD Min:</span>
+        <span class="font-bold text-amber-600 dark:text-amber-400" x-text="Math.ceil((form.amps || 0) * 1.25) + ' A'">500 A</span>
+      </div>
+      <div class="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+        <span class="text-[10px] text-slate-500 dark:text-slate-400 block">Min Cu Conductor:</span>
+        <span class="font-bold text-indigo-600 dark:text-indigo-400 truncate block" x-text="getConductor(form.amps || 0)">500 kcmil Cu</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMBEDDED PANEL SCHEDULE & CIRCUIT BREAKERS MATRIX (Shown in Survey or when showScheduleMatrix is true) -->
+  <template x-if="isPanelEquipment() && (typeof showScheduleMatrix === 'undefined' || showScheduleMatrix)">
+    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+      <!-- Matrix Header & Stats -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+            <span>⚡</span>
+            <span x-text="getScheduleTitle ? getScheduleTitle() : 'Panel Slot Schedule'">Panel Slot Schedule</span>
+          </span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" x-text="(typeof occupiedSlotsCount !== 'undefined' ? occupiedSlotsCount : 0) + ' / ' + form.slots + ' ' + (getScheduleUnitPlural ? getScheduleUnitPlural() : 'Slots') + ' Used'">
+            18 / 42 Used
+          </span>
+        </div>
+
+        <!-- Phase Color Legend -->
+        <div class="flex items-center gap-3 text-[10px] font-mono">
+          <span class="flex items-center gap-1 text-red-500 font-bold"><span class="w-2 h-2 rounded-full bg-red-500"></span> Ph A</span>
+          <span class="flex items-center gap-1 text-blue-500 font-bold"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Ph B</span>
+          <span class="flex items-center gap-1 text-emerald-500 font-bold"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Ph C</span>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-slate-500 dark:text-slate-400" x-text="'💡 ' + (getScheduleSubtitle ? getScheduleSubtitle() : 'Click any slot to insert or edit circuit breakers, multi-pole ganging, trip ratings, and downstream loads.')">
+        💡 Click any slot to insert or edit circuit breakers, multi-pole ganging, trip ratings, and downstream loads.
+      </p>
+
+      <!-- UNRESOLVED CONNECTED LOADS QUEUE (Downstream devices claiming this panel as fed_from without a breaker slot) -->
+      <template x-if="unresolvedLoads && unresolvedLoads.length > 0">
+        <div class="p-3 rounded-xl bg-amber-500/10 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/80 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center gap-1.5">
+                <span>⚠️</span>
+                <span>Unresolved Connected Loads</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200" x-text="unresolvedLoads.length + ' Pending Assignment'"></span>
+            </div>
+            <span class="text-[10px] text-amber-700 dark:text-amber-400">Claims this panel as upstream feed</span>
+          </div>
+
+          <div class="space-y-1.5 max-h-48 overflow-y-auto">
+            <template x-for="item in unresolvedLoads" :key="item.id || item.tag">
+              <div class="p-2 rounded-lg bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-amber-900/50 flex items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 shrink-0" x-text="item.tag"></span>
+                  <div class="min-w-0">
+                    <p class="font-bold text-slate-900 dark:text-white truncate" x-text="item.name || item.type_name || item.tag"></p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                      <span x-text="(item.voltage || '480V') + (item.amps ? (' • ' + item.amps + 'A') : '')"></span>
+                      <span x-show="item.room" x-text="' • ' + item.room"></span>
+                    </p>
+                  </div>
+                </div>
+
+                <button 
+                  type="button" 
+                  @click="resolveUnresolvedLoad && resolveUnresolvedLoad(item)"
+                  class="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 shadow-sm transition flex items-center gap-1 shrink-0 cursor-pointer"
+                  title="Assign to next available panel breaker slot"
+                >
+                  <span>⚡ Resolve to Slot</span>
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <!-- Embedded Interactive Slots Table -->
+      <div class="border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-950 text-xs font-mono">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[10px]">
+              <th class="p-1.5 text-center w-8 border-r border-slate-200 dark:border-slate-800">#</th>
+              <th class="p-1.5 border-r border-slate-200 dark:border-slate-800" x-text="getScheduleLeftColHeader ? getScheduleLeftColHeader() : 'Left Breaker / Circuit'">Left Breaker / Circuit</th>
+              <th class="p-1.5 text-center w-12 border-r border-slate-200 dark:border-slate-800">Trip</th>
+              <th class="p-1.5 text-center w-8 border-r border-slate-200 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-900">Ph</th>
+              <th class="p-1.5 text-center w-12 border-r border-slate-200 dark:border-slate-800">Trip</th>
+              <th class="p-1.5 border-r border-slate-200 dark:border-slate-800" x-text="getScheduleRightColHeader ? getScheduleRightColHeader() : 'Right Breaker / Circuit'">Right Breaker / Circuit</th>
+              <th class="p-1.5 text-center w-8">#</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-900">
+            <template x-for="(row, rIdx) in (scheduleRows || [])" :key="row.leftSlot">
+              <tr class="hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition group">
+                
+                <!-- Left Slot Number -->
+                <td class="p-1.5 text-center font-bold text-slate-400 border-r border-slate-200/70 dark:border-slate-800/70 text-[11px]" x-text="row.leftSlot"></td>
+
+                <!-- Left Slot Card (Clickable) -->
+                <td 
+                  @click="openBreakerInspector && openBreakerInspector(row, 'left', rIdx)"
+                  class="p-1.5 border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-sans"
+                  :class="row.leftIsGanged ? 'bg-indigo-50/25 dark:bg-indigo-950/20 border-l-2 border-l-indigo-400' : (row.leftTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic')"
+                >
+                  <div class="flex items-center justify-between gap-1">
+                    <span class="truncate text-xs" :class="row.leftIsGanged ? 'text-indigo-600 dark:text-indigo-400 font-normal italic text-[11px]' : (row.leftTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400')" x-text="row.leftDesc || '+ Space / Spare'"></span>
+                    <div class="flex items-center gap-1 shrink-0" x-show="row.leftTrip && !row.leftIsGanged">
+                      <span x-show="row.leftPartNo" class="px-1 py-0.2 rounded text-[8px] font-mono" :class="row.leftIsCustom ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'" x-text="row.leftPartNo"></span>
+                      <span x-show="row.leftPoles > 1" class="px-1 py-0.2 rounded text-[9px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-mono" x-text="row.leftPoles + 'P'"></span>
+                      <span x-show="row.leftType && row.leftType !== 'MCCB'" class="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono" x-text="row.leftType"></span>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0" x-show="row.leftIsGanged">
+                      <span class="px-1 py-0.2 rounded text-[8px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono">GANGED</span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Left Trip Rating -->
+                <td 
+                  @click="openBreakerInspector && openBreakerInspector(row, 'left', rIdx)"
+                  class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer text-xs"
+                  :class="row.leftIsGanged ? 'text-indigo-400/80 font-normal text-[10px]' : (row.leftTrip ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-400')"
+                  x-text="row.leftIsGanged ? ('(' + row.leftTrip + 'A)') : (row.leftTrip ? (row.leftTrip + 'A') : '—')"
+                ></td>
+
+                <!-- Phase Marker -->
+                <td class="p-1.5 text-center font-bold text-xs border-r border-slate-200/70 dark:border-slate-800/70 bg-slate-100/40 dark:bg-slate-900/50" :class="row.phaseColor" x-text="row.phase"></td>
+
+                <!-- Right Trip Rating -->
+                <td 
+                  @click="openBreakerInspector && openBreakerInspector(row, 'right', rIdx)"
+                  class="p-1.5 text-center border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer text-xs"
+                  :class="row.rightIsGanged ? 'text-indigo-400/80 font-normal text-[10px]' : (row.rightTrip ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-400')"
+                  x-text="row.rightIsGanged ? ('(' + row.rightTrip + 'A)') : (row.rightTrip ? (row.rightTrip + 'A') : '—')"
+                ></td>
+
+                <!-- Right Slot Card (Clickable) -->
+                <td 
+                  @click="openBreakerInspector && openBreakerInspector(row, 'right', rIdx)"
+                  class="p-1.5 border-r border-slate-200/70 dark:border-slate-800/70 cursor-pointer font-sans"
+                  :class="row.rightIsGanged ? 'bg-indigo-50/25 dark:bg-indigo-950/20 border-l-2 border-l-indigo-400' : (row.rightTrip ? 'bg-indigo-50/40 dark:bg-indigo-950/30' : 'bg-transparent text-slate-400 italic')"
+                >
+                  <div class="flex items-center justify-between gap-1">
+                    <span class="truncate text-xs" :class="row.rightIsGanged ? 'text-indigo-600 dark:text-indigo-400 font-normal italic text-[11px]' : (row.rightTrip ? 'text-slate-900 dark:text-white font-medium' : 'text-slate-400')" x-text="row.rightDesc || '+ Space / Spare'"></span>
+                    <div class="flex items-center gap-1 shrink-0" x-show="row.rightTrip && !row.rightIsGanged">
+                      <span x-show="row.rightPartNo" class="px-1 py-0.2 rounded text-[8px] font-mono" :class="row.rightIsCustom ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'" x-text="row.rightPartNo"></span>
+                      <span x-show="row.rightPoles > 1" class="px-1 py-0.2 rounded text-[9px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-mono" x-text="row.rightPoles + 'P'"></span>
+                      <span x-show="row.rightType && row.rightType !== 'MCCB'" class="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono" x-text="row.rightType"></span>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0" x-show="row.rightIsGanged">
+                      <span class="px-1 py-0.2 rounded text-[8px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-mono">GANGED</span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Right Slot Number -->
+                <td class="p-1.5 text-center font-bold text-slate-400 text-[11px]" x-text="row.rightSlot"></td>
+
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </template>
+
+  <!-- 8. FIELD NOTES & OBSERVATIONS WITH PHOTO CAPTURE & THUMBNAILS -->
+  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+          <span>📝</span>
+          <span>Field Notes & Observations</span>
+        </span>
+        <span class="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" x-text="(form.notes || []).length">0</span>
+      </div>
+      <span class="text-[10px] text-slate-400">Photos & survey logs</span>
+    </div>
+
+    <!-- Add New Note Input & Action Bar -->
+    <div class="space-y-2">
+      <div 
+        class="flex items-center gap-1.5"
+        @dragover.prevent
+        @drop.prevent="handlePhotoDrop && handlePhotoDrop($event, 'staged')"
+      >
+        <input 
+          type="text" 
+          x-model="newNoteText" 
+          @keydown.enter.prevent="addNote()" 
+          @paste="handlePhotoPaste && handlePhotoPaste($event, 'staged')"
+          placeholder="Add observation (or paste/drop photo)..." 
+          class="flex-1 h-8 px-3 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white"
+        >
+
+        <!-- Take Photo (Camera) Button -->
+        <button 
+          type="button" 
+          @click="($refs.cameraInput || document.getElementById('survey-camera-input')).click()" 
+          title="Snap Photo with Camera"
+          class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition cursor-pointer text-sm shrink-0"
+        >
+          📷
+        </button>
+
+        <!-- Upload Photo(s) (+ Sign / Gallery) Button -->
+        <button 
+          type="button" 
+          @click="($refs.galleryInput || document.getElementById('survey-gallery-input')).click()" 
+          title="Add Photo(s) from Device"
+          class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition cursor-pointer text-sm shrink-0 font-bold"
+        >
+          ➕
+        </button>
+
+        <!-- Add Note Button -->
+        <button 
+          type="button" 
+          @click="addNote()" 
+          :disabled="!newNoteText.trim() && stagedPhotos.length === 0"
+          class="px-3 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-sm shadow-indigo-600/30 transition flex items-center gap-1 shrink-0 cursor-pointer"
+        >
+          <span>Add</span>
+        </button>
+      </div>
+
+      <!-- Staged Photos Thumbnail Strip -->
+      <template x-if="stagedPhotos && stagedPhotos.length > 0">
+        <div class="p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/80 space-y-1.5">
+          <div class="flex items-center justify-between text-[10px] text-indigo-700 dark:text-indigo-300 font-semibold font-mono">
+            <span>Attached Photo(s) (<span x-text="stagedPhotos.length"></span>)</span>
+            <button type="button" @click="stagedPhotos = []" class="text-rose-500 hover:underline cursor-pointer">Clear all</button>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <template x-for="(photo, pIdx) in stagedPhotos" :key="photo.id || pIdx">
+              <div class="relative group/photo w-14 h-14 rounded-lg overflow-hidden border border-indigo-300 dark:border-indigo-700 bg-black/10 shadow-sm shrink-0">
+                <img 
+                  :src="typeof photo === 'string' ? photo : (photo.dataUrl || photo.url || photo.src || '')" 
+                  :alt="photo.name || 'Field Photo'" 
+                  @click="openLightbox && openLightbox(photo, 'Staged Observation Photo')"
+                  class="w-full h-full object-cover cursor-pointer hover:scale-105 transition duration-150"
+                >
+                <button 
+                  type="button" 
+                  @click.stop="removeStagedPhoto(pIdx)" 
+                  title="Remove photo"
+                  class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center shadow-md hover:bg-rose-700 cursor-pointer transition opacity-90 group-hover/photo:opacity-100"
+                >
+                  ✕
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Notes List -->
+    <div class="space-y-2 max-h-52 overflow-y-auto">
+      <template x-for="(note, nIdx) in (form.notes || [])" :key="note.id || nIdx">
+        <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col gap-2 group">
+          <div class="flex items-start justify-between gap-2">
+            <!-- Note Content / Inline Edit -->
+            <div class="flex-1 min-w-0">
+              <div x-show="editingNoteId !== note.id">
+                <p class="text-xs text-slate-800 dark:text-slate-200 leading-snug break-words font-sans" x-text="note.text"></p>
+                <div class="mt-1 flex items-center gap-2 text-[10px] text-slate-400 font-mono">
+                  <span x-text="note.date || 'Just now'"></span>
+                  <span x-show="note.author" x-text="'• ' + note.author"></span>
+                  <span x-show="note.photos && note.photos.length" class="text-indigo-600 dark:text-indigo-400 font-semibold" x-text="'• 📷 ' + note.photos.length + ' photo(s)'"></span>
+                </div>
+              </div>
+
+              <!-- Inline Text & Photo Editing Mode -->
+              <div x-show="editingNoteId === note.id" class="space-y-2">
+                <input 
+                  type="text" 
+                  x-model="editingNoteText" 
+                  @keydown.enter.prevent="saveNoteEdit(nIdx)"
+                  class="w-full h-7 px-2 text-xs rounded bg-slate-100 dark:bg-slate-900 border border-indigo-500 text-slate-900 dark:text-white focus:outline-none"
+                >
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-1.5">
+                    <button 
+                      type="button" 
+                      @click="editingNoteIndex = nIdx; ($refs.editCameraInput || document.getElementById('survey-edit-camera-input')).click()" 
+                      class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>📷 Snap</span>
+                    </button>
+                    <button 
+                      type="button" 
+                      @click="editingNoteIndex = nIdx; ($refs.editGalleryInput || document.getElementById('survey-edit-gallery-input')).click()" 
+                      class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>➕ Photo</span>
+                    </button>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <button type="button" @click="saveNoteEdit(nIdx)" class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-600 text-white cursor-pointer">Save</button>
+                    <button type="button" @click="editingNoteId = null" class="px-2 py-0.5 rounded text-[10px] text-slate-400 hover:text-slate-200 cursor-pointer">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Note Top Actions -->
+            <div class="flex items-center gap-1 shrink-0" x-show="editingNoteId !== note.id">
+              <button 
+                type="button" 
+                @click="startEditNote(note, nIdx)" 
+                title="Edit note" 
+                class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs cursor-pointer"
+              >
+                ✏️
+              </button>
+              <button 
+                type="button" 
+                @click="promptDeleteNote ? promptDeleteNote(nIdx, note) : removeNote(nIdx)" 
+                title="Delete note" 
+                class="w-6 h-6 rounded flex items-center justify-center text-rose-400 hover:text-rose-600 text-xs cursor-pointer"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <!-- Attached Photos Thumbnail Strip -->
+          <template x-if="note.photos && note.photos.length > 0">
+            <div class="pt-1 flex items-center gap-2 flex-wrap border-t border-slate-100 dark:border-slate-700/60">
+              <template x-for="(photo, pIdx) in note.photos" :key="photo.id || pIdx">
+                <div class="relative group/thumb w-12 h-12 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-black/10 shrink-0">
+                  <img 
+                    :src="typeof photo === 'string' ? photo : (photo.dataUrl || photo.url || photo.src || '')" 
+                    :alt="photo.name || 'Field observation photo'" 
+                    @click="openLightbox && openLightbox(photo, note.text)"
+                    class="w-full h-full object-cover cursor-pointer hover:opacity-90 transition duration-150"
+                  >
+                  <button 
+                    type="button" 
+                    x-show="editingNoteId === note.id"
+                    @click.stop="removeNotePhoto(nIdx, pIdx)" 
+                    title="Delete this photo"
+                    class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center shadow-md hover:bg-rose-700 cursor-pointer transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <template x-if="!(form.notes && form.notes.length)">
+        <div class="py-2 text-center text-xs text-slate-400 italic">
+          No field notes or photos recorded for this asset yet.
+        </div>
+      </template>
+    </div>
+  </div>
+</div>
