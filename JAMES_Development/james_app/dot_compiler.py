@@ -203,13 +203,17 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
         else:
             line3_parts.append(room_str)
 
-    lines = [line1]
+    l1_clean = html.escape(line1)
+    cell_rows = [f'<TR><TD ALIGN="CENTER"><B>{l1_clean}</B></TD></TR>']
     if line2_parts:
-        lines.append(" • ".join(line2_parts))
+        l2_clean = html.escape(" • ".join(line2_parts))
+        cell_rows.append(f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="8">{l2_clean}</FONT></TD></TR>')
     if line3_parts:
-        lines.append(" • ".join(line3_parts))
+        l3_clean = html.escape(" • ".join(line3_parts))
+        cell_rows.append(f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="7.5" COLOR="#475569">{l3_clean}</FONT></TD></TR>')
 
-    return "\\n".join(lines)
+    table_content = "".join(cell_rows)
+    return f'<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="1">{table_content}</TABLE>>'
 
 
 def _find_feeder_slot_in_parent(parent_node: Dict[str, Any], child_node: Dict[str, Any]):
@@ -362,7 +366,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG.get(domain, DOMAIN_CONFIG["generic"])
             
             dot_lines.append(
-                f'    {node_id} [label="{cluster_title}", shape=box, style="filled,rounded", '
+                f'    {node_id} [label={cluster_title}, shape=box, style="filled,rounded", '
                 f'color="{palette["border"]}", fillcolor="{palette["bg"]}", fontcolor="{palette["text"]}", '
                 f'penwidth=2.0, margin="0.2,0.12"];'
             )
@@ -504,7 +508,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             port_label = "Mtr / Main Out" if type_tag == "UTIL" else ("Gen Breaker" if type_tag == "GEN" else "Inverter Out")
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -520,7 +524,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             if type_tag in ["ATS", "MTS"]:
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = "{cluster_title}";',
+                    f'        label = {cluster_title};',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
@@ -537,7 +541,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             else:
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = "{cluster_title}";',
+                    f'        label = {cluster_title};',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
@@ -554,7 +558,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["transformers"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -624,7 +628,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 rank_same = " ".join(breaker_ids)
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = "{cluster_title}";',
+                    f'        label = {cluster_title};',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
@@ -641,7 +645,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             else:
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = "{cluster_title}";',
+                    f'        label = {cluster_title};',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
@@ -658,7 +662,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["power_quality"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -677,7 +681,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["loads"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -692,7 +696,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["cables"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -709,7 +713,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["metering"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -724,7 +728,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["renewables"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -739,7 +743,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG.get(domain, DOMAIN_CONFIG["generic"])
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = "{cluster_title}";',
+                f'        label = {cluster_title};',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
