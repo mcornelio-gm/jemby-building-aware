@@ -496,12 +496,6 @@ class KnowledgeBaseManager:
         pdf_stems = {f.stem.lower() for f in all_files if f.suffix.lower() == ".pdf"}
 
         for file_p in all_files:
-            # If a companion .pdf exists for this markdown file, prefer the PDF
-            if file_p.suffix.lower() in (".md", ".markdown") and file_p.stem.lower() in pdf_stems:
-                # Ensure any stale markdown chunks are removed from the database
-                self.remove_file(file_p.name)
-                continue
-
             try:
                 count = self.ingest_file(str(file_p), category=category)
                 results[file_p.name] = count
