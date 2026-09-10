@@ -977,6 +977,8 @@
     isSavingFeeder: false,
     feederScheduleSearch: '',
     feederComplianceFilter: 'all',
+    feederSortCol: 'from_tag',
+    feederSortAsc: true,
     feederScheduleList: [],
 
     activeFeeder: {
@@ -1351,7 +1353,7 @@
       const q = (this.feederScheduleSearch || '').toLowerCase().trim();
       const comp = this.feederComplianceFilter || 'all';
 
-      return list.filter(item => {
+      const filtered = list.filter(item => {
         // Compliance filter
         const vdrop = item.voltage_drop_pct || 0;
         if (comp === 'ok' && vdrop > 3.0) return false;
@@ -1367,6 +1369,59 @@
 
         return fromTag.includes(q) || toTag.includes(q) || cond.includes(q) || conduit.includes(q) || trip.includes(q);
       });
+
+      const col = this.feederSortCol || 'from_tag';
+      const asc = this.feederSortAsc !== false;
+
+      const gaugeRank = (g) => {
+        const order = ['#14', '#12', '#10', '#8', '#6', '#4', '#3', '#2', '#1', '1/0', '2/0', '3/0', '4/0', '250', '300', '350', '400', '500', '600', '750'];
+        const str = String(g || '');
+        const idx = order.findIndex(o => str.includes(o));
+        return idx >= 0 ? idx : 999;
+      };
+
+      return filtered.sort((a, b) => {
+        let valA, valB;
+        if (col === 'length_ft') {
+          valA = Number(a.length_ft) || 0;
+          valB = Number(b.length_ft) || 0;
+        } else if (col === 'voltage_drop_pct') {
+          valA = Number(a.voltage_drop_pct) || 0;
+          valB = Number(b.voltage_drop_pct) || 0;
+        } else if (col === 'breaker_trip') {
+          valA = Number(a.breaker_trip) || 0;
+          valB = Number(b.breaker_trip) || 0;
+        } else if (col === 'conductor') {
+          valA = gaugeRank(a.conductor);
+          valB = gaugeRank(b.conductor);
+        } else if (col === 'conductor_material') {
+          valA = (a.conductor_material || '').toLowerCase();
+          valB = (b.conductor_material || '').toLowerCase();
+        } else if (col === 'conduit') {
+          valA = (a.conduit || '').toLowerCase();
+          valB = (b.conduit || '').toLowerCase();
+        } else if (col === 'to_tag') {
+          valA = (a.to_tag || a.to_node || '').toLowerCase();
+          valB = (b.to_tag || b.to_node || '').toLowerCase();
+        } else {
+          // default from_tag
+          valA = (a.from_tag || a.from_node || '').toLowerCase();
+          valB = (b.from_tag || b.from_node || '').toLowerCase();
+        }
+
+        if (valA < valB) return asc ? -1 : 1;
+        if (valA > valB) return asc ? 1 : -1;
+        return 0;
+      });
+    },
+
+    toggleFeederSort(col) {
+      if (this.feederSortCol === col) {
+        this.feederSortAsc = !this.feederSortAsc;
+      } else {
+        this.feederSortCol = col;
+        this.feederSortAsc = true;
+      }
     },
 
     get totalFeederRouteLength() {

@@ -139,17 +139,41 @@
       <!-- Feeder Table Container -->
       <div class="flex-1 overflow-y-auto p-0">
         <table class="w-full text-left border-collapse text-xs">
-          <thead class="bg-slate-100 dark:bg-slate-900/90 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-bold sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800">
+          <thead class="bg-slate-100 dark:bg-slate-900/90 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-bold sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 select-none">
             <tr>
-              <th class="py-2.5 px-3">Status</th>
-              <th class="py-2.5 px-3">From Source</th>
-              <th class="py-2.5 px-3">To Destination</th>
-              <th class="py-2.5 px-3">Breaker / OCPD</th>
-              <th class="py-2.5 px-3">Conductors</th>
+              <th @click="toggleFeederSort('voltage_drop_pct')" class="py-2.5 px-3 cursor-pointer hover:text-amber-500 transition" title="Sort by Compliance Status">
+                <span>Status</span>
+                <span x-show="feederSortCol === 'voltage_drop_pct'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
+              <th @click="toggleFeederSort('from_tag')" class="py-2.5 px-3 cursor-pointer hover:text-amber-500 transition" title="Sort by Source Equipment">
+                <span>From Source</span>
+                <span x-show="feederSortCol === 'from_tag'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
+              <th @click="toggleFeederSort('to_tag')" class="py-2.5 px-3 cursor-pointer hover:text-amber-500 transition" title="Sort by Destination Equipment">
+                <span>To Destination</span>
+                <span x-show="feederSortCol === 'to_tag'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
+              <th @click="toggleFeederSort('breaker_trip')" class="py-2.5 px-3 cursor-pointer hover:text-amber-500 transition" title="Sort by Breaker Rating">
+                <span>Breaker / OCPD</span>
+                <span x-show="feederSortCol === 'breaker_trip'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
+              <th @click="toggleFeederSort('conductor')" class="py-2.5 px-3 cursor-pointer hover:text-amber-500 transition" title="Sort by Conductor Size / Gauge">
+                <span>Conductors</span>
+                <span x-show="feederSortCol === 'conductor'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
               <th class="py-2.5 px-3">Neutral & Ground</th>
-              <th class="py-2.5 px-3">Conduit</th>
-              <th class="py-2.5 px-3 text-right">Length</th>
-              <th class="py-2.5 px-3 text-right">ΔV %</th>
+              <th @click="toggleFeederSort('conduit')" class="py-2.5 px-3 cursor-pointer hover:text-amber-500 transition" title="Sort by Conduit Type">
+                <span>Conduit</span>
+                <span x-show="feederSortCol === 'conduit'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
+              <th @click="toggleFeederSort('length_ft')" class="py-2.5 px-3 text-right cursor-pointer hover:text-amber-500 transition" title="Sort by Route Length">
+                <span>Length</span>
+                <span x-show="feederSortCol === 'length_ft'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
+              <th @click="toggleFeederSort('voltage_drop_pct')" class="py-2.5 px-3 text-right cursor-pointer hover:text-amber-500 transition" title="Sort by Voltage Drop %">
+                <span>ΔV %</span>
+                <span x-show="feederSortCol === 'voltage_drop_pct'" x-text="feederSortAsc ? ' ▲' : ' ▼'" class="text-amber-500 font-bold"></span>
+              </th>
               <th class="py-2.5 px-3 text-center">Action</th>
             </tr>
           </thead>
