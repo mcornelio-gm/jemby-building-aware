@@ -1,0 +1,278 @@
+<!-- Feeder & Cable Schedule Modal (iPad & Desktop Optimized) -->
+<div 
+  x-show="showFeederScheduleModal" 
+  x-cloak 
+  class="fixed inset-0 z-50 overflow-y-auto"
+  aria-labelledby="feeder-schedule-modal-title" 
+  role="dialog" 
+  aria-modal="true"
+>
+  <!-- Glassmorphic Backdrop -->
+  <div 
+    x-show="showFeederScheduleModal"
+    x-transition:enter="ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity cursor-pointer"
+    @click="showFeederScheduleModal = false"
+  ></div>
+
+  <div class="flex min-h-full items-center justify-center p-3 sm:p-6">
+    <div 
+      x-show="showFeederScheduleModal"
+      x-transition:enter="ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+      x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+      x-transition:leave="ease-in duration-150"
+      x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+      x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
+      class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-[#0E1626] border border-slate-200 dark:border-slate-800 text-left shadow-2xl transition-all w-full max-w-5xl max-h-[92vh] flex flex-col select-none"
+    >
+      <!-- Modal Header -->
+      <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300 border border-amber-300/60 dark:border-amber-700/60 flex items-center justify-center text-base font-bold shadow-2xs">
+            🔌
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 leading-none">
+              <span>Feeder & Conductor Schedule</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800" x-text="feederScheduleList.length + ' Runs'"></span>
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" x-text="'Facility: ' + (client || 'zoetis').toUpperCase() + ' / ' + (facility || 'b4').toUpperCase() + ' • Click endpoints or cable specs to inspect'"></p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Copy Markdown Button -->
+          <button 
+            type="button" 
+            @click="copyFeederScheduleMD()"
+            class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+            title="Copy Schedule as Markdown Table"
+          >
+            <span>📋</span>
+            <span class="hidden sm:inline">Copy MD</span>
+          </button>
+
+          <!-- Export CSV Button -->
+          <button 
+            type="button" 
+            @click="exportFeederScheduleCSV()"
+            class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+            title="Download Feeder Schedule CSV"
+          >
+            <span>📥</span>
+            <span class="hidden sm:inline">Export CSV</span>
+          </button>
+
+          <button 
+            type="button" 
+            @click="showFeederScheduleModal = false" 
+            class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary KPI Ribbon -->
+      <div class="px-5 py-3 bg-slate-100/70 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
+        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Feeders</span>
+          <span class="text-base font-bold font-mono text-slate-900 dark:text-white" x-text="feederScheduleList.length"></span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Route Length</span>
+          <span class="text-base font-bold font-mono text-slate-900 dark:text-white" x-text="totalFeederRouteLength + ' ft'"></span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <span class="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 block tracking-wider">Compliant (&lt;3% ΔV)</span>
+          <span class="text-base font-bold font-mono text-emerald-600 dark:text-emerald-400" x-text="compliantFeederCount"></span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <span class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 block tracking-wider">Warning/High (&gt;3% ΔV)</span>
+          <span class="text-base font-bold font-mono" :class="warningFeederCount > 0 ? 'text-amber-500 font-extrabold' : 'text-slate-400'" x-text="warningFeederCount"></span>
+        </div>
+      </div>
+
+      <!-- Filter and Search Bar -->
+      <div class="px-5 py-2.5 bg-white dark:bg-[#0E1626] border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+          <div class="relative flex-1">
+            <input 
+              type="text" 
+              x-model="feederScheduleSearch" 
+              placeholder="Search by From, To, Conductor, Conduit, or Breaker..." 
+              class="w-full h-8 pl-8 pr-3 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-amber-500 text-slate-900 dark:text-white"
+            >
+            <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+          </div>
+
+          <!-- Compliance Filter -->
+          <select 
+            x-model="feederComplianceFilter" 
+            class="h-8 px-2.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+          >
+            <option value="all">All Compliance</option>
+            <option value="ok">Compliant (&lt;3%)</option>
+            <option value="warning">Warning (3%–5%)</option>
+            <option value="critical">Critical (&gt;5%)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Feeder Table Container -->
+      <div class="flex-1 overflow-y-auto p-0">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead class="bg-slate-100 dark:bg-slate-900/90 text-slate-600 dark:text-slate-400 uppercase text-[10px] font-bold sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800">
+            <tr>
+              <th class="py-2.5 px-3">Status</th>
+              <th class="py-2.5 px-3">From Source</th>
+              <th class="py-2.5 px-3">To Destination</th>
+              <th class="py-2.5 px-3">Breaker / OCPD</th>
+              <th class="py-2.5 px-3">Conductors</th>
+              <th class="py-2.5 px-3">Neutral & Ground</th>
+              <th class="py-2.5 px-3">Conduit</th>
+              <th class="py-2.5 px-3 text-right">Length</th>
+              <th class="py-2.5 px-3 text-right">ΔV %</th>
+              <th class="py-2.5 px-3 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-sans">
+            <template x-for="f in filteredFeederScheduleList" :key="f.id || (f.from_node + '_' + f.to_node)">
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition group">
+                
+                <!-- Status Badge -->
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <span 
+                    class="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase border inline-flex items-center gap-1"
+                    :class="(f.voltage_drop_pct || 0) <= 3.0 
+                      ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' 
+                      : ((f.voltage_drop_pct || 0) <= 5.0 
+                        ? 'bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' 
+                        : 'bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800')"
+                  >
+                    <span x-text="(f.voltage_drop_pct || 0) <= 3.0 ? '● OK' : ((f.voltage_drop_pct || 0) <= 5.0 ? '▲ WARN' : '■ CRIT')"></span>
+                  </span>
+                </td>
+
+                <!-- From Equipment Pill (Clickable -> Opens From Property Sheet!) -->
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <button 
+                    type="button" 
+                    @click="showFeederScheduleModal = false; openEditDrawer(f.from_node);" 
+                    class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition flex items-center gap-1 cursor-pointer shadow-2xs group/pill"
+                    title="Click to Open Upstream Equipment Property Sheet"
+                  >
+                    <span>⚡</span>
+                    <span class="underline underline-offset-2" x-text="f.from_tag || f.from_node"></span>
+                    <span class="text-[9px] opacity-0 group-hover/pill:opacity-100 transition-opacity">↗</span>
+                  </button>
+                </td>
+
+                <!-- To Equipment Pill (Clickable -> Opens To Property Sheet!) -->
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <button 
+                    type="button" 
+                    @click="showFeederScheduleModal = false; openEditDrawer(f.to_node);" 
+                    class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1 cursor-pointer shadow-2xs group/pill"
+                    title="Click to Open Downstream Equipment Property Sheet"
+                  >
+                    <span>⚙️</span>
+                    <span class="underline underline-offset-2" x-text="f.to_tag || f.to_node"></span>
+                    <span class="text-[9px] opacity-0 group-hover/pill:opacity-100 transition-opacity">↗</span>
+                  </button>
+                </td>
+
+                <!-- Breaker / OCPD -->
+                <td class="py-2.5 px-3 whitespace-nowrap font-mono text-slate-700 dark:text-slate-300">
+                  <span x-text="f.breaker_trip ? (f.breaker_trip + 'A' + (f.breaker_poles ? '/' + f.breaker_poles + 'P' : '')) : '--'"></span>
+                </td>
+
+                <!-- Conductors (Clickable -> Opens Cable Property Sheet!) -->
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <button 
+                    type="button" 
+                    @click="showFeederScheduleModal = false; openCableDrawer(f);"
+                    class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900 transition flex items-center gap-1 cursor-pointer shadow-2xs"
+                    title="Click to inspect and edit Feeder / Cable Specs"
+                  >
+                    <span>🔌</span>
+                    <span x-text="(f.sets > 1 ? f.sets + 'x ' : '') + '(' + (f.conductor || 'Auto') + ' ' + (f.conductor_material || 'Cu') + ')'"></span>
+                  </button>
+                </td>
+
+                <!-- Neutral & EGC -->
+                <td class="py-2.5 px-3 whitespace-nowrap font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                  <span x-text="(f.neutral || 'Full N') + ' • ' + (f.egc || 'Auto EGC')"></span>
+                </td>
+
+                <!-- Conduit -->
+                <td class="py-2.5 px-3 whitespace-nowrap font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                  <span x-text="(f.conduit_size && f.conduit_size !== 'Auto' ? f.conduit_size + ' ' : '') + (f.conduit || 'Steel')"></span>
+                </td>
+
+                <!-- Length (ft) -->
+                <td class="py-2.5 px-3 whitespace-nowrap text-right font-mono font-bold text-slate-900 dark:text-white">
+                  <span x-text="(f.length_ft || 100) + ' ft'"></span>
+                </td>
+
+                <!-- Voltage Drop % -->
+                <td class="py-2.5 px-3 whitespace-nowrap text-right font-mono font-bold">
+                  <span 
+                    :class="(f.voltage_drop_pct || 0) <= 3.0 ? 'text-emerald-600 dark:text-emerald-400' : ((f.voltage_drop_pct || 0) <= 5.0 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400')"
+                    x-text="(f.voltage_drop_pct ? f.voltage_drop_pct.toFixed(2) : '0.00') + '%'"
+                  ></span>
+                </td>
+
+                <!-- Action Button -->
+                <td class="py-2.5 px-3 whitespace-nowrap text-center">
+                  <button 
+                    type="button" 
+                    @click="showFeederScheduleModal = false; openCableDrawer(f);"
+                    class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-2xs transition cursor-pointer"
+                    title="Inspect Feeder & Calculate Voltage Drop"
+                  >
+                    Inspect 🔌
+                  </button>
+                </td>
+
+              </tr>
+            </template>
+
+            <!-- Empty State -->
+            <tr x-show="filteredFeederScheduleList.length === 0">
+              <td colspan="10" class="py-8 text-center text-slate-400 text-xs">
+                <div class="flex flex-col items-center justify-center gap-1">
+                  <span class="text-2xl">🔌</span>
+                  <span class="font-bold">No feeder connections found matching criteria</span>
+                  <span class="text-[11px]">Connect equipment via upstream feeds or panel schedule breaker links.</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <span class="text-[11px] text-slate-500 dark:text-slate-400">
+          Showing <span class="font-bold text-slate-900 dark:text-white" x-text="filteredFeederScheduleList.length"></span> of <span x-text="feederScheduleList.length"></span> connections
+        </span>
+
+        <button 
+          type="button" 
+          @click="showFeederScheduleModal = false" 
+          class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

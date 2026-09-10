@@ -301,6 +301,35 @@ def _get_node_upstream_sources(n: Dict[str, Any], all_nodes: List[Dict[str, Any]
     return sources_list
 
 
+def _build_feeder_edge_badge(parent_node: Dict[str, Any], child_node: Dict[str, Any]) -> str:
+    """Build a rich silver midpoint badge for feeder cables showing sets, gauge, material, length, and voltage drop."""
+    attrs = child_node.get("attributes") or {}
+    conductor = attrs.get("conductor") or child_node.get("conductor") or ""
+    sets = attrs.get("sets") or attrs.get("parallel_sets") or 1
+    material = attrs.get("conductor_material") or attrs.get("material") or "Cu"
+    length_ft = attrs.get("length_ft") or attrs.get("distance_ft") or attrs.get("length")
+    v_drop = attrs.get("voltage_drop_pct")
+
+    parts = []
+    if conductor:
+        sets_str = f"{sets}x " if int(sets) > 1 else ""
+        parts.append(f"{sets_str}({conductor} {material})".strip())
+    if length_ft:
+        parts.append(f"{length_ft}ft")
+    if v_drop is not None:
+        try:
+            v_val = float(v_drop)
+            parts.append(f"{v_val:.1f}% ΔV")
+        except (ValueError, TypeError):
+            pass
+
+    if not parts:
+        return ""
+
+    label_text = " • ".join(parts)
+    return _make_silver_badge(label_text, font_size=8, font_color="#0F172A", bg_color="#FEF3C7" if (v_drop and float(v_drop or 0) > 3.0) else "#F1F5F9", border_color="#D97706" if (v_drop and float(v_drop or 0) > 3.0) else "#94A3B8")
+
+
 def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed") -> str:
     """Compile a list of facility equipment nodes into Graphviz DOT single-line diagram.
     
@@ -312,7 +341,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
         "digraph ElectricalOneLine {",
         '    graph [rankdir=TB, splines=polyline, nodesep=0.75, ranksep=0.95, compound=true, fontname="Arial", bgcolor="#CBD5E1"];',
         '    node [fontname="Arial", fontsize=9, shape=box, style="filled,rounded", color="#1E293B", fillcolor="#334155", fontcolor="#FFFFFF", penwidth=1.0];',
-        '    edge [fontname="Arial", fontsize=9, color="#0F172A", fontcolor="#0F172A", penwidth=2.0, arrowsize=0.85];',
+        '    edge [fontname="Arial", fontsize=9, color="#0F172A", fontcolor="#0F172A", penwidth=2.2, arrowsize=0.85];',
         ""
     ]
 
@@ -413,17 +442,20 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
 
                 head_label = _clean_str(" • ".join(head_parts))
 
-                # 3. Conductor Wire Label (Center)
-                conductor = (n.get("attributes") or {}).get("conductor") or n.get("conductor")
-                cond_attr = f'label={_make_silver_badge(conductor, font_size=8, font_color="#1E293B", bg_color="#F1F5F9", border_color="#94A3B8")}, ' if conductor else ''
+                # 3. Conductor Wire Label (Center Badge)
+                feeder_badge = _build_feeder_edge_badge(parent_node, n)
+                cond_attr = f'label={feeder_badge}, ' if feeder_badge else ''
 
                 edge_color = "#B45309" if is_emergency else "#0F172A"
-                edge_penwidth = "2.2" if is_emergency else "2.0"
+                edge_penwidth = "2.4" if is_emergency else "2.2"
                 tail_badge = _make_silver_badge(tail_label, font_size=8, font_color="#9A3412" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#E2E8F0", border_color="#D97706" if is_emergency else "#94A3B8")
                 head_badge = _make_silver_badge(head_label, font_size=8, font_color="#9A3412" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#E2E8F0", border_color="#D97706" if is_emergency else "#94A3B8")
+                edge_id = f"edge_{parent_id}_{node_id}"
+                tooltip_txt = f"Feeder: {parent_node.get('tag', parent_id)} -> {n.get('tag', node_id)}"
 
                 dot_lines.append(
                     f'    {parent_id} -> {node_id} ['
+                    f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
                     f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
                     f'taillabel={tail_badge}, headlabel={head_badge}, '
                     f'labeldistance=2.4, labelangle={"-25" if is_emergency else "25"}];'
@@ -443,7 +475,8 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                             head_badge = _make_silver_badge("Emerg In", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
                             dot_lines.append(
                                 f'    {gen_id} -> {ats_id} ['
-                                f'color="#B45309", penwidth=2.2, '
+                                f'id="edge_{gen_id}_{ats_id}", class="feeder-edge", tooltip="Emergency Feeder: GEN -> ATS", '
+                                f'color="#B45309", penwidth=2.4, '
                                 f'taillabel={tail_badge}, headlabel={head_badge}, '
                                 f'labeldistance=2.4, labelangle=-25];'
                             )
@@ -743,22 +776,42 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             is_emergency = (s_idx == 1 and type_tag in ["ATS", "MTS", "STS"]) or (parent_type == "GEN" and type_tag in ["ATS", "MTS", "STS"])
             dest_port = f"{node_id}_emerg" if is_emergency else (f"{node_id}_norm" if type_tag in ["ATS", "MTS", "STS"] else f"{node_id}_in")
             edge_color = "#B45309" if is_emergency else "#0F172A"
-            edge_penwidth = "2.2" if is_emergency else "2.0"
+            edge_penwidth = "2.4" if is_emergency else "2.2"
 
             edge_key = (parent_id, dest_port)
             if edge_key in detailed_rendered_edges:
                 continue
             detailed_rendered_edges.add(edge_key)
 
+            feeder_badge = _build_feeder_edge_badge(parent_node, n)
+            cond_attr = f'label={feeder_badge}, ' if feeder_badge else ''
+            edge_id = f"edge_{parent_id}_{node_id}"
+            tooltip_txt = f"Feeder: {parent_node.get('tag', parent_id)} -> {n.get('tag', node_id)}"
+
             # If parent is panel, connect from the corresponding breaker if defined, else from Load Out
             if parent_node.get("is_panel") or parent_domain == "panels":
                 slot_num, poles, amps, side = _find_feeder_slot_in_parent(parent_node, n)
                 if slot_num:
-                    dot_lines.append(f'    {parent_id}_b{slot_num}:s -> {dest_port}:n [color="{edge_color}", penwidth={edge_penwidth}];')
+                    dot_lines.append(
+                        f'    {parent_id}_b{slot_num}:s -> {dest_port}:n ['
+                        f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
+                        f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
+                        f'weight=2];'
+                    )
                 else:
-                    dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="{edge_color}", penwidth={edge_penwidth}];')
+                    dot_lines.append(
+                        f'    {parent_id}_out:s -> {dest_port}:n ['
+                        f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
+                        f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
+                        f'weight=2];'
+                    )
             else:
-                dot_lines.append(f'    {parent_id}_out:s -> {dest_port}:n [color="{edge_color}", penwidth={edge_penwidth}];')
+                dot_lines.append(
+                    f'    {parent_id}_out:s -> {dest_port}:n ['
+                    f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
+                    f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
+                    f'weight=2];'
+                )
 
         # Fallback for standalone GEN to ATS emergency port
         if type_tag == "GEN":
@@ -769,7 +822,11 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                     edge_key = (node_id, dest_port)
                     if edge_key not in detailed_rendered_edges:
                         detailed_rendered_edges.add(edge_key)
-                        dot_lines.append(f'    {node_id}_out:s -> {dest_port}:n [color="#B45309", penwidth=2.2];')
+                        dot_lines.append(
+                            f'    {node_id}_out:s -> {dest_port}:n ['
+                            f'id="edge_{node_id}_{ats_id}", class="feeder-edge", tooltip="Emergency Feeder: GEN -> ATS", '
+                            f'color="#B45309", penwidth=2.4, weight=2];'
+                        )
                         break
 
     dot_lines.append("}\n")

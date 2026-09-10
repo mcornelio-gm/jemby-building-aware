@@ -34,6 +34,15 @@ from james_app.checklists import (
     get_checklists_for_domain,
     load_master_checklists
 )
+from james_app.feeders import (
+    get_facility_feeders,
+    update_feeder_edge
+)
+from james_app.core.feeder_calculator import (
+    calculate_voltage_drop,
+    suggest_feeder_conductors,
+    STANDARD_GAUGES
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -218,6 +227,85 @@ def api_reload_checklists():
         "status": "success",
         "reloaded_count": len(checklists),
         "checklists": [c["id"] for c in checklists]
+    }
+
+
+# -----------------------------------------------------------------------------
+# Feeder & Conductor Management API Endpoints
+# -----------------------------------------------------------------------------
+
+@app.get("/api/feeders")
+def api_get_feeders(client_id: Optional[str] = None, facility_id: Optional[str] = None):
+    """Returns all active feeder connection runs in the facility with calculated voltage drop."""
+    cid = client_id or db.DEFAULT_CLIENT
+    fid = facility_id or db.DEFAULT_FACILITY
+    feeders = get_facility_feeders(cid, fid)
+    return {
+        "client_id": cid,
+        "facility_id": fid,
+        "total_feeders": len(feeders),
+        "feeders": feeders
+    }
+
+
+@app.post("/api/feeders/update")
+async def api_update_feeder(request: Request):
+    """Updates conductor and raceway attributes for an active feeder run."""
+    payload = await request.json()
+    from_tag = payload.get("from_tag") or payload.get("from_node")
+    to_tag = payload.get("to_tag") or payload.get("to_node")
+    edge_id = payload.get("id") or f"edge_{from_tag}_{to_tag}"
+    cid = payload.get("client_id") or db.DEFAULT_CLIENT
+    fid = payload.get("facility_id") or db.DEFAULT_FACILITY
+
+    if not from_tag or not to_tag:
+        raise HTTPException(status_code=400, detail="from_tag and to_tag are required.")
+
+    updated_feeder = update_feeder_edge(edge_id, from_tag, to_tag, payload, cid, fid)
+    return {
+        "status": "success",
+        "feeder": updated_feeder
+    }
+
+
+@app.post("/api/feeders/calc-voltage-drop")
+async def api_calc_voltage_drop(request: Request):
+    """Calculates live voltage drop for given conductor specifications."""
+    payload = await request.json()
+    voltage = float(payload.get("voltage") or payload.get("system_voltage") or 480.0)
+    amps = float(payload.get("current_amps") or 100.0)
+    length_ft = float(payload.get("length_ft") or 50.0)
+    conductor_size = payload.get("conductor_size") or payload.get("conductor") or "4/0 AWG"
+    material = payload.get("material") or payload.get("conductor_material") or "Cu"
+    sets = int(payload.get("sets") or 1)
+    conduit_type = payload.get("conduit_type") or payload.get("conduit") or "EMT"
+    is_three_phase = payload.get("is_three_phase", True)
+
+    calc = calculate_voltage_drop(
+        voltage=voltage,
+        current_amps=amps,
+        length_ft=length_ft,
+        conductor_size=conductor_size,
+        material=material,
+        sets=sets,
+        conduit_type=conduit_type,
+        is_three_phase=is_three_phase
+    )
+    return calc
+
+
+@app.get("/api/feeders/standards")
+def api_get_feeder_standards():
+    """Returns standard wire gauges, conduit options, and insulation types."""
+    return {
+        "gauges": STANDARD_GAUGES,
+        "conduits": ["EMT", "RMC (Rigid Metal)", "IMC", "PVC-40", "PVC-80", "Aluminum", "Cable Tray", "Wireway"],
+        "materials": [
+            {"id": "Cu", "name": "Copper (Cu)"},
+            {"id": "Al", "name": "Aluminum (Al)"}
+        ],
+        "insulations": ["THHN/THWN-2", "XHHW-2", "RHW-2", "USE-2"],
+        "temp_ratings": [60, 75, 90]
     }
 
 

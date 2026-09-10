@@ -962,9 +962,416 @@
         this.openFinderModal();
       } else if (key === 'open_audit' && typeof this.openSystemAudit === 'function') {
         this.openSystemAudit();
+      } else if (key === 'open_feeders' && typeof this.openFeederSchedule === 'function') {
+        this.openFeederSchedule();
       } else if (key === 'open_arc_flash_pdf') {
         this.openDocumentViewer('QSG-Arc Flash Labeling.pdf', 1, 'Arc Flash Labeling Guide', 'Quick Start Guide');
       }
+    },
+
+    // ==========================================
+    // CABLE & FEEDER MANAGEMENT ENGINE
+    // ==========================================
+    showCableDrawer: false,
+    showFeederScheduleModal: false,
+    isSavingFeeder: false,
+    feederScheduleSearch: '',
+    feederComplianceFilter: 'all',
+    feederScheduleList: [],
+
+    activeFeeder: {
+      id: '',
+      from_node: '',
+      from_tag: '',
+      to_node: '',
+      to_tag: '',
+      sets: 1,
+      conductor: '4/0',
+      conductor_material: 'Cu',
+      insulation: 'THHN/THWN-2',
+      neutral: 'Full (100%)',
+      egc: '#4 AWG Cu',
+      conduit: 'Steel',
+      conduit_size: 'Auto',
+      length_ft: 100,
+      current_amps: 100,
+      voltage: '480V 3Ø',
+      breaker_trip: null,
+      breaker_poles: null
+    },
+
+    cablePhysics: {
+      v_drop_pct: 0.0,
+      v_drop_volts: 0.0,
+      total_ampacity: 230,
+      impedance_z: 0.062,
+      suggested_egc: '#4 AWG Cu',
+      status: 'ok',
+      compliance_message: '✅ Meets NEC 3% feeder limit'
+    },
+
+    async loadFacilityFeeders() {
+      const c = this.client || this.client_id || 'zoetis';
+      const f = this.facility || this.facility_id || 'b4';
+      try {
+        const res = await fetch(`/api/feeders?client_id=${encodeURIComponent(c)}&facility_id=${encodeURIComponent(f)}&_t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          this.feederScheduleList = Array.isArray(data) ? data : (data.feeders || []);
+        }
+      } catch (err) {
+        console.error('Failed to load facility feeders:', err);
+      }
+    },
+
+    async openFeederSchedule() {
+      await this.loadFacilityFeeders();
+      this.showFeederScheduleModal = true;
+    },
+
+    async openCableDrawer(feederOrId) {
+      // Ensure feeders list is current
+      if (!this.feederScheduleList || this.feederScheduleList.length === 0) {
+        await this.loadFacilityFeeders();
+      }
+
+      let feeder = null;
+      if (typeof feederOrId === 'object' && feederOrId !== null) {
+        feeder = { ...feederOrId };
+      } else if (typeof feederOrId === 'string') {
+        const query = feederOrId.trim();
+        // Try exact edge ID or parse edge_from_to
+        feeder = this.feederScheduleList.find(f => 
+          f.id === query || 
+          f.edge_id === query ||
+          `edge_${f.from_node}_${f.to_node}`.toLowerCase() === query.toLowerCase() ||
+          `edge_${f.from_tag}_${f.to_tag}`.toLowerCase() === query.toLowerCase()
+        );
+
+        // Fallback: check if query is from_tag -> to_tag
+        if (!feeder && query.includes('_')) {
+          const parts = query.replace(/^edge_/, '').split('_');
+          if (parts.length >= 2) {
+            const pFrom = parts[0].toLowerCase();
+            const pTo = parts[1].toLowerCase();
+            feeder = this.feederScheduleList.find(f => 
+              (f.from_node.toLowerCase() === pFrom || f.from_tag.toLowerCase() === pFrom) &&
+              (f.to_node.toLowerCase() === pTo || f.to_tag.toLowerCase() === pTo)
+            );
+          }
+        }
+      }
+
+      if (!feeder) {
+        // Construct fallback feeder placeholder
+        feeder = {
+          id: typeof feederOrId === 'string' ? feederOrId : 'feeder_temp',
+          from_node: 'Source',
+          from_tag: 'Source',
+          to_node: 'Load',
+          to_tag: 'Load',
+          sets: 1,
+          conductor: '4/0',
+          conductor_material: 'Cu',
+          insulation: 'THHN/THWN-2',
+          neutral: 'Full (100%)',
+          egc: '#4 AWG Cu',
+          conduit: 'Steel',
+          conduit_size: 'Auto',
+          length_ft: 100,
+          current_amps: 100,
+          voltage: '480V 3Ø',
+          breaker_trip: null
+        };
+      }
+
+      // Populate activeFeeder
+      this.activeFeeder = {
+        id: feeder.id || `edge_${feeder.from_node}_${feeder.to_node}`,
+        from_node: feeder.from_node || '',
+        from_tag: feeder.from_tag || feeder.from_node || '',
+        to_node: feeder.to_node || '',
+        to_tag: feeder.to_tag || feeder.to_node || '',
+        sets: Number(feeder.sets) || 1,
+        conductor: feeder.conductor || '4/0',
+        conductor_material: feeder.conductor_material || 'Cu',
+        insulation: feeder.insulation || 'THHN/THWN-2',
+        neutral: feeder.neutral || 'Full (100%)',
+        egc: feeder.egc || '#4 AWG Cu',
+        conduit: feeder.conduit || 'Steel',
+        conduit_size: feeder.conduit_size || 'Auto',
+        length_ft: Number(feeder.length_ft) || 100,
+        current_amps: Number(feeder.current_amps) || Number(feeder.breaker_trip) || 100,
+        voltage: feeder.voltage || '480V 3Ø',
+        breaker_trip: feeder.breaker_trip || null,
+        breaker_poles: feeder.breaker_poles || null
+      };
+
+      // Realtime voltage drop calculation
+      await this.calcCableVoltageDropRealtime();
+
+      this.showCableDrawer = true;
+    },
+
+    closeCableDrawer() {
+      this.showCableDrawer = false;
+    },
+
+    jumpToEquipment(nodeIdOrTag) {
+      this.showCableDrawer = false;
+      this.showFeederScheduleModal = false;
+      if (typeof this.openEditDrawer === 'function') {
+        this.openEditDrawer(nodeIdOrTag);
+      } else if (typeof window.openEquipmentDrawer === 'function') {
+        window.openEquipmentDrawer(nodeIdOrTag);
+      }
+    },
+
+    async calcCableVoltageDropRealtime() {
+      const f = this.activeFeeder;
+      const payload = {
+        conductor: f.conductor || '4/0',
+        material: f.conductor_material || 'Cu',
+        conduit: f.conduit || 'Steel',
+        length_ft: Number(f.length_ft) || 100,
+        current_amps: Number(f.current_amps) || 100,
+        sets: Number(f.sets) || 1,
+        system_voltage: String(f.voltage || '480V').includes('208') ? 208 : (String(f.voltage).includes('240') ? 240 : (String(f.voltage).includes('120') ? 120 : 480)),
+        is_three_phase: !String(f.voltage || '').includes('1Ø') && !String(f.voltage || '').includes('120/240'),
+        power_factor: 0.85
+      };
+
+      try {
+        const res = await fetch('/api/feeders/calc-voltage-drop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          this.cablePhysics = {
+            v_drop_pct: result.voltage_drop_pct || 0.0,
+            v_drop_volts: result.voltage_drop_volts || 0.0,
+            total_ampacity: result.total_ampacity || 230,
+            impedance_z: result.effective_impedance_z || 0.062,
+            suggested_egc: result.suggested_egc || '#4 AWG Cu',
+            status: result.status || 'ok',
+            compliance_message: result.compliance_message || 'Compliant'
+          };
+          if (!f.egc || f.egc.includes('Auto')) {
+            this.activeFeeder.egc = result.suggested_egc || '#4 AWG Cu';
+          }
+        }
+      } catch (err) {
+        console.warn('Realtime voltage drop API failed, using fallback:', err);
+      }
+    },
+
+    async autoSizeFeeder() {
+      const f = this.activeFeeder;
+      const targetAmps = Number(f.current_amps) || 100;
+      const targetLen = Number(f.length_ft) || 100;
+      const mat = f.conductor_material || 'Cu';
+      const cond = f.conduit || 'Steel';
+      const is3p = !String(f.voltage || '').includes('1Ø');
+      const v = String(f.voltage || '').includes('208') ? 208 : 480;
+
+      const gauges = ['#14 AWG', '#12 AWG', '#10 AWG', '#8 AWG', '#6 AWG', '#4 AWG', '#3 AWG', '#2 AWG', '#1 AWG', '1/0', '2/0', '3/0', '4/0', '250 kcmil', '300 kcmil', '350 kcmil', '400 kcmil', '500 kcmil', '600 kcmil', '750 kcmil'];
+      
+      for (const g of gauges) {
+        const res = await fetch('/api/feeders/calc-voltage-drop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conductor: g,
+            material: mat,
+            conduit: cond,
+            length_ft: targetLen,
+            current_amps: targetAmps,
+            sets: 1,
+            system_voltage: v,
+            is_three_phase: is3p
+          })
+        });
+        if (res.ok) {
+          const r = await res.json();
+          if (r.voltage_drop_pct <= 2.9 && r.total_ampacity >= targetAmps) {
+            this.activeFeeder.conductor = g;
+            this.activeFeeder.sets = 1;
+            await this.calcCableVoltageDropRealtime();
+            this.toast(`🪄 Auto-sized to 1x (${g} ${mat}) for ${r.voltage_drop_pct.toFixed(2)}% ΔV!`);
+            return;
+          }
+        }
+      }
+
+      // If single run exceeds gauge, try 2x sets
+      this.activeFeeder.sets = 2;
+      this.activeFeeder.conductor = '4/0';
+      await this.calcCableVoltageDropRealtime();
+      this.toast(`🪄 Auto-sized to 2x (4/0 ${mat}) parallel feeder!`);
+    },
+
+    async saveCableSpecs() {
+      const c = this.client || this.client_id || 'zoetis';
+      const f = this.facility || this.facility_id || 'b4';
+      const af = this.activeFeeder;
+
+      this.isSavingFeeder = true;
+      try {
+        const payload = {
+          client_id: c,
+          facility_id: f,
+          from_node: af.from_node,
+          to_node: af.to_node,
+          conductor: af.conductor,
+          conductor_material: af.conductor_material,
+          insulation: af.insulation,
+          sets: Number(af.sets) || 1,
+          neutral: af.neutral,
+          egc: af.egc,
+          conduit: af.conduit,
+          conduit_size: af.conduit_size,
+          length_ft: Number(af.length_ft) || 100,
+          current_amps: Number(af.current_amps) || 100,
+          voltage_drop_pct: this.cablePhysics.v_drop_pct || 0.0,
+          voltage: af.voltage
+        };
+
+        const res = await fetch('/api/feeders/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to save cable attributes');
+        }
+
+        const updatedFeeder = await res.json();
+        this.toast(`🔌 Saved feeder: ${af.from_tag || af.from_node} ➔ ${af.to_tag || af.to_node}!`);
+        this.showCableDrawer = false;
+
+        // Reload feeders list
+        await this.loadFacilityFeeders();
+
+        // Refresh diagram if in SLD view
+        if (typeof window.refreshDiagram === 'function') {
+          window.refreshDiagram();
+        } else if (typeof refreshDiagram === 'function') {
+          refreshDiagram();
+        }
+      } catch (err) {
+        console.error('Error saving cable specs:', err);
+        this.toast(`⚠️ Error saving cable specs: ${err.message}`);
+      } finally {
+        this.isSavingFeeder = false;
+      }
+    },
+
+    get filteredFeederScheduleList() {
+      const list = this.feederScheduleList || [];
+      const q = (this.feederScheduleSearch || '').toLowerCase().trim();
+      const comp = this.feederComplianceFilter || 'all';
+
+      return list.filter(item => {
+        // Compliance filter
+        const vdrop = item.voltage_drop_pct || 0;
+        if (comp === 'ok' && vdrop > 3.0) return false;
+        if (comp === 'warning' && (vdrop <= 3.0 || vdrop > 5.0)) return false;
+        if (comp === 'critical' && vdrop <= 5.0) return false;
+
+        if (!q) return true;
+        const fromTag = (item.from_tag || item.from_node || '').toLowerCase();
+        const toTag = (item.to_tag || item.to_node || '').toLowerCase();
+        const cond = (item.conductor || '').toLowerCase();
+        const conduit = (item.conduit || '').toLowerCase();
+        const trip = String(item.breaker_trip || '');
+
+        return fromTag.includes(q) || toTag.includes(q) || cond.includes(q) || conduit.includes(q) || trip.includes(q);
+      });
+    },
+
+    get totalFeederRouteLength() {
+      const list = this.feederScheduleList || [];
+      return list.reduce((acc, f) => acc + (Number(f.length_ft) || 0), 0);
+    },
+
+    get compliantFeederCount() {
+      const list = this.feederScheduleList || [];
+      return list.filter(f => (f.voltage_drop_pct || 0) <= 3.0).length;
+    },
+
+    get warningFeederCount() {
+      const list = this.feederScheduleList || [];
+      return list.filter(f => (f.voltage_drop_pct || 0) > 3.0).length;
+    },
+
+    exportFeederScheduleCSV() {
+      const list = this.filteredFeederScheduleList || [];
+      if (list.length === 0) {
+        this.toast('⚠️ No feeders to export');
+        return;
+      }
+
+      const headers = ['From Equipment', 'To Equipment', 'Breaker / OCPD (A)', 'Sets', 'Conductor Gauge', 'Material', 'Insulation', 'Neutral', 'EGC Ground', 'Conduit', 'Length (ft)', 'Operating Amps', 'Voltage Drop %', 'Status'];
+      const rows = list.map(f => [
+        `"${f.from_tag || f.from_node}"`,
+        `"${f.to_tag || f.to_node}"`,
+        f.breaker_trip || '',
+        f.sets || 1,
+        `"${f.conductor || '4/0'}"`,
+        f.conductor_material || 'Cu',
+        `"${f.insulation || 'THHN/THWN-2'}"`,
+        `"${f.neutral || 'Full'}"`,
+        `"${f.egc || '#4 Cu'}"`,
+        `"${(f.conduit_size || '') + ' ' + (f.conduit || 'Steel')}"`.trim(),
+        f.length_ft || 100,
+        f.current_amps || '',
+        (f.voltage_drop_pct ? f.voltage_drop_pct.toFixed(2) : '0.00'),
+        (f.voltage_drop_pct || 0) <= 3.0 ? 'Compliant (<3%)' : ((f.voltage_drop_pct || 0) <= 5.0 ? 'Warning (3-5%)' : 'Critical (>5%)')
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `feeder_schedule_${this.client || 'zoetis'}_${this.facility || 'b4'}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      this.toast('📥 Feeder schedule exported to CSV!');
+    },
+
+    copyFeederScheduleMD() {
+      const list = this.filteredFeederScheduleList || [];
+      if (list.length === 0) {
+        this.toast('⚠️ No feeders to copy');
+        return;
+      }
+
+      let md = `# Feeder & Conductor Schedule • ${(this.client || 'facility').toUpperCase()} / ${(this.facility || '').toUpperCase()}\n\n`;
+      md += `| Status | From | To | Breaker | Conductors | Neutral & Ground | Conduit | Length | ΔV % |\n`;
+      md += `|:---|:---|:---|:---|:---|:---|:---|---:|---:|\n`;
+
+      list.forEach(f => {
+        const status = (f.voltage_drop_pct || 0) <= 3.0 ? '✅ OK' : ((f.voltage_drop_pct || 0) <= 5.0 ? '⚠️ WARN' : '🚨 CRIT');
+        const condStr = `${f.sets > 1 ? f.sets + 'x ' : ''}(${f.conductor || '4/0'} ${f.conductor_material || 'Cu'})`;
+        const ngStr = `${f.neutral || 'Full N'} / ${f.egc || 'Auto EGC'}`;
+        const conduitStr = `${f.conduit_size && f.conduit_size !== 'Auto' ? f.conduit_size + ' ' : ''}${f.conduit || 'Steel'}`;
+        const vdropStr = `${(f.voltage_drop_pct || 0).toFixed(2)}%`;
+        const tripStr = f.breaker_trip ? `${f.breaker_trip}A` : '--';
+
+        md += `| ${status} | **${f.from_tag || f.from_node}** | **${f.to_tag || f.to_node}** | ${tripStr} | ${condStr} | ${ngStr} | ${conduitStr} | ${f.length_ft || 100} ft | ${vdropStr} |\n`;
+      });
+
+      navigator.clipboard.writeText(md).then(() => {
+        this.toast('📋 Feeder schedule copied to clipboard as Markdown table!');
+      }).catch(() => {
+        this.toast('⚠️ Failed to copy to clipboard');
+      });
     },
 
     /**

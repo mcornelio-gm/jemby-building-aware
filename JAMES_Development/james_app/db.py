@@ -22,6 +22,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker, Session
 BASE_DIR = Path(__file__).resolve().parent.parent
 CLIENTS_DATA_DIR = BASE_DIR / "data" / "clients"
 
+DEFAULT_CLIENT = "zoetis"
+DEFAULT_FACILITY = "b4"
+
 Base = declarative_base()
 
 

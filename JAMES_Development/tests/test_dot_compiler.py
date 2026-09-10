@@ -167,3 +167,43 @@ def test_compile_device_clean_title_no_pencil_indicator():
     dot_macro = compile_facility_to_dot(sample_nodes, mode="macro")
     assert "[ ✎ ]" not in dot_macro
     assert "PANEL-A" in dot_macro
+
+
+def test_compile_feeder_edge_attributes_and_badge():
+    nodes = [
+        {"id": "s1", "tag": "MDP-1", "name": "Main Switchboard", "domain": "panels", "type_tag": "MDP", "is_panel": True, "voltage": "480Y/277V", "amps": 1200},
+        {
+            "id": "s2",
+            "tag": "LP-1",
+            "name": "Lighting Panel 1",
+            "domain": "panels",
+            "type_tag": "LP",
+            "is_panel": True,
+            "fed_from": "MDP-1",
+            "voltage": "208Y/120V",
+            "amps": 225,
+            "attributes": {
+                "conductor": "4/0",
+                "conductor_material": "Cu",
+                "sets": 1,
+                "length_ft": 120,
+                "voltage_drop_pct": 1.45
+            }
+        }
+    ]
+    # 1. Detailed Mode
+    dot_detailed = compile_facility_to_dot(nodes, mode="detailed")
+    assert 'class="feeder-edge"' in dot_detailed
+    assert 'id="edge_s1_s2"' in dot_detailed
+    assert "(4/0 Cu)" in dot_detailed
+    assert "120ft" in dot_detailed
+    assert "1.5% ΔV" in dot_detailed or "1.4% ΔV" in dot_detailed
+
+    # 2. Macro Mode
+    dot_macro = compile_facility_to_dot(nodes, mode="macro")
+    assert 'class="feeder-edge"' in dot_macro
+    assert 'id="edge_s1_s2"' in dot_macro
+    assert "(4/0 Cu)" in dot_macro
+    assert "120ft" in dot_macro
+    assert "1.5% ΔV" in dot_macro or "1.4% ΔV" in dot_macro
+

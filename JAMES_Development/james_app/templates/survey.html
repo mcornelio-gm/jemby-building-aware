@@ -626,6 +626,12 @@
   <!-- Bento Box Toolbox Modal Include -->
   {% include "components/toolbox_bento_modal.html" %}
 
+  <!-- Feeder & Cable Schedule Modal Include -->
+  {% include "components/feeder_schedule_modal.html" %}
+
+  <!-- Slide-Over Feeder & Cable Property Sheet Drawer Include -->
+  {% include "components/cable_property_drawer.html" %}
+
   <!-- Alpine.js Survey Workbench Engine -->
   <script>
     function surveyApp(config) {
@@ -795,20 +801,34 @@
             }, 200);
           }
 
+          window.alpineApp = this;
+          window.openCableDrawer = (idOrFeeder) => {
+            this.openCableDrawer(idOrFeeder);
+          };
+          window.openFeederSchedule = () => {
+            this.openFeederSchedule();
+          };
+
           window.addEventListener('keydown', (e) => {
             if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
               this.showHelpModal = !this.showHelpModal;
             }
-            if ((e.key === 'n' || e.key === 'N') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showHelpModal && !this.showBreakerModal && !this.showEditDrawer) {
+            if ((e.key === 'n' || e.key === 'N') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showHelpModal && !this.showBreakerModal && !this.showEditDrawer && !this.showCableDrawer && !this.showFeederScheduleModal) {
               e.preventDefault();
               this.openEquipmentPicker();
+            }
+            if ((e.key === 'c' || e.key === 'C') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showHelpModal && !this.showBreakerModal && !this.showEditDrawer && !this.showCableDrawer && !this.showFeederScheduleModal) {
+              e.preventDefault();
+              this.openFeederSchedule();
             }
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'o') {
               e.preventDefault();
               this.openFinderModal();
             }
             if (e.key === 'Escape') {
-              if (this.showEditDrawer) this.closeEditDrawer();
+              if (this.showCableDrawer) this.closeCableDrawer();
+              else if (this.showFeederScheduleModal) this.showFeederScheduleModal = false;
+              else if (this.showEditDrawer) this.closeEditDrawer();
               else if (this.showToolboxModal) this.showToolboxModal = false;
               else if (this.showAuditModal) this.showAuditModal = false;
               else if (this.showEquipmentPicker) this.closeEquipmentPicker();
@@ -822,6 +842,7 @@
           if (!this.masterCatalog || this.masterCatalog.length === 0) {
             this.fetchCatalog();
           }
+          this.loadFacilityFeeders();
         },
 
         // System Integrity Audit Engine Methods

@@ -144,6 +144,45 @@
             </div>
           </div>
 
+          <!-- BENTO 1B: 🔌 Feeder & Cable Schedule Tile (Hero) -->
+          <div class="p-4 rounded-xl border border-amber-200/80 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-950/30 flex flex-col justify-between space-y-3 sm:col-span-2">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-2xl">🔌</span>
+                <div>
+                  <h4 class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <span>Feeder & Conductor Schedule</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-300" x-text="feederScheduleList.length + ' Runs'"></span>
+                  </h4>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
+                    Inspect cable runs, NEC 310.16 ampacity, conduit fill, and Chapter 9 Table 9 voltage drop.
+                  </p>
+                </div>
+              </div>
+
+              <template x-if="feederScheduleList && feederScheduleList.length > 0">
+                <div class="text-right shrink-0">
+                  <div class="text-xs font-mono font-bold text-amber-600 dark:text-amber-400" x-text="compliantFeederCount + '/' + feederScheduleList.length + ' OK'"></div>
+                  <div class="text-[10px] text-slate-500">&lt;3% Drop</div>
+                </div>
+              </template>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-amber-200/50 dark:border-amber-900/50">
+              <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                <span>Click endpoints or cable specs for instant property sheets</span>
+              </div>
+              <button 
+                type="button" 
+                @click="showToolboxModal = false; openFeederSchedule();"
+                class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Open Feeder Schedule</span>
+                <span>↗</span>
+              </button>
+            </div>
+          </div>
+
           <!-- BENTO 2: ➕ Add Equipment Tile -->
           <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 flex flex-col justify-between space-y-2.5">
             <div class="flex items-center gap-2">

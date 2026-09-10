@@ -135,6 +135,18 @@
                 </template>
               </select>
 
+              <!-- Inspect Feeder Button -->
+              <template x-if="form.upstream_sources && form.upstream_sources[sIdx]">
+                <button 
+                  type="button" 
+                  @click="openCableDrawer({ from_node: form.upstream_sources[sIdx], from_tag: form.upstream_sources[sIdx], to_node: form.id, to_tag: form.tag, voltage: form.voltage, current_amps: form.amps })"
+                  class="px-2 py-1 rounded-md text-[10px] font-bold bg-amber-100 hover:bg-amber-200 dark:bg-amber-950 dark:hover:bg-amber-900 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 transition flex items-center gap-1 shadow-2xs cursor-pointer shrink-0"
+                  title="Inspect incoming feeder cable specs & voltage drop"
+                >
+                  <span>🔌 Feeder</span>
+                </button>
+              </template>
+
               <!-- Remove Source Button -->
               <button 
                 type="button" 

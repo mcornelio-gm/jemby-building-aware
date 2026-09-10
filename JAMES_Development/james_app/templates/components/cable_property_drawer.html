@@ -1,0 +1,396 @@
+<!-- Slide-Over Cable & Feeder Property Sheet Drawer -->
+<div 
+  x-show="showCableDrawer" 
+  x-cloak 
+  class="fixed inset-0 z-50 overflow-hidden"
+  aria-labelledby="cable-drawer-title" 
+  role="dialog" 
+  aria-modal="true"
+>
+  <!-- Background backdrop -->
+  <div 
+    x-show="showCableDrawer"
+    x-transition:enter="ease-in-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in-out duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity cursor-pointer"
+    @click="closeCableDrawer()"
+  ></div>
+
+  <div class="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+    <div 
+      x-show="showCableDrawer"
+      x-transition:enter="transform transition ease-in-out duration-300"
+      x-transition:enter-start="translate-x-full"
+      x-transition:enter-end="translate-x-0"
+      x-transition:leave="transform transition ease-in-out duration-200"
+      x-transition:leave-start="translate-x-0"
+      x-transition:leave-end="translate-x-full"
+      class="w-screen max-w-md sm:max-w-lg bg-white dark:bg-[#0B1120] border-l border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col select-none overflow-hidden"
+    >
+      <!-- Drawer Header -->
+      <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 dark:bg-amber-400/20 dark:text-amber-300 border border-amber-300/60 dark:border-amber-700/60 flex items-center justify-center text-base font-bold shadow-2xs shrink-0">
+            🔌
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5 truncate">
+              <span>Feeder & Cable Inspector</span>
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+              NEC 310.16 Ampacity & Ch. 9 Tbl. 9 Voltage Drop
+            </p>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          @click="closeCableDrawer()" 
+          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer shrink-0"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Endpoint Route Breadcrumbs (Clickable to open either equipment property sheet!) -->
+      <div class="px-4 py-2.5 bg-indigo-50/60 dark:bg-indigo-950/40 border-b border-indigo-100 dark:border-indigo-900/50 flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2 text-xs font-semibold min-w-0">
+          <!-- From Node Pill -->
+          <button 
+            type="button" 
+            @click="jumpToEquipment(activeFeeder.from_node)"
+            class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
+            title="Inspect Upstream Source Equipment"
+          >
+            <span>⚡ From:</span>
+            <span class="underline underline-offset-2" x-text="activeFeeder.from_tag || activeFeeder.from_node"></span>
+          </button>
+
+          <span class="text-slate-400 dark:text-slate-500 font-bold">➔</span>
+
+          <!-- To Node Pill -->
+          <button 
+            type="button" 
+            @click="jumpToEquipment(activeFeeder.to_node)"
+            class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
+            title="Inspect Downstream Load Equipment"
+          >
+            <span>⚙️ To:</span>
+            <span class="underline underline-offset-2" x-text="activeFeeder.to_tag || activeFeeder.to_node"></span>
+          </button>
+        </div>
+
+        <template x-if="activeFeeder.breaker_trip">
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shrink-0" x-text="activeFeeder.breaker_trip + 'A OCPD'"></span>
+        </template>
+      </div>
+
+      <!-- Drawer Content Scrollable Area -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+
+        <!-- 1. Real-Time Voltage Drop Physics Status Monitor Card -->
+        <div 
+          class="p-4 rounded-xl border transition-all duration-200"
+          :class="cablePhysics.status === 'ok' 
+            ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/60' 
+            : (cablePhysics.status === 'warning' 
+              ? 'bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60' 
+              : 'bg-rose-50/60 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/60')"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-lg" x-text="cablePhysics.status === 'ok' ? '✅' : (cablePhysics.status === 'warning' ? '⚠️' : '🚨')"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                  Voltage Drop Performance
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5" x-text="cablePhysics.compliance_message"></p>
+            </div>
+
+            <!-- Percentage Display Pill -->
+            <div class="text-right shrink-0">
+              <div 
+                class="text-xl font-mono font-extrabold"
+                :class="cablePhysics.status === 'ok' ? 'text-emerald-600 dark:text-emerald-400' : (cablePhysics.status === 'warning' ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400')"
+                x-text="cablePhysics.v_drop_pct.toFixed(2) + '%'"
+              ></div>
+              <div class="text-[10px] font-mono text-slate-500" x-text="cablePhysics.v_drop_volts.toFixed(1) + ' V Drop'"></div>
+            </div>
+          </div>
+
+          <!-- Progress / Compliance Bar -->
+          <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden mt-3">
+            <div 
+              class="h-full transition-all duration-300 rounded-full"
+              :class="cablePhysics.status === 'ok' ? 'bg-emerald-500' : (cablePhysics.status === 'warning' ? 'bg-amber-500' : 'bg-rose-500')"
+              :style="'width: ' + Math.min(100, (cablePhysics.v_drop_pct / 6.0) * 100) + '%'"
+            ></div>
+          </div>
+
+          <!-- Live Engineering Breakdown Details -->
+          <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-800 text-[11px]">
+            <div>
+              <span class="text-[10px] text-slate-500 block">Total Ampacity:</span>
+              <span class="font-mono font-bold text-slate-900 dark:text-white" x-text="cablePhysics.total_ampacity + ' A'"></span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block">Effective Z:</span>
+              <span class="font-mono font-bold text-slate-900 dark:text-white" x-text="cablePhysics.impedance_z + ' Ω/kft'"></span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block">EGC Ground:</span>
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400" x-text="cablePhysics.suggested_egc"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Conductor Configuration Form -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Conductor & Cable Sizing</span>
+            </span>
+            <button 
+              type="button" 
+              @click="autoSizeFeeder()"
+              class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800 transition cursor-pointer"
+              title="Auto-calculate minimum conductor size for < 3% voltage drop"
+            >
+              🪄 Auto-Size
+            </button>
+          </div>
+
+          <!-- Parallel Sets & Conductor Gauge -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Parallel Sets</label>
+              <select 
+                x-model.number="activeFeeder.sets" 
+                @change="calcCableVoltageDropRealtime()"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
+              >
+                <option :value="1">1x (Single Run)</option>
+                <option :value="2">2x Parallel Sets</option>
+                <option :value="3">3x Parallel Sets</option>
+                <option :value="4">4x Parallel Sets</option>
+                <option :value="5">5x Parallel Sets</option>
+                <option :value="6">6x Parallel Sets</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Phase Conductor</label>
+              <select 
+                x-model="activeFeeder.conductor" 
+                @change="calcCableVoltageDropRealtime()"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold"
+              >
+                <option value="#14 AWG">#14 AWG (15A)</option>
+                <option value="#12 AWG">#12 AWG (20A)</option>
+                <option value="#10 AWG">#10 AWG (30A)</option>
+                <option value="#8 AWG">#8 AWG (50A)</option>
+                <option value="#6 AWG">#6 AWG (65A)</option>
+                <option value="#4 AWG">#4 AWG (85A)</option>
+                <option value="#3 AWG">#3 AWG (100A)</option>
+                <option value="#2 AWG">#2 AWG (115A)</option>
+                <option value="#1 AWG">#1 AWG (130A)</option>
+                <option value="1/0">1/0 AWG (150A)</option>
+                <option value="2/0">2/0 AWG (175A)</option>
+                <option value="3/0">3/0 AWG (200A)</option>
+                <option value="4/0">4/0 AWG (230A)</option>
+                <option value="250 kcmil">250 kcmil (255A)</option>
+                <option value="300 kcmil">300 kcmil (285A)</option>
+                <option value="350 kcmil">350 kcmil (310A)</option>
+                <option value="400 kcmil">400 kcmil (335A)</option>
+                <option value="500 kcmil">500 kcmil (380A)</option>
+                <option value="600 kcmil">600 kcmil (420A)</option>
+                <option value="750 kcmil">750 kcmil (475A)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Conductor Material & Insulation -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Material</label>
+              <select 
+                x-model="activeFeeder.conductor_material" 
+                @change="calcCableVoltageDropRealtime()"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+              >
+                <option value="Cu">Copper (Cu)</option>
+                <option value="Al">Aluminum (Al)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Insulation Rating</label>
+              <select 
+                x-model="activeFeeder.insulation" 
+                @change="calcCableVoltageDropRealtime()"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+              >
+                <option value="THHN/THWN-2">THHN / THWN-2 (90°C)</option>
+                <option value="XHHW-2">XHHW-2 (90°C Wet/Dry)</option>
+                <option value="USE-2/RHW-2">USE-2 / RHW-2 (Direct Burial)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Neutral & EGC Grounding -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Neutral Conductor</label>
+              <select 
+                x-model="activeFeeder.neutral" 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+              >
+                <option value="Full (100%)">Full Neutral (100%)</option>
+                <option value="200% Oversized">200% Oversized (Harmonic)</option>
+                <option value="Reduced">Reduced Neutral</option>
+                <option value="None">None (3-Wire Delta / Motor)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Equipment Ground (EGC)</label>
+              <input 
+                type="text" 
+                x-model="activeFeeder.egc" 
+                placeholder="e.g. #6 AWG Cu (Auto)" 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Raceway, Length & Operating Conditions -->
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3.5">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+            <span>📏</span>
+            <span>Raceway Route & Operating Load</span>
+          </span>
+
+          <!-- Raceway Conduit & Size -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Conduit / Raceway</label>
+              <select 
+                x-model="activeFeeder.conduit" 
+                @change="calcCableVoltageDropRealtime()"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+              >
+                <option value="Steel">Steel (EMT / IMC / RMC)</option>
+                <option value="Aluminum">Aluminum Conduit</option>
+                <option value="PVC">PVC / Non-Metallic</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Conduit Size</label>
+              <select 
+                x-model="activeFeeder.conduit_size" 
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
+              >
+                <option value="Auto">Auto (NEC Table 1 Fill)</option>
+                <option value="0.75 in">3/4"</option>
+                <option value="1.0 in">1"</option>
+                <option value="1.25 in">1-1/4"</option>
+                <option value="1.5 in">1-1/2"</option>
+                <option value="2.0 in">2"</option>
+                <option value="2.5 in">2-1/2"</option>
+                <option value="3.0 in">3"</option>
+                <option value="3.5 in">3-1/2"</option>
+                <option value="4.0 in">4"</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- One-Way Distance / Length (ft) -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">One-Way Route Length (ft)</label>
+              <div class="flex items-center gap-1">
+                <button type="button" @click="activeFeeder.length_ft = 50; calcCableVoltageDropRealtime();" class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300">50'</button>
+                <button type="button" @click="activeFeeder.length_ft = 100; calcCableVoltageDropRealtime();" class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300">100'</button>
+                <button type="button" @click="activeFeeder.length_ft = 150; calcCableVoltageDropRealtime();" class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300">150'</button>
+                <button type="button" @click="activeFeeder.length_ft = 250; calcCableVoltageDropRealtime();" class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300">250'</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <input 
+                type="number" 
+                x-model.number="activeFeeder.length_ft" 
+                @input="calcCableVoltageDropRealtime()"
+                placeholder="100" 
+                class="flex-1 h-8 px-2.5 text-xs font-mono font-bold rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+              >
+              <span class="text-xs font-mono text-slate-400">feet</span>
+            </div>
+          </div>
+
+          <!-- Operating Current & Voltage -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Operating Load (Amps)</label>
+              <input 
+                type="number" 
+                x-model.number="activeFeeder.current_amps" 
+                @input="calcCableVoltageDropRealtime()"
+                placeholder="100" 
+                class="w-full h-8 px-2.5 text-xs font-mono font-bold rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white"
+              >
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Voltage & Phase</label>
+              <select 
+                x-model="activeFeeder.voltage" 
+                @change="calcCableVoltageDropRealtime()"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono"
+              >
+                <option value="480V 3Ø">480V 3-Phase</option>
+                <option value="208V 3Ø">208V 3-Phase</option>
+                <option value="240V 1Ø">240V 1-Phase</option>
+                <option value="120V 1Ø">120V 1-Phase</option>
+                <option value="4160V 3Ø">4160V 3-Phase</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Drawer Footer Action Bar -->
+      <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <button 
+          type="button" 
+          @click="closeCableDrawer()" 
+          class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            @click="saveCableSpecs()" 
+            :disabled="isSavingFeeder"
+            class="px-4 py-1.5 rounded-lg text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+          >
+            <span x-show="!isSavingFeeder">💾 Save Feeder Specs</span>
+            <span x-show="isSavingFeeder" x-cloak>Saving...</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

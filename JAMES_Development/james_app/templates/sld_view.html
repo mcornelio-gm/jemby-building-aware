@@ -741,6 +741,37 @@
           });
         }
       });
+
+      // 4. Attach click handlers to Feeder Edges & Midpoint Badges
+      svg.selectAll("g.edge").each(function() {
+        const el = d3.select(this);
+        const edgeId = el.attr("id") || "";
+        const titleEl = el.select("title");
+        const titleText = titleEl.empty() ? "" : titleEl.text().trim();
+
+        el.style("cursor", "pointer");
+        el.on("click", (e) => {
+          if (e.defaultPrevented) return;
+          e.stopPropagation();
+
+          // Highlight selected edge with gold glow
+          svg.selectAll("g.edge path, g.edge polygon")
+            .style("stroke-width", null)
+            .style("stroke", null)
+            .style("filter", null);
+
+          el.selectAll("path, polygon")
+            .style("stroke-width", "4.0px")
+            .style("stroke", "#F59E0B")
+            .style("filter", "drop-shadow(0 0 8px rgba(245, 158, 11, 0.9))");
+
+          if (window.alpineApp && typeof window.alpineApp.openCableDrawer === 'function') {
+            window.alpineApp.openCableDrawer(edgeId || titleText);
+          } else if (typeof window.openCableDrawer === 'function') {
+            window.openCableDrawer(edgeId || titleText);
+          }
+        });
+      });
     }
 
     async function refreshDiagram() {
@@ -1133,9 +1164,16 @@
         },
 
         init() {
+          window.alpineApp = this;
           window.notify = (msg) => this.toast(msg);
           window.openEquipmentDrawer = (idOrTag) => {
             this.openEditDrawer(idOrTag);
+          };
+          window.openCableDrawer = (idOrFeeder) => {
+            this.openCableDrawer(idOrFeeder);
+          };
+          window.openFeederSchedule = () => {
+            this.openFeederSchedule();
           };
           window.refreshDiagram = async () => {
             if (typeof refreshDiagram === 'function') {
@@ -1152,16 +1190,24 @@
             if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
               this.showHelpModal = !this.showHelpModal;
             }
-            if ((e.key === 'n' || e.key === 'N') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showToolboxModal && !this.showHelpModal && !this.showEditDrawer && !this.showBreakerModal && !this.showLightboxModal) {
+            if ((e.key === 'n' || e.key === 'N') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showToolboxModal && !this.showHelpModal && !this.showEditDrawer && !this.showBreakerModal && !this.showLightboxModal && !this.showCableDrawer && !this.showFeederScheduleModal) {
               e.preventDefault();
               this.openEquipmentPicker();
+            }
+            if ((e.key === 'c' || e.key === 'C') && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && !this.showFinderModal && !this.showToolboxModal && !this.showHelpModal && !this.showEditDrawer && !this.showBreakerModal && !this.showLightboxModal && !this.showCableDrawer && !this.showFeederScheduleModal) {
+              e.preventDefault();
+              this.openFeederSchedule();
             }
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'o') {
               e.preventDefault();
               this.openFinderModal();
             }
             if (e.key === 'Escape') {
-              if (this.showToolboxModal) {
+              if (this.showCableDrawer) {
+                this.closeCableDrawer();
+              } else if (this.showFeederScheduleModal) {
+                this.showFeederScheduleModal = false;
+              } else if (this.showToolboxModal) {
                 this.showToolboxModal = false;
               } else if (this.showHelpModal) {
                 this.showHelpModal = false;
@@ -1177,6 +1223,7 @@
 
           this.fetchNodes();
           this.fetchCatalog();
+          this.loadFacilityFeeders();
         },
 
         async fetchNodes() {
@@ -2921,6 +2968,12 @@
 
   <!-- Bento Box Toolbox Modal Include -->
   {% include "components/toolbox_bento_modal.html" %}
+
+  <!-- Feeder & Cable Schedule Modal Include -->
+  {% include "components/feeder_schedule_modal.html" %}
+
+  <!-- Slide-Over Feeder & Cable Property Sheet Drawer Include -->
+  {% include "components/cable_property_drawer.html" %}
 
   <!-- Slide-Over Equipment Edit Drawer -->
   <div 
