@@ -711,19 +711,31 @@
         .style("opacity", 1.0);
     }
 
+    function clearEdgeSelection() {
+      const svg = d3.select("#graph-container svg");
+      if (!svg.empty()) {
+        svg.selectAll("g.edge path:not(.hit-area), g.edge polygon")
+          .style("stroke-width", null)
+          .style("stroke", null)
+          .style("filter", null);
+      }
+    }
+    window.clearEdgeSelection = clearEdgeSelection;
+
     function attachCanvasClickListeners() {
       const svg = d3.select("#graph-container svg");
-      if (svg.empty()) return;
-
-      // 1. Canvas background click (clear domain highlights)
-      svg.on("click", (e) => {
-        if (e.defaultPrevented) return;
-        if (e.target.tagName === 'svg' || e.target.id === 'graph0' || (e.target.tagName === 'polygon' && d3.select(e.target.parentNode).attr('id') === 'graph0')) {
-          if (activeHighlightDomain) {
-            clearDomainHighlight();
+      if (!svg.empty()) {
+        // 1. Canvas background click (clear domain highlights & edge selection)
+        svg.on("click", (e) => {
+          if (e.defaultPrevented) return;
+          if (e.target.tagName === 'svg' || e.target.id === 'graph0' || (e.target.tagName === 'polygon' && d3.select(e.target.parentNode).attr('id') === 'graph0')) {
+            if (activeHighlightDomain) {
+              clearDomainHighlight();
+            }
+            clearEdgeSelection();
           }
-        }
-      });
+        });
+      }
 
       // 2. Attach click handlers to Detailed Mode Equipment Clusters
       svg.selectAll("g.cluster").each(function() {

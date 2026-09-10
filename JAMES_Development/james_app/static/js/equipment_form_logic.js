@@ -1216,11 +1216,17 @@
 
     closeCableDrawer() {
       this.showCableDrawer = false;
+      if (typeof window.clearEdgeSelection === 'function') {
+        window.clearEdgeSelection();
+      }
     },
 
     jumpToEquipment(nodeIdOrTag) {
       this.showCableDrawer = false;
       this.showFeederScheduleModal = false;
+      if (typeof window.clearEdgeSelection === 'function') {
+        window.clearEdgeSelection();
+      }
       if (typeof this.openEditDrawer === 'function') {
         this.openEditDrawer(nodeIdOrTag);
       } else if (typeof window.openEquipmentDrawer === 'function') {
@@ -1378,6 +1384,9 @@
 
         this.toast(`🔌 Saved feeder: ${af.from_tag || af.from_node} ➔ ${af.to_tag || af.to_node}!`);
         this.showCableDrawer = false;
+        if (typeof window.clearEdgeSelection === 'function') {
+          window.clearEdgeSelection();
+        }
 
         // Reload feeders list
         await this.loadFacilityFeeders();
