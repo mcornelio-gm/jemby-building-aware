@@ -231,15 +231,15 @@
               </a>
 
               <!-- 4. Print / PDF -->
-              <button 
-                type="button" 
-                @click="showToolboxModal = false; window.print();"
+              <a 
+                :href="'/api/clients/' + encodeURIComponent(client || 'zoetis') + '/facilities/' + encodeURIComponent(facility || 'b4') + '/audit/export?format=pdf&inline=true'"
+                target="_blank"
                 class="p-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white transition flex items-center gap-2 cursor-pointer shadow-2xs group"
-                title="Print or Save as PDF"
+                title="Open & Print Publication PDF Report"
               >
-                <span class="text-sm">🖨️</span>
-                <span class="truncate font-bold text-slate-900 dark:text-white">Print / PDF</span>
-              </button>
+                <span class="text-sm">📄</span>
+                <span class="truncate font-bold text-slate-900 dark:text-white">Print / PDF ↗</span>
+              </a>
             </div>
           </div>
 

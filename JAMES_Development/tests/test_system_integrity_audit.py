@@ -144,6 +144,17 @@ def test_api_audit_endpoints(client):
     assert res_txt.status_code == 200
     assert "SYSTEM INTEGRITY AUDIT REPORT" in res_txt.text
 
+    # 6. Export PDF (attachment and inline)
+    res_pdf = client.get("/api/clients/zoetis/facilities/b4/audit/export?format=pdf")
+    assert res_pdf.status_code == 200
+    assert res_pdf.headers.get("content-type") == "application/pdf"
+    assert res_pdf.content.startswith(b"%PDF")
+    assert "attachment; filename=" in res_pdf.headers.get("content-disposition", "")
+
+    res_pdf_inline = client.get("/api/clients/zoetis/facilities/b4/audit/export?format=pdf&inline=true")
+    assert res_pdf_inline.status_code == 200
+    assert "inline; filename=" in res_pdf_inline.headers.get("content-disposition", "")
+
 
 def test_checklist_deficiency_and_signoff_audit():
     nodes = [

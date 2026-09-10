@@ -25,7 +25,8 @@ from james_app.integrity_audit import (
     audit_facility_system_integrity,
     generate_markdown_report,
     generate_csv_report,
-    generate_txt_report
+    generate_txt_report,
+    generate_pdf_report
 )
 from james_app.checklists import (
     get_all_checklists,
@@ -935,8 +936,8 @@ def api_get_facility_audit(client_id: str, facility_id: str):
 
 
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/audit/export")
-def api_export_facility_audit(client_id: str, facility_id: str, format: str = "md"):
-    """Export System Integrity Audit in Markdown (with TOC), CSV, JSON, or Plain Text."""
+def api_export_facility_audit(client_id: str, facility_id: str, format: str = "md", inline: bool = False):
+    """Export System Integrity Audit in PDF, Markdown (with TOC), CSV, JSON, or Plain Text."""
     clean_c = client_id.strip().lower()
     clean_f = facility_id.strip().lower()
     if clean_c == "zoetis" and clean_f == "b4":
@@ -973,7 +974,15 @@ def api_export_facility_audit(client_id: str, facility_id: str, format: str = "m
     fmt = format.strip().lower()
     filename_base = f"{clean_c}_{clean_f}_system_integrity_audit"
 
-    if fmt == "csv":
+    if fmt == "pdf":
+        pdf_bytes = generate_pdf_report(audit_data, client=clean_c, facility=clean_f)
+        disp = "inline" if inline else "attachment"
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'{disp}; filename="{filename_base}.pdf"'}
+        )
+    elif fmt == "csv":
         csv_content = generate_csv_report(audit_data)
         return Response(
             content=csv_content,
