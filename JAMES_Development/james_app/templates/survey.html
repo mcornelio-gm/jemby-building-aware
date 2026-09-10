@@ -750,6 +750,7 @@
           megger_phase_b: '',
           megger_phase_c: '',
           vendor_attrs: {},
+          checklists: {},
           notes: []
         },
 
@@ -1010,6 +1011,7 @@
             megger_phase_c: attrs.megger_phase_c || '',
             nameplate_photo: attrs.nameplate_photo || null,
             vendor_attrs: attrs.vendor_attrs || {},
+            checklists: (attrs.checklists && typeof attrs.checklists === 'object') ? JSON.parse(JSON.stringify(attrs.checklists)) : {},
             notes: Array.isArray(attrs.notes) ? attrs.notes : (Array.isArray(match.notes) ? match.notes : [])
           };
 
@@ -1022,6 +1024,9 @@
             tag: this.form.type_tag || '',
             name: this.form.type_name || this.form.name || ''
           };
+
+          // Load applicable inspection checklists for domain & type
+          this.loadDomainChecklists(this.form.domain, this.form.type_tag);
 
           this.updateCustomAttrsList();
 
@@ -1120,6 +1125,7 @@
               megger_phase_c: this.form.megger_phase_c || '',
               nameplate_photo: this.form.nameplate_photo || null,
               vendor_attrs: this.form.vendor_attrs || {},
+              checklists: this.form.checklists || {},
               notes: this.form.notes || []
             },
             notes: this.form.notes || []

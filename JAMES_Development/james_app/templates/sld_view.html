@@ -1244,6 +1244,7 @@
             megger_phase_c: '',
             nameplate_photo: null,
             vendor_attrs: {},
+            checklists: {},
             notes: []
           };
 
@@ -1257,6 +1258,9 @@
             name: item.domainName
           };
           this.selectedType = item;
+
+          // Load applicable inspection checklists for domain & type
+          this.loadDomainChecklists(item.domainId, item.tag);
 
           if (isPanel) {
             this.generateInitialScheduleRows(item.defaultSlots || 42);
@@ -1363,6 +1367,7 @@
             megger_phase_c: attrs.megger_phase_c || '',
             nameplate_photo: attrs.nameplate_photo || null,
             vendor_attrs: attrs.vendor_attrs || {},
+            checklists: (attrs.checklists && typeof attrs.checklists === 'object') ? JSON.parse(JSON.stringify(attrs.checklists)) : {},
             notes: Array.isArray(attrs.notes) ? attrs.notes : (Array.isArray(this.editingNode.notes) ? this.editingNode.notes : [])
           };
 
@@ -1375,6 +1380,9 @@
             tag: this.form.type_tag || '',
             name: this.form.type_name || this.form.name || ''
           };
+
+          // Load applicable inspection checklists for domain & type
+          this.loadDomainChecklists(this.form.domain, this.form.type_tag);
 
           // Custom vendor attributes key-value list
           this.updateCustomAttrsList();
@@ -2427,6 +2435,7 @@
               megger_phase_c: this.form.megger_phase_c || '',
               nameplate_photo: this.form.nameplate_photo || null,
               vendor_attrs: this.form.vendor_attrs || {},
+              checklists: this.form.checklists || {},
               notes: this.form.notes || []
             },
             notes: this.form.notes || []

@@ -27,6 +27,12 @@ from james_app.integrity_audit import (
     generate_csv_report,
     generate_txt_report
 )
+from james_app.checklists import (
+    get_all_checklists,
+    get_checklist_by_id,
+    get_checklists_for_domain,
+    load_master_checklists
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
@@ -176,6 +182,42 @@ async def api_clone_catalog_item(part_number: str, request: Request):
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to clone catalog item: {e}")
+
+
+# ==========================================
+# ELECTRICAL INSPECTION CHECKLISTS ENDPOINTS
+# ==========================================
+
+@app.get("/api/checklists")
+def api_get_all_checklists():
+    """Returns all parsed inspection checklists from the master Excel workbook."""
+    return get_all_checklists()
+
+
+@app.get("/api/checklists/domain/{domain_id}")
+def api_get_domain_checklists(domain_id: str, type_tag: Optional[str] = None):
+    """Returns mapped checklists applicable for a specific equipment domain and type tag."""
+    return get_checklists_for_domain(domain_id, type_tag or "")
+
+
+@app.get("/api/checklists/{chk_id}")
+def api_get_checklist_by_id(chk_id: str):
+    """Returns a single checklist definition by its ID."""
+    chk = get_checklist_by_id(chk_id)
+    if not chk:
+        raise HTTPException(status_code=404, detail=f"Checklist '{chk_id}' not found")
+    return chk
+
+
+@app.post("/api/checklists/reload")
+def api_reload_checklists():
+    """Forces dynamic reload and re-parsing of the master Excel workbook."""
+    checklists = load_master_checklists(force_reload=True)
+    return {
+        "status": "success",
+        "reloaded_count": len(checklists),
+        "checklists": [c["id"] for c in checklists]
+    }
 
 
 @app.post("/api/catalog/import")

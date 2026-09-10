@@ -631,6 +631,202 @@
     </div>
   </div>
 
+  <!-- 5.5 ELECTRICAL INSPECTION & STANDARDS CHECKLISTS -->
+  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-indigo-200 dark:border-indigo-900/40 space-y-3">
+    <!-- Header with overall compliance badge -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-sm">📋</span>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Electrical Inspection Checklists</span>
+            <span class="text-[10px] font-normal px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono" x-text="((selectedDomain && selectedDomain.name) || form.domain || 'Equipment') + ' Domain'"></span>
+          </h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">NEC, NFPA 70E, and NEMA code compliance verification</p>
+        </div>
+      </div>
+      
+      <!-- Overall Progress Stat Badge -->
+      <div class="flex items-center gap-2">
+        <template x-if="activeDomainChecklists && activeDomainChecklists.length > 0">
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800">
+            <span class="text-[11px] font-mono font-bold text-indigo-700 dark:text-indigo-300" x-text="getOverallChecklistStats().passed + '/' + getOverallChecklistStats().total + ' Passed (' + getOverallChecklistStats().pct + '%)'"></span>
+            <template x-if="getOverallChecklistStats().deficient > 0">
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-rose-500 text-white animate-pulse" x-text="getOverallChecklistStats().deficient + ' Deficient'"></span>
+            </template>
+          </div>
+        </template>
+        <button 
+          type="button"
+          @click="loadDomainChecklists(form.domain, form.type_tag)"
+          title="Reload Master Checklists"
+          class="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+        >
+          <svg class="w-3.5 h-3.5" :class="checklistLoading ? 'animate-spin' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State if no checklists loaded -->
+    <template x-if="!activeDomainChecklists || activeDomainChecklists.length === 0">
+      <div class="py-4 text-center text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-800/60 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
+        <span class="block mb-1">🔍</span>
+        <span>Loading applicable inspection checklists...</span>
+      </div>
+    </template>
+
+    <!-- Checklist Tabs (Pills) -->
+    <template x-if="activeDomainChecklists && activeDomainChecklists.length > 0">
+      <div class="space-y-3">
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200 dark:border-slate-800 scrollbar-thin">
+          <template x-for="chk in activeDomainChecklists" :key="chk.id">
+            <button
+              type="button"
+              @click="selectedChecklistTab = chk.id"
+              :class="selectedChecklistTab === chk.id 
+                ? 'bg-indigo-600 text-white shadow-sm font-semibold' 
+                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'"
+              class="px-2.5 py-1.5 rounded-lg text-xs flex items-center gap-1.5 whitespace-nowrap transition-all"
+            >
+              <span x-text="chk.tab_name || chk.title"></span>
+              <span 
+                :class="selectedChecklistTab === chk.id ? 'bg-indigo-700 text-indigo-100' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'"
+                class="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold"
+                x-text="getChecklistStats(chk.id).passed + '/' + chk.items.length"
+              ></span>
+              <template x-if="getChecklistStats(chk.id).deficient > 0">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              </template>
+            </button>
+          </template>
+        </div>
+
+        <!-- Active Checklist Items List -->
+        <template x-for="chk in activeDomainChecklists" :key="chk.id">
+          <div x-show="selectedChecklistTab === chk.id" class="space-y-2.5">
+            <!-- Subheader with checklist details & bulk action -->
+            <div class="flex items-center justify-between bg-white dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div>
+                <h5 class="text-xs font-bold text-slate-900 dark:text-white" x-text="chk.title"></h5>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono" x-text="'Standard ID: ' + chk.id + ' • ' + chk.items.length + ' Inspection Items'"></p>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  @click="markAllChecklist(chk.id, 'pass')"
+                  class="px-2 py-1 text-[10px] font-semibold rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors"
+                >
+                  ✓ Mark All Pass
+                </button>
+                <button
+                  type="button"
+                  @click="markAllChecklist(chk.id, 'pending')"
+                  class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Items Table/Card List -->
+            <div class="space-y-2 max-h-96 overflow-y-auto pr-1 scrollbar-thin">
+              <template x-for="item in chk.items" :key="item.item_no">
+                <div 
+                  :class="{
+                    'border-emerald-300 dark:border-emerald-800/60 bg-emerald-50/20 dark:bg-emerald-950/10': getChecklistItemState(chk.id, item.item_no).status === 'pass',
+                    'border-rose-300 dark:border-rose-800/60 bg-rose-50/20 dark:bg-rose-950/10': getChecklistItemState(chk.id, item.item_no).status === 'deficient' || getChecklistItemState(chk.id, item.item_no).status === 'fail',
+                    'border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/50': getChecklistItemState(chk.id, item.item_no).status === 'pending' || getChecklistItemState(chk.id, item.item_no).status === 'na'
+                  }"
+                  class="p-2.5 rounded-lg border transition-all space-y-2"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1 space-y-1">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300" x-text="'#' + item.item_no"></span>
+                        <template x-if="item.standard_ref">
+                          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold" x-text="item.standard_ref"></span>
+                        </template>
+                        <template x-if="item.severity === 'Critical'">
+                          <span class="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300">Critical</span>
+                        </template>
+                        <template x-if="item.severity === 'Major'">
+                          <span class="text-[9px] uppercase font-bold px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">Major</span>
+                        </template>
+                        <template x-if="item.standard_frequency">
+                          <span class="text-[9px] text-slate-400" x-text="'(' + item.standard_frequency + ')'"></span>
+                        </template>
+                      </div>
+                      
+                      <p class="text-xs font-semibold text-slate-900 dark:text-white" x-text="item.inspection_prompt"></p>
+                      
+                      <template x-if="item.verification_criteria">
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400" x-text="item.verification_criteria"></p>
+                      </template>
+                    </div>
+
+                    <!-- 3-State Toggle Buttons -->
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        @click="setChecklistStatus(chk.id, item.item_no, 'pass')"
+                        :class="getChecklistItemState(chk.id, item.item_no).status === 'pass'
+                          ? 'bg-emerald-600 text-white font-bold shadow-sm ring-1 ring-emerald-500'
+                          : 'bg-slate-100 dark:bg-slate-700/80 text-slate-600 dark:text-slate-400 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/50'"
+                        class="px-2 py-1 text-xs rounded transition-all flex items-center gap-1"
+                        title="Pass / Compliant"
+                      >
+                        <span>✓</span>
+                        <span class="text-[10px]">Pass</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        @click="setChecklistStatus(chk.id, item.item_no, 'deficient')"
+                        :class="getChecklistItemState(chk.id, item.item_no).status === 'deficient' || getChecklistItemState(chk.id, item.item_no).status === 'fail'
+                          ? 'bg-rose-600 text-white font-bold shadow-sm ring-1 ring-rose-500'
+                          : 'bg-slate-100 dark:bg-slate-700/80 text-slate-600 dark:text-slate-400 hover:bg-rose-50 hover:text-rose-700 dark:hover:bg-rose-950/50'"
+                        class="px-2 py-1 text-xs rounded transition-all flex items-center gap-1"
+                        title="Deficient / Non-compliant"
+                      >
+                        <span>⚠️</span>
+                        <span class="text-[10px]">Deficient</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        @click="setChecklistStatus(chk.id, item.item_no, 'na')"
+                        :class="getChecklistItemState(chk.id, item.item_no).status === 'na'
+                          ? 'bg-slate-600 text-white font-bold shadow-sm'
+                          : 'bg-slate-100 dark:bg-slate-700/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200'"
+                        class="px-1.5 py-1 text-xs rounded transition-all"
+                        title="Not Applicable"
+                      >
+                        <span class="text-[10px]">N/A</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Notes / Deficiency Description Input -->
+                  <div x-show="getChecklistItemState(chk.id, item.item_no).status === 'deficient' || getChecklistItemState(chk.id, item.item_no).status === 'fail' || (getChecklistItemState(chk.id, item.item_no).notes && getChecklistItemState(chk.id, item.item_no).notes.length > 0)">
+                    <input
+                      type="text"
+                      :value="getChecklistItemState(chk.id, item.item_no).notes"
+                      @input="setChecklistNotes(chk.id, item.item_no, $event.target.value)"
+                      placeholder="Document deficiency, violation details, or corrective action..."
+                      class="w-full h-7 px-2 text-[11px] rounded bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-800 focus:outline-none focus:border-amber-500 text-slate-900 dark:text-white"
+                    >
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+
   <!-- 6. Panel-Specific Attributes & Dynamic Slots Configuration -->
   <template x-if="isPanelEquipment()">
     <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-indigo-200 dark:border-indigo-900/40 space-y-3">

@@ -75,6 +75,135 @@
     pickerSearch: '',
     pickerDomainFilter: 'all',
 
+    // Inspection Checklists state
+    activeDomainChecklists: [],
+    selectedChecklistTab: null,
+    checklistFilter: 'all', // 'all' | 'deficient' | 'pending' | 'pass'
+    checklistLoading: false,
+
+    async loadDomainChecklists(domainId, typeTag) {
+      const d = (domainId || (this.form && this.form.domain) || 'panels').toLowerCase();
+      const t = (typeTag || (this.form && this.form.type_tag) || '').toUpperCase();
+      this.checklistLoading = true;
+      try {
+        const res = await fetch(`/api/checklists/domain/${encodeURIComponent(d)}?type_tag=${encodeURIComponent(t)}`);
+        if (res.ok) {
+          const data = await res.json();
+          this.activeDomainChecklists = Array.isArray(data) ? data : [];
+          if (this.activeDomainChecklists.length > 0) {
+            if (!this.selectedChecklistTab || !this.activeDomainChecklists.some(c => c.id === this.selectedChecklistTab)) {
+              this.selectedChecklistTab = this.activeDomainChecklists[0].id;
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load domain checklists:', err);
+      } finally {
+        this.checklistLoading = false;
+      }
+    },
+
+    ensureChecklistsObject() {
+      if (!this.form) return {};
+      if (!this.form.checklists || typeof this.form.checklists !== 'object') {
+        this.form.checklists = {};
+      }
+      return this.form.checklists;
+    },
+
+    getChecklistItemState(chkId, itemNo) {
+      const root = this.ensureChecklistsObject();
+      if (!root[chkId]) return { status: 'pending', notes: '' };
+      const item = root[chkId][itemNo] || root[chkId][String(itemNo)];
+      if (!item) return { status: 'pending', notes: '' };
+      if (typeof item === 'string') return { status: item, notes: '' };
+      return {
+        status: item.status || 'pending',
+        notes: item.notes || '',
+        timestamp: item.timestamp || ''
+      };
+    },
+
+    setChecklistStatus(chkId, itemNo, status) {
+      const root = this.ensureChecklistsObject();
+      if (!root[chkId]) root[chkId] = {};
+      const current = this.getChecklistItemState(chkId, itemNo);
+      root[chkId][itemNo] = {
+        ...current,
+        status: current.status === status ? 'pending' : status,
+        timestamp: new Date().toISOString()
+      };
+      if (this.form) {
+        this.form.checklists = { ...root };
+      }
+    },
+
+    setChecklistNotes(chkId, itemNo, notes) {
+      const root = this.ensureChecklistsObject();
+      if (!root[chkId]) root[chkId] = {};
+      const current = this.getChecklistItemState(chkId, itemNo);
+      root[chkId][itemNo] = {
+        ...current,
+        notes: notes,
+        timestamp: new Date().toISOString()
+      };
+      if (this.form) {
+        this.form.checklists = { ...root };
+      }
+    },
+
+    markAllChecklist(chkId, status) {
+      const chk = (this.activeDomainChecklists || []).find(c => c.id === chkId);
+      if (!chk || !chk.items) return;
+      const root = this.ensureChecklistsObject();
+      if (!root[chkId]) root[chkId] = {};
+      chk.items.forEach(item => {
+        const itemNo = item.item_no;
+        const current = this.getChecklistItemState(chkId, itemNo);
+        root[chkId][itemNo] = {
+          ...current,
+          status: status,
+          timestamp: new Date().toISOString()
+        };
+      });
+      if (this.form) {
+        this.form.checklists = { ...root };
+      }
+    },
+
+    getChecklistStats(chkId) {
+      const chk = (this.activeDomainChecklists || []).find(c => c.id === chkId);
+      if (!chk || !chk.items) return { total: 0, passed: 0, deficient: 0, na: 0, pending: 0, pct: 0, isComplete: false };
+      let passed = 0, deficient = 0, na = 0, pending = 0;
+      chk.items.forEach(item => {
+        const state = this.getChecklistItemState(chkId, item.item_no);
+        if (state.status === 'pass') passed++;
+        else if (state.status === 'deficient' || state.status === 'fail') deficient++;
+        else if (state.status === 'na') na++;
+        else pending++;
+      });
+      const total = chk.items.length;
+      const evaluated = passed + deficient + na;
+      const pct = total > 0 ? Math.round((evaluated / total) * 100) : 0;
+      return { total, passed, deficient, na, pending, pct, isComplete: (total > 0 && evaluated === total) };
+    },
+
+    getOverallChecklistStats() {
+      const list = this.activeDomainChecklists || [];
+      let total = 0, passed = 0, deficient = 0, na = 0, pending = 0;
+      list.forEach(chk => {
+        const s = this.getChecklistStats(chk.id);
+        total += s.total;
+        passed += s.passed;
+        deficient += s.deficient;
+        na += s.na;
+        pending += s.pending;
+      });
+      const evaluated = passed + deficient + na;
+      const pct = total > 0 ? Math.round((evaluated / total) * 100) : 0;
+      return { total, passed, deficient, na, pending, pct, isComplete: total > 0 && evaluated === total };
+    },
+
     /**
      * Universal node pool accessor across Survey, SLD, and Standalone modes.
      */
