@@ -1250,6 +1250,10 @@
 
         onSelectArchetypeFromPicker(item) {
           this.closeEquipmentPicker();
+          if (item.domainId === 'cables' || item.tag === 'FEEDER' || item.tag === 'BUS') {
+            this.openNewFeederDrawer();
+            return;
+          }
           const nextTag = this.generateNextTag ? this.generateNextTag(item.defaultTag) : (item.defaultTag || 'EQ-1');
           const isPanel = !!(item.is_panel || item.domainId === 'panels');
           

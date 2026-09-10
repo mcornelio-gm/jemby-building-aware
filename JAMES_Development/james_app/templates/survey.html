@@ -1453,6 +1453,10 @@
         },
         onSelectArchetypeFromPicker(item) {
           this.closeEquipmentPicker();
+          if (item.domainId === 'cables' || item.tag === 'FEEDER' || item.tag === 'BUS') {
+            this.openNewFeederDrawer();
+            return;
+          }
           const nextTag = item.defaultTag || ('EQ-' + (this.stack.length + 1));
           const isPanel = !!(item.is_panel || item.domainId === 'panels');
           

@@ -56,36 +56,72 @@
         </button>
       </div>
 
-      <!-- Endpoint Route Breadcrumbs (Clickable to open either equipment property sheet!) -->
-      <div class="px-4 py-2.5 bg-indigo-50/60 dark:bg-indigo-950/40 border-b border-indigo-100 dark:border-indigo-900/50 flex items-center justify-between gap-2 shrink-0">
-        <div class="flex items-center gap-2 text-xs font-semibold min-w-0">
-          <!-- From Node Pill -->
-          <button 
-            type="button" 
-            @click="jumpToEquipment(activeFeeder.from_node)"
-            class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
-            title="Inspect Upstream Source Equipment"
-          >
-            <span>⚡ From:</span>
-            <span class="underline underline-offset-2" x-text="activeFeeder.from_tag || activeFeeder.from_node"></span>
-          </button>
+      <!-- Endpoint Route Breadcrumbs / Selectors (Clickable to open either equipment property sheet!) -->
+      <div class="px-4 py-2.5 bg-indigo-50/60 dark:bg-indigo-950/40 border-b border-indigo-100 dark:border-indigo-900/50 space-y-2 shrink-0">
+        <!-- If Creating New Feeder Run -->
+        <template x-if="activeFeeder.is_new">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] font-mono font-bold uppercase text-indigo-700 dark:text-indigo-300 mb-1">⚡ From Source:</label>
+              <select 
+                x-model="activeFeeder.from_node"
+                @change="activeFeeder.from_tag = activeFeeder.from_node; onFeederEndpointChange && onFeederEndpointChange();"
+                class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono font-bold"
+              >
+                <template x-for="item in (stack || allNodes || window.facilityNodes || [])" :key="item.id">
+                  <option :value="item.tag || item.id" x-text="(item.tag || item.id) + ' (' + (item.name || item.domain) + ')'"></option>
+                </template>
+              </select>
+            </div>
 
-          <span class="text-slate-400 dark:text-slate-500 font-bold">➔</span>
+            <div>
+              <label class="block text-[10px] font-mono font-bold uppercase text-slate-700 dark:text-slate-300 mb-1">⚙️ To Destination:</label>
+              <select 
+                x-model="activeFeeder.to_node"
+                @change="activeFeeder.to_tag = activeFeeder.to_node; onFeederEndpointChange && onFeederEndpointChange();"
+                class="w-full h-8 px-2 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold"
+              >
+                <template x-for="item in (stack || allNodes || window.facilityNodes || [])" :key="item.id">
+                  <option :value="item.tag || item.id" x-show="item.tag !== activeFeeder.from_node" x-text="(item.tag || item.id) + ' (' + (item.name || item.domain) + ')'"></option>
+                </template>
+              </select>
+            </div>
+          </div>
+        </template>
 
-          <!-- To Node Pill -->
-          <button 
-            type="button" 
-            @click="jumpToEquipment(activeFeeder.to_node)"
-            class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
-            title="Inspect Downstream Load Equipment"
-          >
-            <span>⚙️ To:</span>
-            <span class="underline underline-offset-2" x-text="activeFeeder.to_tag || activeFeeder.to_node"></span>
-          </button>
-        </div>
+        <!-- If Existing Feeder Run: Clickable Quick Jump Chips -->
+        <template x-if="!activeFeeder.is_new">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 text-xs font-semibold min-w-0">
+              <!-- From Node Pill -->
+              <button 
+                type="button" 
+                @click="jumpToEquipment(activeFeeder.from_node)"
+                class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
+                title="Inspect Upstream Source Equipment"
+              >
+                <span>⚡ From:</span>
+                <span class="underline underline-offset-2" x-text="activeFeeder.from_tag || activeFeeder.from_node"></span>
+              </button>
 
-        <template x-if="activeFeeder.breaker_trip">
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shrink-0" x-text="activeFeeder.breaker_trip + 'A OCPD'"></span>
+              <span class="text-slate-400 dark:text-slate-500 font-bold">➔</span>
+
+              <!-- To Node Pill -->
+              <button 
+                type="button" 
+                @click="jumpToEquipment(activeFeeder.to_node)"
+                class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
+                title="Inspect Downstream Load Equipment"
+              >
+                <span>⚙️ To:</span>
+                <span class="underline underline-offset-2" x-text="activeFeeder.to_tag || activeFeeder.to_node"></span>
+              </button>
+            </div>
+
+            <template x-if="activeFeeder.breaker_trip">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shrink-0" x-text="activeFeeder.breaker_trip + 'A OCPD'"></span>
+            </template>
+          </div>
         </template>
       </div>
 

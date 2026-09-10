@@ -1088,6 +1088,7 @@
       // Populate activeFeeder
       this.activeFeeder = {
         id: feeder.id || `edge_${feeder.from_node}_${feeder.to_node}`,
+        is_new: Boolean(feeder.is_new),
         from_node: feeder.from_node || '',
         from_tag: feeder.from_tag || feeder.from_node || '',
         to_node: feeder.to_node || '',
@@ -1111,6 +1112,56 @@
       await this.calcCableVoltageDropRealtime();
 
       this.showCableDrawer = true;
+    },
+
+    async openNewFeederDrawer(fromNode = '', toNode = '') {
+      this.showFeederScheduleModal = false;
+      this.showEquipmentPicker = false;
+
+      // Ensure nodes and feeders are current
+      const pool = (typeof this.getNodePool === 'function') ? this.getNodePool() : (this.stack || this.allNodes || window.facilityNodes || []);
+      
+      const defaultFrom = fromNode || (pool.length > 0 ? (pool.find(n => n.domain === 'sources' || n.domain === 'panels')?.tag || pool[0].tag) : '');
+      const defaultTo = toNode || (pool.length > 1 ? (pool.find(n => n.tag !== defaultFrom && n.domain !== 'sources')?.tag || pool[1].tag) : '');
+
+      const targetToObj = pool.find(n => n.tag === defaultTo || n.id === defaultTo);
+      const toVolts = targetToObj ? (targetToObj.voltage || '480V 3Ø') : '480V 3Ø';
+      const toAmps = targetToObj ? (Number(targetToObj.amps) || 100) : 100;
+
+      this.activeFeeder = {
+        id: `edge_${Date.now()}`,
+        is_new: true,
+        from_node: defaultFrom,
+        from_tag: defaultFrom,
+        to_node: defaultTo,
+        to_tag: defaultTo,
+        sets: 1,
+        conductor: '4/0',
+        conductor_material: 'Cu',
+        insulation: 'THHN/THWN-2',
+        neutral: 'Full (100%)',
+        egc: '#4 AWG Cu',
+        conduit: 'Steel',
+        conduit_size: 'Auto',
+        length_ft: 100,
+        current_amps: toAmps,
+        voltage: toVolts,
+        breaker_trip: null,
+        breaker_poles: null
+      };
+
+      await this.calcCableVoltageDropRealtime();
+      this.showCableDrawer = true;
+    },
+
+    onFeederEndpointChange() {
+      const pool = (typeof this.getNodePool === 'function') ? this.getNodePool() : (this.stack || this.allNodes || window.facilityNodes || []);
+      const toObj = pool.find(n => n.tag === this.activeFeeder.to_node || n.id === this.activeFeeder.to_node);
+      if (toObj) {
+        if (toObj.voltage) this.activeFeeder.voltage = toObj.voltage;
+        if (toObj.amps) this.activeFeeder.current_amps = Number(toObj.amps) || 100;
+      }
+      this.calcCableVoltageDropRealtime();
     },
 
     closeCableDrawer() {
@@ -1250,6 +1301,31 @@
         }
 
         const updatedFeeder = await res.json();
+
+        // If newly created feeder run, also ensure destination node upstream sources include from_node
+        if (af.is_new) {
+          try {
+            const pool = (typeof this.getNodePool === 'function') ? this.getNodePool() : (this.stack || this.allNodes || window.facilityNodes || []);
+            const targetNode = pool.find(n => n.tag === af.to_node || n.id === af.to_node);
+            if (targetNode) {
+              const upList = Array.isArray(targetNode.upstream_sources) ? [...targetNode.upstream_sources] : (targetNode.fed_from ? [targetNode.fed_from] : []);
+              if (!upList.includes(af.from_node)) {
+                upList.push(af.from_node);
+              }
+              targetNode.fed_from = upList[0] || af.from_node;
+              targetNode.upstream_sources = upList;
+              
+              await fetch(`/api/clients/${c}/facilities/${f}/nodes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(targetNode)
+              });
+            }
+          } catch (syncErr) {
+            console.warn('Could not sync node upstream fed_from link:', syncErr);
+          }
+        }
+
         this.toast(`🔌 Saved feeder: ${af.from_tag || af.from_node} ➔ ${af.to_tag || af.to_node}!`);
         this.showCableDrawer = false;
 

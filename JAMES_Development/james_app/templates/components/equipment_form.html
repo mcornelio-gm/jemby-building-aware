@@ -110,19 +110,44 @@
       <template x-if="!(selectedDomain && selectedDomain.id === 'sources')">
         <div class="space-y-2">
           <template x-for="(src, sIdx) in (form.upstream_sources || [''])" :key="sIdx">
-            <div class="flex items-center gap-2">
-              <div class="w-36 shrink-0">
+            <div class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-1.5">
+              <div class="flex items-center justify-between gap-1.5">
                 <span 
-                  class="text-[10px] font-mono font-bold block truncate"
+                  class="text-[10px] font-mono font-bold truncate"
                   :class="(sIdx === 0) ? 'text-indigo-600 dark:text-indigo-400' : ((sIdx === 1 && isDualSourceEquipment()) ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400')"
                   x-text="getSourceLabel(sIdx)"
                 ></span>
+
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <!-- Inspect Feeder Button -->
+                  <template x-if="form.upstream_sources && form.upstream_sources[sIdx]">
+                    <button 
+                      type="button" 
+                      @click="openCableDrawer({ from_node: form.upstream_sources[sIdx], from_tag: form.upstream_sources[sIdx], to_node: form.id, to_tag: form.tag, voltage: form.voltage, current_amps: form.amps })"
+                      class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 hover:bg-amber-200 dark:bg-amber-950 dark:hover:bg-amber-900 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 transition flex items-center gap-1 shadow-2xs cursor-pointer"
+                      title="Inspect and edit incoming feeder cable specs & NEC voltage drop"
+                    >
+                      <span>🔌 Feeder Specs</span>
+                    </button>
+                  </template>
+
+                  <!-- Remove Source Button -->
+                  <button 
+                    type="button" 
+                    x-show="form.upstream_sources && form.upstream_sources.length > (isDualSourceEquipment() ? 2 : 1)"
+                    @click="removeUpstreamSource(sIdx)"
+                    title="Remove this upstream source"
+                    class="w-6 h-6 rounded text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs font-bold transition cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
 
               <select 
                 :value="(form.upstream_sources && form.upstream_sources[sIdx]) || ''" 
                 @change="onUpstreamSourceChange(sIdx, $event.target.value)"
-                class="flex-1 h-8 px-2.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white font-mono"
+                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 text-slate-900 dark:text-white font-mono min-w-0"
               >
                 <option value="">-- None / Select Upstream Feed --</option>
                 <template x-for="item in (eligibleUpstreamEquipment || allNodes || [])" :key="item.id">
@@ -134,29 +159,6 @@
                   ></option>
                 </template>
               </select>
-
-              <!-- Inspect Feeder Button -->
-              <template x-if="form.upstream_sources && form.upstream_sources[sIdx]">
-                <button 
-                  type="button" 
-                  @click="openCableDrawer({ from_node: form.upstream_sources[sIdx], from_tag: form.upstream_sources[sIdx], to_node: form.id, to_tag: form.tag, voltage: form.voltage, current_amps: form.amps })"
-                  class="px-2 py-1 rounded-md text-[10px] font-bold bg-amber-100 hover:bg-amber-200 dark:bg-amber-950 dark:hover:bg-amber-900 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 transition flex items-center gap-1 shadow-2xs cursor-pointer shrink-0"
-                  title="Inspect incoming feeder cable specs & voltage drop"
-                >
-                  <span>🔌 Feeder</span>
-                </button>
-              </template>
-
-              <!-- Remove Source Button -->
-              <button 
-                type="button" 
-                x-show="form.upstream_sources && form.upstream_sources.length > (isDualSourceEquipment() ? 2 : 1)"
-                @click="removeUpstreamSource(sIdx)"
-                title="Remove this upstream source"
-                class="w-7 h-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center text-xs font-bold transition cursor-pointer shrink-0"
-              >
-                ✕
-              </button>
             </div>
           </template>
         </div>
