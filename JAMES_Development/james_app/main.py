@@ -1061,10 +1061,10 @@ def api_export_facility_audit(client_id: str, facility_id: str, format: str = "m
 
     fmt = format.strip().lower()
     filename_base = f"{clean_c}_{clean_f}_system_integrity_audit"
+    disp = "inline" if inline else "attachment"
 
     if fmt == "pdf":
         pdf_bytes = generate_pdf_report(audit_data, client=clean_c, facility=clean_f)
-        disp = "inline" if inline else "attachment"
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
@@ -1072,28 +1072,30 @@ def api_export_facility_audit(client_id: str, facility_id: str, format: str = "m
         )
     elif fmt == "csv":
         csv_content = generate_csv_report(audit_data)
+        # Use text/plain for inline viewing in browser, text/csv for attachment
+        media = "text/plain; charset=utf-8" if inline else "text/csv; charset=utf-8"
         return Response(
             content=csv_content,
-            media_type="text/csv",
-            headers={"Content-Disposition": f'attachment; filename="{filename_base}.csv"'}
+            media_type=media,
+            headers={"Content-Disposition": f'{disp}; filename="{filename_base}.csv"'}
         )
     elif fmt == "json":
         return JSONResponse(
             content=audit_data,
-            headers={"Content-Disposition": f'attachment; filename="{filename_base}.json"'}
+            headers={"Content-Disposition": f'{disp}; filename="{filename_base}.json"'}
         )
     elif fmt == "txt":
         txt_content = generate_txt_report(audit_data, client=clean_c, facility=clean_f)
         return PlainTextResponse(
             content=txt_content,
-            headers={"Content-Disposition": f'attachment; filename="{filename_base}.txt"'}
+            headers={"Content-Disposition": f'{disp}; filename="{filename_base}.txt"'}
         )
     else:  # Default to Markdown with TOC (.md)
         md_content = generate_markdown_report(audit_data, client=clean_c, facility=clean_f)
         return PlainTextResponse(
             content=md_content,
-            media_type="text/markdown; charset=utf-8",
-            headers={"Content-Disposition": f'attachment; filename="{filename_base}.md"'}
+            media_type="text/plain; charset=utf-8" if inline else "text/markdown; charset=utf-8",
+            headers={"Content-Disposition": f'{disp}; filename="{filename_base}.md"'}
         )
 
 

@@ -235,46 +235,46 @@
         <div class="flex flex-wrap items-center gap-2">
           <!-- 1. Markdown with TOC (Recommended) -->
           <a 
-            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=md'"
-            download
+            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=md&inline=true'"
+            target="_blank"
             class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
-            title="Download Markdown Report with Table of Contents"
+            title="Open Markdown Report with Table of Contents in Browser"
           >
             <span>📝</span>
-            <span>Markdown (.MD with TOC)</span>
+            <span>Markdown (.MD) ↗</span>
           </a>
 
           <!-- 2. CSV Spreadsheet -->
           <a 
-            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=csv'"
-            download
+            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=csv&inline=true'"
+            target="_blank"
             class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1 cursor-pointer"
-            title="Download CSV for Excel"
+            title="View CSV in Browser Tab"
           >
             <span>📊</span>
-            <span>CSV</span>
+            <span>CSV ↗</span>
           </a>
 
           <!-- 3. JSON Pipeline -->
           <a 
-            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=json'"
-            download
+            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=json&inline=true'"
+            target="_blank"
             class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1 cursor-pointer"
-            title="Download JSON Payload"
+            title="View JSON Payload in Browser Tab"
           >
             <span>📦</span>
-            <span>JSON</span>
+            <span>JSON ↗</span>
           </a>
 
           <!-- 4. Plain Text -->
           <a 
-            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=txt'"
-            download
+            :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=txt&inline=true'"
+            target="_blank"
             class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1 cursor-pointer"
-            title="Download Plaintext Summary"
+            title="View Plaintext Summary in Browser Tab"
           >
             <span>📄</span>
-            <span>TXT</span>
+            <span>TXT ↗</span>
           </a>
 
           <!-- 5. Print / PDF -->
@@ -282,7 +282,7 @@
             :href="'/api/clients/' + encodeURIComponent(client) + '/facilities/' + encodeURIComponent(facility) + '/audit/export?format=pdf&inline=true'"
             target="_blank"
             class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition flex items-center gap-1 cursor-pointer"
-            title="Open Full PDF Report for Printing"
+            title="Open Full PDF Report for Viewing & Printing"
           >
             <span>📄</span>
             <span>Print PDF ↗</span>
