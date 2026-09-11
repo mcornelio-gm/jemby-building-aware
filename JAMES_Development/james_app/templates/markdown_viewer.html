@@ -211,12 +211,9 @@
     </main>
   </div>
 
-  <!-- Hidden Raw Content Container -->
-  <textarea id="rawMarkdownContent" style="display:none;">{{ raw_content }}</textarea>
-
   <script>
-    const rawContent = document.getElementById('rawMarkdownContent').value;
-    const targetSection = "{{ section or '' }}";
+    const rawContent = {{ raw_content | tojson }};
+    const targetSection = {{ section | tojson if section else "''" }};
 
     // 1. Configure marked
     marked.setOptions({

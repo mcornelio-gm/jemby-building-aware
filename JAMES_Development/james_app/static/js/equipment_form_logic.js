@@ -909,8 +909,8 @@
     openDocumentViewer(filename, page = 1, title = '', section = '') {
       if (!filename) return;
       const cleanFilename = (filename || '').trim().split('/').pop();
-      const ext = (cleanFilename || '').split('.').pop().toLowerCase();
       const pageNum = parseInt(page, 10) || 1;
+      const targetName = 'kb_doc_' + cleanFilename.replace(/[^a-zA-Z0-9_]/g, '_');
       const url = `/kb/viewer/${encodeURIComponent(cleanFilename)}?page=${pageNum}&title=${encodeURIComponent(title || '')}&section=${encodeURIComponent(section || '')}`;
 
       try {
