@@ -48,6 +48,15 @@
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
     
+    #contentScrollArea {
+      scroll-padding-top: 4rem;
+    }
+    .markdown-body h1, 
+    .markdown-body h2, 
+    .markdown-body h3, 
+    .markdown-body h4 {
+      scroll-margin-top: 4.5rem;
+    }
     .markdown-body pre {
       background-color: #0d1117 !important;
       border: 1px solid #30363d;
@@ -189,8 +198,8 @@
     </aside>
 
     <!-- Content Area -->
-    <main class="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 flex justify-center bg-slate-950/60" id="contentScrollArea">
-      <div class="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-xl p-8 md:p-12 shadow-2xl">
+    <main class="flex-1 overflow-y-auto py-8 px-4 md:px-10 lg:px-12 flex justify-center items-start bg-slate-950/60 scroll-smooth" id="contentScrollArea">
+      <div class="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-xl p-8 md:p-12 shadow-2xl mb-16">
         <!-- Breadcrumbs / Meta Tag -->
         <div class="flex items-center gap-2 text-xs text-slate-400 mb-6 pb-4 border-b border-slate-800">
           <span class="text-indigo-400 font-semibold">Knowledge Base</span>
@@ -284,17 +293,28 @@
       }
     }
 
-    // 5. Scroll to target section if provided
+    // 5. Scroll to target section if provided (and not the top H1 / Overview)
     if (targetSection) {
       setTimeout(() => {
-        const matchingHeading = Array.from(headings).find(h => 
-          h.textContent.toLowerCase().includes(targetSection.toLowerCase())
-        );
+        const matchingHeading = Array.from(headings).find((h, idx) => {
+          if (idx === 0) return false;
+          const cleanText = h.textContent.toLowerCase().replace(/^[0-9\.\s]+/, '').trim();
+          const cleanTarget = targetSection.toLowerCase().replace(/^[0-9\.\s]+/, '').trim();
+          return h.textContent.toLowerCase().includes(targetSection.toLowerCase()) || 
+                 (cleanTarget.length > 3 && cleanText.includes(cleanTarget));
+        });
         if (matchingHeading) {
           matchingHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          matchingHeading.classList.add('bg-indigo-950/60', 'p-2', 'rounded-lg');
+          matchingHeading.classList.add('bg-indigo-950/70', 'p-2', 'rounded-lg', 'transition-colors', 'duration-500');
+          setTimeout(() => {
+            matchingHeading.classList.remove('bg-indigo-950/70');
+          }, 3000);
+        } else {
+          document.getElementById('contentScrollArea').scrollTop = 0;
         }
-      }, 300);
+      }, 250);
+    } else {
+      document.getElementById('contentScrollArea').scrollTop = 0;
     }
 
     // 6. Copy Raw Markdown Action
