@@ -46,12 +46,14 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
   <!-- Highlight.js for Syntax Highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" id="hljs-dark">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light" disabled>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
 
   <!-- KaTeX for Math Equations (Voltage Drop, Power Formulas) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -89,7 +91,7 @@
       scroll-padding-top: 3rem;
     }
 
-    /* Light Theme Overrides */
+    /* Light Theme Structure Overrides */
     html:not(.dark) .bg-slate-900 {
       background-color: #ffffff !important;
       border-color: #e2e8f0 !important;
@@ -123,47 +125,61 @@
     html:not(.dark) .border-slate-700 {
       border-color: #e2e8f0 !important;
     }
-    html:not(.dark) .markdown-body {
-      color: #1e293b !important;
+
+    /* Inline Code Formatting */
+    .markdown-body :not(pre) > code {
+      font-size: 0.875em !important;
+      font-weight: 600 !important;
+      padding: 0.15em 0.4em !important;
+      border-radius: 4px !important;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
     }
-    html:not(.dark) .markdown-body h1,
-    html:not(.dark) .markdown-body h2,
-    html:not(.dark) .markdown-body h3,
-    html:not(.dark) .markdown-body h4 {
-      color: #0f172a !important;
+    html.dark .markdown-body :not(pre) > code {
+      background-color: #1e293b !important;
+      color: #fbbf24 !important;
+      border: 1px solid #334155 !important;
     }
-    html:not(.dark) .markdown-body p,
-    html:not(.dark) .markdown-body li {
-      color: #334155 !important;
-    }
-    html:not(.dark) .markdown-body code:not(pre code) {
+    html:not(.dark) .markdown-body :not(pre) > code {
       background-color: #f1f5f9 !important;
       color: #b45309 !important;
-      border: 1px solid #e2e8f0;
-    }
-    html:not(.dark) .markdown-body pre {
-      background-color: #f8fafc !important;
       border: 1px solid #e2e8f0 !important;
-      color: #0f172a !important;
-    }
-    html:not(.dark) .markdown-body table th {
-      background-color: #f1f5f9 !important;
-      color: #0f172a !important;
-      border-color: #cbd5e1 !important;
-    }
-    html:not(.dark) .markdown-body table td {
-      border-color: #e2e8f0 !important;
-      color: #334155 !important;
-    }
-    html:not(.dark) .markdown-body table tr:nth-child(even) {
-      background-color: #f8fafc !important;
     }
 
-    /* Dark Theme Markdown Specifics */
+    /* Code Blocks (<pre><code>) */
+    .markdown-body pre {
+      padding: 1.25rem 1.5rem !important;
+      border-radius: 10px !important;
+      overflow-x: auto !important;
+      font-size: 0.875rem !important;
+      line-height: 1.7 !important;
+      margin: 1.5rem 0 !important;
+    }
+    .markdown-body pre code {
+      background: transparent !important;
+      padding: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+      white-space: pre !important;
+      word-break: normal !important;
+      box-shadow: none !important;
+    }
     html.dark .markdown-body pre {
       background-color: #0d1117 !important;
-      border: 1px solid #30363d;
-      border-radius: 8px;
+      border: 1px solid #30363d !important;
+      color: #e6edf3 !important;
+    }
+    html:not(.dark) .markdown-body pre {
+      background-color: #f6f8fa !important;
+      border: 1px solid #d0d7de !important;
+      color: #1f2328 !important;
+    }
+
+    /* Tables */
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
     }
     html.dark .markdown-body table th {
       background-color: #1e293b;
@@ -180,23 +196,34 @@
     html.dark .markdown-body table tr:nth-child(even) {
       background-color: #111827;
     }
+    html:not(.dark) .markdown-body table th {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+    }
+    html:not(.dark) .markdown-body table td {
+      border: 1px solid #e2e8f0 !important;
+      color: #334155 !important;
+      padding: 0.65rem 1rem;
+    }
+    html:not(.dark) .markdown-body table tr:nth-child(even) {
+      background-color: #f8fafc !important;
+    }
+
+    /* Blockquotes */
     .markdown-body blockquote {
       border-left: 4px solid #6366f1;
       padding-left: 1rem;
       color: #94a3b8;
       font-style: italic;
     }
-    .markdown-body mark {
-      background-color: #fef08a;
-      color: #713f12;
-      padding: 0.1rem 0.3rem;
-      border-radius: 0.25rem;
-      font-weight: 600;
+    html:not(.dark) .markdown-body blockquote {
+      border-left: 4px solid #4f46e5;
+      color: #64748b;
     }
-    .dark .markdown-body mark {
-      background-color: #854d0e;
-      color: #fef08a;
-    }
+
     @media print {
       header, aside, .no-print { display: none !important; }
       main { width: 100% !important; margin: 0 !important; padding: 0 !important; }
@@ -321,7 +348,7 @@
         <!-- Rendered Markdown Body -->
         <article 
           id="markdownRenderBody" 
-          class="markdown-body prose prose-slate dark:prose-invert prose-indigo max-w-none prose-headings:font-bold prose-headings:text-slate-100 prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-indigo-400 hover:prose-a:text-indigo-300 prose-code:text-amber-300 prose-code:bg-slate-800/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:p-0"
+          class="markdown-body prose prose-slate dark:prose-invert max-w-none"
         >
           <!-- Markdown Content Rendered by JS -->
         </article>
@@ -362,7 +389,7 @@
       applyDocTheme(!isDark);
     }
 
-    // Initialize theme icon on load
+    // Initialize theme state
     const savedTheme = localStorage.getItem('james-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     applyDocTheme(savedTheme !== 'light');
 
