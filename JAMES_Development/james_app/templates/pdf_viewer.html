@@ -6,6 +6,22 @@
   <title>{{ title or filename }} — Build Aware Document Viewer</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
   
+  <!-- Early Theme Sync Script (FOUC Prevention) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('james-theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -33,11 +49,21 @@
   </script>
 
   <style>
-    body { background-color: #0f172a; }
+    html.dark, html.dark body { background-color: #0f172a; color: #f1f5f9; }
+    html:not(.dark), html:not(.dark) body { background-color: #f8fafc; color: #0f172a; }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: #0b1220; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    html:not(.dark) .bg-slate-900 { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
+    html:not(.dark) .bg-slate-950 { background-color: #f1f5f9 !important; }
+    html:not(.dark) .bg-slate-800, html:not(.dark) .bg-slate-800\/80 { background-color: #e2e8f0 !important; color: #1e293b !important; border-color: #cbd5e1 !important; }
+    html:not(.dark) .hover\:bg-slate-700:hover { background-color: #cbd5e1 !important; color: #0f172a !important; }
+    html:not(.dark) .text-slate-100, html:not(.dark) .text-slate-200 { color: #0f172a !important; }
+    html:not(.dark) .text-slate-300, html:not(.dark) .text-slate-400 { color: #475569 !important; }
+    html:not(.dark) .border-slate-800, html:not(.dark) .border-slate-700, html:not(.dark) .border-slate-700\/70 { border-color: #e2e8f0 !important; }
+
     .pdf-page-card {
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
       background-color: #ffffff;
@@ -50,7 +76,7 @@
     }
   </style>
 </head>
-<body class="h-full flex flex-col text-slate-100 font-sans antialiased overflow-hidden select-none">
+<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none">
 
   <!-- Top Navigation / Control Toolbar -->
   <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-20 shrink-0 shadow-md">
@@ -89,8 +115,19 @@
       </button>
     </div>
 
-    <!-- Right: Zoom, Download, Close Actions -->
+    <!-- Right: Theme, Zoom, Download, Close Actions -->
     <div class="flex items-center gap-2">
+      <!-- Dark / Light Theme Toggle -->
+      <button 
+        onclick="toggleDocTheme()" 
+        id="themeToggleBtn"
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
+        title="Toggle Light / Dark Mode"
+      >
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel" class="hidden md:inline">Dark</span>
+      </button>
+
       <!-- Zoom Controls -->
       <div class="hidden sm:flex items-center gap-1 bg-slate-800/80 border border-slate-700/70 px-2 py-1 rounded-lg">
         <button id="zoom-out" class="p-1 rounded hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer" title="Zoom Out (-)">
@@ -305,6 +342,36 @@
       else if (e.key === '+' || e.key === '=') document.getElementById('zoom-in').click();
       else if (e.key === '-') document.getElementById('zoom-out').click();
     });
+
+    // Theme Management
+    function applyDocTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        if (icon) icon.textContent = '🌙';
+        if (label) label.textContent = 'Dark';
+        localStorage.setItem('james-theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.colorScheme = 'light';
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        if (icon) icon.textContent = '☀️';
+        if (label) label.textContent = 'Light';
+        localStorage.setItem('james-theme', 'light');
+      }
+    }
+
+    function toggleDocTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      applyDocTheme(!isDark);
+    }
+
+    // Initialize theme state
+    const savedTheme = localStorage.getItem('james-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    applyDocTheme(savedTheme !== 'light');
 
     const currentDocName = ('{{ filename }}' || '').trim().split('/').pop().toLowerCase();
 

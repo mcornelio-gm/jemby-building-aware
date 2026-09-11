@@ -6,6 +6,22 @@
   <title>{{ title or filename }} — Build Aware Documentation</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
   
+  <!-- Early Theme Sync Script (FOUC Prevention) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('james-theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Tailwind CSS & Typography -->
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script>
@@ -30,7 +46,8 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
   <!-- Highlight.js for Syntax Highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" id="hljs-dark">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light" disabled>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
@@ -48,39 +65,119 @@
       overflow: hidden !important;
       margin: 0 !important;
       padding: 0 !important;
+      box-sizing: border-box;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    html.dark, html.dark body {
       background-color: #0f172a;
+      color: #f1f5f9;
+    }
+    html:not(.dark), html:not(.dark) body {
+      background-color: #f8fafc;
+      color: #0f172a;
     }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #0b1220; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    html:not(.dark) ::-webkit-scrollbar-track { background: #f1f5f9; }
+    html:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+    html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     
     #contentScrollArea {
       scroll-padding-top: 3rem;
     }
-    .markdown-body pre {
+
+    /* Light Theme Overrides */
+    html:not(.dark) .bg-slate-900 {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .bg-slate-950\/60,
+    html:not(.dark) .bg-slate-950 {
+      background-color: #f1f5f9 !important;
+    }
+    html:not(.dark) .bg-slate-900\/90 {
+      background-color: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .bg-slate-800 {
+      background-color: #e2e8f0 !important;
+      color: #1e293b !important;
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .hover\:bg-slate-700:hover {
+      background-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200 {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-slate-300,
+    html:not(.dark) .text-slate-400 {
+      color: #475569 !important;
+    }
+    html:not(.dark) .border-slate-800,
+    html:not(.dark) .border-slate-700 {
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .markdown-body {
+      color: #1e293b !important;
+    }
+    html:not(.dark) .markdown-body h1,
+    html:not(.dark) .markdown-body h2,
+    html:not(.dark) .markdown-body h3,
+    html:not(.dark) .markdown-body h4 {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .markdown-body p,
+    html:not(.dark) .markdown-body li {
+      color: #334155 !important;
+    }
+    html:not(.dark) .markdown-body code:not(pre code) {
+      background-color: #f1f5f9 !important;
+      color: #b45309 !important;
+      border: 1px solid #e2e8f0;
+    }
+    html:not(.dark) .markdown-body pre {
+      background-color: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    html:not(.dark) .markdown-body table th {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .markdown-body table td {
+      border-color: #e2e8f0 !important;
+      color: #334155 !important;
+    }
+    html:not(.dark) .markdown-body table tr:nth-child(even) {
+      background-color: #f8fafc !important;
+    }
+
+    /* Dark Theme Markdown Specifics */
+    html.dark .markdown-body pre {
       background-color: #0d1117 !important;
       border: 1px solid #30363d;
       border-radius: 8px;
     }
-    .markdown-body table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-    }
-    .markdown-body th {
+    html.dark .markdown-body table th {
       background-color: #1e293b;
       color: #f8fafc;
       font-weight: 600;
       padding: 0.75rem 1rem;
       border: 1px solid #334155;
     }
-    .markdown-body td {
+    html.dark .markdown-body table td {
       padding: 0.65rem 1rem;
       border: 1px solid #334155;
       color: #cbd5e1;
     }
-    .markdown-body tr:nth-child(even) {
+    html.dark .markdown-body table tr:nth-child(even) {
       background-color: #111827;
     }
     .markdown-body blockquote {
@@ -109,19 +206,19 @@
     }
   </style>
 </head>
-<body class="h-full flex flex-col text-slate-100 font-sans antialiased overflow-hidden">
+<body class="h-full flex flex-col font-sans antialiased overflow-hidden select-none">
 
   <!-- Top Navigation / Control Toolbar -->
   <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-20 shrink-0 shadow-md">
     <!-- Left: Branding & Document Title -->
     <div class="flex items-center gap-3 min-w-0">
-      <div class="flex items-center gap-2 bg-indigo-950/80 border border-indigo-800/60 px-2.5 py-1 rounded-lg">
+      <div class="flex items-center gap-2 bg-indigo-950/80 dark:bg-indigo-950/80 light:bg-indigo-50 border border-indigo-800/60 light:border-indigo-200 px-2.5 py-1 rounded-lg">
         <span class="text-sm">⚡</span>
-        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">BUILD AWARE DOCS</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300 dark:text-indigo-300 light:text-indigo-700">BUILD AWARE DOCS</span>
       </div>
       <div class="h-4 w-px bg-slate-700"></div>
       <div class="min-w-0 flex items-center gap-2">
-        <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60 font-semibold font-mono uppercase">{{ doc_type }}</span>
+        <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 dark:bg-emerald-950 light:bg-emerald-100 text-emerald-300 dark:text-emerald-300 light:text-emerald-800 border border-emerald-800/60 light:border-emerald-300 font-semibold font-mono uppercase">{{ doc_type }}</span>
         <h1 class="text-sm font-semibold text-slate-100 truncate" id="docTitle">{{ title or filename }}</h1>
       </div>
     </div>
@@ -139,11 +236,22 @@
       </div>
     </div>
 
-    <!-- Right: Actions & Tools -->
+    <!-- Right: Actions, Theme Toggle & Tools -->
     <div class="flex items-center gap-2">
+      <!-- Dark / Light Theme Toggle -->
+      <button 
+        onclick="toggleDocTheme()" 
+        id="themeToggleBtn"
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
+        title="Toggle Light / Dark Mode"
+      >
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel" class="hidden sm:inline">Dark</span>
+      </button>
+
       <button 
         onclick="window.print()" 
-        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
         title="Print Document to PDF"
       >
         <span>🖨️</span>
@@ -153,7 +261,7 @@
       <button 
         onclick="copyRawMarkdown()" 
         id="copyBtn"
-        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer"
         title="Copy Raw Markdown"
       >
         <span>📋</span>
@@ -163,7 +271,7 @@
       <a 
         href="/api/kb/view/{{ filename }}?raw=1" 
         download="{{ filename }}" 
-        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold" 
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer" 
         title="Download Original File"
       >
         <span>💾</span>
@@ -174,7 +282,7 @@
 
       <button 
         onclick="window.close()" 
-        class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 hover:text-rose-200 text-slate-400 transition text-xs"
+        class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 hover:text-rose-200 text-slate-400 transition text-xs cursor-pointer"
         title="Close Tab"
       >
         ✕
@@ -213,7 +321,7 @@
         <!-- Rendered Markdown Body -->
         <article 
           id="markdownRenderBody" 
-          class="markdown-body prose prose-invert prose-indigo max-w-none prose-headings:font-bold prose-headings:text-slate-100 prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-indigo-400 hover:prose-a:text-indigo-300 prose-code:text-amber-300 prose-code:bg-slate-800/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:p-0"
+          class="markdown-body prose prose-slate dark:prose-invert prose-indigo max-w-none prose-headings:font-bold prose-headings:text-slate-100 prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-indigo-400 hover:prose-a:text-indigo-300 prose-code:text-amber-300 prose-code:bg-slate-800/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:p-0"
         >
           <!-- Markdown Content Rendered by JS -->
         </article>
@@ -225,7 +333,40 @@
     const rawContent = {{ raw_content | tojson }};
     const targetSection = {{ section | tojson if section else "''" }};
 
-    // 1. Configure marked
+    // 1. Theme Management
+    function applyDocTheme(isDark) {
+      const darkCss = document.getElementById('hljs-dark');
+      const lightCss = document.getElementById('hljs-light');
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
+        document.getElementById('themeIcon').textContent = '🌙';
+        document.getElementById('themeLabel').textContent = 'Dark';
+        if (darkCss) darkCss.disabled = false;
+        if (lightCss) lightCss.disabled = true;
+        localStorage.setItem('james-theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.colorScheme = 'light';
+        document.getElementById('themeIcon').textContent = '☀️';
+        document.getElementById('themeLabel').textContent = 'Light';
+        if (darkCss) darkCss.disabled = true;
+        if (lightCss) lightCss.disabled = false;
+        localStorage.setItem('james-theme', 'light');
+      }
+    }
+
+    function toggleDocTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      applyDocTheme(!isDark);
+    }
+
+    // Initialize theme icon on load
+    const savedTheme = localStorage.getItem('james-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    applyDocTheme(savedTheme !== 'light');
+
+    // 2. Configure marked
     marked.setOptions({
       gfm: true,
       breaks: true,
@@ -239,11 +380,11 @@
       }
     });
 
-    // 2. Render Markdown
+    // 3. Render Markdown
     const renderContainer = document.getElementById('markdownRenderBody');
     renderContainer.innerHTML = marked.parse(rawContent);
 
-    // 3. Render Math Equations (KaTeX)
+    // 4. Render Math Equations (KaTeX)
     try {
       renderMathInElement(renderContainer, {
         delimiters: [
@@ -256,7 +397,7 @@
       console.warn('Math rendering skipped:', e);
     }
 
-    // 4. Generate Table of Contents and Anchor Links
+    // 5. Generate Table of Contents and Anchor Links
     const headings = renderContainer.querySelectorAll('h1, h2, h3, h4');
     const tocContainer = document.getElementById('tocContainer');
     document.getElementById('headingCount').textContent = headings.length;
@@ -301,14 +442,19 @@
 
     function highlightActiveToc(activeItem) {
       tocContainer.querySelectorAll('a').forEach(a => {
-        a.classList.remove('bg-indigo-950', 'text-indigo-300', 'font-semibold');
+        a.classList.remove('bg-indigo-950', 'text-indigo-300', 'font-semibold', 'bg-indigo-100', 'text-indigo-700');
       });
       if (activeItem) {
-        activeItem.classList.add('bg-indigo-950', 'text-indigo-300', 'font-semibold');
+        const isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+          activeItem.classList.add('bg-indigo-950', 'text-indigo-300', 'font-semibold');
+        } else {
+          activeItem.classList.add('bg-indigo-100', 'text-indigo-700', 'font-semibold');
+        }
       }
     }
 
-    // 5. Scroll page to target section if provided (and not the top H1 title)
+    // 6. Scroll page to target section if provided (and not the top H1 title)
     if (targetSection) {
       setTimeout(() => {
         const matchingHeading = Array.from(headings).find((h, idx) => {
@@ -337,7 +483,7 @@
       document.getElementById('contentScrollArea').scrollTop = 0;
     }
 
-    // 6. Copy Raw Markdown Action
+    // 7. Copy Raw Markdown Action
     function copyRawMarkdown() {
       navigator.clipboard.writeText(rawContent).then(() => {
         const btn = document.getElementById('copyBtn');
@@ -347,7 +493,7 @@
       });
     }
 
-    // 7. In-Document Search Filter
+    // 8. In-Document Search Filter
     const searchInput = document.getElementById('docSearchInput');
     const matchCountBadge = document.getElementById('searchMatchCount');
 
