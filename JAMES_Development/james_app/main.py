@@ -1298,45 +1298,48 @@ async def api_kb_ingest_file(
     }
 
 
-@app.get("/api/kb/view/{filename:path}")
-def api_kb_view_file(filename: str):
-    """
-    Serve knowledge base documents (PDFs, Markdown, HTML, text) inline for in-browser viewing.
-    Browsers natively support deep-linking to specific PDF pages using the URL hash '#page=N'.
-    """
+def _resolve_kb_file(filename: str) -> Optional[Path]:
     clean_name = os.path.basename(filename.strip())
     if not clean_name:
-        raise HTTPException(status_code=400, detail="Invalid filename")
+        return None
 
     PROJECT_ROOT = BASE_DIR.parent
-    # Search potential source directories
     search_dirs = [
         PROJECT_ROOT / "faq",
         PROJECT_ROOT / "data" / "faq",
         PROJECT_ROOT / "data" / "knowledge_base",
         PROJECT_ROOT / "docs" / "faq",
+        PROJECT_ROOT / "docs" / "objects",
         PROJECT_ROOT / "docs",
         PROJECT_ROOT,
         PROJECT_ROOT.parent,
         BASE_DIR / "static",
     ]
 
-    target_path = None
-    # 1. Direct candidates
+    # 1. Direct match
     for s_dir in search_dirs:
         candidate = s_dir / clean_name
         if candidate.exists() and candidate.is_file():
-            target_path = candidate
-            break
+            return candidate
 
-    # 2. Recursive fallback for nested subfolders (e.g. faq/safety/...)
-    if not target_path:
-        for s_dir in search_dirs:
-            if s_dir.exists() and s_dir.is_dir():
-                found = list(s_dir.rglob(clean_name))
-                if found and found[0].is_file():
-                    target_path = found[0]
-                    break
+    # 2. Recursive search
+    for s_dir in search_dirs:
+        if s_dir.exists() and s_dir.is_dir():
+            found = list(s_dir.rglob(clean_name))
+            if found and found[0].is_file():
+                return found[0]
+
+    return None
+
+
+@app.get("/api/kb/view/{filename:path}")
+def api_kb_view_file(filename: str, raw: bool = False):
+    """
+    Serve knowledge base documents inline or redirect Markdown documents to the rich web viewer.
+    Pass '?raw=1' or '?raw=true' to retrieve the unformatted raw file.
+    """
+    clean_name = os.path.basename(filename.strip())
+    target_path = _resolve_kb_file(filename)
 
     if not target_path:
         raise HTTPException(
@@ -1345,6 +1348,11 @@ def api_kb_view_file(filename: str):
         )
 
     ext = target_path.suffix.lower()
+
+    # If it's a Markdown file and raw output wasn't explicitly requested, redirect to the rich web viewer
+    if ext in (".md", ".markdown") and not raw:
+        return RedirectResponse(url=f"/kb/viewer/{clean_name}", status_code=303)
+
     media_types = {
         ".pdf": "application/pdf",
         ".md": "text/plain; charset=utf-8",
@@ -1378,10 +1386,74 @@ def kb_web_viewer(
     section: Optional[str] = None
 ):
     """
-    Dedicated in-browser Web PDF Viewer powered by Mozilla PDF.js.
-    Renders pure HTML5 Canvas in the browser tab, preventing external Adobe Acrobat desktop/plugin hijack.
+    Unified In-Browser Knowledge Base Viewer:
+    - Renders Markdown documents with GitHub-flavored typography, table of contents, syntax highlighting & KaTeX math.
+    - Renders PDFs via Mozilla PDF.js HTML5 canvas.
     """
     clean_name = os.path.basename(filename.strip())
+    target_path = _resolve_kb_file(filename)
+
+    if not target_path:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Document '{clean_name}' not found in Knowledge Base repository."
+        )
+
+    ext = target_path.suffix.lower()
+
+    # 1. Markdown / Plaintext Documents
+    if ext in (".md", ".markdown", ".txt"):
+        try:
+            raw_content = target_path.read_text(encoding="utf-8", errors="replace")
+        except Exception as e:
+            raw_content = f"# Error Loading Document\n\nCould not read file: {e}"
+
+        # Infer Document Classification and Title
+        doc_type = "DOCUMENTATION"
+        category = "Knowledge Base"
+        doc_title = title or clean_name
+
+        path_str = str(target_path)
+        if "objects" in path_str:
+            doc_type = "OBJECT SPEC"
+            category = "Digital Twin Objects"
+        elif "CONOPS" in clean_name.upper():
+            doc_type = "CONOPS"
+            category = "Concept of Operations"
+        elif "PRD" in clean_name.upper():
+            doc_type = "PRD"
+            category = "Product Requirements"
+        elif "FEEDER" in clean_name.upper():
+            doc_type = "SPECIFICATION"
+            category = "Feeder Architecture"
+        elif "ROADMAP" in clean_name.upper():
+            doc_type = "ROADMAP"
+            category = "System Architecture"
+        elif "GUIDE" in clean_name.upper():
+            doc_type = "WORKFLOW GUIDE"
+            category = "Field Workflows"
+
+        # If title is default, extract first H1 heading if present
+        if not title:
+            for line in raw_content.splitlines():
+                if line.startswith("# ") and not line.startswith("## "):
+                    doc_title = line[2:].strip()
+                    break
+
+        return templates.TemplateResponse(
+            request=request,
+            name="markdown_viewer.html",
+            context={
+                "filename": clean_name,
+                "title": doc_title,
+                "doc_type": doc_type,
+                "category": category,
+                "raw_content": raw_content,
+                "section": section or ""
+            }
+        )
+
+    # 2. PDF Documents
     return templates.TemplateResponse(
         request=request,
         name="pdf_viewer.html",
@@ -1389,7 +1461,7 @@ def kb_web_viewer(
             "filename": clean_name,
             "initial_page": max(1, page),
             "title": title or clean_name,
-            "section": section
+            "section": section or ""
         }
     )
 

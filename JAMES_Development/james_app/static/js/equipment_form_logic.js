@@ -911,10 +911,7 @@
       const cleanFilename = (filename || '').trim().split('/').pop();
       const ext = (cleanFilename || '').split('.').pop().toLowerCase();
       const pageNum = parseInt(page, 10) || 1;
-      const targetName = 'kb_doc_' + cleanFilename.replace(/[^a-zA-Z0-9_]/g, '_');
-      const url = ext === 'pdf'
-        ? `/kb/viewer/${encodeURIComponent(cleanFilename)}?page=${pageNum}&title=${encodeURIComponent(title || '')}&section=${encodeURIComponent(section || '')}`
-        : `/api/kb/view/${encodeURIComponent(cleanFilename)}`;
+      const url = `/kb/viewer/${encodeURIComponent(cleanFilename)}?page=${pageNum}&title=${encodeURIComponent(title || '')}&section=${encodeURIComponent(section || '')}`;
 
       try {
         const bc = new BroadcastChannel('build_aware_kb_channel');

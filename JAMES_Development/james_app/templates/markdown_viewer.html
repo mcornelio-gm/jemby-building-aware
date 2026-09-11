@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or filename }} — Build Aware Documentation</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  
+  <!-- Tailwind CSS & Typography -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Marked.js for GitHub Flavored Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
+  <!-- Highlight.js for Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+
+  <!-- KaTeX for Math Equations (Voltage Drop, Power Formulas) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    body { background-color: #0f172a; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b1220; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    .markdown-body pre {
+      background-color: #0d1117 !important;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+    }
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+    .markdown-body th {
+      background-color: #1e293b;
+      color: #f8fafc;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border: 1px solid #334155;
+    }
+    .markdown-body td {
+      padding: 0.65rem 1rem;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+    }
+    .markdown-body tr:nth-child(even) {
+      background-color: #111827;
+    }
+    .markdown-body blockquote {
+      border-left: 4px solid #6366f1;
+      padding-left: 1rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+    .markdown-body mark {
+      background-color: #fef08a;
+      color: #713f12;
+      padding: 0.1rem 0.3rem;
+      border-radius: 0.25rem;
+      font-weight: 600;
+    }
+    .dark .markdown-body mark {
+      background-color: #854d0e;
+      color: #fef08a;
+    }
+    @media print {
+      header, aside, .no-print { display: none !important; }
+      main { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      body { background: white !important; color: black !important; }
+      .markdown-body { color: black !important; }
+      .markdown-body pre { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; color: black !important; }
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col text-slate-100 font-sans antialiased overflow-hidden">
+
+  <!-- Top Navigation / Control Toolbar -->
+  <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-20 shrink-0 shadow-md">
+    <!-- Left: Branding & Document Title -->
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center gap-2 bg-indigo-950/80 border border-indigo-800/60 px-2.5 py-1 rounded-lg">
+        <span class="text-sm">⚡</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">BUILD AWARE DOCS</span>
+      </div>
+      <div class="h-4 w-px bg-slate-700"></div>
+      <div class="min-w-0 flex items-center gap-2">
+        <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60 font-semibold font-mono uppercase">{{ doc_type }}</span>
+        <h1 class="text-sm font-semibold text-slate-100 truncate" id="docTitle">{{ title or filename }}</h1>
+      </div>
+    </div>
+
+    <!-- Center: Search in Document -->
+    <div class="hidden md:flex items-center gap-2">
+      <div class="relative">
+        <input 
+          type="text" 
+          id="docSearchInput" 
+          placeholder="Search in document (Ctrl+F)..." 
+          class="w-64 px-3 py-1.5 text-xs bg-slate-800 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition"
+        >
+        <span id="searchMatchCount" class="absolute right-2 top-1.5 text-[10px] text-slate-400"></span>
+      </div>
+    </div>
+
+    <!-- Right: Actions & Tools -->
+    <div class="flex items-center gap-2">
+      <button 
+        onclick="window.print()" 
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
+        title="Print Document to PDF"
+      >
+        <span>🖨️</span>
+        <span class="hidden sm:inline">Print / PDF</span>
+      </button>
+
+      <button 
+        onclick="copyRawMarkdown()" 
+        id="copyBtn"
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
+        title="Copy Raw Markdown"
+      >
+        <span>📋</span>
+        <span class="hidden sm:inline">Copy MD</span>
+      </button>
+
+      <a 
+        href="/api/kb/view/{{ filename }}?raw=1" 
+        download="{{ filename }}" 
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold" 
+        title="Download Original File"
+      >
+        <span>💾</span>
+        <span class="hidden sm:inline">Download</span>
+      </a>
+
+      <div class="h-4 w-px bg-slate-700 mx-1"></div>
+
+      <button 
+        onclick="window.close()" 
+        class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 hover:text-rose-200 text-slate-400 transition text-xs"
+        title="Close Tab"
+      >
+        ✕
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Body: Sidebar TOC + Formatted Content -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- Sidebar: Table of Contents -->
+    <aside id="sidebarToc" class="w-72 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0 overflow-hidden transition-all duration-200">
+      <div class="p-3 border-b border-slate-800 flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+          <span>📑</span> Table of Contents
+        </span>
+        <span id="headingCount" class="text-[11px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">0</span>
+      </div>
+      <nav id="tocContainer" class="flex-1 overflow-y-auto p-3 space-y-1 text-xs">
+        <!-- Generated Dynamically -->
+      </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="flex-1 overflow-y-auto p-6 md:p-12 lg:p-16 flex justify-center bg-slate-950/60" id="contentScrollArea">
+      <div class="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-xl p-8 md:p-12 shadow-2xl">
+        <!-- Breadcrumbs / Meta Tag -->
+        <div class="flex items-center gap-2 text-xs text-slate-400 mb-6 pb-4 border-b border-slate-800">
+          <span class="text-indigo-400 font-semibold">Knowledge Base</span>
+          <span>/</span>
+          <span>{{ category or 'Documentation' }}</span>
+          <span>/</span>
+          <span class="text-slate-200 font-mono">{{ filename }}</span>
+        </div>
+
+        <!-- Rendered Markdown Body -->
+        <article 
+          id="markdownRenderBody" 
+          class="markdown-body prose prose-invert prose-indigo max-w-none prose-headings:font-bold prose-headings:text-slate-100 prose-p:text-slate-300 prose-p:leading-relaxed prose-a:text-indigo-400 hover:prose-a:text-indigo-300 prose-code:text-amber-300 prose-code:bg-slate-800/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:p-0"
+        >
+          <!-- Markdown Content Rendered by JS -->
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <!-- Hidden Raw Content Container -->
+  <textarea id="rawMarkdownContent" style="display:none;">{{ raw_content }}</textarea>
+
+  <script>
+    const rawContent = document.getElementById('rawMarkdownContent').value;
+    const targetSection = "{{ section or '' }}";
+
+    // 1. Configure marked
+    marked.setOptions({
+      gfm: true,
+      breaks: true,
+      highlight: function(code, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(code, { language: lang }).value;
+          } catch (e) {}
+        }
+        return hljs.highlightAuto(code).value;
+      }
+    });
+
+    // 2. Render Markdown
+    const renderContainer = document.getElementById('markdownRenderBody');
+    renderContainer.innerHTML = marked.parse(rawContent);
+
+    // 3. Render Math Equations (KaTeX)
+    try {
+      renderMathInElement(renderContainer, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+      });
+    } catch(e) {
+      console.warn('Math rendering skipped:', e);
+    }
+
+    // 4. Generate Table of Contents and Anchor Links
+    const headings = renderContainer.querySelectorAll('h1, h2, h3, h4');
+    const tocContainer = document.getElementById('tocContainer');
+    document.getElementById('headingCount').textContent = headings.length;
+
+    headings.forEach((heading, idx) => {
+      const text = heading.textContent.trim();
+      const slug = 'heading-' + idx + '-' + text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      heading.id = slug;
+
+      const level = parseInt(heading.tagName.substring(1), 10);
+      const indentClass = level === 1 ? 'font-bold text-slate-200' :
+                          level === 2 ? 'pl-3 text-slate-300 font-medium' :
+                          level === 3 ? 'pl-6 text-slate-400' : 'pl-9 text-slate-500';
+
+      const tocItem = document.createElement('a');
+      tocItem.href = '#' + slug;
+      tocItem.className = `block py-1.5 px-2 rounded hover:bg-slate-800 transition truncate ${indentClass}`;
+      tocItem.textContent = text;
+      tocItem.onclick = (e) => {
+        e.preventDefault();
+        heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, null, '#' + slug);
+        highlightActiveToc(tocItem);
+      };
+
+      tocContainer.appendChild(tocItem);
+    });
+
+    function highlightActiveToc(activeItem) {
+      tocContainer.querySelectorAll('a').forEach(a => {
+        a.classList.remove('bg-indigo-950', 'text-indigo-300', 'font-semibold');
+      });
+      if (activeItem) {
+        activeItem.classList.add('bg-indigo-950', 'text-indigo-300', 'font-semibold');
+      }
+    }
+
+    // 5. Scroll to target section if provided
+    if (targetSection) {
+      setTimeout(() => {
+        const matchingHeading = Array.from(headings).find(h => 
+          h.textContent.toLowerCase().includes(targetSection.toLowerCase())
+        );
+        if (matchingHeading) {
+          matchingHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          matchingHeading.classList.add('bg-indigo-950/60', 'p-2', 'rounded-lg');
+        }
+      }, 300);
+    }
+
+    // 6. Copy Raw Markdown Action
+    function copyRawMarkdown() {
+      navigator.clipboard.writeText(rawContent).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<span>✅</span><span class="hidden sm:inline">Copied!</span>';
+        setTimeout(() => { btn.innerHTML = oldHtml; }, 2000);
+      });
+    }
+
+    // 7. In-Document Search Filter
+    const searchInput = document.getElementById('docSearchInput');
+    const matchCountBadge = document.getElementById('searchMatchCount');
+
+    searchInput.addEventListener('input', (e) => {
+      const term = e.target.value.trim().toLowerCase();
+      if (!term) {
+        matchCountBadge.textContent = '';
+        renderContainer.querySelectorAll('mark.doc-match').forEach(m => {
+          m.replaceWith(...m.childNodes);
+        });
+        return;
+      }
+      
+      let count = 0;
+      // Search headings in TOC
+      tocContainer.querySelectorAll('a').forEach(a => {
+        const matches = a.textContent.toLowerCase().includes(term);
+        a.style.display = matches ? 'block' : 'none';
+        if (matches) count++;
+      });
+      matchCountBadge.textContent = count > 0 ? `${count} sec` : '0';
+    });
+  </script>
+</body>
+</html>

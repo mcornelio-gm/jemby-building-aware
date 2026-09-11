@@ -128,11 +128,32 @@ def test_kb_view_file_inline():
 
 def test_kb_web_viewer_html():
     client = TestClient(app)
+    # 1. Test PDF viewer
     res = client.get("/kb/viewer/QSG-Arc%20Flash%20Labeling.pdf?page=4&title=Arc%20Flash%20Labeling")
     assert res.status_code == 200
     assert "text/html" in res.headers.get("content-type", "")
     assert "BUILD AWARE" in res.text
     assert "pdfjsLib" in res.text
     assert 'value="4"' in res.text
+
+    # 2. Test Markdown document viewer
+    md_res = client.get("/kb/viewer/main_distribution.md")
+    assert md_res.status_code == 200
+    assert "text/html" in md_res.headers.get("content-type", "")
+    assert "marked.min.js" in md_res.text
+    assert "Table of Contents" in md_res.text
+    assert "Main Distribution Panel" in md_res.text
+
+    # 3. Test /api/kb/view redirect to rich viewer for markdown
+    view_res = client.get("/api/kb/view/main_distribution.md", follow_redirects=False)
+    assert view_res.status_code == 303
+    assert view_res.headers["location"] == "/kb/viewer/main_distribution.md"
+
+    # 4. Test raw markdown retrieval with ?raw=1
+    raw_res = client.get("/api/kb/view/main_distribution.md?raw=1")
+    assert raw_res.status_code == 200
+    assert "text/plain" in raw_res.headers.get("content-type", "")
+    assert "# Object Specification: Main Distribution Panel" in raw_res.text
+
 
 
