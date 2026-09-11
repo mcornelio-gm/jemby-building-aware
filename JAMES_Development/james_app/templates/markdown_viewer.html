@@ -225,11 +225,110 @@
     }
 
     @media print {
-      header, aside, .no-print { display: none !important; }
-      main { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-      body { background: white !important; color: black !important; }
-      .markdown-body { color: black !important; }
-      .markdown-body pre { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; color: black !important; }
+      @page {
+        margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+        size: portrait;
+      }
+      html, body {
+        height: auto !important;
+        min-height: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        position: static !important;
+        display: block !important;
+      }
+      header, aside, #sidebarToc, .no-print {
+        display: none !important;
+      }
+      div.flex-1.flex.overflow-hidden,
+      div.flex-1,
+      div.flex {
+        display: block !important;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        position: static !important;
+      }
+      main, #contentScrollArea {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        position: static !important;
+      }
+      #contentScrollArea > div {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        background: transparent !important;
+        margin: 0 !important;
+      }
+      .markdown-body {
+        color: #0f172a !important;
+        max-width: 100% !important;
+        font-size: 11pt !important;
+        line-height: 1.6 !important;
+      }
+      .markdown-body h1 {
+        font-size: 18pt !important;
+        color: #0f172a !important;
+        break-after: avoid;
+        page-break-after: avoid;
+        margin-top: 1rem !important;
+        margin-bottom: 0.75rem !important;
+      }
+      .markdown-body h2 {
+        font-size: 14pt !important;
+        color: #0f172a !important;
+        break-after: avoid;
+        page-break-after: avoid;
+        margin-top: 1.25rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      .markdown-body h3, .markdown-body h4 {
+        font-size: 12pt !important;
+        color: #0f172a !important;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+      .markdown-body p, .markdown-body li {
+        color: #334155 !important;
+        orphans: 3;
+        widows: 3;
+      }
+      .markdown-body pre,
+      .markdown-body table,
+      .markdown-body blockquote {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin: 1rem 0 !important;
+      }
+      .markdown-body pre {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+        font-size: 9pt !important;
+        line-height: 1.5 !important;
+      }
+      .markdown-body table th {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      .markdown-body table td {
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+      }
     }
   </style>
 </head>
