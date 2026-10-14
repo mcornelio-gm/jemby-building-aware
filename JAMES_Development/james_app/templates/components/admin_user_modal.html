@@ -1,0 +1,375 @@
+<!-- JAMES Admin User & Access Management Console Modal Component -->
+<div 
+  x-show="showAdminUserModal" 
+  x-cloak
+  class="fixed inset-0 overflow-y-auto"
+  style="z-index: 99999 !important;"
+  aria-labelledby="admin-console-title" 
+  role="dialog" 
+  aria-modal="true"
+  @keydown.escape.window="if (showAdminUserModal) closeAdminUserModal()"
+>
+  <!-- Background backdrop -->
+  <div 
+    x-show="showAdminUserModal"
+    x-transition:enter="ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"
+    @click="closeAdminUserModal()"
+  ></div>
+
+  <!-- Centering container -->
+  <div class="flex min-h-full items-center justify-center p-3 sm:p-6">
+    <!-- Main Modal Dialog Card -->
+    <div 
+      x-show="showAdminUserModal"
+      x-transition:enter="ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+      x-transition:leave="ease-in duration-150"
+      x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-95"
+      class="relative transform overflow-hidden rounded-2xl bg-slate-900 border border-slate-700/80 text-left shadow-2xl transition-all sm:my-8 w-full max-w-4xl max-h-[90vh] flex flex-col"
+    >
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-lg">
+            👥
+          </div>
+          <div>
+            <h2 id="admin-console-title" class="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+              <span>User & Access Console</span>
+              <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Admin</span>
+            </h2>
+            <p class="text-xs text-slate-400">Manage team accounts, roles, and reset member passwords</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button"
+            @click="openAdminAddUser()" 
+            class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-slate-950 shadow-md transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>➕</span>
+            <span>Add User</span>
+          </button>
+          <button 
+            type="button"
+            @click="closeAdminUserModal()" 
+            class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            title="Close (Esc)"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Alert / Banner message -->
+      <div x-show="adminToast && adminToast.message" x-cloak class="px-6 py-2.5 text-xs font-semibold flex items-center justify-between shrink-0 transition"
+           :class="adminToast && adminToast.type === 'error' ? 'bg-rose-950/80 text-rose-300 border-b border-rose-800' : 'bg-emerald-950/80 text-emerald-300 border-b border-emerald-800'">
+        <span x-text="adminToast?.message"></span>
+        <button type="button" @click="adminToast.message = ''" class="text-slate-400 hover:text-white ml-3">✕</button>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="p-6 overflow-y-auto space-y-4 flex-1">
+        <!-- Search & Filters -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="relative w-full sm:w-72">
+            <input 
+              type="text" 
+              x-model="adminSearchQuery" 
+              placeholder="Search email, name, role..."
+              class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl px-3.5 py-2 pl-9 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+            >
+            <span class="absolute left-3 top-2.5 text-slate-500 text-xs">🔍</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-400 self-end sm:self-auto">
+            <span>Total Accounts:</span>
+            <span class="font-mono font-bold text-white bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700" x-text="adminUsers?.length || 0"></span>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/40">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950/80 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+                <tr>
+                  <th class="px-4 py-3">Member</th>
+                  <th class="px-4 py-3">Role</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3 hidden md:table-cell">Last Active</th>
+                  <th class="px-4 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60">
+                <template x-for="u in (getFilteredAdminUsers ? getFilteredAdminUsers() : [])" :key="u.id || u.email">
+                  <tr class="hover:bg-slate-800/40 transition">
+                    <td class="px-4 py-3">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-slate-200 text-xs shrink-0"
+                             x-text="(u.name || u.username || '?').charAt(0).toUpperCase()">
+                        </div>
+                        <div class="min-w-0">
+                          <div class="font-bold text-white truncate" x-text="u.name"></div>
+                          <div class="text-slate-400 font-mono text-[11px] truncate" x-text="u.email"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span 
+                        class="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold tracking-wider border"
+                        :class="{
+                          'bg-emerald-500/20 text-emerald-300 border-emerald-500/40': u.role === 'admin',
+                          'bg-sky-500/20 text-sky-300 border-sky-500/40': u.role === 'engineer',
+                          'bg-amber-500/20 text-amber-300 border-amber-500/40': u.role === 'surveyor',
+                          'bg-slate-700/40 text-slate-300 border-slate-600': u.role === 'viewer'
+                        }"
+                        x-text="u.role"
+                      ></span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <button 
+                        type="button"
+                        @click="toggleAdminUserActive(u)"
+                        class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold border transition cursor-pointer"
+                        :class="u.is_active ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/60 hover:bg-rose-950/40 hover:text-rose-300' : 'bg-rose-950/40 text-rose-400 border-rose-800/60 hover:bg-emerald-950/40 hover:text-emerald-300'"
+                        :title="u.is_active ? 'Click to deactivate' : 'Click to activate'"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full" :class="u.is_active ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'"></span>
+                        <span x-text="u.is_active ? 'Active' : 'Disabled'"></span>
+                      </button>
+                    </td>
+                    <td class="px-4 py-3 text-slate-400 font-mono text-[11px] hidden md:table-cell" x-text="u.last_login_at || 'Never'"></td>
+                    <td class="px-4 py-3 text-right">
+                      <div class="flex items-center justify-end gap-1.5">
+                        <!-- Reset Password Button -->
+                        <button 
+                          type="button"
+                          @click="openAdminResetPassword(u)" 
+                          class="px-2.5 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
+                          title="Reset User Password"
+                        >
+                          <span>🔑</span>
+                          <span class="hidden sm:inline">Reset PW</span>
+                        </button>
+
+                        <!-- Edit User Button -->
+                        <button 
+                          type="button"
+                          @click="openAdminEditUser(u)" 
+                          class="p-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs transition cursor-pointer"
+                          title="Edit User Details"
+                        >
+                          ✏️
+                        </button>
+
+                        <!-- Delete User Button -->
+                        <button 
+                          type="button"
+                          @click="deleteAdminUser(u)" 
+                          class="p-1.5 rounded-md bg-rose-950/30 hover:bg-rose-900/60 text-rose-400 border border-rose-800/50 text-xs transition cursor-pointer"
+                          title="Delete User"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-Modal: Reset Password Dialog -->
+  <div 
+    x-show="adminResetModal && adminResetModal.isOpen" 
+    x-cloak 
+    class="fixed inset-0 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+    style="z-index: 100000 !important;"
+  >
+    <div @click.away="adminResetModal.isOpen = false" class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔑</span>
+          <h3 class="text-sm font-bold text-white">Reset User Password</h3>
+        </div>
+        <button type="button" @click="adminResetModal.isOpen = false" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3 flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-bold text-emerald-400 text-xs"
+             x-text="(adminResetModal?.user?.name || '?').charAt(0).toUpperCase()">
+        </div>
+        <div class="min-w-0">
+          <div class="font-bold text-white text-xs truncate" x-text="adminResetModal?.user?.name"></div>
+          <div class="text-slate-400 font-mono text-[11px] truncate" x-text="adminResetModal?.user?.email"></div>
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="block text-xs font-semibold text-slate-300">New Password</label>
+        <div class="relative">
+          <input 
+            :type="adminResetModal?.showPassword ? 'text' : 'password'"
+            x-model="adminResetModal.newPassword"
+            placeholder="Enter new password (min 4 characters)..."
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 pr-16"
+          >
+          <button 
+            type="button" 
+            @click="adminResetModal.showPassword = !adminResetModal.showPassword"
+            class="absolute right-2 top-2 text-[11px] text-slate-400 hover:text-slate-200 px-1.5 py-0.5 rounded cursor-pointer"
+            x-text="adminResetModal?.showPassword ? 'Hide' : 'Show'"
+          ></button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button 
+          type="button" 
+          @click="generateAdminPassword()" 
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <span>⚡</span>
+          <span>Generate Random Password</span>
+        </button>
+        <button 
+          type="button" 
+          x-show="adminResetModal?.newPassword" 
+          @click="copyAdminPassword()" 
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1 cursor-pointer"
+        >
+          <span x-text="adminResetModal?.copied ? '✓ Copied' : '📋 Copy'"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+        <button 
+          type="button" 
+          @click="adminResetModal.isOpen = false" 
+          class="px-3 py-1.5 rounded-lg text-xs text-slate-300 hover:bg-slate-800 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          @click="submitAdminPasswordReset()" 
+          :disabled="!adminResetModal?.newPassword || adminResetModal?.loading"
+          class="px-4 py-1.5 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md transition cursor-pointer disabled:opacity-50"
+        >
+          <span x-show="!adminResetModal?.loading">Update Password</span>
+          <span x-show="adminResetModal?.loading">Saving...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-Modal: Add / Edit User Dialog -->
+  <div 
+    x-show="adminUserModal && adminUserModal.isOpen" 
+    x-cloak 
+    class="fixed inset-0 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+    style="z-index: 100000 !important;"
+  >
+    <div @click.away="adminUserModal.isOpen = false" class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl" x-text="adminUserModal?.isEdit ? '✏️' : '➕'"></span>
+          <h3 class="text-sm font-bold text-white" x-text="adminUserModal?.isEdit ? 'Edit Team Member' : 'Add New Team Member'"></h3>
+        </div>
+        <button type="button" @click="adminUserModal.isOpen = false" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+          <input 
+            type="email" 
+            x-model="adminUserModal.form.email"
+            :disabled="adminUserModal?.isEdit"
+            placeholder="e.g. name@jemby.com"
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:opacity-60"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name / Display Name</label>
+          <input 
+            type="text" 
+            x-model="adminUserModal.form.name"
+            placeholder="e.g. Alex Johnson"
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Role / Permissions</label>
+          <select 
+            x-model="adminUserModal.form.role"
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+          >
+            <option value="admin">Admin (Full Access & User Management)</option>
+            <option value="engineer">Engineer (Full SLD & Equipment Editing)</option>
+            <option value="surveyor">Surveyor (Field Intake & Photos)</option>
+            <option value="viewer">Viewer (Read-Only Inspection)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">
+            <span x-text="adminUserModal?.isEdit ? 'Change Password (optional)' : 'Initial Password'"></span>
+          </label>
+          <input 
+            type="text" 
+            x-model="adminUserModal.form.password"
+            :placeholder="adminUserModal?.isEdit ? 'Leave blank to keep unchanged' : 'Defaults to name before @'"
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+          >
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input 
+            type="checkbox" 
+            id="active_status" 
+            x-model="adminUserModal.form.is_active" 
+            class="rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/40"
+          >
+          <label for="active_status" class="text-xs text-slate-300 cursor-pointer select-none">Account is Active & Enabled</label>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+        <button 
+          type="button" 
+          @click="adminUserModal.isOpen = false" 
+          class="px-3 py-1.5 rounded-lg text-xs text-slate-300 hover:bg-slate-800 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          @click="submitAdminUserForm()" 
+          :disabled="!adminUserModal?.form?.email || adminUserModal?.loading"
+          class="px-4 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md transition cursor-pointer disabled:opacity-50"
+        >
+          <span x-show="!adminUserModal?.loading" x-text="adminUserModal?.isEdit ? 'Save Changes' : 'Create User'"></span>
+          <span x-show="adminUserModal?.loading">Saving...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

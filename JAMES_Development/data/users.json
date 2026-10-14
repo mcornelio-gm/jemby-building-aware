@@ -1,0 +1,121 @@
+[
+  {
+    "id": "usr_benjie",
+    "email": "benjie@jemby.com",
+    "username": "benjie",
+    "name": "Benjie",
+    "role": "admin",
+    "password_hash": "e4c5d921f2f957accf2c11bfe6cd4c77d14611c469e15e487d11f01fb4516448",
+    "password_salt": "bb2754075c31a87b",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": "2026-10-14 15:18:00"
+  },
+  {
+    "id": "usr_mcornelio",
+    "email": "mcornelio@jemby.com",
+    "username": "mcornelio",
+    "name": "Michael Cornelio",
+    "role": "admin",
+    "password_hash": "df6c27b43c9ed71049e66d18e10f71e00989149f74a08c7446c0941bdbf15792",
+    "password_salt": "441d5a5f8c25b273",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": "2026-10-14 15:18:00"
+  },
+  {
+    "id": "usr_stostado",
+    "email": "stostado@jemby.com",
+    "username": "stostado",
+    "name": "S. Tostado",
+    "role": "engineer",
+    "password_hash": "7452714d7efa1c70feabea0c817e608bdf38e5b0409950b9403679d7a2279c6c",
+    "password_salt": "f6b0f91a87ae8838",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": "2026-10-14 15:18:00"
+  },
+  {
+    "id": "usr_jcortes",
+    "email": "jcortes@jemby.com",
+    "username": "jcortes",
+    "name": "J. Cortes",
+    "role": "engineer",
+    "password_hash": "2de77ce1ccf8bc36b39e316d31f5ce7584ba1addfd2c0f846847eaad25900d2b",
+    "password_salt": "8234c7b1e212989d",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": "2026-10-14 15:18:00"
+  },
+  {
+    "id": "usr_admin",
+    "email": "admin@buildingaware.io",
+    "username": "admin",
+    "name": "System Administrator",
+    "role": "admin",
+    "password_hash": "daab2bd6b1f821288299d28118f5bbb4a8e7966050f639ba38a8683caf44023e",
+    "password_salt": "f1b3e97b6058760c",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": "2026-10-14 15:18:00"
+  },
+  {
+    "id": "usr_engineer",
+    "email": "engineer@buildingaware.io",
+    "username": "engineer",
+    "name": "Electrical Engineer",
+    "role": "engineer",
+    "password_hash": "b3c8698b47db7f95846a30b385d14c0cb9608d440a816bc832bc0debacac2d33",
+    "password_salt": "9dcbe37da6d49d81",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": "2026-10-14 15:18:00"
+  },
+  {
+    "id": "usr_demo",
+    "email": "demo@buildingaware.io",
+    "username": "demo",
+    "name": "Demo User",
+    "role": "viewer",
+    "password_hash": "087d239f94252625140eb0bd27a5e173028115d67e593bab7506365c3b8fd7dd",
+    "password_salt": "1c4827e6cfbb12d2",
+    "google_id": null,
+    "avatar_url": null,
+    "client_access": [
+      "*"
+    ],
+    "is_active": true,
+    "created_at": "2026-10-02 14:40:33",
+    "last_login_at": null
+  }
+]
