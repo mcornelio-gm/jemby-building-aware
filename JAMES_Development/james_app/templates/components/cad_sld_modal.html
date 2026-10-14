@@ -1,0 +1,180 @@
+<!-- Building Aware (JAMES) - Interactive CAD Single-Line Diagram Modal -->
+<div 
+  x-show="showCadModal" 
+  x-cloak
+  class="fixed inset-0 overflow-hidden"
+  style="z-index: 99998 !important;"
+  aria-labelledby="cad-modal-title" 
+  role="dialog" 
+  aria-modal="true"
+  @keydown.escape.window="if (showCadModal) closeCadSldModal()"
+>
+  <!-- Dark Backdrop -->
+  <div 
+    x-show="showCadModal"
+    x-transition:enter="ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-slate-950/85 backdrop-blur-md transition-opacity"
+    @click="closeCadSldModal()"
+  ></div>
+
+  <!-- Full-Screen Center Dialog Container -->
+  <div class="fixed inset-2 sm:inset-4 md:inset-6 flex flex-col pointer-events-none z-10">
+    <div 
+      x-show="showCadModal"
+      x-transition:enter="ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-98"
+      x-transition:enter-end="opacity-100 scale-100"
+      x-transition:leave="ease-in duration-150"
+      x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-98"
+      class="relative flex flex-col w-full h-full bg-[#0B0F19] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto text-slate-100"
+    >
+      <!-- CAD Modal Header Bar -->
+      <div class="px-4 sm:px-6 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between gap-3 shrink-0 select-none">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 font-bold text-base shadow-xs">
+            📐
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="cad-modal-title" class="text-sm sm:text-base font-extrabold text-white tracking-tight leading-none">
+                AutoCAD Single-Line Diagram
+              </h2>
+              <span class="text-[9px] uppercase font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold">IEEE 315 / ANSI</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">
+              Deterministic orthogonal bus-and-feeder schematic for <strong class="text-slate-200" x-text="(client || 'facility').toUpperCase() + ' / ' + (facility || '').toUpperCase()"></strong>
+            </p>
+          </div>
+        </div>
+
+        <!-- Header Actions: Sheet Selector, Zoom Stepper & Download DXF -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Drawing Sheet Selector Dropdown (Multi-Sheet Sets) -->
+          <div class="flex items-center gap-1.5" x-show="cadSheets && cadSheets.length > 1">
+            <span class="text-[11px] text-slate-400 font-mono hidden xl:inline">Sheet:</span>
+            <select 
+              x-model="selectedCadSheet" 
+              @change="onCadSheetChange($event.target.value)"
+              class="bg-slate-800 border border-slate-700 hover:border-slate-600 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-indigo-500 font-mono shadow-2xs transition cursor-pointer max-w-[240px] sm:max-w-[280px] truncate"
+              title="Select Drawing Sheet"
+            >
+              <template x-for="s in cadSheets" :key="s.sheet_id">
+                <option :value="s.sheet_id" x-text="(s.sheet_no ? s.sheet_no + ': ' : '') + s.title"></option>
+              </template>
+            </select>
+          </div>
+
+          <!-- Zoom Stepper Controls -->
+          <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800/90 shadow-2xs overflow-hidden text-xs">
+            <button 
+              type="button" 
+              @click="zoomOutCad()" 
+              class="w-7 h-7 text-slate-300 hover:text-white hover:bg-slate-700 font-bold transition flex items-center justify-center border-r border-slate-700 cursor-pointer"
+              title="Zoom Out (-)"
+            >
+              −
+            </button>
+            <button 
+              type="button" 
+              @click="resetCadZoom()" 
+              class="px-2 py-1 text-[11px] font-mono text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer min-w-[42px] text-center"
+              title="Reset Zoom (100%)"
+              x-text="Math.round(cadZoomScale * 100) + '%'"
+            >
+              100%
+            </button>
+            <button 
+              type="button" 
+              @click="zoomInCad()" 
+              class="w-7 h-7 text-slate-300 hover:text-white hover:bg-slate-700 font-bold transition flex items-center justify-center border-l border-slate-700 cursor-pointer"
+              title="Zoom In (+)"
+            >
+              +
+            </button>
+          </div>
+
+          <!-- Re-Compile Button -->
+          <button 
+            type="button" 
+            @click="fetchCadSvg()" 
+            class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            title="Re-compile from facility digital twin"
+          >
+            <span :class="{'animate-spin': cadLoading}">🔄</span>
+            <span class="hidden md:inline">Re-compile</span>
+          </button>
+
+          <!-- Download DXF Button (AutoCAD Native) -->
+          <button 
+            type="button" 
+            @click="downloadCadDxf()" 
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-950/40 transition flex items-center gap-1.5 cursor-pointer"
+            title="Download AutoCAD R2018 DXF format"
+          >
+            <span>📥</span>
+            <span>Download .DXF</span>
+          </button>
+
+          <div class="h-4 w-[1px] bg-slate-800 hidden sm:block"></div>
+
+          <!-- Close Modal Button -->
+          <button 
+            type="button" 
+            @click="closeCadSldModal()" 
+            class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            title="Close (Esc)"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main CAD Drawing Viewport Canvas -->
+      <div 
+        class="relative flex-1 bg-[#070A12] overflow-hidden flex items-center justify-center p-6 select-none cursor-grab active:cursor-grabbing"
+        style="background-image: radial-gradient(#1E293B 1px, transparent 1px); background-size: 24px 24px;"
+        @mousedown="startCadPan($event)"
+        @mousemove="doCadPan($event)"
+        @mouseup="endCadPan()"
+        @mouseleave="endCadPan()"
+        @wheel.prevent="onCadWheel($event)"
+      >
+        <!-- Loading Overlay -->
+        <div x-show="cadLoading" class="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20">
+          <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <span class="text-xs font-mono text-indigo-300">Generating IEEE CAD Geometry & Layer Vectors...</span>
+        </div>
+
+        <!-- SVG Container with dynamic Zoom & Pan Transform -->
+        <div 
+          class="transition-transform duration-75 origin-center flex items-center justify-center pointer-events-none"
+          :style="`transform: translate(${cadPanX}px, ${cadPanY}px) scale(${cadZoomScale}); max-width: 95%; max-height: 90%;`"
+          x-html="cadSvgContent"
+        ></div>
+      </div>
+
+      <!-- Footer: AIA Layer Legend & Metadata -->
+      <div class="px-4 sm:px-6 py-2 bg-slate-950/90 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400 shrink-0 select-none">
+        <div class="flex items-center gap-3">
+          <span class="font-bold text-slate-300 uppercase">AIA CAD Layers:</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> E-ELEC-BUS</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-white"></span> E-ELEC-FEED</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span> E-ELEC-SYMB</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> E-ANNO-TEXT</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> E-ANNO-CABL</span>
+        </div>
+        <div class="text-[10px] text-slate-500">
+          Sheet: ANSI D (24" × 36") • Format: AutoCAD R2018
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
