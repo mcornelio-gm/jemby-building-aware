@@ -26,16 +26,16 @@ def _sanitize_id(identifier: str) -> str:
 
 def _make_silver_badge(
     text: str,
-    font_size: int = 8,
+    font_size: float = 8.5,
     font_color: str = "#0F172A",
-    bg_color: str = "#E2E8F0",
-    border_color: str = "#94A3B8"
+    bg_color: str = "#FFFFFF",
+    border_color: str = "#475569"
 ) -> str:
-    """Wrap label text in an HTML-like table pill with a silver background for maximum readability over lines/borders."""
+    """Wrap label text in an HTML-like table pill with a crisp high-contrast background for maximum readability over lines/borders."""
     if not text:
         return ""
     clean = html.escape(str(text).strip()).replace("\n", "<BR/>")
-    return f'<<TABLE BGCOLOR="{bg_color}" BORDER="1" COLOR="{border_color}" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD><FONT POINT-SIZE="{font_size}" COLOR="{font_color}" FACE="Arial">{clean}</FONT></TD></TR></TABLE>>'
+    return f'<<TABLE BGCOLOR="{bg_color}" BORDER="1" COLOR="{border_color}" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD><FONT POINT-SIZE="{font_size}" COLOR="{font_color}" FACE="Arial"><B>{clean}</B></FONT></TD></TR></TABLE>>'
 
 
 
@@ -118,8 +118,30 @@ def _format_slot_range(slot_num: int, poles: int = 1, type_tag: str = "", is_mcc
     return f"{plur} {', '.join(slots)}"
 
 
+def _wrap_text(text: str, max_chars: int = 22) -> List[str]:
+    """Wrap a long text string into lines of at most max_chars length."""
+    words = text.split()
+    if not words:
+        return []
+    lines = []
+    curr: List[str] = []
+    curr_len = 0
+    for w in words:
+        if curr_len + len(w) + (1 if curr else 0) <= max_chars:
+            curr.append(w)
+            curr_len += len(w) + (1 if len(curr) > 1 else 0)
+        else:
+            if curr:
+                lines.append(" ".join(curr))
+            curr = [w]
+            curr_len = len(w)
+    if curr:
+        lines.append(" ".join(curr))
+    return lines
+
+
 def _build_cluster_title(n: Dict[str, Any]) -> str:
-    """Build rich, compact multi-line equipment cluster title for single-line diagram headers."""
+    """Build rich, compact squarer equipment title for single-line diagram nodes and clusters."""
     name = _clean_str(n.get("name", "Equipment"))
     tag = _clean_str(n.get("tag", "EQ"))
     domain = n.get("domain", "generic")
@@ -132,7 +154,20 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
     room = n.get("room")
     room_str = f"[{room}]" if room else ""
 
-    line1 = f"{name} ({tag})"
+    domain_icons = {
+        "sources": "⚡",
+        "switches": "🔀",
+        "panels": "🔲",
+        "transformers": "🌀",
+        "power_quality": "🔋",
+        "loads": "⚙️",
+        "metering": "📊",
+        "renewables": "☀️",
+        "cables": "🔌",
+        "generic": "📦",
+    }
+    icon = domain_icons.get(domain, "⚡")
+
     line2_parts: List[str] = []
     line3_parts: List[str] = []
 
@@ -203,17 +238,24 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
         else:
             line3_parts.append(room_str)
 
-    l1_clean = html.escape(line1)
-    cell_rows = [f'<TR><TD ALIGN="CENTER"><B>{l1_clean}</B></TD></TR>']
+    # Wrapped Name lines (max 22 chars per line for compact square aspect ratio)
+    wrapped_name_lines = _wrap_text(name, max_chars=22)
+    name_html = "<BR/>".join(html.escape(line) for line in wrapped_name_lines) if wrapped_name_lines else html.escape(name)
+    tag_clean = html.escape(tag)
+
+    cell_rows = [
+        f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="10" COLOR="#0F172A"><B>{icon} {tag_clean}</B></FONT></TD></TR>',
+        f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="8.5" COLOR="#0F172A"><B>{name_html}</B></FONT></TD></TR>'
+    ]
     if line2_parts:
         l2_clean = html.escape(" • ".join(line2_parts))
-        cell_rows.append(f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="8">{l2_clean}</FONT></TD></TR>')
+        cell_rows.append(f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="8" COLOR="#0F172A"><B>{l2_clean}</B></FONT></TD></TR>')
     if line3_parts:
         l3_clean = html.escape(" • ".join(line3_parts))
-        cell_rows.append(f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="7.5" COLOR="#475569">{l3_clean}</FONT></TD></TR>')
+        cell_rows.append(f'<TR><TD ALIGN="CENTER"><FONT POINT-SIZE="7.5" COLOR="#1E293B"><B>{l3_clean}</B></FONT></TD></TR>')
 
     table_content = "".join(cell_rows)
-    return f'<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="1">{table_content}</TABLE>>'
+    return f'<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="2">{table_content}</TABLE>>'
 
 
 def _find_feeder_slot_in_parent(parent_node: Dict[str, Any], child_node: Dict[str, Any]):
@@ -331,19 +373,24 @@ def _build_feeder_edge_badge(parent_node: Dict[str, Any], child_node: Dict[str, 
         return ""
 
     label_text = " • ".join(parts)
-    return _make_silver_badge(label_text, font_size=8, font_color="#0F172A", bg_color="#FEF3C7" if (v_drop and float(v_drop or 0) > 3.0) else "#F1F5F9", border_color="#D97706" if (v_drop and float(v_drop or 0) > 3.0) else "#94A3B8")
+    return _make_silver_badge(label_text, font_size=8.5, font_color="#7C2D12" if (v_drop and float(v_drop or 0) > 3.0) else "#0F172A", bg_color="#FEF3C7" if (v_drop and float(v_drop or 0) > 3.0) else "#FFFFFF", border_color="#D97706" if (v_drop and float(v_drop or 0) > 3.0) else "#475569")
 
 
-def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed") -> str:
+def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed", rankdir: str = "TB") -> str:
     """Compile a list of facility equipment nodes into Graphviz DOT single-line diagram.
     
     Supports:
     - mode='detailed' (default): Cluster-based layout with discrete port rectangles and breaker slots.
     - mode='macro': Consolidated single-node boxes per equipment for high-level power flow hierarchy.
+    - rankdir='TB' (default) or 'LR': Top-to-Bottom or Left-to-Right layout orientation.
     """
+    clean_rankdir = rankdir.upper() if rankdir else "TB"
+    if clean_rankdir not in ["TB", "LR", "BT", "RL"]:
+        clean_rankdir = "TB"
+
     dot_lines = [
         "digraph ElectricalOneLine {",
-        '    graph [rankdir=TB, splines=polyline, nodesep=0.75, ranksep=0.95, compound=true, fontname="Arial", bgcolor="#CBD5E1"];',
+        f'    graph [rankdir={clean_rankdir}, splines=polyline, nodesep=0.75, ranksep=0.95, compound=true, fontname="Arial", bgcolor="#CBD5E1"];',
         '    node [fontname="Arial", fontsize=9, shape=box, style="filled,rounded", color="#1E293B", fillcolor="#334155", fontcolor="#FFFFFF", penwidth=1.0];',
         '    edge [fontname="Arial", fontsize=9, color="#0F172A", fontcolor="#0F172A", penwidth=2.2, arrowsize=0.85];',
         ""
@@ -452,8 +499,8 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
 
                 edge_color = "#B45309" if is_emergency else "#0F172A"
                 edge_penwidth = "2.4" if is_emergency else "2.2"
-                tail_badge = _make_silver_badge(tail_label, font_size=8, font_color="#9A3412" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#E2E8F0", border_color="#D97706" if is_emergency else "#94A3B8")
-                head_badge = _make_silver_badge(head_label, font_size=8, font_color="#9A3412" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#E2E8F0", border_color="#D97706" if is_emergency else "#94A3B8")
+                tail_badge = _make_silver_badge(tail_label, font_size=8.5, font_color="#7C2D12" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#FFFFFF", border_color="#D97706" if is_emergency else "#475569")
+                head_badge = _make_silver_badge(head_label, font_size=8.5, font_color="#7C2D12" if is_emergency else "#0F172A", bg_color="#FEF3C7" if is_emergency else "#FFFFFF", border_color="#D97706" if is_emergency else "#475569")
                 edge_id = f"edge_{parent_id}_{node_id}"
                 tooltip_txt = f"Feeder: {parent_node.get('tag', parent_id)} -> {n.get('tag', node_id)}"
 
@@ -475,8 +522,8 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                         edge_key = (gen_id, ats_id)
                         if edge_key not in rendered_edges:
                             rendered_edges.add(edge_key)
-                            tail_badge = _make_silver_badge("Gen Breaker", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
-                            head_badge = _make_silver_badge("Emerg In", font_size=8, font_color="#9A3412", bg_color="#FEF3C7", border_color="#D97706")
+                            tail_badge = _make_silver_badge("Gen Breaker", font_size=8.5, font_color="#7C2D12", bg_color="#FEF3C7", border_color="#D97706")
+                            head_badge = _make_silver_badge("Emerg In", font_size=8.5, font_color="#7C2D12", bg_color="#FEF3C7", border_color="#D97706")
                             dot_lines.append(
                                 f'    {gen_id} -> {ats_id} ['
                                 f'id="edge_{gen_id}_{ats_id}", class="feeder-edge", tooltip="Emergency Feeder: GEN -> ATS", '
@@ -503,53 +550,122 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
         palette = DOMAIN_CONFIG.get(domain, DOMAIN_CONFIG["generic"])
 
         # Cluster by Equipment Archetype with Pastel BG + Black text + Dark Gray Ports with White text
-        if domain == "sources" or type_tag in ["UTIL", "GEN", "PV"]:
-            palette = DOMAIN_CONFIG["sources"]
-            port_label = "Mtr / Main Out" if type_tag == "UTIL" else ("Gen Breaker" if type_tag == "GEN" else "Inverter Out")
-            dot_lines.extend([
-                f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
-                '        style = "filled,rounded";',
-                f'        color = "{palette["border"]}";',
-                f'        fillcolor = "{palette["bg"]}";',
-                f'        fontcolor = "{palette["text"]}";',
-                '        penwidth = 1.8;',
-                f'        {node_id}_out [label="{port_label}", {PORT_STYLE}];',
-                '    }',
-                ''
-            ])
-
-        elif domain == "switches" or type_tag in ["ATS", "MTS", "DISC"]:
-            palette = DOMAIN_CONFIG["switches"]
-            if type_tag in ["ATS", "MTS"]:
+        if type_tag in ["BESS", "BATTERY"] or domain == "renewables" or type_tag in ["SOLAR"]:
+            palette = DOMAIN_CONFIG.get("renewables", DOMAIN_CONFIG["generic"])
+            is_battery = type_tag in ["BESS", "BATTERY"]
+            in_port_label = "Battery DC Terminals" if is_battery else "Bi-Directional AC In/Out"
+            has_downstream = any(
+                other.get("fed_from") in [tag, n.get("id")] or
+                tag in (other.get("attributes") or {}).get("upstream_sources", [])
+                for other in nodes
+            )
+            if has_downstream:
+                out_port_label = "DC Discharge Out" if is_battery else "Inverter Out"
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = {cluster_title};',
+                    f'        label = "";',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
                     f'        fontcolor = "{palette["text"]}";',
                     '        penwidth = 1.8;',
-                    f'        {node_id}_norm  [label="Normal In", {PORT_STYLE}];',
-                    f'        {node_id}_emerg [label="Emerg In", {PORT_STYLE}];',
-                    f'        {node_id}_out   [label="Load Out", {PORT_STYLE}];',
-                    f'        {{ rank=same; {node_id}_norm; {node_id}_emerg; }}',
-                    f'        {node_id}_norm -> {node_id}_out [style=invis];',
+                    f'        {node_id}_in  [label="{in_port_label}", {PORT_STYLE}];',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
+                    f'        {node_id}_out [label="{out_port_label}", {PORT_STYLE}];',
+                    f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                     '    }',
                     ''
                 ])
             else:
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = {cluster_title};',
+                    f'        label = "";',
+                    '        style = "filled,rounded";',
+                    f'        color = "{palette["border"]}";',
+                    f'        fillcolor = "{palette["bg"]}";',
+                    f'        fontcolor = "{palette["text"]}";',
+                    '        penwidth = 1.8;',
+                    f'        {node_id}_in  [label="{in_port_label}", {PORT_STYLE}];',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
+                    f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                    '    }',
+                    ''
+                ])
+
+        elif domain == "sources" or type_tag in ["UTIL", "GEN", "PV"]:
+            palette = DOMAIN_CONFIG["sources"]
+            port_label = "Mtr / Main Out" if type_tag == "UTIL" else ("Gen Breaker" if type_tag == "GEN" else "Inverter Out")
+            has_upstream = bool(_get_node_upstream_sources(n, nodes))
+            if has_upstream:
+                dot_lines.extend([
+                    f'    subgraph cluster_{node_id} {{',
+                    f'        label = "";',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
                     f'        fontcolor = "{palette["text"]}";',
                     '        penwidth = 1.8;',
                     f'        {node_id}_in  [label="Line In", {PORT_STYLE}];',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
+                    f'        {node_id}_out [label="{port_label}", {PORT_STYLE}];',
+                    f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
+                    '    }',
+                    ''
+                ])
+            else:
+                dot_lines.extend([
+                    f'    subgraph cluster_{node_id} {{',
+                    f'        label = "";',
+                    '        style = "filled,rounded";',
+                    f'        color = "{palette["border"]}";',
+                    f'        fillcolor = "{palette["bg"]}";',
+                    f'        fontcolor = "{palette["text"]}";',
+                    '        penwidth = 1.8;',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
+                    f'        {node_id}_out [label="{port_label}", {PORT_STYLE}];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
+                    '    }',
+                    ''
+                ])
+
+        elif domain == "switches" or type_tag in ["ATS", "MTS", "DISC"]:
+            palette = DOMAIN_CONFIG["switches"]
+            if type_tag in ["ATS", "MTS"]:
+                dot_lines.extend([
+                    f'    subgraph cluster_{node_id} {{',
+                    f'        label = "";',
+                    '        style = "filled,rounded";',
+                    f'        color = "{palette["border"]}";',
+                    f'        fillcolor = "{palette["bg"]}";',
+                    f'        fontcolor = "{palette["text"]}";',
+                    '        penwidth = 1.8;',
+                    f'        {node_id}_emerg [label="Emerg In", {PORT_STYLE}];',
+                    f'        {node_id}_norm  [label="Normal In", {PORT_STYLE}];',
+                    f'        {{ rank=same; {node_id}_emerg; {node_id}_norm; }}',
+                    f'        {node_id}_hdr   [shape=plain, style="", label={cluster_title}];',
+                    f'        {node_id}_out   [label="Load Out", {PORT_STYLE}];',
+                    f'        {node_id}_emerg -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_norm -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
+                    '    }',
+                    ''
+                ])
+            else:
+                dot_lines.extend([
+                    f'    subgraph cluster_{node_id} {{',
+                    f'        label = "";',
+                    '        style = "filled,rounded";',
+                    f'        color = "{palette["border"]}";',
+                    f'        fillcolor = "{palette["bg"]}";',
+                    f'        fontcolor = "{palette["text"]}";',
+                    '        penwidth = 1.8;',
+                    f'        {node_id}_in  [label="Line In", {PORT_STYLE}];',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
                     f'        {node_id}_out [label="Load Out", {PORT_STYLE}];',
-                    f'        {node_id}_in -> {node_id}_out [style=invis];',
+                    f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                     '    }',
                     ''
                 ])
@@ -558,15 +674,17 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["transformers"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
+                f'        label = "";',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
                 f'        fontcolor = "{palette["text"]}";',
                 '        penwidth = 1.8;',
                 f'        {node_id}_in  [label="Primary In", {PORT_STYLE}];',
+                f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
                 f'        {node_id}_out [label="Secondary Out", {PORT_STYLE}];',
-                f'        {node_id}_in -> {node_id}_out [style=invis];',
+                f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                 '    }',
                 ''
             ])
@@ -625,35 +743,40 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                             breaker_nodes.append(f'        {b_id} [label="[ {slot_str} ]\\n{desc}\\n{trip}A{poles_str}", {PORT_STYLE}];')
 
             if breaker_ids:
-                rank_same = " ".join(breaker_ids)
+                rank_same = " ".join(breaker_ids) + f" {node_id}_out"
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = {cluster_title};',
+                    f'        label = "";',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
                     f'        fontcolor = "{palette["text"]}";',
                     '        penwidth = 1.8;',
                     f'        {node_id}_in  [label="{main_type}", {PORT_STYLE}];',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
                     f'        {node_id}_out [label="Feeder / Aux Out", {PORT_STYLE}];',
                     *breaker_nodes,
                     f'        {{ rank=same; {rank_same}; }}',
-                    f'        {node_id}_in -> {breaker_ids[0]} [style=invis];',
+                    f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_hdr -> {breaker_ids[0]} [style=invis];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                     '    }',
                     ''
                 ])
             else:
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
-                    f'        label = {cluster_title};',
+                    f'        label = "";',
                     '        style = "filled,rounded";',
                     f'        color = "{palette["border"]}";',
                     f'        fillcolor = "{palette["bg"]}";',
                     f'        fontcolor = "{palette["text"]}";',
                     '        penwidth = 1.8;',
                     f'        {node_id}_in  [label="{main_type}", {PORT_STYLE}];',
+                    f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
                     f'        {node_id}_out [label="Load Out", {PORT_STYLE}];',
-                    f'        {node_id}_in -> {node_id}_out [style=invis];',
+                    f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                    f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                     '    }',
                     ''
                 ])
@@ -662,7 +785,7 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["power_quality"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
+                f'        label = "";',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
@@ -670,9 +793,12 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 '        penwidth = 1.8;',
                 f'        {node_id}_in     [label="UPS Input", {PORT_STYLE}];',
                 f'        {node_id}_bypass [label="Bypass In", {PORT_STYLE}];',
-                f'        {node_id}_out    [label="Inverter Out", {PORT_STYLE}];',
                 f'        {{ rank=same; {node_id}_in; {node_id}_bypass; }}',
-                f'        {node_id}_in -> {node_id}_out [style=invis];',
+                f'        {node_id}_hdr    [shape=plain, style="", label={cluster_title}];',
+                f'        {node_id}_out    [label="Inverter Out", {PORT_STYLE}];',
+                f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                f'        {node_id}_bypass -> {node_id}_hdr [style=invis];',
+                f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                 '    }',
                 ''
             ])
@@ -681,13 +807,15 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["loads"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
+                f'        label = "";',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
                 f'        fontcolor = "{palette["text"]}";',
                 '        penwidth = 1.8;',
-                f'        {node_id}_in [label="Disconnect / Lugs", {PORT_STYLE}];',
+                f'        {node_id}_in  [label="Disconnect / Lugs", {PORT_STYLE}];',
+                f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
+                f'        {node_id}_in -> {node_id}_hdr [style=invis];',
                 '    }',
                 ''
             ])
@@ -696,15 +824,17 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["cables"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
+                f'        label = "";',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
                 f'        fontcolor = "{palette["text"]}";',
                 '        penwidth = 1.8;',
                 f'        {node_id}_in  [label="Line In", {PORT_STYLE}];',
+                f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
                 f'        {node_id}_out [label="Load Out", {PORT_STYLE}];',
-                f'        {node_id}_in -> {node_id}_out [style=invis];',
+                f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                 '    }',
                 ''
             ])
@@ -713,52 +843,55 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
             palette = DOMAIN_CONFIG["metering"]
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
+                f'        label = "";',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
                 f'        fontcolor = "{palette["text"]}";',
                 '        penwidth = 1.8;',
                 f'        {node_id}_in  [label="CT / Voltage Sense In", {PORT_STYLE}];',
+                f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
+                f'        {node_id}_in -> {node_id}_hdr [style=invis];',
                 '    }',
                 ''
             ])
 
-        elif domain == "renewables" or type_tag in ["BESS", "SOLAR"]:
-            palette = DOMAIN_CONFIG["renewables"]
-            dot_lines.extend([
-                f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
-                '        style = "filled,rounded";',
-                f'        color = "{palette["border"]}";',
-                f'        fillcolor = "{palette["bg"]}";',
-                f'        fontcolor = "{palette["text"]}";',
-                '        penwidth = 1.8;',
-                f'        {node_id}_in  [label="Bi-Directional AC In/Out", {PORT_STYLE}];',
-                '    }',
-                ''
-            ])
 
         else:
             palette = DOMAIN_CONFIG.get(domain, DOMAIN_CONFIG["generic"])
             dot_lines.extend([
                 f'    subgraph cluster_{node_id} {{',
-                f'        label = {cluster_title};',
+                f'        label = "";',
                 '        style = "filled,rounded";',
                 f'        color = "{palette["border"]}";',
                 f'        fillcolor = "{palette["bg"]}";',
                 f'        fontcolor = "{palette["text"]}";',
                 '        penwidth = 1.8;',
                 f'        {node_id}_in  [label="In", {PORT_STYLE}];',
+                f'        {node_id}_hdr [shape=plain, style="", label={cluster_title}];',
                 f'        {node_id}_out [label="Out", {PORT_STYLE}];',
-                f'        {node_id}_in -> {node_id}_out [style=invis];',
+                f'        {node_id}_in -> {node_id}_hdr [style=invis];',
+                f'        {node_id}_hdr -> {node_id}_out [style=invis];',
                 '    }',
                 ''
             ])
 
     dot_lines.append("")
 
-    # 2. Render Edges between Discrete Port Nodes (South -> North)
+    # 2. Render Edges between Discrete Port Nodes (South -> North for TB, East -> West for LR)
+    if clean_rankdir == "LR":
+        src_compass = ":e"
+        dst_compass = ":w"
+    elif clean_rankdir == "RL":
+        src_compass = ":w"
+        dst_compass = ":e"
+    elif clean_rankdir == "BT":
+        src_compass = ":n"
+        dst_compass = ":s"
+    else:  # TB
+        src_compass = ":s"
+        dst_compass = ":n"
+
     detailed_rendered_edges = set()
     for n in nodes:
         node_id = _sanitize_id(n.get("id", n.get("tag", "eq")))
@@ -797,21 +930,21 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
                 slot_num, poles, amps, side = _find_feeder_slot_in_parent(parent_node, n)
                 if slot_num:
                     dot_lines.append(
-                        f'    {parent_id}_b{slot_num}:s -> {dest_port}:n ['
+                        f'    {parent_id}_b{slot_num}{src_compass} -> {dest_port}{dst_compass} ['
                         f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
                         f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
                         f'weight=2];'
                     )
                 else:
                     dot_lines.append(
-                        f'    {parent_id}_out:s -> {dest_port}:n ['
+                        f'    {parent_id}_out{src_compass} -> {dest_port}{dst_compass} ['
                         f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
                         f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
                         f'weight=2];'
                     )
             else:
                 dot_lines.append(
-                    f'    {parent_id}_out:s -> {dest_port}:n ['
+                    f'    {parent_id}_out{src_compass} -> {dest_port}{dst_compass} ['
                     f'id="{edge_id}", class="feeder-edge", tooltip="{tooltip_txt}", '
                     f'color="{edge_color}", penwidth={edge_penwidth}, {cond_attr}'
                     f'weight=2];'
@@ -820,14 +953,14 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed")
         # Fallback for standalone GEN to ATS emergency port
         if type_tag == "GEN":
             for candidate in nodes:
-                if candidate.get("type_tag") in ["ATS", "MTS", "STS"] or candidate.get("domain") == "switches":
+                if candidate.get("type_tag") in ["ATS", "MTS", "STS"]:
                     ats_id = _sanitize_id(candidate.get("id", candidate.get("tag", "ats")))
                     dest_port = f"{ats_id}_emerg"
                     edge_key = (node_id, dest_port)
                     if edge_key not in detailed_rendered_edges:
                         detailed_rendered_edges.add(edge_key)
                         dot_lines.append(
-                            f'    {node_id}_out:s -> {dest_port}:n ['
+                            f'    {node_id}_out{src_compass} -> {dest_port}{dst_compass} ['
                             f'id="edge_{node_id}_{ats_id}", class="feeder-edge", tooltip="Emergency Feeder: GEN -> ATS", '
                             f'color="#B45309", penwidth=2.4, weight=2];'
                         )

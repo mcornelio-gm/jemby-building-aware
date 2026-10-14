@@ -12,7 +12,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
-DEFAULT_DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "knowledge_base.db")
+DATA_DIR = os.getenv("JAMES_DATA_DIR") or os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+DEFAULT_DB_PATH = os.path.join(DATA_DIR, "knowledge_base.db")
 
 
 class SimpleHTMLTextExtractor(HTMLParser):

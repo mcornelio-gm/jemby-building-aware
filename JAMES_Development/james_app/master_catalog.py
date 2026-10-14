@@ -10,8 +10,9 @@ import re
 import sqlite3
 from typing import Any, Dict, List, Optional
 
-CATALOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "catalog"))
-DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "master_catalog.db"))
+DATA_DIR = os.getenv("JAMES_DATA_DIR") or os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+CATALOG_DIR = os.path.join(DATA_DIR, "catalog")
+DB_PATH = os.path.join(DATA_DIR, "master_catalog.db")
 
 
 def sanitize_filename(name: str) -> str:

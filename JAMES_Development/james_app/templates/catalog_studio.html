@@ -46,7 +46,8 @@
       }
     };
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+  <script src="/static/js/admin_user_logic.js?v=1.0.2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     [x-cloak] { display: none !important; }
@@ -63,29 +64,30 @@
       @keydown.window="handleGlobalKeydown($event)">
 
   <!-- 1. TOP NAVIGATION & GLOBAL TOOLBAR -->
-  <header class="h-11 bg-white dark:bg-slate-900 border-b border-slate-300 dark:border-slate-800 px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
+  <header class="h-11 bg-white dark:bg-slate-900 border-b border-slate-300 dark:border-slate-800 px-2 sm:px-3.5 flex items-center justify-between z-30 shrink-0 shadow-xs select-none">
     <!-- Brand & Section -->
-    <div class="flex items-center space-x-2">
-      <a href="/survey?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center space-x-2 group cursor-pointer shrink-0" title="Return to Survey Workbench">
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <a href="/survey?client={{ client_id | default('zoetis') }}&facility={{ facility_id | default('b4') }}" class="flex items-center gap-1.5 group cursor-pointer shrink-0" title="Return to Survey Workbench">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div class="hidden sm:flex items-center gap-1 leading-none">
+        <div class="hidden md:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
           <span class="font-light text-slate-600 dark:text-slate-400 tracking-tight text-xs">Aware</span>
         </div>
       </a>
 
-      <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+      <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
       <!-- Multi-Tenant Client DB Path Pill & Finder Trigger -->
       <button 
         type="button"
         @click="openFinderModal()"
-        class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-emerald-50/80 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 hover:border-emerald-400 dark:hover:border-emerald-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
+        class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-mono bg-emerald-50/80 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 hover:border-emerald-400 dark:hover:border-emerald-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
         title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
       >
         <span>🏢</span>
-        <span class="font-bold">{{ (client_id | default('zoetis')) | upper }} / {{ (facility_id | default('b4')) | upper }}</span>
-        <span class="text-[10px] text-emerald-600/70 dark:text-emerald-400/70 font-normal">📁 model.db</span>
+        <span class="font-bold hidden sm:inline">{{ (client_id | default('zoetis')) | upper }} / </span>
+        <span class="font-bold">{{ (facility_id | default('b4')) | upper }}</span>
+        <span class="hidden lg:inline text-[10px] text-emerald-600/70 dark:text-emerald-400/70 font-normal">📁 model.db</span>
         <span class="text-[9px] text-emerald-500 font-bold group-hover:translate-y-0.5 transition-transform">▼</span>
       </button>
 
@@ -99,7 +101,7 @@
     </div>
 
     <!-- Right Actions -->
-    <div class="flex items-center space-x-1.5 shrink-0">
+    <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
       <!-- Toggle Filter Sidebar (Always Accessible) -->
       <button 
         type="button"
@@ -107,29 +109,29 @@
         :class="showSidebar 
           ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 font-semibold' 
           : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-medium'"
-        class="px-2.5 py-1 border text-[11px] rounded-md flex items-center gap-1.5 transition cursor-pointer select-none shadow-2xs"
+        class="px-2 sm:px-2.5 py-1 border text-[11px] rounded-md flex items-center gap-1.5 transition cursor-pointer select-none shadow-2xs"
         title="Toggle Filter Sidebar (Domains, Equipment Types, Brands)"
       >
         <i class="fa-solid fa-filter text-emerald-600 dark:text-emerald-400 text-[10px]"></i>
-        <span>Filters</span>
+        <span class="hidden sm:inline">Filters</span>
       </button>
 
       <!-- 1. Compact [+ Part] Button -->
       <button @click="openCreateDrawer()"
-              class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition cursor-pointer select-none"
+              class="px-2 sm:px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold rounded-md flex items-center gap-1 shadow-2xs transition cursor-pointer select-none"
               title="Add New Catalog Part">
         <i class="fa-solid fa-plus text-[10px]"></i>
-        <span>Part</span>
+        <span class="hidden sm:inline">Part</span>
       </button>
 
       <!-- 2. Combined [Files] Dropdown (Import + Export) -->
       <div class="relative" x-data="{ filesOpen: false }">
         <button @click="filesOpen = !filesOpen"
                 @click.away="filesOpen = false"
-                class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1.5 transition cursor-pointer select-none"
+                class="px-2 sm:px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-medium rounded-md flex items-center gap-1.5 transition cursor-pointer select-none"
                 title="Import / Export Catalog Files">
           <i class="fa-solid fa-folder-open text-cyan-600 dark:text-cyan-400 text-[10px]"></i>
-          <span>Files</span>
+          <span class="hidden sm:inline">Files</span>
           <i class="fa-solid fa-chevron-down text-[8px] text-slate-500 dark:text-slate-400"></i>
         </button>
         <div x-show="filesOpen"
@@ -154,22 +156,22 @@
 
       <div class="h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-0.5"></div>
 
-      <!-- [ 🧰 Toolbox ] Bento Box Popover Trigger -->
+      <!-- [ 🧰 Tools ] Bento Box Popover Trigger -->
       <button 
         type="button" 
         @click="showToolboxModal = true" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
-        title="Open Field Toolbox (Views, Audit, Exports, Display & Settings)"
+        class="px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        title="Open Field Tools (Views, Audit, Exports, Display & Settings)"
       >
         <span>🧰</span>
-        <span class="hidden sm:inline">Toolbox</span>
+        <span class="hidden lg:inline">Tools</span>
       </button>
 
-      <!-- Help & Catalog Studio Guide Modal Toggle (?) -->
+      <!-- Help & Catalog Studio Guide Modal Toggle (?) (Prominent Gold) -->
       <button 
         type="button" 
         @click="showHelpModal = true" 
-        class="w-7 h-7 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold text-xs transition shadow-2xs cursor-pointer select-none"
+        class="w-7 h-7 sm:w-8 sm:h-7.5 rounded-md text-sm sm:text-base font-black bg-amber-500/15 hover:bg-amber-500/30 text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 border border-amber-500/50 hover:border-amber-400 shadow-2xs flex items-center justify-center transition cursor-pointer select-none"
         title="Master Catalog & Archetype Specs Guide (Press ?)"
       >
         <span>?</span>
@@ -184,7 +186,7 @@
           @click="decreaseFontSize()" 
           :disabled="fontScale <= 85"
           :class="fontScale <= 85 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
-          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-r border-slate-300 dark:border-slate-700"
+          class="w-6 sm:w-7 h-7 text-[11px] font-bold transition flex items-center justify-center border-r border-slate-300 dark:border-slate-700"
           title="Decrease text size (A⁻)"
         >
           A⁻
@@ -192,7 +194,7 @@
         <button 
           type="button" 
           @click="resetFontSize()" 
-          class="px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer min-w-[34px] text-center"
+          class="px-1 sm:px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer min-w-[30px] sm:min-w-[34px] text-center"
           title="Reset to 100%"
           x-text="fontScale + '%'"
         >
@@ -203,7 +205,7 @@
           @click="increaseFontSize()" 
           :disabled="fontScale >= 130"
           :class="fontScale >= 130 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
-          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-l border-slate-300 dark:border-slate-700"
+          class="w-6 sm:w-7 h-7 text-[11px] font-bold transition flex items-center justify-center border-l border-slate-300 dark:border-slate-700"
           title="Increase text size (A⁺)"
         >
           A⁺
@@ -214,12 +216,53 @@
       <button 
         type="button" 
         @click="toggleTheme()" 
-        class="w-7 h-7 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
+        class="w-7 h-7 sm:w-8 sm:h-7.5 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
         :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
       >
         <span x-show="isDark" class="text-xs">🌙</span>
         <span x-show="!isDark" class="text-xs" x-cloak>☀️</span>
       </button>
+
+      <!-- User Profile & Logout / Login Button -->
+      {% if user and not user.get('is_guest') %}
+      <div class="flex items-center gap-1 sm:gap-1.5 pl-1 sm:pl-1.5 border-l border-slate-300 dark:border-slate-800">
+        <div class="hidden xl:flex flex-col text-right pr-0.5">
+          <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">{{ user.name }}</span>
+          <span class="text-[8px] font-mono text-emerald-600 dark:text-emerald-400 uppercase leading-none">{{ user.role }}</span>
+        </div>
+        {% if user.role == 'admin' %}
+        <button 
+          type="button"
+          @click="openAdminUserModal()"
+          onclick="if (window.openAdminUserModal) window.openAdminUserModal();"
+          class="px-2 py-1 rounded-md text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 transition shadow-2xs flex items-center gap-1 cursor-pointer select-none"
+          title="User & Access Console (Admin)"
+        >
+          <span>👥</span>
+          <span class="hidden sm:inline">Admin</span>
+        </button>
+        {% endif %}
+        <a 
+          href="/logout" 
+          class="px-2 py-1 rounded-md text-[11px] font-semibold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 transition shadow-2xs flex items-center gap-1 cursor-pointer select-none"
+          title="Sign out ({{ user.name }})"
+        >
+          <span>🚪</span>
+          <span class="hidden xl:inline">Logout</span>
+        </a>
+      </div>
+      {% else %}
+      <div class="flex items-center gap-1 pl-1 sm:pl-1.5 border-l border-slate-300 dark:border-slate-800">
+        <a 
+          href="/login" 
+          class="px-2 py-1 rounded-md text-[11px] font-semibold bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition shadow-2xs flex items-center gap-1 cursor-pointer select-none"
+          title="Sign in with user credentials"
+        >
+          <span>👤</span>
+          <span class="hidden xl:inline">Login</span>
+        </a>
+      </div>
+      {% endif %}
     </div>
   </header>
 
@@ -564,12 +607,16 @@
               <div>
                 <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Domain</label>
                 <select x-model="formData.domain" class="w-full px-3 py-1.5 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-md text-slate-900 dark:text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                  <option value="power_distribution">Power Distribution</option>
+                  <option value="sources">Sources</option>
                   <option value="transformers">Transformers</option>
-                  <option value="sources">Power Sources & Backup</option>
-                  <option value="switches">Switches & Disconnects</option>
-                  <option value="mechanical">Mechanical / HVAC</option>
-                  <option value="lighting">Lighting</option>
+                  <option value="switches">Switches</option>
+                  <option value="panels">Panels</option>
+                  <option value="power_quality">Power Quality</option>
+                  <option value="loads">Loads</option>
+                  <option value="cables">Feeders</option>
+                  <option value="metering">Meters</option>
+                  <option value="renewables">Renewables</option>
+                  <option value="generic">Generic</option>
                 </select>
               </div>
 
@@ -1248,27 +1295,44 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <!-- Company Selection -->
           <div>
-            <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Client</label>
-            <div class="space-y-1.5">
-              <select 
-                x-model="finderNewClientSelect" 
-                @change="if (finderNewClientSelect === '__custom__') { finderIsCustomClient = true; finderNewClient = ''; } else { finderIsCustomClient = false; finderNewClient = finderNewClientSelect; }"
-                class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono cursor-pointer"
-              >
-                <template x-for="c in finderClients" :key="c.client_id">
-                  <option :value="c.client_id" x-text="c.client_name + ' (' + c.client_id + ')'"></option>
-                </template>
-                <option value="__custom__">➕ [+ New Company / Client Folder...]</option>
-              </select>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[11px] font-semibold text-slate-700 dark:text-slate-300">Company / Client</label>
+              <button 
+                type="button" 
+                @click="finderIsCustomClient = !finderIsCustomClient; if (finderIsCustomClient) { finderNewClient = ''; } else if (finderClients.length > 0 && !finderNewClient) { finderNewClient = finderClients[0].client_id; }" 
+                class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                x-text="finderIsCustomClient ? '← Choose Existing' : '+ New Company'"
+              ></button>
+            </div>
 
+            <!-- Existing Clients Picker (Pills) -->
+            <div x-show="!finderIsCustomClient" class="space-y-1.5">
+              <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-700">
+                <template x-for="c in finderClients" :key="c.client_id">
+                  <button 
+                    type="button" 
+                    @click="finderNewClient = c.client_id"
+                    class="px-2 py-1 rounded text-xs font-mono transition cursor-pointer flex items-center gap-1"
+                    :class="(finderNewClient || '').toLowerCase() === c.client_id.toLowerCase() 
+                      ? 'bg-indigo-600 text-white shadow-xs font-bold' 
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                  >
+                    <span>🏢</span>
+                    <span x-text="c.client_name || c.client_id"></span>
+                  </button>
+                </template>
+                <div x-show="finderClients.length === 0" class="text-[11px] text-slate-400 p-1">No existing clients</div>
+              </div>
+            </div>
+
+            <!-- Custom New Client Input -->
+            <div x-show="finderIsCustomClient">
               <input 
-                x-show="finderIsCustomClient" 
-                x-cloak 
                 type="text" 
                 x-model="finderNewClient" 
                 placeholder="Enter new company name (e.g. Pfizer, Merck)..." 
                 class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
-              >
+              />
             </div>
           </div>
 
@@ -1281,6 +1345,7 @@
               placeholder="e.g. b12_warehouse, pilot_plant, central_utility" 
               class="w-full h-8 px-2.5 text-xs rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500"
             />
+            <p class="text-[10px] text-slate-400 mt-1">Directory created at <code class="font-mono text-indigo-500">data/clients/<span x-text="finderNewClient || '{client}'"></span>/<span x-text="finderNewFacility || '{facility}'"></span>/model.db</code></p>
           </div>
         </div>
 
@@ -1426,10 +1491,13 @@
   <!-- System Integrity Audit Modal Include -->
   {% include "components/system_integrity_modal.html" %}
 
+  <!-- User & Access Console Modal Include -->
+  {% include "components/admin_user_modal.html" %}
+
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     function catalogStudio() {
-      return {
+      const app = {
         client: '{{ client_id | default("zoetis") }}',
         facility: '{{ facility_id | default("b4") }}',
         items: {{ master_catalog_items | tojson | safe }},
@@ -1501,6 +1569,9 @@
         isDeleting: false,
 
         initData() {
+          window.alpineApp = this;
+          window.__catalogAppInstance = this;
+
           // Sync Theme with localStorage
           const savedTheme = localStorage.getItem('james-theme');
           if (savedTheme === 'light') {
@@ -2061,6 +2132,14 @@
           }
         }
       };
+
+      if (window.AdminUserModalLogic) {
+        window.AdminUserModalLogic.attachTo(app);
+      }
+      window.alpineApp = app;
+      window.__catalogAppInstance = app;
+
+      return app;
     }
   </script>
 </body>

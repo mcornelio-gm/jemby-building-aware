@@ -78,7 +78,7 @@
                    'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800/80 text-rose-900 dark:text-rose-200': auditResult?.health_score < 65
                  }">
               <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Health Score</span>
-              <div class="text-3xl font-extrabold font-mono my-0.5" x-text="(auditResult?.health_score || 100) + '/100'"></div>
+              <div class="text-3xl font-extrabold font-mono my-0.5" x-text="(auditResult?.health_score !== undefined && auditResult?.health_score !== null ? auditResult.health_score : 100) + '/100'"></div>
               <span class="text-[11px] font-semibold" x-text="auditResult?.health_grade || 'Grade A'"></span>
             </div>
 

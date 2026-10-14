@@ -15,13 +15,13 @@ def _format_left_cell(bkr: BreakerObject, slot_num: int) -> str:
     slot_tag = ",".join(str(s) for s in bkr.occupied_slots)
     
     if bkr.status == BreakerStatus.SPARE:
-        return f'<FONT COLOR="#744210">[SPARE] {bkr.description}</FONT>'
+        return f'<FONT COLOR="#7C2D12"><B>[SPARE] {bkr.description}</B></FONT>'
     elif bkr.status == BreakerStatus.SPACE:
-        return f'<FONT COLOR="#94A3B8">[SPACE] Blank</FONT>'
+        return f'<FONT COLOR="#475569"><B>[SPACE] Blank</B></FONT>'
     else:
         poles_str = f" ({bkr.poles}P {bkr.amps}A)" if bkr.poles > 1 else f" ({bkr.amps}A)"
         status_tag = f"[{bkr.status.value}] "
-        return f'<B>{_escape(status_tag)}{_escape(slot_tag)}: {_escape(bkr.description)}{_escape(poles_str)}</B>'
+        return f'<FONT COLOR="#0F172A"><B>{_escape(status_tag)}{_escape(slot_tag)}: {_escape(bkr.description)}{_escape(poles_str)}</B></FONT>'
 
 
 def _format_right_cell(bkr: BreakerObject, slot_num: int) -> str:
@@ -29,13 +29,13 @@ def _format_right_cell(bkr: BreakerObject, slot_num: int) -> str:
     slot_tag = ",".join(str(s) for s in bkr.occupied_slots)
     
     if bkr.status == BreakerStatus.SPARE:
-        return f'<FONT COLOR="#744210">[SPARE] {bkr.description}</FONT>'
+        return f'<FONT COLOR="#7C2D12"><B>[SPARE] {bkr.description}</B></FONT>'
     elif bkr.status == BreakerStatus.SPACE:
-        return f'<FONT COLOR="#94A3B8">[SPACE] Blank</FONT>'
+        return f'<FONT COLOR="#475569"><B>[SPACE] Blank</B></FONT>'
     else:
         poles_str = f" ({bkr.poles}P {bkr.amps}A)" if bkr.poles > 1 else f" ({bkr.amps}A)"
         status_tag = f" [{bkr.status.value}]"
-        return f'<B>{_escape(bkr.description)}{_escape(poles_str)} :{_escape(slot_tag)}{_escape(status_tag)}</B>'
+        return f'<FONT COLOR="#0F172A"><B>{_escape(bkr.description)}{_escape(poles_str)} :{_escape(slot_tag)}{_escape(status_tag)}</B></FONT>'
 
 
 def compile_panel_to_dot(panel: PanelTwin) -> str:
@@ -153,8 +153,8 @@ def compile_panel_to_dot(panel: PanelTwin) -> str:
     if panel.upstream_feed:
         feed = panel.upstream_feed
         dot_lines.append(f'    {feed.source_id} [')
-        dot_lines.append(f'        shape=box, style="rounded,filled", fillcolor="#E2E8F0", color="#475569",')
-        dot_lines.append(f'        label=<\n            <b>{_escape(feed.name)}</b><br/>\n            <font point-size="8" color="#64748B">({_escape(feed.voltage_label)})</font>\n        >')
+        dot_lines.append(f'        shape=box, style="rounded,filled", fillcolor="#FFFFFF", color="#475569", penwidth=1.5,')
+        dot_lines.append(f'        label=<\n            <b>{_escape(feed.name)}</b><br/>\n            <font point-size="8.5" color="#1E293B"><b>({_escape(feed.voltage_label)})</b></font>\n        >')
         dot_lines.append('    ];\n')
         dot_lines.append(f'    {feed.source_id} -> Panel_{panel.panel_id}:main [label=" Service Feed "];\n')
 
@@ -165,8 +165,8 @@ def compile_panel_to_dot(panel: PanelTwin) -> str:
             port_id = f"ckt_{'_'.join(str(s) for s in bkr.occupied_slots)}"
             
             dot_lines.append(f'    Load_{load.load_id} [')
-            dot_lines.append(f'        shape=box, style="rounded,filled", fillcolor="#E2E8F0", color="#475569",')
-            dot_lines.append(f'        label=<\n            <b>{_escape(load.name)}</b><br/>\n            <font point-size="8" color="#64748B">({_escape(load.rating_label)})</font>\n        >')
+            dot_lines.append(f'        shape=box, style="rounded,filled", fillcolor="#FFFFFF", color="#475569", penwidth=1.5,')
+            dot_lines.append(f'        label=<\n            <b>{_escape(load.name)}</b><br/>\n            <font point-size="8.5" color="#1E293B"><b>({_escape(load.rating_label)})</b></font>\n        >')
             dot_lines.append('    ];\n')
 
             edge_label = f" {bkr.amps}A Cir {start_slot} " if bkr.poles == 1 else f" {bkr.amps}A Cir {start_slot}/{start_slot+2} "

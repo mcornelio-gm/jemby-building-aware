@@ -32,15 +32,22 @@ def test_compile_facility_to_dot():
         {"id": "s3", "tag": "ATS-1", "name": "Transfer Switch", "domain": "switches", "type_tag": "ATS", "fed_from": "UTIL-1", "voltage": "480V", "amps": 400},
         {"id": "s4", "tag": "MDP-1", "name": "Main Panel", "domain": "panels", "type_tag": "MDP", "fed_from": "ATS-1", "is_panel": True, "voltage": "480V", "amps": 1200},
     ]
-    # 1. Detailed Mode
+    # 1. Detailed Mode (Top-to-Bottom: South -> North)
     dot_detailed = compile_facility_to_dot(sample_nodes, mode="detailed")
     assert "digraph ElectricalOneLine {" in dot_detailed
+    assert "rankdir=TB" in dot_detailed
     assert "subgraph cluster_s1 {" in dot_detailed
     assert "subgraph cluster_s4 {" in dot_detailed
     assert "s3_out:s -> s4_in:n" in dot_detailed
     assert "s2_out:s -> s3_emerg:n" in dot_detailed
 
-    # 2. Macro Mode (Consolidated Single Nodes with Arrowtail & Arrowhead Labels)
+    # 2. Detailed Mode (Left-to-Right: East -> West)
+    dot_lr = compile_facility_to_dot(sample_nodes, mode="detailed", rankdir="LR")
+    assert "rankdir=LR" in dot_lr
+    assert "s3_out:e -> s4_in:w" in dot_lr
+    assert "s2_out:e -> s3_emerg:w" in dot_lr
+
+    # 3. Macro Mode (Consolidated Single Nodes with Arrowtail & Arrowhead Labels)
     dot_macro = compile_facility_to_dot(sample_nodes, mode="macro")
     assert "digraph ElectricalOneLine {" in dot_macro
     assert "subgraph cluster_" not in dot_macro

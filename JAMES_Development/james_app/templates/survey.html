@@ -45,7 +45,11 @@
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
   <!-- Shared Equipment Form & Electrical Hierarchy Logic -->
-  <script src="/static/js/equipment_form_logic.js"></script>
+  <script src="/static/js/equipment_form_logic.js?v=2.0.3"></script>
+  <!-- Admin User Management Logic -->
+  <script src="/static/js/admin_user_logic.js?v=1.0.2"></script>
+  <!-- CAD Single-Line Diagram Logic -->
+  <script src="/static/js/cad_sld_logic.js?v=1.0.0"></script>
 
   <!-- Early Theme & Font Scale Sync Script (FOUC Prevention) -->
   <script>
@@ -140,62 +144,74 @@
   </div>
 
   <!-- Top Master Control Bar -->
-  <header class="h-11 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-3.5 shrink-0 z-40 shadow-xs select-none">
-    <div class="flex items-center gap-2">
-      <a href="/survey" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Building Aware • Electrical Digital Twin">
+  <header class="h-11 bg-white dark:bg-[#0E1626] border-b border-slate-300 dark:border-slate-800 flex items-center justify-between px-2 sm:px-3.5 shrink-0 z-40 shadow-xs select-none">
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <a href="/survey" class="flex items-center gap-1.5 group cursor-pointer shrink-0" title="Building Aware • Electrical Digital Twin">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
-        <div class="hidden sm:flex items-center gap-1 leading-none">
+        <div class="hidden md:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-slate-900 dark:text-white tracking-tight text-xs">Building</span>
           <span class="font-light text-slate-600 dark:text-slate-300 tracking-tight text-xs">Aware</span>
         </div>
       </a>
       
-      <div class="hidden sm:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+      <div class="hidden md:block h-3.5 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
 
       <!-- Multi-Tenant Client DB Path Pill & Finder Trigger -->
       <button 
         type="button"
         @click="openFinderModal()" 
-        class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 hover:border-indigo-400 dark:hover:border-indigo-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
+        class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-mono bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 hover:border-indigo-400 dark:hover:border-indigo-600 transition shadow-2xs cursor-pointer select-none font-medium shrink-0 group" 
         title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
       >
         <span>🏢</span>
-        <span class="font-bold" x-text="(client || '{{ client_id }}').toUpperCase() + ' / ' + (facility || '{{ facility_id }}').toUpperCase()">{{ client_id | upper }} / {{ facility_id | upper }}</span>
-        <span class="text-[10px] text-indigo-400 dark:text-indigo-400/70 font-normal">📁 model.db</span>
+        <span class="font-bold hidden sm:inline" x-text="(client || '{{ client_id }}').toUpperCase() + ' / '">{{ client_id | upper }} / </span>
+        <span class="font-bold" x-text="(facility || '{{ facility_id }}').toUpperCase()">{{ facility_id | upper }}</span>
+        <span class="hidden lg:inline text-[10px] text-indigo-400 dark:text-indigo-400/70 font-normal">📁 model.db</span>
         <span class="text-[9px] text-indigo-400 dark:text-indigo-500 font-bold group-hover:translate-y-0.5 transition-transform">▼</span>
       </button>
     </div>
 
     <!-- Streamlined Action Controls: Toolbox, Help, Font Resizer & Theme -->
-    <div class="flex items-center gap-1.5 shrink-0">
+    <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
       <!-- [ 🔌 Feeders ] Feeder Schedule Trigger -->
       <button 
         type="button" 
         @click="openFeederSchedule()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 hover:bg-amber-200 dark:bg-amber-950/60 dark:hover:bg-amber-900 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        class="px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 hover:bg-amber-200 dark:bg-amber-950/60 dark:hover:bg-amber-900 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
         title="Open Feeder & Cable Schedule Table (Press C)"
       >
         <span>🔌</span>
-        <span class="hidden sm:inline">Feeders</span>
+        <span class="hidden lg:inline">Feeders</span>
         <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-amber-200/80 dark:bg-amber-900/80 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700/60" x-text="feederScheduleList.length || '0'"></span>
       </button>
 
-      <!-- [ 🧰 Toolbox ] Bento Box Popover Trigger -->
+      <!-- [ 📐 CAD SLD ] IEEE Standard CAD Single-Line Diagram -->
+      <button 
+        type="button" 
+        @click="openCadSldModal()" 
+        class="px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-bold bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        title="View IEEE Standard CAD Single-Line Diagram & Export DWG/DXF"
+      >
+        <span>📐</span>
+        <span class="hidden lg:inline">CAD SLD</span>
+      </button>
+
+      <!-- [ 🧰 Tools ] Bento Box Popover Trigger -->
       <button 
         type="button" 
         @click="showToolboxModal = true" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
-        title="Open Field Toolbox (Views, Audit, Exports, Display & Settings)"
+        class="px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        title="Open Field Tools (Views, Audit, Exports, Display & Settings)"
       >
         <span>🧰</span>
-        <span class="hidden sm:inline">Toolbox</span>
+        <span class="hidden lg:inline">Tools</span>
       </button>
 
-      <!-- [ ? ] Field Guide / Help Trigger -->
+      <!-- [ ? ] Field Guide / Help Trigger (Prominent Gold) -->
       <button 
         type="button" 
         @click="showHelpModal = true" 
-        class="w-7 h-7 rounded-md text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center transition cursor-pointer select-none"
+        class="w-7 h-7 sm:w-8 sm:h-7.5 rounded-md text-sm sm:text-base font-black bg-amber-500/15 hover:bg-amber-500/30 text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 border border-amber-500/50 hover:border-amber-400 shadow-2xs flex items-center justify-center transition cursor-pointer select-none"
         title="Field Guide & Shortcuts (?)"
       >
         ?
@@ -210,7 +226,7 @@
           @click="decreaseFontSize()" 
           :disabled="fontScale <= 85"
           :class="fontScale <= 85 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
-          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-r border-slate-300 dark:border-slate-700"
+          class="w-6 sm:w-7 h-7 text-[11px] font-bold transition flex items-center justify-center border-r border-slate-300 dark:border-slate-700"
           title="Decrease text size (A⁻)"
         >
           A⁻
@@ -218,7 +234,7 @@
         <button 
           type="button" 
           @click="resetFontSize()" 
-          class="px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer min-w-[34px] text-center"
+          class="px-1 sm:px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer min-w-[30px] sm:min-w-[34px] text-center"
           title="Reset to 100%"
           x-text="fontScale + '%'"
         >
@@ -229,7 +245,7 @@
           @click="increaseFontSize()" 
           :disabled="fontScale >= 130"
           :class="fontScale >= 130 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer'"
-          class="px-1.5 py-1 text-[11px] font-bold transition flex items-center justify-center border-l border-slate-300 dark:border-slate-700"
+          class="w-6 sm:w-7 h-7 text-[11px] font-bold transition flex items-center justify-center border-l border-slate-300 dark:border-slate-700"
           title="Increase text size (A⁺)"
         >
           A⁺
@@ -240,12 +256,53 @@
       <button 
         type="button" 
         @click="toggleTheme()" 
-        class="w-7 h-7 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
+        class="w-7 h-7 sm:w-8 sm:h-7.5 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition shadow-2xs cursor-pointer select-none"
         :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
       >
         <span x-show="isDark" class="text-xs">🌙</span>
         <span x-show="!isDark" class="text-xs" x-cloak>☀️</span>
       </button>
+
+      <!-- User Profile & Logout / Login Button -->
+      {% if user and not user.get('is_guest') %}
+      <div class="flex items-center gap-1 sm:gap-1.5 pl-1 sm:pl-1.5 border-l border-slate-300 dark:border-slate-800">
+        <div class="hidden xl:flex flex-col text-right pr-0.5">
+          <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">{{ user.name }}</span>
+          <span class="text-[8px] font-mono text-emerald-600 dark:text-emerald-400 uppercase leading-none">{{ user.role }}</span>
+        </div>
+        {% if user.role == 'admin' %}
+        <button 
+          type="button"
+          @click="openAdminUserModal()"
+          onclick="if (window.openAdminUserModal) window.openAdminUserModal();"
+          class="px-2 py-1 rounded-md text-[11px] font-semibold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 transition shadow-2xs flex items-center gap-1 cursor-pointer select-none"
+          title="User & Access Console (Admin)"
+        >
+          <span>👥</span>
+          <span class="hidden sm:inline">Admin</span>
+        </button>
+        {% endif %}
+        <a 
+          href="/logout" 
+          class="px-2 py-1 rounded-md text-[11px] font-semibold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 transition shadow-2xs flex items-center gap-1 cursor-pointer select-none"
+          title="Sign out ({{ user.name }})"
+        >
+          <span>🚪</span>
+          <span class="hidden xl:inline">Logout</span>
+        </a>
+      </div>
+      {% else %}
+      <div class="flex items-center gap-1 pl-1 sm:pl-1.5 border-l border-slate-300 dark:border-slate-800">
+        <a 
+          href="/login" 
+          class="px-2 py-1 rounded-md text-[11px] font-semibold bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition shadow-2xs flex items-center gap-1 cursor-pointer select-none"
+          title="Sign in with user credentials"
+        >
+          <span>👤</span>
+          <span class="hidden xl:inline">Login</span>
+        </a>
+      </div>
+      {% endif %}
     </div>
   </header>
 
@@ -288,7 +345,7 @@
             title="Add Equipment Archetype (Press N)"
           >
             <span>➕</span>
-            <span class="whitespace-nowrap">Add Equipment</span>
+            <span class="whitespace-nowrap">New</span>
             <span class="text-[10px] font-mono text-indigo-200 font-normal hidden sm:inline">(N)</span>
           </button>
         </div>
@@ -312,6 +369,7 @@
             >
               <span x-text="d.icon"></span>
               <span x-text="d.name"></span>
+              <span class="opacity-75 text-[10px]" x-text="'(' + getDomainCount(d.id) + ')'"></span>
             </button>
           </template>
         </div>
@@ -442,7 +500,8 @@
         x-transition:leave="ease-in-out duration-300"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity cursor-pointer"
+        @click="requestCloseEditDrawer()"
       ></div>
 
       <!-- Drawer Panel -->
@@ -479,7 +538,7 @@
               </a>
               <button 
                 type="button" 
-                @click="closeEditDrawer()" 
+                @click="requestCloseEditDrawer()" 
                 class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer text-sm"
               >
                 ✕
@@ -496,7 +555,7 @@
           <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between shrink-0">
             <button 
               type="button" 
-              @click="closeEditDrawer()" 
+              @click="requestCloseEditDrawer()" 
               class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               Cancel
@@ -602,29 +661,229 @@
   </div>
 
   <!-- Workspace Database Finder Modal -->
-  <div x-show="showFinderModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4" @keydown.escape.window="showFinderModal = false">
-    <div class="bg-white dark:bg-[#0E1626] border border-slate-300 dark:border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col" @click.away="showFinderModal = false">
-      <div class="h-12 px-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-        <h3 class="font-bold text-xs text-slate-900 dark:text-white">Workspace Facilities Finder</h3>
-        <button @click="showFinderModal = false" class="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-sm">✕</button>
+  <div 
+    x-show="showFinderModal" 
+    x-cloak 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showFinderModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+      @click.away="showFinderModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-900/80 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            🗄️
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white">Workspace Digital Twins</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Switch active client facility or initialize a new electrical model</p>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          @click="showFinderModal = false" 
+          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
       </div>
-      <div class="p-5 space-y-3">
-        <input type="text" x-model="finderSearch" placeholder="Search facilities..." class="w-full h-9 px-3 text-xs rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
-        <div class="max-h-60 overflow-y-auto space-y-1">
-          <template x-for="c in filteredFinderClients" :key="c.client_id">
-            <div class="p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-              <span class="font-bold text-xs text-indigo-600 dark:text-indigo-400" x-text="c.client_name || c.client_id"></span>
-              <div class="space-y-1 mt-1">
-                <template x-for="f in c.facilities" :key="f.facility_id">
-                  <div @click="selectFacility(c.client_id, f.facility_id)" class="px-2 py-1 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 flex items-center justify-between cursor-pointer text-xs">
-                    <span x-text="f.facility_name || f.facility_id"></span>
-                    <span class="text-[10px] text-slate-400 font-mono">📁 model.db</span>
-                  </div>
+
+      <!-- Search & Quick Action Bar -->
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 flex items-center gap-3 shrink-0">
+        <div class="relative flex-1">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 text-xs">🔍</span>
+          <input 
+            type="text" 
+            x-model="finderSearch" 
+            placeholder="Search clients or facilities (e.g., zoetis, b4)..." 
+            class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+        <button 
+          type="button" 
+          @click="finderNewMode = !finderNewMode" 
+          class="px-3 py-1.5 rounded-lg text-xs font-bold border transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+          :class="finderNewMode ? 'bg-amber-500 text-white border-amber-600' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'"
+        >
+          <span x-text="finderNewMode ? '✕ Cancel' : '+ New Database'"></span>
+        </button>
+      </div>
+
+      <!-- Inline New Facility Creator -->
+      <div 
+        x-show="finderNewMode" 
+        x-cloak 
+        class="p-4 bg-indigo-50/70 dark:bg-indigo-950/40 border-b border-indigo-200 dark:border-indigo-900/60 text-xs space-y-3 shrink-0"
+      >
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-indigo-950 dark:text-indigo-200 uppercase tracking-wider text-[11px]">Create New Facility SQLite Database</h4>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400">Isolated workspace: <code class="font-mono">data/clients/{client}/{facility}/model.db</code></span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Client Selector / Custom -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase">Client Organization</label>
+              <button 
+                type="button" 
+                @click="finderIsCustomClient = !finderIsCustomClient; if (finderIsCustomClient) { finderNewClient = ''; } else if (finderClients.length > 0 && !finderNewClient) { finderNewClient = finderClients[0].client_id; }" 
+                class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                x-text="finderIsCustomClient ? '← Choose Existing' : '+ New Client'"
+              ></button>
+            </div>
+
+            <!-- Existing Clients Picker (Pills) -->
+            <div x-show="!finderIsCustomClient" class="space-y-1.5">
+              <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-700">
+                <template x-for="c in finderClients" :key="c.client_id">
+                  <button 
+                    type="button" 
+                    @click="finderNewClient = c.client_id"
+                    class="px-2 py-1 rounded text-xs font-mono transition cursor-pointer flex items-center gap-1"
+                    :class="(finderNewClient || '').toLowerCase() === c.client_id.toLowerCase() 
+                      ? 'bg-indigo-600 text-white shadow-xs font-bold' 
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                  >
+                    <span>🏢</span>
+                    <span x-text="c.client_name || c.client_id"></span>
+                  </button>
                 </template>
+                <div x-show="finderClients.length === 0" class="text-[11px] text-slate-400 p-1">No existing clients</div>
               </div>
             </div>
-          </template>
+
+            <!-- Custom New Client Input -->
+            <div x-show="finderIsCustomClient">
+              <input 
+                type="text" 
+                x-model="finderNewClient" 
+                placeholder="New client ID (e.g. pfizer, merck)" 
+                class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
+              />
+            </div>
+          </div>
+
+          <!-- Facility ID Input -->
+          <div>
+            <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Facility / Building ID</label>
+            <input 
+              type="text" 
+              x-model="finderNewFacility" 
+              placeholder="e.g. b12, plant_north, lab_4" 
+              class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
+            />
+            <p class="text-[10px] text-slate-400 mt-1">Directory created at <code class="font-mono text-indigo-500">data/clients/<span x-text="finderNewClient || '{client}'"></span>/<span x-text="finderNewFacility || '{facility}'"></span>/model.db</code></p>
+          </div>
         </div>
+
+        <!-- Seeding Options & Submit Button -->
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
+            <input type="checkbox" x-model="finderSeedData" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+            <span class="text-xs text-slate-700 dark:text-slate-300">Seed with demo facility electrical equipment & breakers</span>
+          </label>
+
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              @click="createFacilityDatabase()" 
+              :disabled="!finderNewClient || !finderNewFacility || finderCreating" 
+              class="px-3 py-1.5 rounded-md text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+            >
+              <span x-show="finderCreating" class="animate-spin">⏳</span>
+              <span>💾 Create Twin</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Body / Client Directory Tree -->
+      <div class="p-5 overflow-y-auto space-y-4 flex-1">
+        <template x-for="c in filteredFinderClients" :key="c.client_id">
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 overflow-hidden">
+            <div class="px-4 py-2 bg-slate-100/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🏢</span>
+                <span class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider" x-text="c.client_name"></span>
+                <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400" x-text="'(data/clients/' + c.client_id + '/)'"></span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300" x-text="c.facilities.length + ' facilities'"></span>
+            </div>
+
+            <div class="p-2 space-y-1.5">
+              <template x-for="f in c.facilities" :key="f.facility_id">
+                <div 
+                  class="p-2.5 rounded-lg border transition flex items-center justify-between group"
+                  :class="(client.toLowerCase() === c.client_id.toLowerCase() && facility.toLowerCase() === f.facility_id.toLowerCase())
+                    ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/40' 
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'"
+                >
+                  <div 
+                    @click="selectFacility(c.client_id, f.facility_id)"
+                    class="flex-1 flex items-center gap-3 cursor-pointer select-none"
+                  >
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-700 dark:text-slate-300">
+                      ⚡
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-xs text-slate-900 dark:text-white" x-text="f.facility_name"></span>
+                        <template x-if="client.toLowerCase() === c.client_id.toLowerCase() && facility.toLowerCase() === f.facility_id.toLowerCase()">
+                          <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-600 text-white">ACTIVE</span>
+                        </template>
+                      </div>
+                      <div class="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                        <span x-text="f.asset_count + ' assets'"></span>
+                        <span>•</span>
+                        <span x-text="(f.db_size_bytes / 1024).toFixed(1) + ' KB'"></span>
+                        <span>•</span>
+                        <span class="truncate max-w-[200px]" x-text="f.db_path"></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5">
+                    <button 
+                      type="button" 
+                      @click="selectFacility(c.client_id, f.facility_id)" 
+                      class="px-2.5 py-1 rounded text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 transition cursor-pointer"
+                    >
+                      Open Twin →
+                    </button>
+                    <template x-if="!(c.client_id.toLowerCase() === 'zoetis' && f.facility_id.toLowerCase() === 'b4')">
+                      <button 
+                        type="button" 
+                        @click="deleteFacility(c.client_id, f.facility_id)" 
+                        class="w-6 h-6 rounded flex items-center justify-center text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 transition opacity-0 group-hover:opacity-100 cursor-pointer"
+                        title="Delete database"
+                      >
+                        🗑️
+                      </button>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 flex items-center justify-between shrink-0 text-xs">
+        <span class="text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+          Press <kbd class="px-1 py-0.5 rounded bg-slate-200 dark:bg-slate-800">Esc</kbd> to close
+        </span>
+        <button 
+          type="button" 
+          @click="showFinderModal = false" 
+          class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium cursor-pointer"
+        >
+          Close
+        </button>
       </div>
     </div>
   </div>
@@ -643,6 +902,70 @@
 
   <!-- Slide-Over Feeder & Cable Property Sheet Drawer Include -->
   {% include "components/cable_property_drawer.html" %}
+
+  <!-- UNSAVED CHANGES CONFIRMATION MODAL -->
+  <div 
+    x-show="showUnsavedChangesModal" 
+    x-cloak 
+    class="fixed inset-0 z-60 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showUnsavedChangesModal = false"
+  >
+    <div 
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col text-slate-900 dark:text-white animate-in zoom-in-95 duration-150"
+      @click.away="showUnsavedChangesModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-slate-50 dark:bg-slate-950/60">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/40 flex items-center justify-center font-bold text-lg shrink-0">
+          ⚠️
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-bold text-sm text-slate-900 dark:text-white font-sans">Unsaved Changes</h3>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate" x-text="form ? (form.tag || form.id) : 'Equipment Draft'"></p>
+        </div>
+        <button 
+          type="button" 
+          @click="showUnsavedChangesModal = false" 
+          class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 text-xs text-slate-600 dark:text-slate-300 space-y-2">
+        <p>You have unsaved changes on this equipment form. Would you like to save your modifications before exiting, or discard them?</p>
+      </div>
+
+      <!-- Modal Actions Footer -->
+      <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-950/80 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+        <button 
+          type="button" 
+          @click="discardAndCloseDrawer()" 
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-300 hover:text-rose-700 dark:hover:text-white bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900 border border-rose-200 dark:border-rose-800/80 transition cursor-pointer"
+        >
+          Discard Changes
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            @click="keepEditingDrawer()" 
+            class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+          >
+            Keep Editing
+          </button>
+          <button 
+            type="button" 
+            @click="saveAndCloseDrawer()" 
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition cursor-pointer flex items-center gap-1.5"
+          >
+            <span>💾 Save & Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Alpine.js Survey Workbench Engine -->
   <script>
@@ -672,6 +995,8 @@
 
         // Right Slide-Over Form Drawer State
         showEditDrawer: false,
+        showUnsavedChangesModal: false,
+        initialFormSnapshot: null,
         isSaving: false,
         editingId: null,
         editingNodeOriginalTag: '',
@@ -697,6 +1022,12 @@
         showFinderModal: false,
         finderClients: [],
         finderSearch: '',
+        finderNewMode: false,
+        finderNewClient: '{{ client }}',
+        finderNewFacility: '',
+        finderSeedData: false,
+        finderCreating: false,
+        finderIsCustomClient: false,
         showHelpModal: false,
 
         // Equipment Archetype Picker
@@ -840,7 +1171,10 @@
             if (e.key === 'Escape') {
               if (this.showCableDrawer) this.closeCableDrawer();
               else if (this.showFeederScheduleModal) this.showFeederScheduleModal = false;
-              else if (this.showEditDrawer) this.closeEditDrawer();
+              else if (this.showEditDrawer) {
+                if (this.showUnsavedChangesModal) this.showUnsavedChangesModal = false;
+                else this.requestCloseEditDrawer();
+              }
               else if (this.showToolboxModal) this.showToolboxModal = false;
               else if (this.showAuditModal) this.showAuditModal = false;
               else if (this.showEquipmentPicker) this.closeEquipmentPicker();
@@ -915,7 +1249,11 @@
         get tableFilteredItems() {
           let list = this.stack || [];
           if (this.tableDomainFilter !== 'all') {
-            list = list.filter(item => item.domain === this.tableDomainFilter);
+            list = list.filter(item => {
+              let d = (item.domain || '').toLowerCase();
+              if (d === 'distribution') d = 'cables';
+              return d === this.tableDomainFilter;
+            });
           }
           if (this.tableRoomFilter && this.tableRoomFilter !== 'all') {
             list = list.filter(item => (item.room || '').trim() === this.tableRoomFilter);
@@ -969,10 +1307,20 @@
         openEditDrawer(idOrTag) {
           if (!idOrTag) return;
           const targetStr = String(idOrTag).trim().toLowerCase();
-          const match = (this.stack || []).find(n => 
-            n.id.toLowerCase() === targetStr || 
-            (n.tag && n.tag.toLowerCase() === targetStr)
-          );
+          if (!targetStr || targetStr === 'source' || targetStr === 'load' || targetStr === 'undefined' || targetStr === 'null') return;
+          const targetClean = targetStr.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+          const match = (this.stack || []).find(n => {
+            const nid = String(n.id || '').toLowerCase();
+            const ntag = String(n.tag || '').toLowerCase();
+            const nidClean = nid.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+            const ntagClean = ntag.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+            return nid === targetStr || 
+                   ntag === targetStr || 
+                   nidClean === targetClean || 
+                   ntagClean === targetClean ||
+                   nidClean === targetStr || 
+                   ntagClean === targetStr;
+          });
 
           if (!match) {
             this.toast(`⚠️ Asset "${idOrTag}" not found.`);
@@ -1078,10 +1426,61 @@
           this.newNoteText = '';
           this.drawerTab = 'details';
           this.showEditDrawer = true;
+          this.takeFormSnapshot();
+        },
+
+        takeFormSnapshot() {
+          if (!this.form) {
+            this.initialFormSnapshot = null;
+            return;
+          }
+          this.initialFormSnapshot = JSON.stringify({
+            form: this.form,
+            customAttrs: this.customAttrsList,
+            schedule: this.scheduleRows,
+            newNoteText: this.newNoteText,
+            stagedPhotos: this.stagedPhotos
+          });
+        },
+
+        isFormDirty() {
+          if (!this.form || !this.initialFormSnapshot) return false;
+          const current = JSON.stringify({
+            form: this.form,
+            customAttrs: this.customAttrsList,
+            schedule: this.scheduleRows,
+            newNoteText: this.newNoteText,
+            stagedPhotos: this.stagedPhotos
+          });
+          return current !== this.initialFormSnapshot;
+        },
+
+        requestCloseEditDrawer() {
+          if (this.isFormDirty()) {
+            this.showUnsavedChangesModal = true;
+          } else {
+            this.closeEditDrawer();
+          }
+        },
+
+        discardAndCloseDrawer() {
+          this.showUnsavedChangesModal = false;
+          this.closeEditDrawer();
+        },
+
+        async saveAndCloseDrawer() {
+          this.showUnsavedChangesModal = false;
+          await this.saveDrawerAsset();
+        },
+
+        keepEditingDrawer() {
+          this.showUnsavedChangesModal = false;
         },
 
         closeEditDrawer() {
           this.showEditDrawer = false;
+          this.showUnsavedChangesModal = false;
+          this.initialFormSnapshot = null;
           this.editingId = null;
           this.editingNodeOriginalTag = '';
         },
@@ -1200,6 +1599,15 @@
         },
 
         // Helper Badges & Domain Utilities
+        getDomainCount(domainId) {
+          if (!this.stack) return 0;
+          return this.stack.filter(item => {
+            let d = (item.domain || '').toLowerCase();
+            if (d === 'distribution') d = 'cables';
+            return d === domainId;
+          }).length;
+        },
+
         getDomainIcon(domainId) {
           const d = this.domains.find(item => item.id === domainId);
           return d ? d.icon : '📦';
@@ -1473,7 +1881,7 @@
           const isPanel = !!(item.is_panel || item.domainId === 'panels');
           
           const newDraft = {
-            id: 'node_' + Date.now(),
+            id: 's_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6),
             tag: nextTag,
             name: item.name,
             domain: item.domainId,
@@ -1520,6 +1928,7 @@
           this.newNoteText = '';
           this.drawerTab = 'details';
           this.showEditDrawer = true;
+          this.takeFormSnapshot();
           this.toast(`➕ New asset draft: ${newDraft.tag}`);
         },
 
@@ -1582,6 +1991,65 @@
           window.location.href = `/survey?client=${encodeURIComponent(clientId)}&facility=${encodeURIComponent(facilityId)}`;
         },
 
+        async deleteFacility(client_id, facility_id) {
+          if (!confirm(`Are you sure you want to delete facility '${facility_id}' for client '${client_id}'?\n\nThis will permanently remove the SQLite model.db and companion files.`)) {
+            return;
+          }
+          try {
+            const res = await fetch(`/api/workspace/facilities/${encodeURIComponent(client_id)}/${encodeURIComponent(facility_id)}`, {
+              method: 'DELETE'
+            });
+            const data = await res.json();
+            if (res.ok) {
+              if ((this.client || '').toLowerCase() === client_id.toLowerCase() && (this.facility || '').toLowerCase() === facility_id.toLowerCase()) {
+                window.location.href = '/survey?client=zoetis&facility=b4';
+              } else {
+                await this.fetchFinderClients();
+              }
+            } else {
+              alert(data.detail || 'Failed to delete facility');
+            }
+          } catch (e) {
+            console.error('Error deleting facility:', e);
+            alert('Network error while deleting facility');
+          }
+        },
+
+        async createFacilityDatabase() {
+          const client = (this.finderNewClient || '').trim();
+          const facility = (this.finderNewFacility || '').trim();
+          if (!client || !facility) {
+            this.toast('⚠️ Please provide both Client Organization and Facility ID.');
+            return;
+          }
+
+          this.finderCreating = true;
+          try {
+            const res = await fetch('/api/workspace/facilities', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                client_id: client,
+                facility_id: facility,
+                seed: !!this.finderSeedData
+              })
+            });
+            const data = await res.json();
+            if (res.ok) {
+              this.showFinderModal = false;
+              this.toast(`✓ Facility '${data.facility_id}' created! Loading workspace...`);
+              window.location.href = `/survey?client=${encodeURIComponent(data.client_id)}&facility=${encodeURIComponent(data.facility_id)}`;
+            } else {
+              alert(data.detail || 'Failed to create facility database');
+            }
+          } catch (e) {
+            console.error('Error creating facility database:', e);
+            alert('Error creating facility database');
+          } finally {
+            this.finderCreating = false;
+          }
+        },
+
         exportJsonl() {
           window.location.href = `/api/clients/${encodeURIComponent(this.client)}/facilities/${encodeURIComponent(this.facility)}/export/jsonl`;
         },
@@ -1638,9 +2106,20 @@
       if (window.EquipmentFormSharedLogic) {
         window.EquipmentFormSharedLogic.attachTo(app);
       }
+      if (window.AdminUserModalLogic) {
+        window.AdminUserModalLogic.attachTo(app);
+      }
+      if (window.CadSldModalLogic) {
+        window.CadSldModalLogic.attachTo(app);
+      }
+      window.alpineApp = app;
+      window.__surveyAppInstance = app;
 
       return app;
     }
   </script>
+
+  {% include 'components/admin_user_modal.html' %}
+  {% include 'components/cad_sld_modal.html' %}
 </body>
 </html>

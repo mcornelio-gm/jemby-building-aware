@@ -33,6 +33,11 @@ DOMAIN_CHECKLIST_MAP = {
 
 
 def _get_xlsx_path() -> str:
+    data_dir = os.getenv("JAMES_DATA_DIR")
+    if data_dir:
+        custom_path = os.path.join(data_dir, "checklists", "build_aware_electrical_checklists.xlsx")
+        if os.path.exists(custom_path):
+            return custom_path
     if os.path.exists(CHECKLISTS_XLSX_PATH):
         return CHECKLISTS_XLSX_PATH
     if os.path.exists(FALLBACK_XLSX_PATH):

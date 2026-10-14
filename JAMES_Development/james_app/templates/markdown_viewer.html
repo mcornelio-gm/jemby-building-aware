@@ -237,6 +237,29 @@
       color: #64748b;
     }
 
+    #sidebarToc {
+      width: 18rem;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                  opacity 0.25s ease, 
+                  border-width 0.3s ease;
+      will-change: width, opacity;
+    }
+    #sidebarToc.is-collapsed {
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      opacity: 0 !important;
+      border-right-width: 0 !important;
+      padding: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+    }
+    #sidebarToc > div,
+    #sidebarToc > nav {
+      width: 18rem;
+      min-width: 18rem;
+    }
+
     @media print {
       @page {
         margin: 1.5cm 1.5cm 1.5cm 1.5cm;
@@ -349,17 +372,27 @@
 
   <!-- Top Navigation / Control Toolbar -->
   <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-20 shrink-0 shadow-md">
-    <!-- Left: Branding & Document Title -->
+    <!-- Left: Branding & Index Toggle -->
     <div class="flex items-center gap-3 min-w-0">
       <div class="flex items-center gap-2 bg-indigo-950/80 dark:bg-indigo-950/80 light:bg-indigo-50 border border-indigo-800/60 light:border-indigo-200 px-2.5 py-1 rounded-lg">
         <span class="text-sm">⚡</span>
         <span class="text-xs font-bold uppercase tracking-wider text-indigo-300 dark:text-indigo-300 light:text-indigo-700">BUILD AWARE DOCS</span>
       </div>
+      
       <div class="h-4 w-px bg-slate-700"></div>
-      <div class="min-w-0 flex items-center gap-2">
-        <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 dark:bg-emerald-950 light:bg-emerald-100 text-emerald-300 dark:text-emerald-300 light:text-emerald-800 border border-emerald-800/60 light:border-emerald-300 font-semibold font-mono uppercase">{{ doc_type }}</span>
-        <h1 class="text-sm font-semibold text-slate-100 truncate" id="docTitle">{{ title or filename }}</h1>
-      </div>
+
+      <!-- Index / TOC Slide Toggle Button -->
+      <button 
+        onclick="toggleTocSidebar()" 
+        id="toggleTocBtn"
+        class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer border border-slate-700"
+        title="Toggle Index / Table of Contents (Ctrl+B)"
+      >
+        <span id="tocToggleIcon">📑</span>
+        <span id="tocToggleLabel">Hide Index</span>
+      </button>
+
+      <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 dark:bg-emerald-950 light:bg-emerald-100 text-emerald-300 dark:text-emerald-300 light:text-emerald-800 border border-emerald-800/60 light:border-emerald-300 font-semibold font-mono uppercase">{{ doc_type }}</span>
     </div>
 
     <!-- Center: Search in Document -->
@@ -433,12 +466,17 @@
   <div class="flex-1 flex overflow-hidden">
     
     <!-- Sidebar: Table of Contents -->
-    <aside id="sidebarToc" class="w-72 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0 overflow-hidden transition-all duration-200">
-      <div class="p-3 border-b border-slate-800 flex items-center justify-between">
+    <aside id="sidebarToc" class="w-72 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0 overflow-hidden select-none">
+      <div class="p-3 border-b border-slate-800 flex items-center justify-between shrink-0">
         <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
           <span>📑</span> Table of Contents
         </span>
-        <span id="headingCount" class="text-[11px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">0</span>
+        <div class="flex items-center gap-1.5">
+          <span id="headingCount" class="text-[11px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">0</span>
+          <button onclick="toggleTocSidebar(true)" class="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition text-xs cursor-pointer" title="Hide Index">
+            ✕
+          </button>
+        </div>
       </div>
       <nav id="tocContainer" class="flex-1 overflow-y-auto p-3 space-y-1 text-xs">
         <!-- Generated Dynamically -->
@@ -502,86 +540,118 @@
       applyDocTheme(!isDark);
     }
 
-    // 2. Configure marked with Mermaid Renderer
-    const customRenderer = new marked.Renderer();
-    const origCodeRenderer = customRenderer.code.bind(customRenderer);
-    customRenderer.code = function(code, language) {
-      if (language === 'mermaid') {
-        const encoded = encodeURIComponent(code);
-        return `<div class="mermaid-container my-6 p-4 rounded-xl bg-slate-950/40 dark:bg-slate-950/40 border border-slate-800 dark:border-slate-800 flex justify-center overflow-x-auto"><pre class="mermaid !bg-transparent !p-0 !border-0 text-center" data-mermaid-code="${encoded}">${code}</pre></div>`;
+    // 2. Custom Marked extensions for KaTeX Math ($...$ and $$...$$)
+    const mathBlockExtension = {
+      name: 'mathBlock',
+      level: 'block',
+      start(src) { return src.indexOf('$$'); },
+      tokenizer(src, tokens) {
+        const match = /^\$\$([\s\S]*?)\$\$/.exec(src);
+        if (match) {
+          return {
+            type: 'mathBlock',
+            raw: match[0],
+            text: match[1].trim()
+          };
+        }
+      },
+      renderer(token) {
+        try {
+          return `<div class="katex-display my-4 flex justify-center overflow-x-auto">${katex.renderToString(token.text, { displayMode: true, throwOnError: false })}</div>`;
+        } catch(e) {
+          return `<div class="text-rose-500 font-mono text-xs my-2">${token.text}</div>`;
+        }
       }
-      return origCodeRenderer(code, language);
     };
 
-    marked.setOptions({
+    const inlineMathExtension = {
+      name: 'inlineMath',
+      level: 'inline',
+      start(src) { return src.indexOf('$'); },
+      tokenizer(src, tokens) {
+        const match = /^\$([^\$\n\r]+?)\$/.exec(src);
+        if (match) {
+          return {
+            type: 'inlineMath',
+            raw: match[0],
+            text: match[1].trim()
+          };
+        }
+      },
+      renderer(token) {
+        try {
+          return katex.renderToString(token.text, { displayMode: false, throwOnError: false });
+        } catch(e) {
+          return `<span class="text-rose-500 font-mono text-xs">${token.text}</span>`;
+        }
+      }
+    };
+
+    // 3. Configure marked with Math, Mermaid & Highlight.js
+    marked.use({
       gfm: true,
       breaks: true,
-      renderer: customRenderer,
-      highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          try {
-            return hljs.highlight(code, { language: lang }).value;
-          } catch (e) {}
+      extensions: [mathBlockExtension, inlineMathExtension],
+      renderer: {
+        code(tokenOrCode, language) {
+          const code = (typeof tokenOrCode === 'object' && tokenOrCode !== null) ? tokenOrCode.text : tokenOrCode;
+          const lang = (typeof tokenOrCode === 'object' && tokenOrCode !== null) ? tokenOrCode.lang : language;
+          if (lang === 'mermaid') {
+            const encoded = encodeURIComponent(code);
+            return `<div class="mermaid-container my-6 p-4 rounded-xl bg-slate-950/40 dark:bg-slate-950/40 border border-slate-800 dark:border-slate-800 flex justify-center overflow-x-auto"><pre class="mermaid !bg-transparent !p-0 !border-0 text-center" data-mermaid-code="${encoded}">${code}</pre></div>`;
+          }
+          return false; // let marked handle standard code blocks
         }
-        return hljs.highlightAuto(code).value;
       }
     });
 
-    // 3. Render Markdown
+    // 4. Render Markdown
     const renderContainer = document.getElementById('markdownRenderBody');
     renderContainer.innerHTML = marked.parse(rawContent);
 
-    // 4. Render Math Equations (KaTeX)
-    try {
-      renderMathInElement(renderContainer, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false}
-        ],
-        throwOnError: false
-      });
-    } catch(e) {
-      console.warn('Math rendering skipped:', e);
-    }
+    // 5. Apply syntax highlighting to standard code blocks
+    renderContainer.querySelectorAll('pre code:not(.mermaid)').forEach((block) => {
+      hljs.highlightElement(block);
+    });
 
-    // 5. Render Mermaid Diagrams
-    function renderMermaidDiagrams(isDark) {
+    // 6. Render Mermaid Diagrams
+    async function renderMermaidDiagrams(isDark) {
       if (typeof mermaid === 'undefined') return;
       const mermaidNodes = document.querySelectorAll('.mermaid');
       if (!mermaidNodes || mermaidNodes.length === 0) return;
 
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: isDark ? 'dark' : 'default',
-        securityLevel: 'loose',
-        themeVariables: isDark ? {
-          darkMode: true,
-          background: '#0b1220',
-          primaryColor: '#4f46e5',
-          primaryTextColor: '#f8fafc',
-          primaryBorderColor: '#818cf8',
-          lineColor: '#94a3b8',
-          secondaryColor: '#1e293b',
-          tertiaryColor: '#0f172a'
-        } : {
-          darkMode: false,
-          background: '#ffffff',
-          primaryColor: '#e0e7ff',
-          primaryTextColor: '#1e293b',
-          primaryBorderColor: '#6366f1',
-          lineColor: '#64748b'
-        }
-      });
-
-      mermaidNodes.forEach(el => {
-        if (el.dataset.mermaidCode) {
-          el.removeAttribute('data-processed');
-          el.innerHTML = decodeURIComponent(el.dataset.mermaidCode);
-        }
-      });
-
       try {
-        mermaid.run({
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: isDark ? 'dark' : 'default',
+          securityLevel: 'loose',
+          themeVariables: isDark ? {
+            darkMode: true,
+            background: '#0b1220',
+            primaryColor: '#4f46e5',
+            primaryTextColor: '#f8fafc',
+            primaryBorderColor: '#818cf8',
+            lineColor: '#94a3b8',
+            secondaryColor: '#1e293b',
+            tertiaryColor: '#0f172a'
+          } : {
+            darkMode: false,
+            background: '#ffffff',
+            primaryColor: '#e0e7ff',
+            primaryTextColor: '#1e293b',
+            primaryBorderColor: '#6366f1',
+            lineColor: '#64748b'
+          }
+        });
+
+        mermaidNodes.forEach(el => {
+          if (el.dataset.mermaidCode) {
+            el.removeAttribute('data-processed');
+            el.innerHTML = decodeURIComponent(el.dataset.mermaidCode);
+          }
+        });
+
+        await mermaid.run({
           querySelector: '.mermaid'
         });
       } catch (e) {
@@ -711,6 +781,56 @@
         if (matches) count++;
       });
       matchCountBadge.textContent = count > 0 ? `${count} sec` : '0';
+    });
+
+    // 9. Table of Contents Slide / Toggle Controller
+    function setTocCollapsed(collapsed) {
+      const sidebar = document.getElementById('sidebarToc');
+      const toggleBtn = document.getElementById('toggleTocBtn');
+      const toggleLabel = document.getElementById('tocToggleLabel');
+      
+      if (!sidebar) return;
+
+      if (collapsed) {
+        sidebar.classList.add('is-collapsed');
+        if (toggleLabel) toggleLabel.textContent = 'Show Index';
+        if (toggleBtn) {
+          toggleBtn.classList.remove('bg-slate-800', 'text-slate-300');
+          toggleBtn.classList.add('bg-indigo-900/40', 'text-indigo-300', 'border-indigo-700/60');
+        }
+        localStorage.setItem('james-toc-collapsed', 'true');
+      } else {
+        sidebar.classList.remove('is-collapsed');
+        if (toggleLabel) toggleLabel.textContent = 'Hide Index';
+        if (toggleBtn) {
+          toggleBtn.classList.add('bg-slate-800', 'text-slate-300');
+          toggleBtn.classList.remove('bg-indigo-900/40', 'text-indigo-300', 'border-indigo-700/60');
+        }
+        localStorage.setItem('james-toc-collapsed', 'false');
+      }
+    }
+
+    function toggleTocSidebar(forceCollapse) {
+      const sidebar = document.getElementById('sidebarToc');
+      if (!sidebar) return;
+      const isCurrentlyCollapsed = sidebar.classList.contains('is-collapsed');
+      const targetState = forceCollapse !== undefined ? forceCollapse : !isCurrentlyCollapsed;
+      setTocCollapsed(targetState);
+    }
+
+    // Initialize TOC collapsed state from localStorage
+    try {
+      if (localStorage.getItem('james-toc-collapsed') === 'true') {
+        setTocCollapsed(true);
+      }
+    } catch (e) {}
+
+    // Keyboard shortcut (Ctrl+B or Cmd+B) to toggle TOC sidebar
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleTocSidebar();
+      }
     });
   </script>
 </body>

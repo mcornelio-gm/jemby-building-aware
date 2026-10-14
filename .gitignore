@@ -21,6 +21,7 @@ Thumbs.db
 
 # Test data artifacts
 **/data/clients/test_client/
+**/data/audit.jsonl
 *.sqlite3-journal
 *.db-shm
 *.db-wal

@@ -1,5 +1,6 @@
 """Local JSON File Storage Manager for Projects."""
 
+import os
 import json
 from pathlib import Path
 from typing import List, Optional
@@ -8,7 +9,8 @@ from james_app.models import Project
 
 # Base directory for storing projects
 BASE_DIR = Path(__file__).resolve().parent.parent
-PROJECTS_DIR = BASE_DIR / "data" / "projects"
+DATA_DIR = Path(os.getenv("JAMES_DATA_DIR", str(BASE_DIR / "data")))
+PROJECTS_DIR = DATA_DIR / "projects"
 
 
 def ensure_storage_dir() -> None:

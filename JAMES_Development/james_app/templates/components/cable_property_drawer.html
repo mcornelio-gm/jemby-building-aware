@@ -94,28 +94,32 @@
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 text-xs font-semibold min-w-0">
               <!-- From Node Pill -->
-              <button 
-                type="button" 
-                @click="jumpToEquipment(activeFeeder.from_node)"
-                class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
-                title="Inspect Upstream Source Equipment"
-              >
-                <span>⚡ From:</span>
-                <span class="underline underline-offset-2" x-text="activeFeeder.from_tag || activeFeeder.from_node"></span>
-              </button>
+              <template x-if="activeFeeder.from_tag && activeFeeder.from_tag !== 'Source'">
+                <button 
+                  type="button" 
+                  @click="jumpToEquipment(activeFeeder.from_tag || activeFeeder.from_node)"
+                  class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 hover:border-indigo-400 dark:hover:border-indigo-500 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate group"
+                  title="Focus & Inspect Upstream Source Equipment in SLD"
+                >
+                  <span>⚡ From:</span>
+                  <span class="underline underline-offset-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-200" x-text="activeFeeder.from_tag || activeFeeder.from_node"></span>
+                </button>
+              </template>
 
-              <span class="text-slate-400 dark:text-slate-500 font-bold">➔</span>
+              <span class="text-slate-400 dark:text-slate-500 font-bold" x-show="activeFeeder.from_tag && activeFeeder.from_tag !== 'Source' && activeFeeder.to_tag && activeFeeder.to_tag !== 'Load'">➔</span>
 
               <!-- To Node Pill -->
-              <button 
-                type="button" 
-                @click="jumpToEquipment(activeFeeder.to_node)"
-                class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate"
-                title="Inspect Downstream Load Equipment"
-              >
-                <span>⚙️ To:</span>
-                <span class="underline underline-offset-2" x-text="activeFeeder.to_tag || activeFeeder.to_node"></span>
-              </button>
+              <template x-if="activeFeeder.to_tag && activeFeeder.to_tag !== 'Load'">
+                <button 
+                  type="button" 
+                  @click="jumpToEquipment(activeFeeder.to_tag || activeFeeder.to_node)"
+                  class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition flex items-center gap-1 shadow-2xs cursor-pointer truncate group"
+                  title="Focus & Inspect Downstream Load Equipment in SLD"
+                >
+                  <span>⚙️ To:</span>
+                  <span class="underline underline-offset-2 group-hover:text-slate-900 dark:group-hover:text-white" x-text="activeFeeder.to_tag || activeFeeder.to_node"></span>
+                </button>
+              </template>
             </div>
 
             <template x-if="activeFeeder.breaker_trip">

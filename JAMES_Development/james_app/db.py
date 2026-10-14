@@ -1,5 +1,6 @@
 """Database Layer: Client-Isolated SQLite + JSONL Multi-Tenant Architecture with SQLAlchemy ORM."""
 
+import os
 import json
 import re
 from pathlib import Path
@@ -20,7 +21,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-CLIENTS_DATA_DIR = BASE_DIR / "data" / "clients"
+DATA_DIR = Path(os.getenv("JAMES_DATA_DIR", str(BASE_DIR / "data")))
+CLIENTS_DATA_DIR = DATA_DIR / "clients"
 
 DEFAULT_CLIENT = "zoetis"
 DEFAULT_FACILITY = "b4"
@@ -137,6 +139,13 @@ def export_to_jsonl(client_id: str, facility_id: str) -> Path:
             lines.append(json.dumps(item_dict))
 
         jsonl_file.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+
+    try:
+        from james_app.gcs_sync import sync_client_facility_to_gcs
+        sync_client_facility_to_gcs(client_id, facility_id)
+    except Exception:
+        pass
+
     return jsonl_file
 
 
@@ -482,7 +491,7 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
     return list(clients_map.values())
 
 
-def create_client_facility(client_id: str, facility_id: str, seed: bool = True) -> Dict[str, Any]:
+def create_client_facility(client_id: str, facility_id: str, seed: bool = False) -> Dict[str, Any]:
     """Create a new client/facility directory and initialize its SQLite database."""
     clean_client = re.sub(r'[^a-zA-Z0-9_\-]', '_', client_id.strip().lower())
     clean_facility = re.sub(r'[^a-zA-Z0-9_\-]', '_', facility_id.strip().lower())

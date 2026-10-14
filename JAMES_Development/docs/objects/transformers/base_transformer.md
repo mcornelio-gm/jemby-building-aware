@@ -31,11 +31,11 @@ The **Transformer** base class (`TransformerObject`) represents electromagnetic 
   $$I_{\text{FLA}} = \frac{\text{kVA} \times 1000}{V_{\text{nominal}}}$$
 
 ### Maximum Available Secondary Fault Current ($I_{sc}$)
-$$I_{sc} = \frac{I_{\text{sec\_FLA}}}{\%Z / 100}$$
+$$I_{sc} = \frac{I_{\text{sec, FLA}}}{\%Z / 100}$$
 
 ### NEC 450.3(B) Maximum OCPD Protection Sizing
-* Primary OCPD with secondary protection ($\le 125\%$): Max Primary = $250\% \times I_{\text{pri\_FLA}}$.
-* Primary OCPD only (without secondary protection): Max Primary = $125\% \times I_{\text{pri\_FLA}}$.
+* Primary OCPD with secondary protection ($\le 125\%$): $\text{Max Primary} = 250\% \times I_{\text{pri, FLA}}$
+* Primary OCPD only (without secondary protection): $\text{Max Primary} = 125\% \times I_{\text{pri, FLA}}$
 
 ---
 

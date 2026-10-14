@@ -18,8 +18,15 @@ from sqlalchemy.orm.attributes import flag_modified
 from james_app.catalog import get_catalog, get_equipment_schema
 from james_app.master_catalog import get_master_catalog
 from james_app.dot_compiler import compile_project_to_dot, compile_facility_to_dot
+from james_app.cad_compiler import (
+    SingleLineCadCompiler,
+    export_facility_dxf,
+    export_facility_svg,
+    get_available_facility_sheets
+)
 from james_app.models import Edge, Node, Project
-from james_app import storage, db
+from james_app import storage, db, auth
+from james_app.audit_logger import log_audit, get_recent_audit_logs
 from james_app.knowledge_base import KnowledgeBaseManager
 from james_app.integrity_audit import (
     audit_facility_system_integrity,
@@ -54,10 +61,438 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    """Ensure dynamic HTML and API routes are never cached by the browser."""
+    response = await call_next(request)
+    if not request.url.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
+
+@app.on_event("startup")
+async def on_app_startup():
+    """Hydrate persistent databases from GCS and launch background synchronization."""
+    try:
+        import asyncio
+        from james_app.gcs_sync import hydrate_from_gcs, background_gcs_sync_worker
+        hydrate_from_gcs()
+        asyncio.create_task(background_gcs_sync_worker(interval_seconds=45))
+    except Exception as e:
+        logger.warning(f"GCS startup hydration note: {e}")
+
+
+def set_context_cookies(
+    response: Response,
+    client: str,
+    facility: str,
+    view: str = "survey",
+    url: Optional[str] = None
+) -> Response:
+    """Persist active client, facility, view, and URL into browser cookies for cross-session context."""
+    max_age = 60 * 60 * 24 * 365  # 1 year
+    clean_c = (client or "zoetis").strip().lower()
+    clean_f = (facility or "b4").strip().lower()
+    response.set_cookie("james_last_client", clean_c, max_age=max_age, samesite="lax", path="/")
+    response.set_cookie("james_last_facility", clean_f, max_age=max_age, samesite="lax", path="/")
+    response.set_cookie("james_last_view", view, max_age=max_age, samesite="lax", path="/")
+    if url:
+        response.set_cookie("james_last_url", url, max_age=max_age, samesite="lax", path="/")
+    return response
+
+
 @app.get("/", response_class=RedirectResponse)
-def root():
-    """Redirect root access to Survey workbench."""
-    return RedirectResponse(url="/survey")
+def root(request: Request):
+    """Redirect root access to user's last visited context from browser cookies or default to demo facility."""
+    last_url = request.cookies.get("james_last_url")
+    if last_url and last_url.startswith("/") and not last_url.startswith("//") and not last_url.startswith("/login"):
+        return RedirectResponse(url=last_url, status_code=307)
+
+    client = (request.cookies.get("james_last_client") or "zoetis").strip().lower()
+    facility = (request.cookies.get("james_last_facility") or "b4").strip().lower()
+    view = (request.cookies.get("james_last_view") or "survey").strip().lower()
+
+    if view == "sld":
+        target = f"/clients/{client}/facilities/{facility}/sld"
+    elif view == "catalog":
+        target = f"/catalog?client={client}&facility={facility}"
+    else:
+        target = f"/survey?client={client}&facility={facility}"
+    return RedirectResponse(url=target, status_code=307)
+
+
+@app.get("/login", response_class=HTMLResponse)
+def login_page(request: Request, next: Optional[str] = None, error: Optional[str] = None):
+    """Render modern login screen."""
+    token = request.cookies.get(auth.SESSION_COOKIE_NAME)
+    user = auth.verify_session_token(token) if token else None
+    if user and not user.get("is_guest") and auth.AUTH_ENABLED:
+        return RedirectResponse(url=next or "/", status_code=303)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "next_url": next or "/",
+            "error": error,
+            "google_sso_configured": auth.is_google_sso_configured()
+        }
+    )
+
+
+@app.post("/login")
+async def login_submit(request: Request):
+    """Process user login authentication and set session cookie."""
+    form_data = await request.form()
+    username = str(form_data.get("username", "")).strip()
+    password = str(form_data.get("password", ""))
+    next_url = str(form_data.get("next", "")).strip() or "/"
+
+    user = auth.verify_credentials(username, password)
+    if not user:
+        log_audit(
+            action="USER_LOGIN_FAILED",
+            user={"username": username, "email": username},
+            details={"entered_username": username, "reason": "Invalid credentials"},
+            request=request,
+            level="WARNING"
+        )
+        return templates.TemplateResponse(
+            request=request,
+            name="login.html",
+            context={
+                "next_url": next_url,
+                "error": "Invalid username or password. Please try again.",
+                "google_sso_configured": auth.is_google_sso_configured()
+            },
+            status_code=400
+        )
+
+    log_audit(
+        action="USER_LOGIN_SUCCESS",
+        user=user,
+        details={"auth_method": "password"},
+        request=request
+    )
+
+    token = auth.create_session_token(user)
+    response = RedirectResponse(url=next_url, status_code=303)
+    response.set_cookie(
+        auth.SESSION_COOKIE_NAME,
+        token,
+        max_age=auth.SESSION_MAX_AGE_SECONDS,
+        httponly=True,
+        samesite="lax",
+        path="/"
+    )
+    return response
+
+
+@app.get("/logout")
+@app.post("/logout")
+def logout(request: Request):
+    """Clear session cookie and redirect to login."""
+    current_user = auth.get_current_user(request)
+    if current_user:
+        log_audit("USER_LOGOUT", user=current_user, request=request)
+    response = RedirectResponse(url="/login", status_code=303)
+    response.delete_cookie(auth.SESSION_COOKIE_NAME, path="/")
+    return response
+
+
+@app.get("/auth/google")
+@app.get("/auth/google/login")
+def auth_google_login(request: Request, next: Optional[str] = None):
+    """Initiate Google OAuth 2.0 OpenID Connect login flow."""
+    if not auth.is_google_sso_configured():
+        return RedirectResponse(
+            url="/login?error=Google+SSO+credentials+(GOOGLE_CLIENT_ID)+are+not+yet+configured+in+server+environment.",
+            status_code=303
+        )
+    
+    host = request.headers.get("host", "")
+    proto = request.headers.get("x-forwarded-proto", "https" if "buildingaware.io" in host else "http")
+    redirect_uri = f"{proto}://{host}/auth/google/callback" if host else "https://dev.buildingaware.io/auth/google/callback"
+    
+    auth_url = auth.get_google_auth_url(redirect_uri=redirect_uri, state=next or "/")
+    return RedirectResponse(url=auth_url, status_code=303)
+
+
+@app.get("/auth/google/callback")
+def auth_google_callback(
+    request: Request,
+    code: Optional[str] = None,
+    error: Optional[str] = None,
+    state: Optional[str] = None
+):
+    """Handle Google OAuth 2.0 authorization code callback."""
+    if error or not code:
+        err_msg = error or "Google authorization was cancelled or failed."
+        log_audit("USER_LOGIN_GOOGLE_FAILED", details={"error": err_msg}, request=request, level="WARNING")
+        return RedirectResponse(url=f"/login?error={err_msg}", status_code=303)
+
+    host = request.headers.get("host", "")
+    proto = request.headers.get("x-forwarded-proto", "https" if "buildingaware.io" in host else "http")
+    redirect_uri = f"{proto}://{host}/auth/google/callback" if host else "https://dev.buildingaware.io/auth/google/callback"
+
+    user = auth.exchange_google_code_for_user(code=code, redirect_uri=redirect_uri)
+    if not user:
+        log_audit("USER_LOGIN_GOOGLE_FAILED", details={"reason": "Token exchange failed"}, request=request, level="WARNING")
+        return RedirectResponse(
+            url="/login?error=Failed+to+authenticate+with+Google.+Please+try+again.",
+            status_code=303
+        )
+
+    log_audit("USER_LOGIN_GOOGLE_SUCCESS", user=user, details={"auth_method": "google_sso"}, request=request)
+
+    target_url = state if (state and state.startswith("/") and not state.startswith("//") and not state.startswith("/login")) else "/"
+    token = auth.create_session_token(user)
+    response = RedirectResponse(url=target_url, status_code=303)
+    response.set_cookie(
+        auth.SESSION_COOKIE_NAME,
+        token,
+        max_age=auth.SESSION_MAX_AGE_SECONDS,
+        httponly=True,
+        samesite="lax",
+        path="/"
+    )
+    return response
+
+
+@app.get("/api/auth/me")
+def api_auth_me(request: Request):
+    """Return currently active user info or guest status."""
+    user = auth.get_current_user(request)
+    return {
+        "authenticated": bool(user and not user.get("is_guest")),
+        "user": user,
+        "auth_enabled": auth.AUTH_ENABLED,
+        "google_sso_configured": auth.is_google_sso_configured()
+    }
+
+
+@app.get("/api/users")
+def api_get_users(request: Request):
+    """List all registered users."""
+    from james_app.users import list_users
+    users = list_users()
+    return [
+        {
+            "id": u.id,
+            "email": u.email,
+            "username": u.username,
+            "name": u.name,
+            "role": u.role,
+            "avatar_url": u.avatar_url,
+            "client_access": u.client_access,
+            "is_active": u.is_active,
+            "created_at": u.created_at,
+            "last_login_at": u.last_login_at
+        }
+        for u in users
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Admin User Management & Password Reset Endpoints
+# ---------------------------------------------------------------------------
+
+@app.get("/api/admin/users")
+def api_admin_list_users(request: Request):
+    """Admin endpoint to list all user accounts with full status details."""
+    admin_user = auth.require_admin_user(request)
+    from james_app.users import list_users
+    users = list_users()
+    return {
+        "success": True,
+        "users": [
+            {
+                "id": u.id,
+                "email": u.email,
+                "username": u.username,
+                "name": u.name,
+                "role": u.role,
+                "avatar_url": u.avatar_url,
+                "client_access": u.client_access,
+                "is_active": u.is_active,
+                "created_at": u.created_at,
+                "last_login_at": u.last_login_at
+            }
+            for u in users
+        ]
+    }
+
+
+@app.post("/api/admin/users/reset-password")
+async def api_admin_reset_password(request: Request):
+    """Admin endpoint to set or reset any user's password."""
+    admin_user = auth.require_admin_user(request)
+    data = await request.json()
+    identifier = data.get("identifier", "").strip()
+    new_password = data.get("new_password", "").strip()
+
+    if not identifier:
+        raise HTTPException(status_code=400, detail="User email or username is required.")
+    if not new_password or len(new_password) < 4:
+        raise HTTPException(status_code=400, detail="Password must be at least 4 characters.")
+
+    from james_app.users import admin_reset_user_password, get_user_by_identifier
+    target_user = get_user_by_identifier(identifier)
+    if not target_user:
+        raise HTTPException(status_code=404, detail=f"User '{identifier}' not found.")
+
+    success = admin_reset_user_password(identifier, new_password)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to reset password.")
+
+    log_audit(
+        action="ADMIN_PASSWORD_RESET",
+        user=admin_user,
+        resource_type="user",
+        resource_id=target_user.email,
+        details={
+            "target_user_id": target_user.id,
+            "target_email": target_user.email,
+            "target_username": target_user.username,
+            "reset_by_admin": admin_user.get("email") or admin_user.get("username")
+        },
+        request=request
+    )
+
+    return {
+        "success": True,
+        "message": f"Password successfully updated for {target_user.name} ({target_user.email})."
+    }
+
+
+@app.post("/api/admin/users/upsert")
+async def api_admin_upsert_user(request: Request):
+    """Admin endpoint to create a new user or update an existing user."""
+    admin_user = auth.require_admin_user(request)
+    data = await request.json()
+    email = data.get("email", "").strip().lower()
+    name = data.get("name", "").strip()
+    role = data.get("role", "engineer").strip().lower()
+    initial_password = data.get("password", "").strip()
+    is_active = bool(data.get("is_active", True))
+
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Valid email address is required.")
+    if role not in ("admin", "engineer", "surveyor", "viewer"):
+        role = "engineer"
+
+    from james_app.users import admin_upsert_user
+    user = admin_upsert_user(
+        email=email,
+        name=name,
+        role=role,
+        initial_password=initial_password if initial_password else None,
+        is_active=is_active
+    )
+
+    log_audit(
+        action="ADMIN_USER_UPSERT",
+        user=admin_user,
+        resource_type="user",
+        resource_id=user.email,
+        details={
+            "user_id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "role": user.role,
+            "is_active": user.is_active,
+            "password_updated": bool(initial_password)
+        },
+        request=request
+    )
+
+    return {
+        "success": True,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+            "name": user.name,
+            "role": user.role,
+            "is_active": user.is_active,
+            "created_at": user.created_at,
+            "last_login_at": user.last_login_at
+        },
+        "message": f"User account for {user.name} ({user.email}) saved successfully."
+    }
+
+
+@app.post("/api/admin/users/delete")
+async def api_admin_delete_user(request: Request):
+    """Admin endpoint to delete a user account."""
+    admin_user = auth.require_admin_user(request)
+    data = await request.json()
+    identifier = data.get("identifier", "").strip()
+
+    if not identifier:
+        raise HTTPException(status_code=400, detail="User identifier is required.")
+
+    from james_app.users import get_user_by_identifier, admin_delete_user
+    target_user = get_user_by_identifier(identifier)
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    admin_email = (admin_user.get("email") or "").lower()
+    admin_username = (admin_user.get("username") or "").lower()
+    if target_user.email.lower() == admin_email or target_user.username.lower() == admin_username:
+        raise HTTPException(status_code=400, detail="You cannot delete your own active admin account.")
+
+    admin_delete_user(identifier)
+
+    log_audit(
+        action="ADMIN_USER_DELETE",
+        user=admin_user,
+        resource_type="user",
+        resource_id=target_user.email,
+        details={"deleted_user_id": target_user.id, "deleted_email": target_user.email},
+        request=request
+    )
+
+    return {"success": True, "message": f"User {target_user.email} deleted successfully."}
+
+
+@app.post("/api/admin/users/toggle-active")
+async def api_admin_toggle_active(request: Request):
+    """Admin endpoint to activate or deactivate a user account."""
+    admin_user = auth.require_admin_user(request)
+    data = await request.json()
+    identifier = data.get("identifier", "").strip()
+    is_active = bool(data.get("is_active", True))
+
+    from james_app.users import get_user_by_identifier, admin_toggle_user_active
+    target_user = get_user_by_identifier(identifier)
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    admin_email = (admin_user.get("email") or "").lower()
+    if target_user.email.lower() == admin_email and not is_active:
+        raise HTTPException(status_code=400, detail="You cannot deactivate your own admin account.")
+
+    admin_toggle_user_active(identifier, is_active)
+
+    log_audit(
+        action="ADMIN_USER_TOGGLE_ACTIVE",
+        user=admin_user,
+        resource_type="user",
+        resource_id=target_user.email,
+        details={"is_active": is_active},
+        request=request
+    )
+
+    return {"success": True, "is_active": is_active, "message": f"User status set to {'Active' if is_active else 'Disabled'}."}
+
+
+@app.get("/api/audit-logs")
+def api_get_audit_logs(request: Request, limit: int = 100):
+    """Retrieve recent structured JSON audit trail."""
+    return get_recent_audit_logs(limit=limit)
 
 
 @app.get("/api/catalog")
@@ -77,7 +512,8 @@ def get_catalog_studio_view(
     """Render the full Master Catalog Studio UI for parts management and CRUD."""
     active_client = (client or client_id or "zoetis").strip().lower()
     active_facility = (facility or facility_id or "b4").strip().lower()
-    return templates.TemplateResponse(
+    current_user = auth.get_current_user(request)
+    response = templates.TemplateResponse(
         request=request,
         name="catalog_studio.html",
         context={
@@ -85,8 +521,16 @@ def get_catalog_studio_view(
             "facility_id": active_facility,
             "master_catalog_items": get_master_catalog().get_all_items(),
             "manufacturers": get_master_catalog().get_manufacturers(),
-            "stats": get_master_catalog().get_catalog_stats()
+            "stats": get_master_catalog().get_catalog_stats(),
+            "user": current_user
         }
+    )
+    return set_context_cookies(
+        response,
+        active_client,
+        active_facility,
+        view="catalog",
+        url=f"/catalog?client={active_client}&facility={active_facility}"
     )
 
 
@@ -262,6 +706,25 @@ async def api_update_feeder(request: Request):
         raise HTTPException(status_code=400, detail="from_tag and to_tag are required.")
 
     updated_feeder = update_feeder_edge(edge_id, from_tag, to_tag, payload, cid, fid)
+
+    current_user = auth.get_current_user(request)
+    log_audit(
+        action="FEEDER_UPDATE",
+        user=current_user,
+        client_id=cid,
+        facility_id=fid,
+        resource_type="feeder",
+        resource_id=f"{from_tag}->{to_tag}",
+        details={
+            "from": from_tag,
+            "to": to_tag,
+            "conductor": payload.get("conductor"),
+            "sets": payload.get("sets"),
+            "length_ft": payload.get("length_ft")
+        },
+        request=request
+    )
+
     return {
         "status": "success",
         "feeder": updated_feeder
@@ -831,7 +1294,8 @@ def get_survey_view(
             for r in records
         ]
 
-    return templates.TemplateResponse(
+    current_user = auth.get_current_user(request)
+    response = templates.TemplateResponse(
         request=request,
         name="survey.html",
         context={
@@ -839,7 +1303,15 @@ def get_survey_view(
             "facility_id": active_facility,
             "initial_nodes": initial_nodes,
             "master_catalog_items": get_master_catalog().get_all_items(),
+            "user": current_user,
         }
+    )
+    return set_context_cookies(
+        response,
+        active_client,
+        active_facility,
+        view="survey",
+        url=f"/survey?client={active_client}&facility={active_facility}"
     )
 
 
@@ -964,18 +1436,54 @@ async def api_upsert_client_node(request: Request, client_id: str, facility_id: 
         session.commit()
 
     db.export_to_jsonl(client_id, facility_id)
+
+    # Structured audit logging
+    current_user = auth.get_current_user(request)
+    log_audit(
+        action="EQUIPMENT_UPSERT",
+        user=current_user,
+        client_id=client_id,
+        facility_id=facility_id,
+        resource_type="equipment",
+        resource_id=tag,
+        details={
+            "id": node_id,
+            "tag": tag,
+            "name": data.get("name"),
+            "domain": data.get("domain"),
+            "type_tag": data.get("type_tag")
+        },
+        request=request
+    )
+
     return {"status": "success", "id": node_id}
 
 
 @app.delete("/api/clients/{client_id}/facilities/{facility_id}/nodes/{node_id}")
-def api_delete_client_node(client_id: str, facility_id: str, node_id: str):
+def api_delete_client_node(request: Request, client_id: str, facility_id: str, node_id: str):
     """Delete an equipment node from client SQLite database and sync companion JSONL."""
+    deleted_tag = node_id
     with db.get_session(client_id, facility_id) as session:
         node = session.query(db.NodeRecord).filter_by(id=node_id).first()
         if node:
+            deleted_tag = node.tag or node_id
             session.delete(node)
             session.commit()
     db.export_to_jsonl(client_id, facility_id)
+
+    # Structured audit logging
+    current_user = auth.get_current_user(request)
+    log_audit(
+        action="EQUIPMENT_DELETE",
+        user=current_user,
+        client_id=client_id,
+        facility_id=facility_id,
+        resource_type="equipment",
+        resource_id=deleted_tag,
+        details={"node_id": node_id},
+        request=request
+    )
+
     return {"status": "deleted", "id": node_id}
 
 
@@ -1100,7 +1608,7 @@ def api_export_facility_audit(client_id: str, facility_id: str, format: str = "m
 
 
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/dot", response_class=PlainTextResponse)
-def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "macro"):
+def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "macro", rankdir: str = "TB"):
     """Compile and return Graphviz record-and-port DOT text representation of facility digital twin."""
     clean_c = client_id.strip().lower()
     clean_f = facility_id.strip().lower()
@@ -1133,22 +1641,148 @@ def api_get_client_facility_dot(client_id: str, facility_id: str, mode: str = "m
             }
             for r in records
         ]
-        dot_content = compile_facility_to_dot(node_dicts, mode=mode)
+        dot_content = compile_facility_to_dot(node_dicts, mode=mode, rankdir=rankdir)
         return PlainTextResponse(content=dot_content, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
 @app.get("/clients/{client_id}/facilities/{facility_id}/sld", response_class=HTMLResponse)
 def get_client_facility_sld(request: Request, client_id: str, facility_id: str):
     """Render the full interactive Graphviz record-and-port Single-Line Diagram view."""
-    return templates.TemplateResponse(
+    current_user = auth.get_current_user(request)
+    response = templates.TemplateResponse(
         request=request,
         name="sld_view.html",
         context={
             "client_id": client_id,
             "facility_id": facility_id,
             "master_catalog_items": get_master_catalog().get_all_items(),
+            "user": current_user,
         }
     )
+    return set_context_cookies(
+        response,
+        client_id,
+        facility_id,
+        view="sld",
+        url=f"/clients/{client_id}/facilities/{facility_id}/sld"
+    )
+
+
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/cad/sheets")
+def api_get_cad_sheets(client_id: str, facility_id: str):
+    """Return available CAD drawing sheet set list (e.g., Overall, E-101 Main, E-102 Riser, etc.)."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    session = db.get_session(clean_c, clean_f)
+    try:
+        node_recs = session.query(db.NodeRecord).all()
+        nodes = [{"id": n.id, "tag": n.tag, "domain": n.domain, "type_tag": n.type_tag, "fed_from": n.fed_from} for n in node_recs]
+        edge_recs = session.query(db.EdgeRecord).all()
+        edges = [{"source": e.from_node_tag, "target": e.to_node_tag} for e in edge_recs]
+        for n in node_recs:
+            if n.fed_from and n.fed_from not in ("-- None / Service Entrance --", "None", "null", ""):
+                edges.append({"source": n.fed_from, "target": n.tag})
+    finally:
+        session.close()
+
+    return get_available_facility_sheets(nodes, edges)
+
+
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/cad/dxf")
+def api_export_cad_dxf(client_id: str, facility_id: str, sheet: str = "all"):
+    """Generate and download an IEEE 315 / ANSI standard AutoCAD DXF Single-Line Diagram."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    session = db.get_session(clean_c, clean_f)
+    try:
+        node_recs = session.query(db.NodeRecord).all()
+        nodes = []
+        for n in node_recs:
+            attrs = n.attributes or {}
+            nodes.append({
+                "id": n.id,
+                "tag": n.tag,
+                "name": n.name,
+                "domain": n.domain,
+                "type_tag": n.type_tag,
+                "fed_from": n.fed_from,
+                "amps": n.amps or attrs.get("amps"),
+                "voltage": n.voltage or attrs.get("voltage"),
+                "aic": n.aic or attrs.get("aic") or attrs.get("aic_rating"),
+                "kva": attrs.get("kva"),
+                "hp": attrs.get("hp"),
+                "data": attrs
+            })
+        
+        edge_recs = session.query(db.EdgeRecord).all()
+        edges = [{
+            "source": e.from_node_tag,
+            "target": e.to_node_tag,
+            "trip_amps": (e.conductor_spec or {}).get("trip_amps") or (e.conductor_spec or {}).get("amps"),
+            "conductor_size": (e.conductor_spec or {}).get("conductor_size") or (e.conductor_spec or {}).get("callout")
+        } for e in edge_recs]
+        
+        # Build synthetic edges from fed_from
+        for n in node_recs:
+            if n.fed_from and n.fed_from not in ("-- None / Service Entrance --", "None", "null", ""):
+                edges.append({"source": n.fed_from, "target": n.tag})
+    finally:
+        session.close()
+
+    compiler = SingleLineCadCompiler(nodes=nodes, edges=edges, client_id=clean_c, facility_id=clean_f, sheet_id=sheet)
+    dxf_bytes = compiler.compile_dxf_bytes()
+    filename = f"{clean_c}_{clean_f}_single_line.dxf" if sheet == "all" else f"{clean_c}_{clean_f}_{sheet}_single_line.dxf"
+    return Response(
+        content=dxf_bytes,
+        media_type="application/dxf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
+
+
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/cad/svg", response_class=Response)
+def api_export_cad_svg(client_id: str, facility_id: str, sheet: str = "all"):
+    """Generate high-fidelity vector SVG preview of the IEEE standard Single-Line Diagram."""
+    clean_c = client_id.strip().lower()
+    clean_f = facility_id.strip().lower()
+    session = db.get_session(clean_c, clean_f)
+    try:
+        node_recs = session.query(db.NodeRecord).all()
+        nodes = []
+        for n in node_recs:
+            attrs = n.attributes or {}
+            nodes.append({
+                "id": n.id,
+                "tag": n.tag,
+                "name": n.name,
+                "domain": n.domain,
+                "type_tag": n.type_tag,
+                "fed_from": n.fed_from,
+                "amps": n.amps or attrs.get("amps"),
+                "voltage": n.voltage or attrs.get("voltage"),
+                "aic": n.aic or attrs.get("aic") or attrs.get("aic_rating"),
+                "kva": attrs.get("kva"),
+                "hp": attrs.get("hp"),
+                "data": attrs
+            })
+        
+        edge_recs = session.query(db.EdgeRecord).all()
+        edges = [{
+            "source": e.from_node_tag,
+            "target": e.to_node_tag,
+            "trip_amps": (e.conductor_spec or {}).get("trip_amps") or (e.conductor_spec or {}).get("amps"),
+            "conductor_size": (e.conductor_spec or {}).get("conductor_size") or (e.conductor_spec or {}).get("callout")
+        } for e in edge_recs]
+        
+        # Build synthetic edges from fed_from
+        for n in node_recs:
+            if n.fed_from and n.fed_from not in ("-- None / Service Entrance --", "None", "null", ""):
+                edges.append({"source": n.fed_from, "target": n.tag})
+    finally:
+        session.close()
+
+    compiler = SingleLineCadCompiler(nodes=nodes, edges=edges, client_id=clean_c, facility_id=clean_f, sheet_id=sheet)
+    svg_str = compiler.compile_svg_string()
+    return Response(content=svg_str, media_type="image/svg+xml")
 
 
 @app.get("/api/workspace/facilities")

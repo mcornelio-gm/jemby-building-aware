@@ -6,16 +6,16 @@
   window.EquipmentFormSharedLogic = {
     // 10 Standard Digital Twin Domains
     domains: [
-      { id: 'sources', name: 'Power Sources', icon: '⚡', color: 'indigo' },
+      { id: 'sources', name: 'Sources', icon: '⚡', color: 'indigo' },
       { id: 'transformers', name: 'Transformers', icon: '🔄', color: 'purple' },
-      { id: 'switches', name: 'Switches & ATS', icon: '🔀', color: 'amber' },
-      { id: 'panels', name: 'Panelboards & MCC', icon: '🗄️', color: 'sky' },
-      { id: 'power_quality', name: 'Power Quality & UPS', icon: '🔋', color: 'emerald' },
-      { id: 'loads', name: 'Electrical Loads', icon: '⚙️', color: 'rose' },
-      { id: 'cables', name: 'Conductors & Feeders', icon: '🔌', color: 'teal' },
-      { id: 'metering', name: 'Meters & Monitors', icon: '📊', color: 'blue' },
-      { id: 'renewables', name: 'Solar & Renewables', icon: '☀️', color: 'yellow' },
-      { id: 'generic', name: 'Generic / Unclassified', icon: '📦', color: 'slate' },
+      { id: 'switches', name: 'Switches', icon: '🔀', color: 'amber' },
+      { id: 'panels', name: 'Panels', icon: '🗄️', color: 'sky' },
+      { id: 'power_quality', name: 'Power Quality', icon: '🔋', color: 'emerald' },
+      { id: 'loads', name: 'Loads', icon: '⚙️', color: 'rose' },
+      { id: 'cables', name: 'Feeders', icon: '🔌', color: 'teal' },
+      { id: 'metering', name: 'Meters', icon: '📊', color: 'blue' },
+      { id: 'renewables', name: 'Renewables', icon: '☀️', color: 'yellow' },
+      { id: 'generic', name: 'Generic', icon: '📦', color: 'slate' },
     ],
 
     // Complete Equipment Types Catalog across all 10 Domains
@@ -1034,89 +1034,185 @@
         await this.loadFacilityFeeders();
       }
 
+      const pool = (typeof this.getNodePool === 'function') ? this.getNodePool() : (this.stack || this.allNodes || window.facilityNodes || []);
+      const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const resolveNode = (rawStr) => {
+        if (!rawStr) return null;
+        const raw = String(rawStr).trim();
+        if (!raw || raw === 'Source' || raw === 'Load' || raw === 'undefined' || raw === 'null') return null;
+        const rawLower = raw.toLowerCase();
+        const rawNorm = norm(raw);
+
+        // 1. Direct match on id or tag
+        let m = pool.find(n => {
+          const nid = String(n.id || '');
+          const ntag = String(n.tag || '');
+          return nid === raw || ntag === raw ||
+                 nid.toLowerCase() === rawLower || ntag.toLowerCase() === rawLower ||
+                 norm(nid) === rawNorm || norm(ntag) === rawNorm;
+        });
+        if (m) return m;
+
+        // 2. Stripped port and prefix (e.g. s4_b13:s -> s4, node_1789026616738_in:n -> node_1789026616738, cluster_node_T_1_in -> T-1)
+        const clean = raw
+          .replace(/:[snew]$/i, '')
+          .replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '')
+          .replace(/_b\d+$/i, '')
+          .replace(/_(in|out|norm|emerg|emergency|bypass|load|hdr|header)$/i, '');
+        const cleanLower = clean.toLowerCase();
+        const cleanNorm = norm(clean);
+
+        m = pool.find(n => {
+          const nid = String(n.id || '');
+          const ntag = String(n.tag || '');
+          const nidClean = nid.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+          const ntagClean = ntag.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+          return nid === clean || ntag === clean ||
+                 nidClean === clean || ntagClean === clean ||
+                 nid.toLowerCase() === cleanLower || ntag.toLowerCase() === cleanLower ||
+                 nidClean.toLowerCase() === cleanLower || ntagClean.toLowerCase() === cleanLower ||
+                 norm(nid) === cleanNorm || norm(ntag) === cleanNorm ||
+                 norm(nidClean) === cleanNorm || norm(ntagClean) === cleanNorm;
+        });
+        if (m) return m;
+
+        if (typeof window.findMatchingEquipment === 'function') {
+          return window.findMatchingEquipment(raw);
+        }
+        return null;
+      };
+
       let feeder = null;
+      let fromNodeObj = null;
+      let toNodeObj = null;
+
       if (typeof feederOrId === 'object' && feederOrId !== null) {
         feeder = { ...feederOrId };
+        if (feeder.from_node || feeder.from_tag) {
+          fromNodeObj = resolveNode(feeder.from_node) || resolveNode(feeder.from_tag);
+        }
+        if (feeder.to_node || feeder.to_tag) {
+          toNodeObj = resolveNode(feeder.to_node) || resolveNode(feeder.to_tag);
+        }
       } else if (typeof feederOrId === 'string') {
         const rawQuery = feederOrId.trim();
-        const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         const qNorm = norm(rawQuery);
 
-        // 1. Direct match in feederScheduleList
+        // 1. Direct match in feederScheduleList by id, cable_tag, or compound keys
         feeder = this.feederScheduleList.find(f => 
           f.id === rawQuery || 
+          f.cable_tag === rawQuery ||
           f.edge_id === rawQuery ||
-          `edge_${f.from_node}_${f.to_node}`.toLowerCase() === rawQuery.toLowerCase() ||
           `edge_${f.from_tag}_${f.to_tag}`.toLowerCase() === rawQuery.toLowerCase() ||
+          `edge_${f.from_node}_${f.to_node}`.toLowerCase() === rawQuery.toLowerCase() ||
+          norm(`edge_${f.from_tag}_${f.to_tag}`) === qNorm ||
           norm(`edge_${f.from_node}_${f.to_node}`) === qNorm ||
-          norm(`edge_${f.from_tag}_${f.to_tag}`) === qNorm
+          norm(f.id) === qNorm ||
+          norm(f.cable_tag) === qNorm
         );
 
-        // 2. Parse Arrow syntax (e.g. "UTIL_1->MSB" or "MSB:s->TX_1:n" or "Feeder: GEN -> ATS")
+        // 2. Parse Arrow / Title syntax (e.g. "s4_b13:s->node_1789026616738_in:n", "Feeder: MDP-1 -> DP-2", "s1&#45;&gt;s3")
         if (!feeder && (rawQuery.includes('->') || rawQuery.includes('➔') || rawQuery.includes('-->') || rawQuery.includes('&#45;&gt;'))) {
-          const arrowParts = rawQuery.replace(/^.*Feeder:\s*/i, '').replace(/&#45;&gt;/g, '->').split(/(?:->|➔|-->)/);
-          if (arrowParts.length >= 2) {
-            const cleanFrom = norm(arrowParts[0].split(':')[0]);
-            const cleanTo = norm(arrowParts[1].split(':')[0]);
+          const arrowClean = rawQuery.replace(/^.*Feeder:\s*/i, '').replace(/&#45;&gt;/g, '->').replace(/--?>/g, '->');
+          const [leftPart, rightPart] = arrowClean.split('->').map(s => s.trim().split(':')[0]);
+          
+          if (leftPart && rightPart) {
+            fromNodeObj = resolveNode(leftPart);
+            toNodeObj = resolveNode(rightPart);
+
+            const fromTag = fromNodeObj?.tag || leftPart;
+            const toTag = toNodeObj?.tag || rightPart;
+
             feeder = this.feederScheduleList.find(f => 
-              (norm(f.from_node) === cleanFrom || norm(f.from_tag) === cleanFrom) &&
-              (norm(f.to_node) === cleanTo || norm(f.to_tag) === cleanTo)
+              (norm(f.from_tag) === norm(fromTag) || (fromNodeObj && norm(f.from_node) === norm(fromNodeObj.id))) &&
+              (norm(f.to_tag) === norm(toTag) || (toNodeObj && norm(f.to_node) === norm(toNodeObj.id)))
             );
+
+            if (!feeder && (fromNodeObj || toNodeObj)) {
+              feeder = {
+                id: `edge_${fromTag}_${toTag}`,
+                from_node: fromNodeObj?.id || fromTag,
+                from_tag: fromTag,
+                to_node: toNodeObj?.id || toTag,
+                to_tag: toTag,
+                voltage: toNodeObj?.voltage || fromNodeObj?.voltage || '480V 3Ø',
+                current_amps: Number(toNodeObj?.amps) || 100
+              };
+            }
           }
         }
 
-        // 3. Parse edge_From_To syntax (e.g. "edge_util_1_msb" or "edge_msb_tx_1")
-        if (!feeder && rawQuery.startsWith('edge_')) {
+        // 3. Parse edge_From_To syntax where From & To can be node ID OR node Tag (e.g. "edge_s4_node_1789026616738", "edge_MDP-1_DP-2")
+        if (!feeder && (rawQuery.startsWith('edge_') || rawQuery.includes('_'))) {
           const stripped = rawQuery.replace(/^edge_/, '');
-          const pool = (typeof this.getNodePool === 'function') ? this.getNodePool() : (this.stack || this.allNodes || window.facilityNodes || []);
           
           for (const fromN of pool) {
-            const fromNorm = norm(fromN.tag || fromN.id);
-            if (stripped.toLowerCase().startsWith(fromNorm)) {
-              const remainder = stripped.substring(fromNorm.length).replace(/^_/, '');
+            const candidatesFrom = [fromN.id, fromN.tag, (fromN.id || '').replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '')].filter(Boolean);
+            let matchedFromKey = candidatesFrom.find(fId => stripped.toLowerCase().startsWith(fId.toLowerCase()) || stripped.toLowerCase().startsWith(norm(fId)));
+            if (matchedFromKey) {
+              const remainder = stripped.substring(matchedFromKey.length).replace(/^_/, '');
               for (const toN of pool) {
-                const toNorm = norm(toN.tag || toN.id);
-                if (remainder.toLowerCase().startsWith(toNorm)) {
+                const candidatesTo = [toN.id, toN.tag, (toN.id || '').replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '')].filter(Boolean);
+                let matchedToKey = candidatesTo.find(tId => remainder.toLowerCase() === tId.toLowerCase() || remainder.toLowerCase().startsWith(tId.toLowerCase()) || norm(remainder) === norm(tId));
+                if (matchedToKey) {
+                  fromNodeObj = fromN;
+                  toNodeObj = toN;
+
                   feeder = this.feederScheduleList.find(f => 
-                    (norm(f.from_node) === fromNorm || norm(f.from_tag) === fromNorm) &&
-                    (norm(f.to_node) === toNorm || norm(f.to_tag) === toNorm)
+                    (norm(f.from_tag) === norm(fromN.tag) || norm(f.from_node) === norm(fromN.id)) &&
+                    (norm(f.to_tag) === norm(toN.tag) || norm(f.to_node) === norm(toN.id))
                   );
+
                   if (!feeder) {
                     feeder = {
                       id: `edge_${fromN.tag || fromN.id}_${toN.tag || toN.id}`,
-                      from_node: fromN.tag || fromN.id,
+                      from_node: fromN.id || fromN.tag,
                       from_tag: fromN.tag || fromN.id,
-                      to_node: toN.tag || toN.id,
+                      to_node: toN.id || toN.tag,
                       to_tag: toN.tag || toN.id,
-                      voltage: toN.voltage || '480V 3Ø',
+                      voltage: toN.voltage || fromN.voltage || '480V 3Ø',
                       current_amps: Number(toN.amps) || 100
                     };
                   }
                   break;
                 }
               }
-              if (feeder) break;
+              if (feeder || (fromNodeObj && toNodeObj)) break;
             }
           }
         }
 
-        // 4. Fuzzy fallback search against feeder schedule list
+        // 4. Fuzzy fallback against feeder schedule list
         if (!feeder && this.feederScheduleList.length > 0) {
           feeder = this.feederScheduleList.find(f => 
-            qNorm.includes(norm(f.from_tag || f.from_node)) && 
-            qNorm.includes(norm(f.to_tag || f.to_node))
+            qNorm.includes(norm(f.from_tag)) && qNorm.includes(norm(f.to_tag))
           );
         }
       }
 
+      // If feeder matched, ensure from_tag and to_tag are resolved to real equipment tags
+      if (feeder) {
+        if (!fromNodeObj && (feeder.from_node || feeder.from_tag)) {
+          fromNodeObj = resolveNode(feeder.from_node) || resolveNode(feeder.from_tag);
+        }
+        if (!toNodeObj && (feeder.to_node || feeder.to_tag)) {
+          toNodeObj = resolveNode(feeder.to_node) || resolveNode(feeder.to_tag);
+        }
+      }
+
+      const finalFromTag = fromNodeObj?.tag || feeder?.from_tag || (pool[0]?.tag || '');
+      const finalFromNode = fromNodeObj?.id || feeder?.from_node || finalFromTag;
+      const finalToTag = toNodeObj?.tag || feeder?.to_tag || (pool[1]?.tag || '');
+      const finalToNode = toNodeObj?.id || feeder?.to_node || finalToTag;
+
       if (!feeder) {
-        // Construct fallback feeder placeholder
         feeder = {
-          id: typeof feederOrId === 'string' ? feederOrId : 'feeder_temp',
-          from_node: 'Source',
-          from_tag: 'Source',
-          to_node: 'Load',
-          to_tag: 'Load',
+          id: typeof feederOrId === 'string' ? feederOrId : `edge_${finalFromTag}_${finalToTag}`,
+          from_node: finalFromNode,
+          from_tag: finalFromTag,
+          to_node: finalToNode,
+          to_tag: finalToTag,
           sets: 1,
           conductor: '4/0',
           conductor_material: 'Cu',
@@ -1126,31 +1222,31 @@
           conduit: 'Steel',
           conduit_size: 'Auto',
           length_ft: 100,
-          current_amps: 100,
-          voltage: '480V 3Ø',
+          current_amps: Number(toNodeObj?.amps) || 100,
+          voltage: toNodeObj?.voltage || fromNodeObj?.voltage || '480V 3Ø',
           breaker_trip: null
         };
       }
 
       // Populate activeFeeder
       this.activeFeeder = {
-        id: feeder.id || `edge_${feeder.from_node}_${feeder.to_node}`,
+        id: feeder.id || `edge_${finalFromTag}_${finalToTag}`,
         is_new: Boolean(feeder.is_new),
-        from_node: feeder.from_node || '',
-        from_tag: feeder.from_tag || feeder.from_node || '',
-        to_node: feeder.to_node || '',
-        to_tag: feeder.to_tag || feeder.to_node || '',
+        from_node: finalFromNode,
+        from_tag: finalFromTag,
+        to_node: finalToNode,
+        to_tag: finalToTag,
         sets: Number(feeder.sets) || 1,
-        conductor: feeder.conductor || '4/0',
-        conductor_material: feeder.conductor_material || 'Cu',
+        conductor: feeder.conductor || feeder.conductor_size || '4/0',
+        conductor_material: feeder.conductor_material || feeder.material || 'Cu',
         insulation: feeder.insulation || 'THHN/THWN-2',
         neutral: feeder.neutral || 'Full (100%)',
-        egc: feeder.egc || '#4 AWG Cu',
-        conduit: feeder.conduit || 'Steel',
+        egc: feeder.egc || feeder.ground_size || '#4 AWG Cu',
+        conduit: feeder.conduit || feeder.conduit_type || 'Steel',
         conduit_size: feeder.conduit_size || 'Auto',
         length_ft: Number(feeder.length_ft) || 100,
-        current_amps: Number(feeder.current_amps) || Number(feeder.breaker_trip) || 100,
-        voltage: feeder.voltage || '480V 3Ø',
+        current_amps: Number(feeder.current_amps) || Number(feeder.breaker_trip) || Number(toNodeObj?.amps) || 100,
+        voltage: feeder.voltage || toNodeObj?.voltage || fromNodeObj?.voltage || '480V 3Ø',
         breaker_trip: feeder.breaker_trip || null,
         breaker_poles: feeder.breaker_poles || null
       };
@@ -1219,15 +1315,21 @@
     },
 
     jumpToEquipment(nodeIdOrTag) {
+      if (!nodeIdOrTag) return;
+      const target = String(nodeIdOrTag).trim();
+      if (!target || target === 'Source' || target === 'Load' || target === 'undefined' || target === 'null') return;
       this.showCableDrawer = false;
       this.showFeederScheduleModal = false;
       if (typeof window.clearEdgeSelection === 'function') {
         window.clearEdgeSelection();
       }
+      if (typeof window.spotlightEquipment === 'function') {
+        window.spotlightEquipment(target);
+      }
       if (typeof this.openEditDrawer === 'function') {
-        this.openEditDrawer(nodeIdOrTag);
+        this.openEditDrawer(target);
       } else if (typeof window.openEquipmentDrawer === 'function') {
-        window.openEquipmentDrawer(nodeIdOrTag);
+        window.openEquipmentDrawer(target);
       }
     },
 

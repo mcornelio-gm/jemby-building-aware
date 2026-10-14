@@ -8,8 +8,8 @@ client = TestClient(app)
 
 def test_root_redirect():
     response = client.get("/", follow_redirects=False)
-    assert response.status_code == 373 or response.status_code == 307
-    assert response.headers["location"] == "/survey"
+    assert response.status_code == 307
+    assert response.headers["location"] == "/survey?client=zoetis&facility=b4"
 
 
 def test_get_project_workspace():

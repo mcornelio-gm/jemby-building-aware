@@ -9,7 +9,7 @@
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Early Theme & Font Scale Sync Script (FOUC Prevention) -->
+  <!-- Early Theme & Viewport Stability Script (FOUC Prevention) -->
   <script>
     (function() {
       try {
@@ -21,13 +21,8 @@
           document.documentElement.classList.add('dark');
           document.documentElement.style.colorScheme = 'dark';
         }
-        const savedScale = localStorage.getItem('james-font-scale');
-        if (savedScale) {
-          const scale = parseInt(savedScale, 10);
-          if (scale && scale >= 70 && scale <= 150) {
-            document.documentElement.style.fontSize = (16 * (scale / 100)).toFixed(1) + 'px';
-          }
-        }
+        // Force fixed root font size on SLD canvas so UI chrome and toolbars remain stable
+        document.documentElement.style.fontSize = '16px';
       } catch (e) {}
     })();
   </script>
@@ -54,12 +49,28 @@
   <script src="https://unpkg.com/d3-graphviz@5.1.0/build/d3-graphviz.min.js"></script>
 
   <!-- Alpine.js for Finder Modal & Slide-Over Edit Drawer -->
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
 
   <!-- Shared Equipment Form & Electrical Hierarchy Logic -->
-  <script src="/static/js/equipment_form_logic.js"></script>
+  <script src="/static/js/equipment_form_logic.js?v=2.0.3"></script>
+  <!-- Admin User Management Logic -->
+  <script src="/static/js/admin_user_logic.js?v=1.0.2"></script>
+  <!-- CAD Single-Line Diagram Logic -->
+  <script src="/static/js/cad_sld_logic.js?v=1.0.0"></script>
 
   <style>
+    html, body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      position: fixed !important;
+      inset: 0 !important;
+      box-sizing: border-box !important;
+    }
     #graph-container {
       width: 100%;
       height: 100%;
@@ -111,6 +122,30 @@
       fill: #B45309 !important;
       font-weight: bold !important;
     }
+
+    /* Dynamic Semantic Zoom (Level of Detail / LOD) */
+    #graph-container.lod-birdseye .feeder-edge text,
+    #graph-container.lod-birdseye .edge text {
+      opacity: 0.25 !important;
+      transition: opacity 0.25s ease;
+    }
+    #graph-container.lod-birdseye .node text:nth-of-type(n+3) {
+      opacity: 0.35 !important;
+      transition: opacity 0.25s ease;
+    }
+    #graph-container.lod-medium .feeder-edge text,
+    #graph-container.lod-medium .edge text,
+    #graph-container.lod-medium .node text {
+      opacity: 1 !important;
+      transition: opacity 0.25s ease;
+    }
+    #graph-container.lod-detailed .feeder-edge text,
+    #graph-container.lod-detailed .edge text,
+    #graph-container.lod-detailed .node text {
+      opacity: 1 !important;
+      transition: opacity 0.25s ease;
+    }
+
     [x-cloak] { display: none !important; }
   </style>
 </head>
@@ -171,10 +206,14 @@
     @change="handlePhotoUpload($event, 'editing', editingNoteIndex)"
   >
 
-  <!-- Top Navigation Bar -->
-  <header class="h-11 px-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-xs z-10 text-white select-none">
-    <div class="flex items-center gap-2">
-      <a href="/survey?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Return to Survey">
+  <!-- Top Navigation Bar (Clean & Focused Viewport Header) -->
+  <header 
+    id="sld-header"
+    class="fixed top-0 left-0 right-0 z-40 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-3 sm:px-6 shadow-md text-white select-none whitespace-nowrap overflow-visible h-11 min-h-[44px] max-h-[44px]"
+  >
+    <!-- Brand Logo & Facility Database Switcher -->
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="/survey?client={{ client_id }}&facility={{ facility_id }}" class="flex items-center gap-2 group cursor-pointer shrink-0" title="Return to Survey Workbench">
         <img src="/static/building_aware_mark.jpg" alt="Building Aware" class="w-6 h-6 rounded-md object-cover shadow-xs border border-slate-700/60 group-hover:border-rose-500/50 transition">
         <div class="hidden sm:flex items-center gap-1 leading-none">
           <span class="font-extrabold text-white tracking-tight text-xs">Building</span>
@@ -192,190 +231,343 @@
         title="Click to Switch or Create Facility Database (Cmd+O / Ctrl+O)"
       >
         <span>🏢</span>
-        <span class="font-bold">{{ client_id | upper }} / {{ facility_id | upper }}</span>
-        <span class="text-[10px] text-indigo-400/70 font-normal">📁 model.db</span>
+        <span class="font-bold hidden sm:inline">{{ client_id | upper }} / </span>
+        <span class="font-bold">{{ facility_id | upper }}</span>
+        <span class="hidden md:inline text-[10px] text-indigo-400/70 font-normal">📁 model.db</span>
         <span class="text-[9px] text-indigo-500 font-bold group-hover:translate-y-0.5 transition-transform">▼</span>
       </button>
     </div>
 
-    <!-- Viewer Controls -->
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button 
-        onclick="zoomIn()" 
-        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
-        title="Zoom In (+)"
+    <!-- Center: Equipment Spotlight Search Bar & Autocomplete Match Dropdown (Balanced Width) -->
+    <div class="relative flex-1 max-w-xs sm:max-w-sm md:max-w-md min-w-[140px] mx-2 sm:mx-4 z-50">
+      <div class="relative flex items-center">
+        <span class="absolute left-2.5 text-slate-400 text-xs pointer-events-none">🔍</span>
+        <input 
+          type="text" 
+          id="sld-spotlight-search-input"
+          x-model="nodeSearchQuery" 
+          @focus="searchFocused = true; searchIndex = 0;"
+          @input="searchFocused = true; searchIndex = 0;"
+          @blur="setTimeout(() => { searchFocused = false; }, 300)"
+          @keydown.escape="nodeSearchQuery = ''; searchFocused = false; clearSpotlightFocus();"
+          @keydown.arrow-down.prevent="if (filteredNodeResults.length > 0) searchIndex = (searchIndex + 1) % filteredNodeResults.length;"
+          @keydown.arrow-up.prevent="if (filteredNodeResults.length > 0) searchIndex = (searchIndex - 1 + filteredNodeResults.length) % filteredNodeResults.length;"
+          @keydown.enter.prevent="if (filteredNodeResults.length > 0) { selectAndSpotlightNode(filteredNodeResults[searchIndex]); searchFocused = false; } else if (nodeSearchQuery) { spotlightEquipment(nodeSearchQuery); searchFocused = false; }"
+          placeholder="Spotlight search (REC-201, Chiller...)"
+          class="w-full pl-7 pr-8 py-1 rounded-md text-[11px] font-medium bg-slate-800/90 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-inner"
+        >
+        <template x-if="nodeSearchQuery">
+          <button 
+            type="button" 
+            @click="nodeSearchQuery = ''; searchFocused = false; clearSpotlightFocus();" 
+            class="absolute right-2 text-slate-400 hover:text-white text-xs cursor-pointer"
+            title="Clear search (Esc)"
+          >
+            ✕
+          </button>
+        </template>
+        <template x-if="!nodeSearchQuery">
+          <span class="hidden sm:inline-block absolute right-2 text-[9px] font-mono text-slate-500 border border-slate-700 px-1 rounded select-none">⌘K</span>
+        </template>
+      </div>
+
+      <!-- Autocomplete Dropdown Match List (Pops out below header) -->
+      <div 
+        x-show="searchFocused && nodeSearchQuery && nodeSearchQuery.trim().length > 0 && filteredNodeResults.length > 0" 
+        x-cloak
+        class="absolute left-0 right-0 top-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-80 overflow-y-auto z-50 divide-y divide-slate-800 text-left py-1 backdrop-blur-md"
+        style="min-width: 280px;"
       >
-        +
-      </button>
-      <button 
-        onclick="zoomOut()" 
-        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition"
-        title="Zoom Out (-)"
-      >
-        -
-      </button>
-      <button 
-        onclick="resetFit()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        title="Fit Diagram to Viewport (F)"
-      >
-        <span class="hidden md:inline">Reset </span>Fit
-      </button>
+        <template x-for="(item, idx) in filteredNodeResults" :key="item.id || item.tag">
+          <div 
+            @mousedown.prevent="selectAndSpotlightNode(item); searchFocused = false;"
+            :class="{'bg-amber-500/25 border-l-2 border-amber-400 text-white': idx === searchIndex, 'hover:bg-slate-800/80 text-slate-200': idx !== searchIndex}"
+            class="px-3 py-2 cursor-pointer transition flex items-start gap-2.5 text-xs select-none"
+          >
+            <span class="text-base shrink-0 mt-0.5" x-text="getNodeIcon(item)"></span>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-1.5">
+                <span class="font-bold text-white tracking-tight truncate font-mono text-[11px]" x-text="item.tag"></span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 shrink-0" x-text="item.floor || 'Basement'"></span>
+              </div>
+              <p class="text-[11px] text-slate-400 truncate mt-0.5" x-text="item.name"></p>
+              <div class="flex items-center gap-2 text-[10px] text-slate-500 mt-0.5 truncate">
+                <span x-show="item.voltage" x-text="item.voltage"></span>
+                <span x-show="item.amps" x-text="item.amps + 'A'"></span>
+                <span x-show="item.fed_from" x-text="'⚡ from ' + item.fed_from" class="text-amber-400/80 font-mono"></span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Right: User Profile Badge & Logout / Login -->
+    <div class="flex items-center gap-3 shrink-0 pl-2 mr-1 sm:mr-2">
+      {% if user and not user.get('is_guest') %}
+      <div class="flex items-center gap-2.5">
+        <div class="hidden lg:flex flex-col text-right">
+          <span class="text-[11px] font-bold text-slate-200 leading-tight">{{ user.name }}</span>
+          <span class="text-[9px] font-mono text-emerald-400 uppercase leading-none font-semibold tracking-wider">{{ user.role }}</span>
+        </div>
+        {% if user.role == 'admin' %}
+        <button 
+          type="button"
+          @click="openAdminUserModal()"
+          onclick="if (window.openAdminUserModal) window.openAdminUserModal();"
+          class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-950/50 hover:bg-emerald-900/70 text-emerald-300 border border-emerald-700/60 transition shadow-2xs flex items-center gap-1.5 cursor-pointer select-none"
+          title="User & Access Console (Admin)"
+        >
+          <span>👥</span>
+          <span class="hidden md:inline">Admin</span>
+        </button>
+        {% endif %}
+        <a 
+          href="/logout" 
+          class="px-3 py-1 rounded-md text-[11px] font-semibold bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 transition shadow-2xs flex items-center gap-1.5 cursor-pointer select-none"
+          title="Sign out ({{ user.name }})"
+        >
+          <span>🚪</span>
+          <span class="hidden md:inline">Logout</span>
+        </a>
+      </div>
+      {% else %}
+      <div class="flex items-center gap-1.5">
+        <a 
+          href="/login" 
+          class="px-3 py-1 rounded-md text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition shadow-2xs flex items-center gap-1.5 cursor-pointer select-none"
+          title="Sign in with user credentials"
+        >
+          <span>👤</span>
+          <span class="hidden sm:inline">Login</span>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Graph Viewport Area (Silver Drafting Canvas) -->
+  <main 
+    class="fixed inset-0 overflow-hidden bg-[#CBD5E1]" 
+    style="top: 44px !important; background-color: #CBD5E1; background-image: radial-gradient(#94A3B8 1.2px, transparent 1.2px); background-size: 24px 24px;"
+  >
+    <!-- Loading Spinner -->
+    <div id="loading" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#CBD5E1] z-35 transition-opacity duration-300">
+      <div class="w-8 h-8 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
+      <span class="text-xs font-mono text-slate-800 font-bold">Compiling Graphviz Single-Line Diagram...</span>
+    </div>
+
+    <!-- Container for D3-Graphviz SVG -->
+    <div id="graph-container" class="absolute inset-0 w-full h-full"></div>
+
+    <!-- Diagram Control Dock (Top Center Floating HUD) -->
+    <div 
+      id="sld-tools-dock"
+      class="absolute top-3.5 left-1/2 -translate-x-1/2 z-30 px-3.5 sm:px-4 py-1.5 rounded-2xl bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-2xl flex items-center gap-1.5 sm:gap-2 text-xs select-none text-white transition-all duration-200 max-w-[95vw] overflow-x-auto"
+    >
+      <!-- Direct Diagram Zoom Stepper [ − | Fit | + ] -->
+      <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800 text-slate-300 shadow-2xs overflow-hidden select-none shrink-0" title="Diagram Zoom Controls">
+        <button 
+          type="button" 
+          onclick="zoomOut()" 
+          id="sld-btn-zoom-out"
+          class="w-7 h-7 sm:w-8 sm:h-7.5 text-xs font-bold transition hover:bg-slate-700 hover:text-white flex items-center justify-center border-r border-slate-700 cursor-pointer"
+          title="Zoom Out (-)"
+        >
+          −
+        </button>
+        <button 
+          type="button" 
+          onclick="resetFit()" 
+          id="sld-zoom-level-label"
+          class="px-2 py-1 text-[10px] sm:text-[11px] font-mono font-semibold transition hover:bg-slate-700 hover:text-white cursor-pointer min-w-[32px] sm:min-w-[36px] text-center"
+          title="Reset to Fit View (F)"
+        >
+          Fit
+        </button>
+        <button 
+          type="button" 
+          onclick="zoomIn()" 
+          id="sld-btn-zoom-in"
+          class="w-7 h-7 sm:w-8 sm:h-7.5 text-xs font-bold transition hover:bg-slate-700 hover:text-white flex items-center justify-center border-l border-slate-700 cursor-pointer"
+          title="Zoom In (+)"
+        >
+          +
+        </button>
+      </div>
+
       <button 
         onclick="window.location.reload()" 
-        class="w-7 h-7 rounded-md text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition cursor-pointer"
+        class="w-7 h-7 sm:w-8 sm:h-7.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center transition cursor-pointer shrink-0 shadow-2xs"
         title="Reload / Refresh Diagram (R)"
       >
         🔄
       </button>
+
+      <div class="h-4 w-[1px] bg-slate-700 mx-0.5 shrink-0"></div>
+
       <!-- Flow Direction Toggle (TB / LR) -->
       <button 
         id="btn-layout-dir"
         onclick="toggleFlowDirection()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+        class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
         title="Toggle Power Flow: Top-Down (TB) vs Left-Right (LR) [Press H]"
       >
         <span id="layout-dir-icon" class="font-bold text-amber-400">↕</span>
-        <span id="layout-dir-text">Top-Down</span>
+        <span id="layout-dir-text" class="hidden lg:inline">Top-Down</span>
       </button>
 
       <!-- Level of Detail Toggle (Macro vs Detailed) -->
       <button 
         id="btn-detail-mode"
         onclick="toggleDetailMode()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+        class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
         title="Toggle Level of Detail: Macro (Equipment Only) vs Detailed (Slots/Breakers) [Press M]"
       >
         <span id="detail-mode-icon" class="text-[10px]">🔍</span>
-        <span id="detail-mode-text">Detailed</span>
+        <span id="detail-mode-text" class="hidden lg:inline">Detailed</span>
       </button>
 
-      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
+      <div class="h-4 w-[1px] bg-slate-700 mx-0.5 shrink-0"></div>
 
       <!-- [ 🔌 Feeders ] Feeder Schedule Trigger -->
       <button 
         type="button" 
         @click="openFeederSchedule()" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-800/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none shrink-0"
         title="Open Feeder & Cable Schedule Table (Press C)"
       >
         <span>🔌</span>
-        <span class="hidden sm:inline">Feeders</span>
-        <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-amber-900/80 text-amber-200 border border-amber-700/60" x-text="feederScheduleList.length || '0'"></span>
+        <span class="hidden lg:inline">Feeders</span>
+        <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30" x-text="feederScheduleList.length || '0'"></span>
       </button>
 
-      <!-- [ 🧰 Toolbox ] Bento Box Popover Trigger -->
+      <!-- [ 📐 CAD SLD ] IEEE Standard CAD Single-Line Diagram -->
+      <button 
+        type="button" 
+        @click="openCadSldModal()" 
+        class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-indigo-950/70 hover:bg-indigo-900/90 text-indigo-300 border border-indigo-700/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none shrink-0"
+        title="View IEEE Standard CAD Single-Line Diagram & Export DWG/DXF"
+      >
+        <span>📐</span>
+        <span class="hidden lg:inline">CAD SLD</span>
+      </button>
+
+      <!-- [ 🧰 Tools ] Bento Box Popover Trigger -->
       <button 
         type="button" 
         @click="showToolboxModal = true" 
-        class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
-        title="Open Field Toolbox (Views, Audit, Exports, Display & Settings)"
+        class="px-2.5 py-1.5 rounded-lg text-[11px] font-medium bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none shrink-0"
+        title="Open Field Tools (Views, Audit, Exports, Display & Settings)"
       >
         <span>🧰</span>
-        <span class="hidden sm:inline">Toolbox</span>
+        <span class="hidden lg:inline">Tools</span>
       </button>
 
-      <!-- [ ? ] Field Guide / Help Trigger -->
+      <div class="h-4 w-[1px] bg-slate-700 mx-0.5 shrink-0"></div>
+
+      <!-- [ ? ] Field Guide / Help Trigger (Prominent Gold) -->
       <button 
         type="button" 
         @click="showHelpModal = true" 
-        class="w-7 h-7 rounded-md text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 shadow-2xs flex items-center justify-center transition cursor-pointer select-none"
+        class="w-7 h-7 sm:w-8 sm:h-7.5 rounded-lg text-sm sm:text-base font-black bg-amber-500/15 hover:bg-amber-500/30 text-amber-400 hover:text-amber-300 border border-amber-500/50 hover:border-amber-400 shadow-2xs flex items-center justify-center transition cursor-pointer select-none shrink-0"
         title="Diagram Guide & Shortcuts (?)"
       >
         ?
       </button>
-
-      <div class="h-3.5 w-[1px] bg-slate-800 mx-0.5"></div>
-
-      <!-- Font Size Stepper [ A⁻ | 100% | A⁺ ] -->
-      <div class="flex items-center rounded-md border border-slate-700 bg-slate-800 text-slate-300 shadow-2xs overflow-hidden select-none" title="Adjust text size">
-        <button 
-          type="button" 
-          onclick="decreaseFontSize()" 
-          id="sld-btn-font-dec"
-          class="px-1.5 py-1 text-[11px] font-bold transition hover:bg-slate-700 flex items-center justify-center border-r border-slate-700 cursor-pointer"
-          title="Decrease text size (A⁻)"
-        >
-          A⁻
-        </button>
-        <button 
-          type="button" 
-          onclick="resetFontSize()" 
-          id="sld-font-scale-label"
-          class="px-1.5 py-1 text-[10px] font-mono font-semibold transition hover:bg-slate-700 cursor-pointer min-w-[34px] text-center"
-          title="Reset to 100%"
-        >
-          100%
-        </button>
-        <button 
-          type="button" 
-          onclick="increaseFontSize()" 
-          id="sld-btn-font-inc"
-          class="px-1.5 py-1 text-[11px] font-bold transition hover:bg-slate-700 flex items-center justify-center border-l border-slate-700 cursor-pointer"
-          title="Increase text size (A⁺)"
-        >
-          A⁺
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Graph Viewport Area (Silver Drafting Canvas) -->
-  <main class="flex-1 relative overflow-hidden bg-[#CBD5E1]" style="background-color: #CBD5E1; background-image: radial-gradient(#94A3B8 1.2px, transparent 1.2px); background-size: 24px 24px;">
-    <!-- Loading Spinner -->
-    <div id="loading" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#CBD5E1] z-20 transition-opacity duration-300">
-      <div class="w-8 h-8 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
-      <span class="text-xs font-mono text-slate-800 font-bold">Compiling Graphviz Single-Line Diagram...</span>
     </div>
 
-    <!-- Container for D3-Graphviz SVG -->
-    <div id="graph-container" class="w-full h-full"></div>
-
-    <!-- Domain Color Legend (Vertical Left Dock) -->
-    <div id="legend-bar" class="absolute top-4 left-4 z-10 p-2.5 rounded-2xl bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-2xl flex flex-col gap-1.5 max-h-[calc(100vh-120px)] text-[11px] select-none text-white w-44 transition-all duration-200">
-      <!-- Header with Domains label, Clear All, and Collapse Toggle -->
-      <div class="flex items-center justify-between pb-1.5 border-b border-slate-700/60 px-1 shrink-0">
-        <span class="text-[10px] uppercase font-bold text-slate-300 tracking-wider flex items-center gap-1.5">
-          <span>⚡</span>
-          <span>Domains</span>
-        </span>
-        <div class="flex items-center gap-1">
-          <!-- Clear Filter Button (Visible when filtered) -->
-          <button 
-            id="btn-clear-filter"
-            onclick="clearDomainHighlight()"
-            class="hidden px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-900/90 hover:bg-rose-800 text-rose-200 border border-rose-700 transition flex items-center gap-1 shadow-2xs cursor-pointer"
-            title="Show All Equipment"
-          >
-            <span>✕ All</span>
-          </button>
-          <!-- Collapse/Expand Toggle Button -->
-          <button 
-            id="btn-toggle-legend"
-            onclick="toggleLegendCollapse()"
-            class="px-1 py-0.5 rounded text-[10px] text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            title="Collapse / Expand Legend"
-          >
-            <i id="legend-collapse-icon" class="fa-solid fa-chevron-up"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- [+ Add Equipment] Archetype Picker Trigger inside DOMAINS Palette -->
+    <!-- Top-Left Floating Controls: [+ Add Equipment] & [DOMAINS Palette] -->
+    <div class="absolute top-3.5 left-4 z-30 flex flex-col gap-2 items-start select-none">
+      <!-- Dedicated Floating [+ Add Equipment (N)] Action Button -->
       <button 
         type="button" 
-        id="legend-add-btn"
+        id="btn-add-equipment-floating"
         @click="openEquipmentPicker()" 
-        class="w-full py-1.5 px-2 rounded-xl text-[11px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs flex items-center justify-center gap-1.5 transition cursor-pointer select-none shrink-0"
+        class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl flex items-center gap-1.5 transition-all duration-150 cursor-pointer select-none border border-indigo-400/40 backdrop-blur-md hover:scale-105 active:scale-95 shrink-0"
         title="Add Equipment Archetype (Press N)"
       >
         <span>➕</span>
-        <span>Add Equipment</span>
-        <span class="text-[9px] font-mono text-indigo-200">(N)</span>
+        <span>New</span>
+        <span class="text-[9px] font-mono text-indigo-200 bg-indigo-800/80 px-1.5 py-0.5 rounded-full">(N)</span>
       </button>
 
-      <!-- Dynamic Domain Pills Container (Vertical Stack) -->
-      <div id="domain-legend-pills" class="flex flex-col gap-1 overflow-y-auto pr-0.5 max-h-[calc(100vh-210px)]"></div>
+      <!-- Collapsible DOMAINS Dock -->
+      <div 
+        id="legend-bar" 
+        class="p-2.5 rounded-2xl bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-2xl flex flex-col gap-1.5 max-h-[calc(100vh-140px)] text-[11px] select-none text-white w-56 sm:w-60 transition-all duration-200"
+      >
+        <!-- Header with Domains label, Clear All, and Collapse Toggle -->
+        <div 
+          id="legend-header"
+          class="flex items-center justify-between pb-1.5 border-b border-slate-700/60 px-1 shrink-0 cursor-pointer"
+          onclick="toggleLegendCollapse()"
+          title="Toggle Domains (Collapse / Expand)"
+        >
+          <span class="text-[10px] uppercase font-bold text-slate-300 tracking-wider flex items-center gap-1.5">
+            <span>⚡</span>
+            <span>Domains</span>
+            <span id="legend-domain-count-badge" class="hidden px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-indigo-600/80 text-white"></span>
+          </span>
+          <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+            <!-- Clear Filter Button (Visible when filtered) -->
+            <button 
+              id="btn-clear-filter"
+              onclick="clearDomainHighlight()"
+              class="hidden px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-900/90 hover:bg-rose-800 text-rose-200 border border-rose-700 transition flex items-center gap-1 shadow-2xs cursor-pointer"
+              title="Show All Equipment"
+            >
+              <span>✕ All</span>
+            </button>
+            <!-- Collapse/Expand Toggle Button -->
+            <button 
+              id="btn-toggle-legend"
+              onclick="toggleLegendCollapse()"
+              class="px-1 py-0.5 rounded text-[10px] text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+              title="Collapse / Expand Domains"
+            >
+              <i id="legend-collapse-icon" class="fa-solid fa-chevron-up"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Domain Pills Container (Vertical Stack) -->
+        <div id="domain-legend-pills" class="flex flex-col gap-1 overflow-y-auto pr-0.5 max-h-[calc(100vh-210px)]"></div>
+      </div>
+    </div>
+
+
+
+    <!-- Floor & Level Quick-Jump Navigator (Bottom Center Floating Dock / Collapsible) -->
+    <div 
+      id="floor-nav-bar" 
+      class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-3 py-1.5 rounded-2xl bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-2xl flex items-center gap-1.5 text-xs select-none text-white transition-all duration-200 max-w-[95vw] overflow-x-auto"
+    >
+      <!-- Clickable Levels Header / Collapse Toggle -->
+      <button 
+        type="button" 
+        id="btn-toggle-levels" 
+        onclick="toggleLevelsCollapse()"
+        class="text-[10px] uppercase font-bold text-slate-300 hover:text-white tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1.5 transition cursor-pointer shrink-0"
+        title="Toggle Levels Bar (Collapse / Expand)"
+      >
+        <span>🏢</span> 
+        <span id="levels-label-text">Levels</span>
+        <span id="levels-active-badge" class="hidden px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-indigo-600 text-white"></span>
+        <i id="levels-collapse-icon" class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
+      </button>
+
+      <!-- Levels Buttons Container (Collapsible) -->
+      <div id="levels-buttons-container" class="flex items-center gap-1 border-l border-slate-700/80 pl-1 overflow-x-auto">
+        <button onclick="zoomToFloor('ALL')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition shadow-2xs cursor-pointer shrink-0" data-floor="ALL" title="Fit Entire Building (F)">All</button>
+        <button onclick="zoomToFloor('Basement')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Basement" title="Focus Basement Plant & Main Switchboard">B1</button>
+        <button onclick="zoomToFloor('Level 1')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Level 1" title="Focus Floor 1 Lobby, Cafeteria & Conference">L1</button>
+        <button onclick="zoomToFloor('Level 2')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Level 2" title="Focus Floor 2 Office Bullpens & Operations">L2</button>
+        <button onclick="zoomToFloor('Level 3')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Level 3" title="Focus Floor 3 Hardware Labs & Prototyping">L3</button>
+        <button onclick="zoomToFloor('Level 4')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Level 4" title="Focus Floor 4 Data Center / MDF & NOC">L4</button>
+        <button onclick="zoomToFloor('Level 5')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Level 5" title="Focus Floor 5 Executive Boardroom & C-Suite">L5</button>
+        <button onclick="zoomToFloor('Roof')" class="floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer shrink-0" data-floor="Roof" title="Focus Rooftop AHUs & Elevators">Roof</button>
+      </div>
     </div>
   </main>
 
@@ -436,18 +628,114 @@
       return clean;
     }
 
+    function findMatchingEquipment(rawStr) {
+      if (!rawStr) return null;
+      const raw = String(rawStr).trim();
+      if (!raw || raw === 'Source' || raw === 'Load' || raw === 'undefined' || raw === 'null') return null;
+      const nodes = window.facilityNodes || (window.alpineApp && window.alpineApp.allNodes) || [];
+      const rawLower = raw.toLowerCase();
+      const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const rawNorm = norm(raw);
+
+      // 1. Direct match on ID or Tag (case-insensitive and exact)
+      let match = nodes.find(n => {
+        const nid = String(n.id || '');
+        const ntag = String(n.tag || '');
+        return nid === raw ||
+               ntag === raw ||
+               nid.toLowerCase() === rawLower ||
+               ntag.toLowerCase() === rawLower ||
+               norm(nid) === rawNorm ||
+               norm(ntag) === rawNorm ||
+               sanitizeId(nid).toLowerCase() === rawLower ||
+               sanitizeId(ntag).toLowerCase() === rawLower;
+      });
+      if (match) return match;
+
+      // 2. Stripped prefix / port suffix / breaker suffix match
+      // e.g. s4_b13:s -> s4, node_1789026616738_in:n -> node_1789026616738, cluster_node_T_1_in -> T-1
+      const clean = raw
+        .replace(/:[snew]$/i, '')
+        .replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '')
+        .replace(/_b\d+$/i, '')
+        .replace(/_(in|out|norm|emerg|emergency|bypass|load|hdr|header)$/i, '');
+      const cleanLower = clean.toLowerCase();
+      const cleanNorm = norm(clean);
+
+      match = nodes.find(n => {
+        const nid = String(n.id || '');
+        const ntag = String(n.tag || '');
+        const nidClean = nid.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+        const ntagClean = ntag.replace(/^(cluster_node_|cluster_|clust_node_|clust_|node_)/i, '');
+
+        return nid === clean ||
+               ntag === clean ||
+               nidClean === clean ||
+               ntagClean === clean ||
+               sanitizeId(nid) === clean ||
+               sanitizeId(ntag) === clean ||
+               nid.toLowerCase() === cleanLower ||
+               ntag.toLowerCase() === cleanLower ||
+               nidClean.toLowerCase() === cleanLower ||
+               ntagClean.toLowerCase() === cleanLower ||
+               norm(nid) === cleanNorm ||
+               norm(ntag) === cleanNorm ||
+               norm(nidClean) === cleanNorm ||
+               norm(ntagClean) === cleanNorm ||
+               sanitizeId(nid).toLowerCase() === cleanLower ||
+               sanitizeId(ntag).toLowerCase() === cleanLower;
+      });
+
+      return match || null;
+    }
+
     function inferDomain(typeTag) {
       const tag = String(typeTag || '').toUpperCase();
       if (['UTIL', 'GEN', 'PV'].includes(tag)) return 'sources';
-      if (['XFMR', 'PAD'].includes(tag)) return 'transformers';
-      if (['ATS', 'MTS', 'DISC'].includes(tag)) return 'switches';
-      if (['LP', 'MDP', 'MCC', 'PP', 'REC', 'PDU'].includes(tag)) return 'panels';
-      if (['UPS'].includes(tag)) return 'power_quality';
-      if (['HVAC', 'MOTOR', 'EV', 'PUMP'].includes(tag)) return 'loads';
-      if (['CABLE', 'FEEDER'].includes(tag)) return 'cables';
-      if (['METER', 'MTR'].includes(tag)) return 'metering';
-      if (['BESS', 'SOLAR'].includes(tag)) return 'renewables';
+      if (['XFMR', 'PAD', 'XFMR-D', 'XFMR-O', 'XFMR-K'].includes(tag)) return 'transformers';
+      if (['ATS', 'MTS', 'DISC', 'STS'].includes(tag)) return 'switches';
+      if (['LP', 'MDP', 'MCC', 'PP', 'REC', 'PDU', 'MSB', 'DP', 'RP', 'SUB'].includes(tag)) return 'panels';
+      if (['UPS', 'TVSS', 'SPD'].includes(tag)) return 'power_quality';
+      if (['HVAC', 'MOTOR', 'EV', 'PUMP', 'CHLR', 'AHU', 'EVC', 'MTR', 'LOAD'].includes(tag)) return 'loads';
+      if (['CABLE', 'FEEDER', 'BUS', 'WAY', 'DISTRIBUTION'].includes(tag)) return 'cables';
+      if (['METER', 'MTR-REV'].includes(tag)) return 'metering';
+      if (['BESS', 'SOLAR', 'BATTERY'].includes(tag)) return 'renewables';
       return 'generic';
+    }
+
+    function findPrimarySourceNode(nodes) {
+      if (!nodes || nodes.length === 0) return null;
+
+      function getSourceScore(n) {
+        const dom = (n.domain || inferDomain(n.type_tag) || '').toLowerCase();
+        const tag = (n.tag || n.id || '').toUpperCase();
+        const type = (n.type_tag || n.type_name || '').toUpperCase();
+        const name = (n.name || '').toUpperCase();
+        const combined = `${tag} ${type} ${name} ${dom}`;
+
+        // 1. Utility / Grid / Service Entrance
+        if (combined.includes('UTIL') || combined.includes('GRID') || combined.includes('SERVICE') || combined.includes('MAINS')) return 100;
+        // 2. Primary Substation / Main Step-down Transformers
+        if (tag.startsWith('T-') || tag.startsWith('XFMR') || combined.includes('TRANSFORMER') || combined.includes('SUBSTATION')) return 80;
+        // 3. Main Switchboards (MSB-1, SWBD-1)
+        if (tag.startsWith('MSB') || tag.startsWith('SWBD') || combined.includes('MAIN SWITCHBOARD')) return 70;
+        // 4. Standby / Emergency Generators
+        if (combined.includes('GEN') || combined.includes('GENERATOR') || combined.includes('DIESEL')) return 60;
+        // 5. Solar PV / Renewables
+        if (combined.includes('SOLAR') || combined.includes('PV') || combined.includes('INVERTER')) return 40;
+        // 6. UPS / Battery Energy Storage
+        if (combined.includes('UPS') || combined.includes('BATTERY') || combined.includes('BESS')) return 30;
+        // 7. General source domain
+        if (dom === 'sources') return 25;
+        // 8. Top of hierarchy (no fed_from)
+        if (!n.fed_from || String(n.fed_from).trim() === '') return 20;
+
+        return 10;
+      }
+
+      // Clone and sort descending by hierarchy score
+      const sorted = [...nodes].sort((a, b) => getSourceScore(b) - getSourceScore(a));
+      return sorted[0] || null;
     }
 
     async function initSLD() {
@@ -460,23 +748,28 @@
       applyRankDirUI(currentRankDir);
 
       try {
-        // 1. Fetch DOT and Nodes in parallel with active mode
+        // 1. Fetch DOT and Nodes in parallel with active mode and rankdir
         const [dotRes, nodesRes] = await Promise.all([
-          fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}`),
+          fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}&rankdir=${currentRankDir}`),
           fetch(`/api/clients/${clientId}/facilities/${facilityId}/nodes`)
         ]);
 
         if (!dotRes.ok) throw new Error("Failed to load DOT graph");
         rawDotString = await dotRes.text();
-        const modifiedDot = rawDotString.replace(/rankdir\s*=\s*["']?(TB|LR|BT|RL)["']?/gi, `rankdir=${currentRankDir}`);
+        const modifiedDot = adaptDotFlow(rawDotString, currentRankDir);
         const dotEl = document.getElementById("dot-code");
         if (dotEl) dotEl.innerText = modifiedDot;
 
         if (nodesRes.ok) {
           facilityNodes = await nodesRes.json();
           window.facilityNodes = facilityNodes;
+          if (window.__sldAppInstance) {
+            window.__sldAppInstance.allNodes = facilityNodes;
+          }
           buildNodeDomainMap(facilityNodes);
           renderDomainLegend(facilityNodes);
+          updateLegendCollapseUI();
+          updateLevelsCollapseUI();
         }
 
         // 2. Render Graph with D3 Graphviz (disable shape/path tweening for instant reliable updates)
@@ -484,18 +777,22 @@
           .graphviz({ useWorker: false, tweenShapes: false, tweenPaths: false })
           .fit(true)
           .zoom(true)
-          .zoomScaleExtent([0.05, 20])
+          .zoomScaleExtent([0.05, 120])
           .zoomTranslateExtent([[-Infinity, -Infinity], [Infinity, Infinity]])
           .onerror((err) => console.error("d3-graphviz initialization error:", err))
           .renderDot(modifiedDot, () => {
             loading.classList.add("opacity-0", "pointer-events-none");
             setTimeout(() => { loading.style.display = "none"; }, 300);
-            const svg = d3.select("#graph-container svg");
-            const zb = graphvizInstance.zoomBehavior();
-            if (zb && !svg.empty()) {
-              svg.call(zb);
-            }
+            attachSemanticZoomLOD();
             attachCanvasClickListeners();
+            if (activeSpotlightNodeId) {
+              spotlightEquipment(activeSpotlightNodeId);
+            } else if (facilityNodes && facilityNodes.length > 0) {
+              const primaryNode = findPrimarySourceNode(facilityNodes);
+              if (primaryNode) {
+                spotlightEquipment(primaryNode.id || primaryNode.tag);
+              }
+            }
           });
       } catch (err) {
         console.error("Error initializing SLD:", err);
@@ -521,80 +818,232 @@
       });
     }
 
-    let legendCollapsed = false;
-    function toggleLegendCollapse() {
-      legendCollapsed = !legendCollapsed;
+    // DOMAINS Panel Foldability State & Controls
+    let legendCollapsed = localStorage.getItem('james-sld-domains-collapsed') === 'true';
+
+    function updateLegendCollapseUI() {
       const pills = document.getElementById("domain-legend-pills");
-      const addBtn = document.getElementById("legend-add-btn");
       const icon = document.getElementById("legend-collapse-icon");
       const bar = document.getElementById("legend-bar");
+      const header = document.getElementById("legend-header");
+      const countBadge = document.getElementById("legend-domain-count-badge");
+
+      if (!bar) return;
+
       if (legendCollapsed) {
         if (pills) pills.classList.add("hidden");
-        if (addBtn) addBtn.classList.add("hidden");
         if (icon) {
           icon.classList.remove("fa-chevron-up");
           icon.classList.add("fa-chevron-down");
         }
-        if (bar) bar.classList.remove("w-44");
+        bar.className = "p-2 px-3 rounded-full bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-xl flex items-center text-[11px] select-none text-white w-auto cursor-pointer hover:bg-slate-800/90 transition-all duration-200";
+        if (header) {
+          header.classList.remove("border-b", "pb-1.5");
+          header.classList.add("pb-0");
+        }
+        if (countBadge && typeof DOMAIN_DEFS !== 'undefined') {
+          countBadge.textContent = `${DOMAIN_DEFS.length}`;
+          countBadge.classList.remove("hidden");
+        }
       } else {
         if (pills) pills.classList.remove("hidden");
-        if (addBtn) addBtn.classList.remove("hidden");
         if (icon) {
           icon.classList.remove("fa-chevron-down");
           icon.classList.add("fa-chevron-up");
         }
-        if (bar) bar.classList.add("w-44");
+        bar.className = "p-2.5 rounded-2xl bg-slate-900/90 border border-slate-700/90 backdrop-blur-md shadow-2xl flex flex-col gap-1.5 max-h-[calc(100vh-140px)] text-[11px] select-none text-white w-44 transition-all duration-200";
+        if (header) {
+          header.classList.add("border-b", "pb-1.5");
+          header.classList.remove("pb-0");
+        }
+        if (countBadge) {
+          countBadge.classList.add("hidden");
+        }
       }
     }
+
+    function toggleLegendCollapse() {
+      legendCollapsed = !legendCollapsed;
+      localStorage.setItem('james-sld-domains-collapsed', legendCollapsed);
+      updateLegendCollapseUI();
+    }
+
+    // LEVELS Panel Foldability State & Controls
+    let levelsCollapsed = localStorage.getItem('james-sld-levels-collapsed') === 'true';
+
+    function updateLevelsCollapseUI() {
+      const container = document.getElementById("levels-buttons-container");
+      const icon = document.getElementById("levels-collapse-icon");
+      const badge = document.getElementById("levels-active-badge");
+
+      if (levelsCollapsed) {
+        if (container) container.classList.add("hidden");
+        if (icon) {
+          icon.classList.remove("fa-chevron-up");
+          icon.classList.add("fa-chevron-down");
+        }
+        if (badge) {
+          const shortName = (activeFloorFilter || 'ALL').replace('Level ', 'L').replace('Basement', 'B1');
+          badge.textContent = shortName;
+          badge.classList.remove("hidden");
+        }
+      } else {
+        if (container) container.classList.remove("hidden");
+        if (icon) {
+          icon.classList.remove("fa-chevron-down");
+          icon.classList.add("fa-chevron-up");
+        }
+        if (badge) {
+          badge.classList.add("hidden");
+        }
+      }
+    }
+
+    function toggleLevelsCollapse() {
+      levelsCollapsed = !levelsCollapsed;
+      localStorage.setItem('james-sld-levels-collapsed', levelsCollapsed);
+      updateLevelsCollapseUI();
+    }
+
+    let activeAccordionDomain = null;
 
     function renderDomainLegend(nodes) {
       const container = document.getElementById("domain-legend-pills");
       if (!container) return;
 
-      // Count equipment per domain
-      const counts = {};
-      DOMAIN_DEFS.forEach(d => counts[d.id] = 0);
-      nodes.forEach(n => {
+      const nodesList = Array.isArray(nodes) ? nodes : (window.facilityNodes || (window.alpineApp && window.alpineApp.allNodes) || []);
+
+      // Group equipment per domain
+      const domainMap = {};
+      DOMAIN_DEFS.forEach(d => { domainMap[d.id] = []; });
+      
+      nodesList.forEach(n => {
         const dom = n.domain || inferDomain(n.type_tag);
-        if (counts[dom] !== undefined) counts[dom]++;
-        else counts['generic']++;
+        if (domainMap[dom]) domainMap[dom].push(n);
+        else if (domainMap['generic']) domainMap['generic'].push(n);
       });
 
       container.innerHTML = "";
 
       DOMAIN_DEFS.forEach(dom => {
-        const count = counts[dom.id] || 0;
+        const domNodes = domainMap[dom.id] || [];
+        const count = domNodes.length;
+
+        // Group container
+        const groupEl = document.createElement("div");
+        groupEl.id = `legend-group-${dom.id}`;
+        groupEl.className = "flex flex-col w-full";
+
+        // Header Button
         const btn = document.createElement("button");
         btn.id = `legend-btn-${dom.id}`;
-        btn.className = `w-full px-2.5 py-1 rounded-lg flex items-center justify-between font-semibold text-[11px] shadow-2xs transition-all duration-150 select-none ${
-          count === 0 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+        btn.type = "button";
+        btn.className = `w-full px-2.5 py-1.5 rounded-lg flex items-center justify-between font-semibold text-[11px] shadow-2xs transition-all duration-150 select-none ${
+          count === 0 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer hover:scale-[1.01] active:scale-[0.98]'
         }`;
         btn.style.backgroundColor = dom.bg;
         btn.style.border = `1.5px solid ${dom.border}`;
         btn.style.color = dom.text;
+
+        const isExpanded = activeAccordionDomain === dom.id;
 
         btn.innerHTML = `
           <span class="flex items-center gap-1.5 truncate">
             <span>${dom.icon}</span>
             <span class="truncate">${dom.name}</span>
           </span>
-          <span class="px-1.5 py-0.2 rounded-md text-[9px] font-mono font-bold bg-slate-900/85 text-white min-w-[16px] text-center ml-1.5 shrink-0">${count}</span>
+          <div class="flex items-center gap-1 shrink-0">
+            <span class="px-1.5 py-0.2 rounded-md text-[9px] font-mono font-bold bg-slate-900/85 text-white min-w-[16px] text-center">${count}</span>
+            ${count > 0 ? `<i id="legend-chevron-${dom.id}" class="fa-solid fa-chevron-right text-[8.5px] opacity-70 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}"></i>` : ''}
+          </div>
         `;
 
+        // Sublist Container (Max 10 items ~260px with sleek scrolling)
+        const sublist = document.createElement("div");
+        sublist.id = `legend-sublist-${dom.id}`;
+        sublist.className = `${isExpanded ? 'flex' : 'hidden'} flex-col gap-1 py-1 pl-2 pr-0.5 border-l-2 border-indigo-500/50 my-1 max-h-[260px] overflow-y-auto`;
+
         if (count > 0) {
-          btn.onclick = () => toggleDomainHighlight(dom.id);
+          // Sort nodes by tag naturally
+          domNodes.sort((a, b) => (a.tag || a.id || '').localeCompare(b.tag || b.id || '', undefined, { numeric: true, sensitivity: 'base' }));
+
+          // Populate equipment sub-items
+          domNodes.forEach(node => {
+            const item = document.createElement("div");
+            item.className = "p-1.5 rounded-md bg-slate-800/85 hover:bg-slate-700/95 border border-slate-700/60 hover:border-amber-400/80 transition-all cursor-pointer flex flex-col gap-0.5 text-left group shadow-2xs";
+            item.title = `${node.tag || node.id} • ${node.name || node.type_name || ''}\nLocation: ${node.room || 'Main Electrical Room'}\nRating: ${node.voltage || '480V'} • ${node.amps || '225'}A\n• Click to Spotlight in SLD\n• Double-Click to Open Inspector`;
+
+            const voltageShort = (node.voltage || '').split(' ')[0] || '';
+            const roomShort = (node.room || node.name || 'Main Elec Rm');
+
+            item.innerHTML = `
+              <div class="flex items-center justify-between gap-1">
+                <span class="font-mono font-bold text-[10.5px] text-slate-100 group-hover:text-amber-300 truncate">${node.tag || node.id}</span>
+                ${voltageShort ? `<span class="text-[8.5px] font-mono px-1 py-0.2 rounded bg-slate-900/90 text-slate-300 shrink-0">${voltageShort}</span>` : ''}
+              </div>
+              <div class="text-[9px] text-slate-400 group-hover:text-slate-200 truncate flex items-center gap-1">
+                <span class="text-[8px] opacity-70">📍</span>
+                <span class="truncate">${roomShort}</span>
+              </div>
+            `;
+
+            item.onclick = (e) => {
+              e.stopPropagation();
+              spotlightEquipment(node.id || node.tag);
+            };
+
+            item.ondblclick = (e) => {
+              e.stopPropagation();
+              if (typeof window.openEquipmentDrawer === 'function') {
+                window.openEquipmentDrawer(node.id || node.tag);
+              }
+            };
+
+            sublist.appendChild(item);
+          });
+
+          btn.onclick = () => toggleDomainAccordion(dom.id);
         }
 
-        container.appendChild(btn);
+        groupEl.appendChild(btn);
+        groupEl.appendChild(sublist);
+        container.appendChild(groupEl);
       });
+
+      updateLegendCollapseUI();
+    }
+
+    function toggleDomainAccordion(domainId) {
+      const wasExpanded = activeAccordionDomain === domainId;
+
+      // Collapse all domain sublists & reset chevrons
+      DOMAIN_DEFS.forEach(d => {
+        const sl = document.getElementById(`legend-sublist-${d.id}`);
+        const ch = document.getElementById(`legend-chevron-${d.id}`);
+        if (sl) sl.classList.replace('flex', 'hidden');
+        if (ch) ch.classList.remove('rotate-90');
+      });
+
+      if (wasExpanded) {
+        activeAccordionDomain = null;
+        clearDomainHighlight();
+      } else {
+        activeAccordionDomain = domainId;
+        const sublist = document.getElementById(`legend-sublist-${domainId}`);
+        const chevron = document.getElementById(`legend-chevron-${domainId}`);
+        if (sublist) {
+          sublist.classList.replace('hidden', 'flex');
+          sublist.scrollTop = 0;
+        }
+        if (chevron) chevron.classList.add('rotate-90');
+
+        applyDomainHighlight(domainId);
+        zoomToDomain(domainId);
+      }
     }
 
     function toggleDomainHighlight(domainId) {
-      if (activeHighlightDomain === domainId) {
-        clearDomainHighlight();
-      } else {
-        applyDomainHighlight(domainId);
-      }
+      toggleDomainAccordion(domainId);
     }
 
     function applyDomainHighlight(domainId) {
@@ -678,16 +1127,21 @@
 
     function clearDomainHighlight() {
       activeHighlightDomain = null;
+      activeAccordionDomain = null;
       const clearBtn = document.getElementById("btn-clear-filter");
       if (clearBtn) clearBtn.classList.add("hidden");
 
-      // Reset button styles
+      // Reset button styles & collapse all sublists
       DOMAIN_DEFS.forEach(d => {
         const btn = document.getElementById(`legend-btn-${d.id}`);
         if (btn) {
           btn.classList.remove("ring-2", "ring-indigo-400", "scale-[1.02]", "shadow-md");
           btn.style.borderWidth = "1.5px";
         }
+        const sl = document.getElementById(`legend-sublist-${d.id}`);
+        const ch = document.getElementById(`legend-chevron-${d.id}`);
+        if (sl) sl.classList.replace('flex', 'hidden');
+        if (ch) ch.classList.remove('rotate-90');
       });
 
       // Reset SVG Clusters, Nodes, and Edges
@@ -744,20 +1198,26 @@
         const titleText = titleEl.empty() ? "" : titleEl.text().trim();
         if (titleText.startsWith("cluster_") || titleText.startsWith("clust_")) {
           const rawId = titleText.replace(/^clust(er)?_/, "");
+          const match = findMatchingEquipment(rawId);
+          const targetId = match ? (match.id || match.tag) : rawId;
+
           el.style("cursor", "pointer");
           el.on("click", (e) => {
             if (e.defaultPrevented) return;
-            // If the user specifically clicked a breaker node inside the cluster, don't hijack
+            // If the user specifically clicked a breaker slot sub-node inside the cluster, don't hijack
             const targetNode = e.target.closest("g.node");
             if (targetNode) {
               const nodeTitle = d3.select(targetNode).select("title").text().trim();
-              if (nodeTitle.includes('_b')) {
+              const subClean = nodeTitle.replace(/^node_/, '');
+              const subEquip = findMatchingEquipment(subClean);
+              if (!subEquip && (/_b\d+$/i.test(subClean) || subClean.startsWith('ckt_'))) {
                 return;
               }
             }
             e.stopPropagation();
+            spotlightEquipment(targetId);
             if (window.openEquipmentDrawer) {
-              window.openEquipmentDrawer(rawId);
+              window.openEquipmentDrawer(targetId);
             }
           });
         }
@@ -768,15 +1228,22 @@
         const el = d3.select(this);
         const titleEl = el.select("title");
         const titleText = titleEl.empty() ? "" : titleEl.text().trim();
-        const isBreaker = titleText.includes('_b') || /_b\d+$/.test(titleText);
-        if (!isBreaker && titleText) {
-          const cleanId = titleText.replace(/_(in|out|norm|emerg|emergency|bypass|load)$/, '');
+        if (!titleText) return;
+
+        const match = findMatchingEquipment(titleText);
+
+        // A breaker slot is specifically a sub-node ending with _b{slotNum} or ckt_ that is NOT an equipment node in the dataset
+        const isBreakerSlot = !match && (/_b\d+$/i.test(titleText) || titleText.startsWith('ckt_'));
+
+        if (!isBreakerSlot) {
+          const targetId = match ? (match.id || match.tag) : titleText.replace(/^(cluster_node_|cluster_|node_)/i, '').replace(/_(in|out|norm|emerg|emergency|bypass|load|hdr|header)$/i, '');
           el.style("cursor", "pointer");
           el.on("click", (e) => {
             if (e.defaultPrevented) return;
             e.stopPropagation();
+            spotlightEquipment(targetId);
             if (window.openEquipmentDrawer) {
-              window.openEquipmentDrawer(cleanId || titleText);
+              window.openEquipmentDrawer(targetId);
             }
           });
         }
@@ -884,18 +1351,191 @@
       }
     }
 
+    let activeFloorFilter = 'ALL';
+
+    function zoomToFloor(floorQuery) {
+      activeFloorFilter = floorQuery;
+      
+      // Update UI active buttons in Floor Navigator
+      document.querySelectorAll('.floor-nav-btn').forEach(btn => {
+        if (btn.dataset.floor === floorQuery) {
+          btn.className = 'floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition shadow-2xs cursor-pointer';
+        } else {
+          btn.className = 'floor-nav-btn px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer';
+        }
+      });
+      updateLevelsCollapseUI();
+
+      if (!graphvizInstance) return;
+
+      if (floorQuery === 'ALL') {
+        resetFit();
+        return;
+      }
+
+      // Find all SVG node elements belonging to this floor
+      const matchedNodeIds = [];
+      (facilityNodes || []).forEach(n => {
+        const roomStr = (n.room || '').toLowerCase();
+        const tagStr = (n.tag || '').toLowerCase();
+        const q = floorQuery.toLowerCase();
+        if (roomStr.includes(q) || tagStr.includes(q) || (q === 'roof' && (roomStr.includes('roof') || roomStr.includes('penthouse')))) {
+          matchedNodeIds.push(sanitizeId(n.id));
+          matchedNodeIds.push(sanitizeId(n.tag));
+        }
+      });
+
+      if (matchedNodeIds.length === 0) {
+        resetFit();
+        return;
+      }
+
+      // Calculate combined bounding box of all matching SVG elements
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return;
+
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      let foundCount = 0;
+
+      svg.selectAll('.node, g.cluster').each(function() {
+        const el = d3.select(this);
+        const elId = el.attr('id') || '';
+        const titleEl = el.select('title');
+        const titleText = titleEl.empty() ? '' : titleEl.text();
+
+        const matches = matchedNodeIds.some(sid => elId.includes(sid) || titleText.includes(sid));
+        if (matches) {
+          try {
+            const bbox = this.getBBox();
+            if (bbox && bbox.width > 0 && bbox.height > 0) {
+              minX = Math.min(minX, bbox.x);
+              minY = Math.min(minY, bbox.y);
+              maxX = Math.max(maxX, bbox.x + bbox.width);
+              maxY = Math.max(maxY, bbox.y + bbox.height);
+              foundCount++;
+            }
+          } catch(e) {}
+        }
+      });
+
+      if (foundCount === 0 || !isFinite(minX)) {
+        resetFit();
+        return;
+      }
+
+      // Add comfortable padding
+      const padding = 60;
+      const boxWidth = (maxX - minX) + (padding * 2);
+      const boxHeight = (maxY - minY) + (padding * 2);
+      const boxCenterX = (minX + maxX) / 2;
+      const boxCenterY = (minY + maxY) / 2;
+
+      const svgEl = document.querySelector("#graph-container svg");
+      const vb = svgEl ? (svgEl.viewBox.baseVal || { x: 0, y: 0, width: 19505, height: 1048 }) : { x: 0, y: 0, width: 19505, height: 1048 };
+      const vbCenterX = (vb.x || 0) + (vb.width / 2);
+      const vbCenterY = (vb.y || 0) + (vb.height / 2);
+
+      // Scale to fit target floor cleanly, capped between 1.0 and 6.0
+      const scaleX = (vb.width * 0.88) / boxWidth;
+      const scaleY = (vb.height * 0.85) / boxHeight;
+      const targetScale = Math.max(1.0, Math.min(scaleX, scaleY, 6.0));
+
+      const targetX = vbCenterX - (boxCenterX * targetScale);
+      const targetY = vbCenterY - (boxCenterY * targetScale);
+
+      const zb = graphvizInstance.zoomBehavior();
+      const zs = graphvizInstance.zoomSelection();
+      if (zb && zs) {
+        const transform = d3.zoomIdentity.translate(targetX, targetY).scale(targetScale);
+        zs.transition().duration(600).ease(d3.easeCubicOut).call(zb.transform, transform);
+      }
+    }
+
+    function zoomToDomain(domainId) {
+      if (!graphvizInstance || !domainId) return;
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return;
+
+      const matchedNodeIds = [];
+      const nodes = window.facilityNodes || (window.alpineApp && window.alpineApp.allNodes) || [];
+      nodes.forEach(n => {
+        const dom = n.domain || inferDomain(n.type_tag);
+        if (dom === domainId) {
+          matchedNodeIds.push(sanitizeId(n.id));
+          matchedNodeIds.push(sanitizeId(n.tag));
+        }
+      });
+
+      if (matchedNodeIds.length === 0) return;
+
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      let foundCount = 0;
+
+      svg.selectAll('.node, g.cluster').each(function() {
+        const el = d3.select(this);
+        const elId = (el.attr('id') || '').toLowerCase();
+        const titleEl = el.select('title');
+        const titleText = (titleEl.empty() ? '' : titleEl.text()).toLowerCase();
+
+        const matches = matchedNodeIds.some(sid => {
+          const sLower = (sid || '').toLowerCase();
+          return sLower && (elId.includes(sLower) || titleText.includes(sLower));
+        });
+
+        if (matches) {
+          try {
+            const bbox = this.getBBox();
+            if (bbox && bbox.width > 0 && bbox.height > 0) {
+              minX = Math.min(minX, bbox.x);
+              minY = Math.min(minY, bbox.y);
+              maxX = Math.max(maxX, bbox.x + bbox.width);
+              maxY = Math.max(maxY, bbox.y + bbox.height);
+              foundCount++;
+            }
+          } catch(e) {}
+        }
+      });
+
+      if (foundCount === 0 || !isFinite(minX)) return;
+
+      const padding = 70;
+      const boxWidth = (maxX - minX) + (padding * 2);
+      const boxHeight = (maxY - minY) + (padding * 2);
+      const boxCenterX = (minX + maxX) / 2;
+      const boxCenterY = (minY + maxY) / 2;
+
+      const svgEl = document.querySelector("#graph-container svg");
+      const vb = svgEl ? (svgEl.viewBox.baseVal || { x: 0, y: 0, width: 19505, height: 1048 }) : { x: 0, y: 0, width: 19505, height: 1048 };
+      const vbCenterX = (vb.x || 0) + (vb.width / 2);
+      const vbCenterY = (vb.y || 0) + (vb.height / 2);
+
+      const scaleX = (vb.width * 0.85) / boxWidth;
+      const scaleY = (vb.height * 0.82) / boxHeight;
+      const targetScale = Math.max(1.0, Math.min(scaleX, scaleY, 6.0));
+
+      const targetX = vbCenterX - (boxCenterX * targetScale);
+      const targetY = vbCenterY - (boxCenterY * targetScale);
+
+      const zb = graphvizInstance.zoomBehavior();
+      const zs = graphvizInstance.zoomSelection();
+      if (zb && zs) {
+        const transform = d3.zoomIdentity.translate(targetX, targetY).scale(targetScale);
+        zs.transition().duration(650).ease(d3.easeCubicOut).call(zb.transform, transform);
+      }
+    }
+
     function zoomIn() {
       if (!graphvizInstance) return;
       try {
         const zb = graphvizInstance.zoomBehavior();
         const zs = graphvizInstance.zoomSelection();
+        const svgEl = document.querySelector("#graph-container svg");
+        if (!svgEl) return;
+        const vb = svgEl.viewBox.baseVal || { width: 19505, height: 1048 };
+        const cx = (vb.x || 0) + (vb.width / 2);
+        const cy = (vb.y || 0) + (vb.height / 2);
         if (zb && zs) {
-          zs.transition().duration(250).call(zb.scaleBy, 1.35);
-        } else {
-          const svg = d3.select("#graph-container svg");
-          if (!svg.empty()) {
-            svg.transition().duration(250).call(d3.zoom().scaleBy, 1.35);
-          }
+          zs.transition().duration(250).call(zb.scaleBy, 1.4, [cx, cy]);
         }
       } catch (e) {
         console.error("Zoom In Error:", e);
@@ -907,13 +1547,13 @@
       try {
         const zb = graphvizInstance.zoomBehavior();
         const zs = graphvizInstance.zoomSelection();
+        const svgEl = document.querySelector("#graph-container svg");
+        if (!svgEl) return;
+        const vb = svgEl.viewBox.baseVal || { width: 19505, height: 1048 };
+        const cx = (vb.x || 0) + (vb.width / 2);
+        const cy = (vb.y || 0) + (vb.height / 2);
         if (zb && zs) {
-          zs.transition().duration(250).call(zb.scaleBy, 0.74);
-        } else {
-          const svg = d3.select("#graph-container svg");
-          if (!svg.empty()) {
-            svg.transition().duration(250).call(d3.zoom().scaleBy, 0.74);
-          }
+          zs.transition().duration(250).call(zb.scaleBy, 0.71, [cx, cy]);
         }
       } catch (e) {
         console.error("Zoom Out Error:", e);
@@ -923,20 +1563,45 @@
     function resetFit() {
       if (!graphvizInstance) return;
       try {
-        graphvizInstance.resetZoom(d3.transition().duration(300));
+        const svgEl = document.querySelector("#graph-container svg");
+        const container = document.getElementById("graph-container");
+        const cw = container ? container.clientWidth : window.innerWidth;
+        const ch = container ? container.clientHeight : window.innerHeight;
+        const vb = svgEl ? (svgEl.viewBox.baseVal || { x: 0, y: 0, width: 19505, height: 1048 }) : { x: 0, y: 0, width: 19505, height: 1048 };
+        const screenScale = Math.min(cw / vb.width, ch / vb.height);
+
+        const zb = graphvizInstance.zoomBehavior();
+        const zs = graphvizInstance.zoomSelection() || d3.select("#graph-container svg");
+
+        // If the facility model is small (e.g. 1-6 nodes) where screenScale > 1.0,
+        // clamp the scale so nodes are rendered at natural 1:1 crisp size without ballooning
+        if (screenScale > 1.05 && zb && zs) {
+          const targetScale = 1.0 / screenScale;
+          const vbCenterX = (vb.x || 0) + (vb.width / 2);
+          const vbCenterY = (vb.y || 0) + (vb.height / 2);
+          const targetX = vbCenterX - (vbCenterX * targetScale);
+          const targetY = vbCenterY - (vbCenterY * targetScale);
+          const transform = d3.zoomIdentity.translate(targetX, targetY).scale(targetScale);
+          zs.transition().duration(300).call(zb.transform, transform);
+        } else {
+          graphvizInstance.resetZoom(d3.transition().duration(300));
+        }
       } catch (e) {
         console.warn("resetZoom fallback", e);
-        try {
-          const zb = graphvizInstance.zoomBehavior();
-          const zs = graphvizInstance.zoomSelection();
-          if (zb && zs) {
-            zs.transition().duration(300).call(zb.transform, d3.zoomIdentity);
-          }
-        } catch (err) {
-          console.error("Fit View Error:", err);
-        }
       }
     }
+
+    // Debounced window resize handler to maintain zoom stability
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (!graphvizInstance) return;
+        if (typeof activeFloorFilter !== 'undefined' && activeFloorFilter && activeFloorFilter !== 'ALL') {
+          zoomToFloor(activeFloorFilter);
+        }
+      }, 150);
+    });
 
     function toggleDotModal() {
       const modal = document.getElementById("dot-modal");
@@ -950,6 +1615,21 @@
 
     let currentRankDir = localStorage.getItem('james-sld-rankdir') || window.__SLD_CONFIG__?.defaultRankDir || 'TB';
     let currentDetailMode = localStorage.getItem('james-sld-mode') || window.__SLD_CONFIG__?.defaultMode || 'macro';
+
+    function adaptDotFlow(dotStr, dir) {
+      if (!dotStr) return "";
+      let modified = dotStr.replace(/rankdir\s*=\s*["']?(TB|LR|BT|RL)["']?/gi, `rankdir=${dir}`);
+      if (dir === 'LR') {
+        modified = modified
+          .replace(/:s(\s*->)/g, ':e$1')
+          .replace(/:n(\s*\[)/g, ':w$1');
+      } else if (dir === 'TB') {
+        modified = modified
+          .replace(/:e(\s*->)/g, ':s$1')
+          .replace(/:w(\s*\[)/g, ':n$1');
+      }
+      return modified;
+    }
 
     function applyRankDirUI(dir) {
       const icon = document.getElementById("layout-dir-icon");
@@ -1008,7 +1688,7 @@
       applyDetailModeUI(currentDetailMode);
 
       try {
-        const dotRes = await fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}`);
+        const dotRes = await fetch(`/api/clients/${clientId}/facilities/${facilityId}/dot?mode=${currentDetailMode}&rankdir=${currentRankDir}`);
         if (dotRes.ok) {
           rawDotString = await dotRes.text();
           renderCurrentDot();
@@ -1021,7 +1701,7 @@
     function renderCurrentDot() {
       if (!rawDotString) return;
 
-      const modifiedDot = rawDotString.replace(/rankdir\s*=\s*["']?(TB|LR|BT|RL)["']?/gi, `rankdir=${currentRankDir}`);
+      const modifiedDot = adaptDotFlow(rawDotString, currentRankDir);
       const dotEl = document.getElementById("dot-code");
       if (dotEl) dotEl.innerText = modifiedDot;
 
@@ -1031,7 +1711,7 @@
             .graphviz({ useWorker: false, tweenShapes: false, tweenPaths: false })
             .fit(true)
             .zoom(true)
-            .zoomScaleExtent([0.05, 20])
+            .zoomScaleExtent([0.05, 50])
             .zoomTranslateExtent([[-Infinity, -Infinity], [Infinity, Infinity]])
             .onerror((err) => console.warn("d3-graphviz render notice:", err));
         }
@@ -1039,15 +1719,13 @@
         graphvizInstance
           .renderDot(modifiedDot, () => {
             try {
-              // Ensure d3.zoom behavior is securely wired to the active SVG
-              const svg = d3.select("#graph-container svg");
-              const zb = graphvizInstance.zoomBehavior();
-              if (zb && !svg.empty()) {
-                svg.call(zb);
-              }
+              attachSemanticZoomLOD();
               attachCanvasClickListeners();
               if (activeHighlightDomain) {
                 applyDomainHighlight(activeHighlightDomain);
+              }
+              if (activeSpotlightNodeId) {
+                spotlightEquipment(activeSpotlightNodeId);
               }
             } catch (err) {
               console.warn("Canvas click listeners attach notice:", err);
@@ -1058,9 +1736,331 @@
       }
     }
 
-    // Keyboard Shortcuts for SLD Navigation (+ / - / 0 / r / h / m / Esc)
+    function attachSemanticZoomLOD() {
+      if (!graphvizInstance) return;
+      try {
+        const zb = graphvizInstance.zoomBehavior();
+        if (zb) {
+          zb.on("zoom.lod", (event) => {
+            const k = event.transform.k;
+            const container = document.getElementById("graph-container");
+            if (!container) return;
+            if (k < 1.8) {
+              container.classList.add("lod-birdseye");
+              container.classList.remove("lod-medium", "lod-detailed");
+            } else if (k < 3.5) {
+              container.classList.add("lod-medium");
+              container.classList.remove("lod-birdseye", "lod-detailed");
+            } else {
+              container.classList.add("lod-detailed");
+              container.classList.remove("lod-birdseye", "lod-medium");
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("attachSemanticZoomLOD notice:", e);
+      }
+    }
+
+    // Equipment Spotlight & Neighborhood Isolation Engine
+    let activeSpotlightNodeId = null;
+
+    function findSvgNodeElement(targetIdOrTag) {
+      if (!targetIdOrTag) return null;
+      const raw = String(targetIdOrTag).trim();
+      const rawLower = raw.toLowerCase();
+      const sid = sanitizeId(raw).toLowerCase();
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return null;
+
+      // Look up corresponding node in facilityNodes to get both tag and id
+      const pool = window.facilityNodes || (window.alpineApp && window.alpineApp.allNodes) || [];
+      const nodeObj = pool.find(n => 
+        (n.id && n.id.toLowerCase() === rawLower) || 
+        (n.tag && n.tag.toLowerCase() === rawLower) ||
+        (n.id && sanitizeId(n.id).toLowerCase() === sid) ||
+        (n.tag && sanitizeId(n.tag).toLowerCase() === sid)
+      );
+
+      const candidateIds = new Set([
+        rawLower, 
+        sid,
+        `node_${sid}`,
+        `node_${rawLower}`,
+        `cluster_${sid}`,
+        `cluster_node_${sid}`
+      ]);
+
+      if (nodeObj) {
+        if (nodeObj.id) {
+          const nidLower = nodeObj.id.toLowerCase();
+          const nidSan = sanitizeId(nodeObj.id).toLowerCase();
+          candidateIds.add(nidLower);
+          candidateIds.add(nidSan);
+          candidateIds.add(`node_${nidSan}`);
+          candidateIds.add(`node_${nidLower}`);
+          candidateIds.add(`cluster_${nidSan}`);
+          candidateIds.add(`cluster_node_${nidSan}`);
+        }
+        if (nodeObj.tag) {
+          const ntagLower = nodeObj.tag.toLowerCase();
+          const ntagSan = sanitizeId(nodeObj.tag).toLowerCase();
+          candidateIds.add(ntagLower);
+          candidateIds.add(ntagSan);
+          candidateIds.add(`node_${ntagSan}`);
+          candidateIds.add(`node_${ntagLower}`);
+          candidateIds.add(`cluster_${ntagSan}`);
+          candidateIds.add(`cluster_node_${ntagSan}`);
+        }
+      }
+
+      let targetEl = null;
+
+      // 1. Exact match on .node <title> or id
+      svg.selectAll(".node").each(function() {
+        if (targetEl) return;
+        const el = d3.select(this);
+        const title = (el.select("title").text() || "").trim().toLowerCase();
+        const idAttr = (el.attr("id") || "").toLowerCase();
+        const cleanTitle = title.replace(/^node_/, '');
+        const cleanId = idAttr.replace(/^node_/, '');
+
+        if (
+          candidateIds.has(title) || 
+          candidateIds.has(idAttr) || 
+          candidateIds.has(cleanTitle) || 
+          candidateIds.has(cleanId)
+        ) {
+          targetEl = this;
+        }
+      });
+
+      // 2. Exact match on g.cluster <title> or id (for detailed mode enclosures)
+      if (!targetEl) {
+        svg.selectAll("g.cluster").each(function() {
+          if (targetEl) return;
+          const el = d3.select(this);
+          const title = (el.select("title").text() || "").trim().toLowerCase();
+          const idAttr = (el.attr("id") || "").toLowerCase();
+          const cleanTitle = title.replace(/^cluster_node_/, '').replace(/^cluster_/, '');
+          const cleanId = idAttr.replace(/^cluster_node_/, '').replace(/^clust_node_/, '').replace(/^cluster_/, '').replace(/^clust_/, '');
+
+          if (
+            candidateIds.has(title) || 
+            candidateIds.has(idAttr) || 
+            candidateIds.has(cleanTitle) || 
+            candidateIds.has(cleanId)
+          ) {
+            targetEl = this;
+          }
+        });
+      }
+
+      // 3. Fallback: Check text content within nodes & clusters
+      if (!targetEl) {
+        svg.selectAll(".node, g.cluster").each(function() {
+          if (targetEl) return;
+          const textContent = (d3.select(this).text() || "").trim().toLowerCase();
+          if (
+            textContent.includes(` ${rawLower} `) || 
+            textContent.includes(`(${rawLower})`) || 
+            textContent.startsWith(rawLower) ||
+            (nodeObj && nodeObj.tag && textContent.includes(nodeObj.tag.toLowerCase()))
+          ) {
+            targetEl = this;
+          }
+        });
+      }
+
+      return targetEl;
+    }
+
+    function spotlightEquipment(targetIdOrTag) {
+      if (!graphvizInstance || !targetIdOrTag) return;
+      
+      const sanitized = sanitizeId(targetIdOrTag);
+      const raw = String(targetIdOrTag).trim();
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return;
+
+      // 1. Locate the exact SVG node or cluster
+      const targetEl = findSvgNodeElement(targetIdOrTag);
+      if (!targetEl) {
+        console.warn("Could not find SVG element for spotlight:", targetIdOrTag);
+        return;
+      }
+
+      activeSpotlightNodeId = raw;
+
+      // 2. Compute Bounding Box & Zoom smoothly to Target in ViewBox coordinates
+      try {
+        const bbox = targetEl.getBBox();
+        if (bbox && bbox.width > 0 && bbox.height > 0) {
+          const nodeCenterX = bbox.x + (bbox.width / 2);
+          const nodeCenterY = bbox.y + (bbox.height / 2);
+
+          const container = document.getElementById("graph-container");
+          const cw = container ? container.clientWidth : window.innerWidth;
+          const ch = container ? container.clientHeight : window.innerHeight;
+
+          const svgEl = document.querySelector("#graph-container svg");
+          const vb = svgEl ? (svgEl.viewBox.baseVal || { x: 0, y: 0, width: 19505, height: 1048 }) : { x: 0, y: 0, width: 19505, height: 1048 };
+          const vbCenterX = (vb.x || 0) + (vb.width / 2);
+          const vbCenterY = (vb.y || 0) + (vb.height / 2);
+
+          // Screen scale factor: ratio of screen pixels to viewBox coordinate units
+          const screenScale = Math.min(cw / vb.width, ch / vb.height);
+
+          // Target on-screen pixel size: consistent right-sized device box (~340px wide and ~230px high)
+          const targetPxW = Math.min(cw * 0.35, 340);
+          const targetPxH = Math.min(ch * 0.38, 230);
+
+          const desiredScaleX = targetPxW / (bbox.width * screenScale);
+          const desiredScaleY = targetPxH / (bbox.height * screenScale);
+          const idealScale = Math.min(desiredScaleX, desiredScaleY);
+          const targetScale = Math.max(0.15, Math.min(idealScale, 45.0));
+
+          const targetX = vbCenterX - (nodeCenterX * targetScale);
+          const targetY = vbCenterY - (nodeCenterY * targetScale);
+
+          const zb = graphvizInstance.zoomBehavior();
+          const zs = graphvizInstance.zoomSelection() || d3.select("#graph-container svg");
+          if (zb && zs) {
+            const transform = d3.zoomIdentity.translate(targetX, targetY).scale(targetScale);
+            zs.transition()
+              .duration(700)
+              .ease(d3.easeCubicOut)
+              .call(zb.transform, transform);
+          }
+        }
+      } catch (err) {
+        console.warn("Zoom to target error:", err);
+      }
+
+      // 3. Neighborhood Highlighting & Dimming
+      const connectedTags = new Set([raw, sanitized]);
+      const nodes = window.facilityNodes || (window.alpineApp && window.alpineApp.allNodes) || [];
+      const targetObj = nodes.find(n => n.id === raw || n.tag === raw || sanitizeId(n.id) === sanitized || sanitizeId(n.tag) === sanitized);
+      
+      if (targetObj) {
+        if (targetObj.fed_from) {
+          connectedTags.add(targetObj.fed_from);
+          connectedTags.add(sanitizeId(targetObj.fed_from));
+        }
+        const upstreams = targetObj.attributes?.upstream_sources || [];
+        upstreams.forEach(u => { connectedTags.add(u); connectedTags.add(sanitizeId(u)); });
+        
+        nodes.forEach(n => {
+          if (n.fed_from === targetObj.tag || n.fed_from === targetObj.id) {
+            connectedTags.add(n.tag);
+            connectedTags.add(n.id);
+            connectedTags.add(sanitizeId(n.tag));
+            connectedTags.add(sanitizeId(n.id));
+          }
+        });
+      }
+
+      // Apply visual spotlight styling to all nodes and clusters
+      svg.selectAll(".node, g.cluster").each(function() {
+        const el = d3.select(this);
+        const title = (el.select("title").text() || "").trim();
+        const isTarget = (this === targetEl);
+        const isConnected = Array.from(connectedTags).some(t => t && (title === t || title === `node_${t}` || title === `cluster_node_${t}` || el.text().includes(t)));
+
+        if (isTarget) {
+          el.style("opacity", "1")
+            .style("filter", "drop-shadow(0 0 16px rgba(245, 158, 11, 0.95)) drop-shadow(0 0 4px #F59E0B)")
+            .classed("spotlight-target", true);
+        } else if (isConnected) {
+          el.style("opacity", "1")
+            .style("filter", "drop-shadow(0 0 8px rgba(99, 102, 241, 0.7))")
+            .classed("spotlight-neighbor", true);
+        } else {
+          el.style("opacity", "0.15")
+            .style("filter", "none")
+            .classed("spotlight-dimmed", true);
+        }
+      });
+
+      // Highlight connected edges
+      svg.selectAll(".edge, .feeder-edge").each(function() {
+        const el = d3.select(this);
+        const title = el.select("title").text();
+        const isConnectedEdge = Array.from(connectedTags).some(t => t && title.includes(t));
+        if (isConnectedEdge) {
+          el.style("opacity", "1");
+        } else {
+          el.style("opacity", "0.08");
+        }
+      });
+
+      // Synchronize tag directly to the Spotlight Search Bar
+      const displayTag = targetObj ? (targetObj.tag || targetObj.name || raw) : raw;
+      if (window.alpineApp) {
+        window.alpineApp.nodeSearchQuery = displayTag;
+        window.alpineApp.spotlightNode = targetObj || null;
+      }
+      const searchInput = document.getElementById("sld-spotlight-search-input");
+      if (searchInput && searchInput.value !== displayTag) {
+        searchInput.value = displayTag;
+      }
+    }
+
+    function clearSpotlightEquipment() {
+      activeSpotlightNodeId = null;
+      const svg = d3.select("#graph-container svg");
+      if (svg.empty()) return;
+
+      svg.selectAll(".node, g.cluster")
+        .style("opacity", "1")
+        .style("filter", null)
+        .classed("spotlight-target", false)
+        .classed("spotlight-neighbor", false)
+        .classed("spotlight-dimmed", false);
+
+      svg.selectAll(".edge, .feeder-edge")
+        .style("opacity", null);
+
+      // Clear the Spotlight Search Bar
+      if (window.alpineApp) {
+        window.alpineApp.nodeSearchQuery = '';
+        window.alpineApp.spotlightNode = null;
+      }
+      const searchInput = document.getElementById("sld-spotlight-search-input");
+      if (searchInput) {
+        searchInput.value = '';
+      }
+
+      if (typeof activeHighlightDomain !== 'undefined' && activeHighlightDomain) {
+        applyDomainHighlight(activeHighlightDomain);
+      }
+    }
+
+    // Expose spotlight methods on window for global accessibility
+    window.spotlightEquipment = spotlightEquipment;
+    window.clearSpotlightEquipment = clearSpotlightEquipment;
+
+    // Keyboard Shortcuts for SLD Navigation (+ / - / 0 / r / h / m / Esc / Cmd+K)
     window.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        const searchInput = document.getElementById("sld-spotlight-search-input");
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+        return;
+      }
       if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
+      if (e.key === "/" && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        const searchInput = document.getElementById("sld-spotlight-search-input");
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+        return;
+      }
       if (e.key === "+" || e.key === "=") {
         e.preventDefault();
         zoomIn();
@@ -1077,6 +2077,7 @@
         e.preventDefault();
         toggleDetailMode();
       } else if (e.key === "Escape") {
+        clearSpotlightEquipment();
         if (activeHighlightDomain) {
           clearDomainHighlight();
         }
@@ -1084,44 +2085,13 @@
     });
 
     // Global Font Scaling for SLD View
-    let sldFontScale = 100;
-
-    function applyFontSize(scale) {
-      sldFontScale = scale;
-      const basePx = (16 * (scale / 100)).toFixed(1);
-      document.documentElement.style.fontSize = `${basePx}px`;
-      localStorage.setItem('james-font-scale', String(scale));
-      const lbl = document.getElementById('sld-font-scale-label');
-      if (lbl) lbl.textContent = scale + '%';
-      const decBtn = document.getElementById('sld-btn-font-dec');
-      const incBtn = document.getElementById('sld-btn-font-inc');
-      if (decBtn) decBtn.disabled = scale <= 85;
-      if (incBtn) incBtn.disabled = scale >= 130;
-    }
-
-    function increaseFontSize() {
-      const scales = [85, 90, 100, 110, 120, 130];
-      const next = scales.find(s => s > sldFontScale);
-      if (next) applyFontSize(next);
-    }
-
-    function decreaseFontSize() {
-      const scales = [85, 90, 100, 110, 120, 130];
-      const prev = [...scales].reverse().find(s => s < sldFontScale);
-      if (prev) applyFontSize(prev);
-    }
-
-    function resetFontSize() {
-      applyFontSize(100);
-    }
-
+    // Enforce fixed standard root font size on SLD Canvas so UI chrome and toolbar never distort
     function initFontSize() {
-      const saved = localStorage.getItem('james-font-scale');
-      sldFontScale = saved ? parseInt(saved, 10) : 100;
-      applyFontSize(sldFontScale);
+      document.documentElement.style.fontSize = '16px';
     }
 
     window.addEventListener("DOMContentLoaded", () => {
+      window.scrollTo(0, 0);
       initFontSize();
       initSLD();
     });
@@ -1130,6 +2100,58 @@
       const app = {
         client: "{{ client_id }}",
         facility: "{{ facility_id }}",
+
+        // Spotlight Search State
+        nodeSearchQuery: '',
+        searchFocused: false,
+        searchIndex: 0,
+        spotlightNode: null,
+
+        getNodeIcon(item) {
+          const dom = item.domain || inferDomain(item.type_tag);
+          const iconMap = {
+            sources: "⚡",
+            switches: "🔀",
+            panels: "🔲",
+            transformers: "🌀",
+            power_quality: "🔋",
+            loads: "⚙️",
+            metering: "📊",
+            renewables: "☀️",
+            cables: "🔌",
+            generic: "📦"
+          };
+          return iconMap[dom] || "⚡";
+        },
+
+        get filteredNodeResults() {
+          const q = (this.nodeSearchQuery || '').trim().toLowerCase();
+          if (!q) return [];
+          const nodes = (this.allNodes && this.allNodes.length > 0) ? this.allNodes : (window.facilityNodes || []);
+          return nodes.filter(n => {
+            const tag = (n.tag || '').toLowerCase();
+            const name = (n.name || '').toLowerCase();
+            const room = (n.room || '').toLowerCase();
+            const floor = (n.floor || '').toLowerCase();
+            const type = (n.type_tag || '').toLowerCase();
+            const fed = (n.fed_from || '').toLowerCase();
+            return tag.includes(q) || name.includes(q) || room.includes(q) || floor.includes(q) || type.includes(q) || fed.includes(q);
+          }).slice(0, 15);
+        },
+
+        selectAndSpotlightNode(item) {
+          if (!item) return;
+          this.spotlightNode = item;
+          this.nodeSearchQuery = item.tag;
+          this.searchFocused = false;
+          spotlightEquipment(item.id || item.tag);
+        },
+
+        clearSpotlightFocus() {
+          this.spotlightNode = null;
+          this.searchFocused = false;
+          clearSpotlightEquipment();
+        },
 
         // Toolbox & Help Popover state
         showToolboxModal: false,
@@ -1160,6 +2182,8 @@
         // Slide-over Edit Drawer & Shared Equipment Form state
         showScheduleMatrix: true,
         showEditDrawer: false,
+        showUnsavedChangesModal: false,
+        initialFormSnapshot: null,
         drawerTab: 'details',
         editingNode: null,
         editingNodeOriginalTag: '',
@@ -1249,6 +2273,10 @@
 
         init() {
           window.alpineApp = this;
+          window.__sldAppInstance = this;
+          if (window.facilityNodes && window.facilityNodes.length) {
+            this.allNodes = window.facilityNodes;
+          }
           window.notify = (msg) => this.toast(msg);
           window.openEquipmentDrawer = (idOrTag) => {
             this.openEditDrawer(idOrTag);
@@ -1300,7 +2328,11 @@
               } else if (this.showLightboxModal) {
                 this.showLightboxModal = false;
               } else if (this.showEditDrawer) {
-                this.closeEditDrawer();
+                if (this.showUnsavedChangesModal) {
+                  this.showUnsavedChangesModal = false;
+                } else {
+                  this.requestCloseEditDrawer();
+                }
               }
             }
           });
@@ -1342,7 +2374,7 @@
           const isPanel = !!(item.is_panel || item.domainId === 'panels');
           
           const newDraft = {
-            id: 'node_' + Date.now(),
+            id: 's_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6),
             tag: nextTag,
             name: item.name,
             domain: item.domainId,
@@ -1411,25 +2443,37 @@
           this.editingNoteText = '';
           this.drawerTab = 'details';
           this.showEditDrawer = true;
+          this.takeFormSnapshot();
           this.toast(`➕ Created new device draft: ${nextTag} (${item.name})`);
         },
 
         openEditDrawer(idOrTag) {
           if (!idOrTag) return;
           const targetStr = String(idOrTag).trim();
+          if (!targetStr || targetStr === 'Source' || targetStr === 'Load' || targetStr === 'undefined' || targetStr === 'null') return;
           const pool = (this.allNodes && this.allNodes.length > 0) ? this.allNodes : (window.facilityNodes || []);
           this.allNodes = pool;
-          const match = pool.find(n => 
+          let match = pool.find(n => 
             n.id === targetStr || 
             n.tag === targetStr || 
             (n.id && n.id.toLowerCase() === targetStr.toLowerCase()) || 
             (n.tag && n.tag.toLowerCase() === targetStr.toLowerCase())
           );
+          if (!match && typeof findMatchingEquipment === 'function') {
+            match = findMatchingEquipment(targetStr);
+          }
 
           if (!match) {
             console.warn('Equipment not found in node dataset for target:', targetStr);
             this.toast(`⚠️ Equipment "${targetStr}" not found in model.`);
             return;
+          }
+
+          // Spotlight and pan to equipment on diagram canvas
+          if (typeof spotlightEquipment === 'function') {
+            spotlightEquipment(match.id || match.tag);
+          } else if (typeof window.spotlightEquipment === 'function') {
+            window.spotlightEquipment(match.id || match.tag);
           }
 
           // Deep clone node data
@@ -1542,10 +2586,61 @@
           this.editingNoteText = '';
           this.drawerTab = 'details';
           this.showEditDrawer = true;
+          this.takeFormSnapshot();
+        },
+
+        takeFormSnapshot() {
+          if (!this.form) {
+            this.initialFormSnapshot = null;
+            return;
+          }
+          this.initialFormSnapshot = JSON.stringify({
+            form: this.form,
+            customAttrs: this.customAttrsList,
+            schedule: this.scheduleRows,
+            newNoteText: this.newNoteText,
+            stagedPhotos: this.stagedPhotos
+          });
+        },
+
+        isFormDirty() {
+          if (!this.form || !this.initialFormSnapshot) return false;
+          const current = JSON.stringify({
+            form: this.form,
+            customAttrs: this.customAttrsList,
+            schedule: this.scheduleRows,
+            newNoteText: this.newNoteText,
+            stagedPhotos: this.stagedPhotos
+          });
+          return current !== this.initialFormSnapshot;
+        },
+
+        requestCloseEditDrawer() {
+          if (this.isFormDirty()) {
+            this.showUnsavedChangesModal = true;
+          } else {
+            this.closeEditDrawer();
+          }
+        },
+
+        discardAndCloseDrawer() {
+          this.showUnsavedChangesModal = false;
+          this.closeEditDrawer();
+        },
+
+        async saveAndCloseDrawer() {
+          this.showUnsavedChangesModal = false;
+          await this.saveDrawerAsset();
+        },
+
+        keepEditingDrawer() {
+          this.showUnsavedChangesModal = false;
         },
 
         closeEditDrawer() {
           this.showEditDrawer = false;
+          this.showUnsavedChangesModal = false;
+          this.initialFormSnapshot = null;
           this.editingNode = null;
           this.editingId = null;
           this.customAttrsList = [];
@@ -2528,7 +3623,7 @@
 
           const attrs = this.editingNode ? (this.editingNode.attributes || {}) : {};
           const payload = {
-            id: this.form.id || `node_${Date.now()}`,
+            id: this.form.id || ('s_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6)),
             tag: tag,
             name: this.form.name || tag,
             domain: this.form.domain || 'panels',
@@ -2785,29 +3880,30 @@
         increaseFontSize() {
           if (this.fontScale >= 130) return;
           this.fontScale += 5;
-          this.applyFontSize(this.fontScale);
         },
         decreaseFontSize() {
           if (this.fontScale <= 85) return;
           this.fontScale -= 5;
-          this.applyFontSize(this.fontScale);
         },
         resetFontSize() {
           this.fontScale = 100;
-          this.applyFontSize(100);
         },
         applyFontSize(scale) {
           this.fontScale = scale;
-          localStorage.setItem('james-font-scale', scale);
-          if (typeof applyFontSize === 'function') {
-            applyFontSize(scale);
-          }
         }
       };
 
       if (window.EquipmentFormSharedLogic) {
         window.EquipmentFormSharedLogic.attachTo(app);
       }
+      if (window.AdminUserModalLogic) {
+        window.AdminUserModalLogic.attachTo(app);
+      }
+      if (window.CadSldModalLogic) {
+        window.CadSldModalLogic.attachTo(app);
+      }
+      window.alpineApp = app;
+      window.__sldAppInstance = app;
 
       return app;
     }
@@ -2894,34 +3990,44 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <!-- Client Selector / Custom -->
           <div>
-            <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Client Organization</label>
-            <div class="flex items-center gap-1.5">
-              <template x-if="!finderIsCustomClient">
-                <select 
-                  x-model="finderNewClient" 
-                  class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5"
-                >
-                  <template x-for="c in finderClients" :key="c.client_id">
-                    <option :value="c.client_id" x-text="c.client_name + ' (' + c.client_id + ')'"></option>
-                  </template>
-                </select>
-              </template>
-              <template x-if="finderIsCustomClient">
-                <input 
-                  type="text" 
-                  x-model="finderNewClient" 
-                  placeholder="New client ID (e.g. pfizer)" 
-                  class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
-                />
-              </template>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase">Client Organization</label>
               <button 
                 type="button" 
-                @click="finderIsCustomClient = !finderIsCustomClient" 
-                class="px-2 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300 shrink-0 cursor-pointer"
-                :title="finderIsCustomClient ? 'Pick existing client' : 'Type new client'"
-              >
-                <span x-text="finderIsCustomClient ? 'List' : '+ New'"></span>
-              </button>
+                @click="finderIsCustomClient = !finderIsCustomClient; if (finderIsCustomClient) { finderNewClient = ''; } else if (finderClients.length > 0 && !finderNewClient) { finderNewClient = finderClients[0].client_id; }" 
+                class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                x-text="finderIsCustomClient ? '← Choose Existing' : '+ New Client'"
+              ></button>
+            </div>
+
+            <!-- Existing Clients Picker (Pills) -->
+            <div x-show="!finderIsCustomClient" class="space-y-1.5">
+              <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-700">
+                <template x-for="c in finderClients" :key="c.client_id">
+                  <button 
+                    type="button" 
+                    @click="finderNewClient = c.client_id"
+                    class="px-2 py-1 rounded text-xs font-mono transition cursor-pointer flex items-center gap-1"
+                    :class="(finderNewClient || '').toLowerCase() === c.client_id.toLowerCase() 
+                      ? 'bg-indigo-600 text-white shadow-xs font-bold' 
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                  >
+                    <span>🏢</span>
+                    <span x-text="c.client_name || c.client_id"></span>
+                  </button>
+                </template>
+                <div x-show="finderClients.length === 0" class="text-[11px] text-slate-400 p-1">No existing clients</div>
+              </div>
+            </div>
+
+            <!-- Custom New Client Input -->
+            <div x-show="finderIsCustomClient">
+              <input 
+                type="text" 
+                x-model="finderNewClient" 
+                placeholder="New client ID (e.g. pfizer, merck)" 
+                class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
+              />
             </div>
           </div>
 
@@ -2934,6 +4040,7 @@
               placeholder="e.g. b12, plant_north, lab_4" 
               class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-mono"
             />
+            <p class="text-[10px] text-slate-400 mt-1">Directory created at <code class="font-mono text-indigo-500">data/clients/<span x-text="finderNewClient || '{client}'"></span>/<span x-text="finderNewFacility || '{facility}'"></span>/model.db</code></p>
           </div>
         </div>
 
@@ -3054,6 +4161,12 @@
   <!-- System Integrity Audit Modal Include -->
   {% include "components/system_integrity_modal.html" %}
 
+  <!-- User & Access Console Modal Include -->
+  {% include "components/admin_user_modal.html" %}
+
+  <!-- CAD Single-Line Diagram Modal Include -->
+  {% include "components/cad_sld_modal.html" %}
+
   <!-- Bento Box Toolbox Modal Include -->
   {% include "components/toolbox_bento_modal.html" %}
 
@@ -3081,7 +4194,8 @@
       x-transition:leave="ease-in-out duration-200"
       x-transition:leave-start="opacity-100"
       x-transition:leave-end="opacity-0"
-      class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+      class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity cursor-pointer"
+      @click="requestCloseEditDrawer()"
     ></div>
 
     <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
@@ -3128,7 +4242,7 @@
                 </button>
                 <button 
                   type="button" 
-                  @click="closeEditDrawer()" 
+                  @click="requestCloseEditDrawer()" 
                   class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                 >
                   ✕
@@ -3145,7 +4259,7 @@
             <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between shrink-0">
               <button 
                 type="button" 
-                @click="closeEditDrawer()" 
+                @click="requestCloseEditDrawer()" 
                 class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 Cancel
@@ -3465,6 +4579,67 @@
 
       <!-- Caption Subtitle -->
       <p class="pt-2.5 text-xs text-slate-400 text-center font-sans max-w-2xl truncate" x-text="lightboxCaption || 'Field observation photo'"></p>
+  <!-- UNSAVED CHANGES CONFIRMATION MODAL -->
+  <div 
+    x-show="showUnsavedChangesModal" 
+    x-cloak 
+    class="fixed inset-0 z-60 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+    @keydown.escape.window="showUnsavedChangesModal = false"
+  >
+    <div 
+      class="bg-slate-900 border border-slate-700/90 rounded-2xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col text-white animate-in zoom-in-95 duration-150"
+      @click.away="showUnsavedChangesModal = false"
+    >
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-800 flex items-center gap-3 bg-slate-950/60">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center font-bold text-lg shrink-0">
+          ⚠️
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-bold text-sm text-white font-sans">Unsaved Changes</h3>
+          <p class="text-[11px] text-slate-400 truncate" x-text="form ? (form.tag || form.id) : 'Equipment Draft'"></p>
+        </div>
+        <button 
+          type="button" 
+          @click="showUnsavedChangesModal = false" 
+          class="text-slate-400 hover:text-white text-xs px-2 py-1 rounded-md hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 text-xs text-slate-300 space-y-2">
+        <p>You have unsaved changes on this equipment form. Would you like to save your modifications before exiting, or discard them?</p>
+      </div>
+
+      <!-- Modal Actions Footer -->
+      <div class="px-5 py-3.5 bg-slate-950/80 border-t border-slate-800 flex items-center justify-between gap-2">
+        <button 
+          type="button" 
+          @click="discardAndCloseDrawer()" 
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-300 hover:text-white bg-rose-950/60 hover:bg-rose-900 border border-rose-800/80 transition cursor-pointer"
+        >
+          Discard Changes
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            @click="keepEditingDrawer()" 
+            class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+          >
+            Keep Editing
+          </button>
+          <button 
+            type="button" 
+            @click="saveAndCloseDrawer()" 
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition cursor-pointer flex items-center gap-1.5"
+          >
+            <span>💾 Save & Close</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </body>

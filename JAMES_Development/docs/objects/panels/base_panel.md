@@ -36,12 +36,12 @@ Phase stabs are indexed mathematically by physical slot number:
 
 ## 4. Multi-Pole Slot Spanning & Layout Rules
 * A breaker starting at `slot_start` with `poles` poles occupies slots:
-  $$\text{occupied\_slots} = [\text{slot\_start} + 2i \quad \text{for } i \in \{0, \dots, \text{poles}-1\}]$$
+  $$\text{Occupied Slots} = [\text{slot-start} + 2i \quad \text{for } i \in \{0, \dots, \text{poles}-1\}]$$
 * **Table Span Rendering**:
   * The description cell uses `ROWSPAN="poles"`.
   * Physical slot numbers ($1, 2, 3, \dots$) are emitted on every row to preserve grid structure and terminal ports.
 * **Auto-Sizing Rule**: Sizing algorithm finds smallest standard enclosure count such that:
-  $$\text{total\_spaces} \ge \text{poles\_used} \times 1.20 \quad (\ge 20\% \text{ spare capacity})$$
+  $$\text{total-spaces} \ge \text{poles-used} \times 1.20 \quad (\ge 20\% \text{ spare capacity})$$
 
 ---
 
