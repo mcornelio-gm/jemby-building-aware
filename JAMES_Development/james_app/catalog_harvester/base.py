@@ -35,12 +35,12 @@ class BaseVendorHarvester(ABC):
         """
         pass
 
-    def export_jsonl(self, output_path: Optional[Path] = None) -> Path:
+    def export_jsonl(self, output_path: Optional[Any] = None) -> Path:
         """
         Export all harvested items to a streaming JSONL file (one JSON object per line).
         """
         items = self.harvest()
-        target_path = output_path or (self.cache_dir / f"{self.vendor_key}.jsonl")
+        target_path = Path(output_path) if output_path else (self.cache_dir / f"{self.vendor_key}.jsonl")
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(target_path, "w", encoding="utf-8") as f:
@@ -49,12 +49,12 @@ class BaseVendorHarvester(ABC):
 
         return target_path
 
-    def export_json(self, output_path: Optional[Path] = None) -> Path:
+    def export_json(self, output_path: Optional[Any] = None) -> Path:
         """
         Export harvested items to a standard JAMES catalog JSON file ({manufacturer, items: [...]}).
         """
         items = self.harvest()
-        target_path = output_path or (self.cache_dir.parent / "catalog" / f"{self.vendor_key}.json")
+        target_path = Path(output_path) if output_path else (self.cache_dir.parent / "catalog" / f"{self.vendor_key}.json")
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
         payload = {
