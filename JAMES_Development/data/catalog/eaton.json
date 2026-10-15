@@ -102,6 +102,800 @@
       }
     },
     {
+      "part_number": "150VCP-W-2000A",
+      "series": "VacClad-W",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "15kV 2000A VacClad Vacuum Circuit Breaker 50kAIC Drawout",
+      "specs": {
+        "frame_size": "VCP-W 15kV",
+        "trip_unit": "Vacuum Interrupter",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "15 kV",
+        "amps": 2000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "50VCP-W-1200A",
+      "series": "VacClad-W",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "5kV 1200A VacClad Vacuum Circuit Breaker 50kAIC Drawout",
+      "specs": {
+        "frame_size": "VCP-W 5kV",
+        "trip_unit": "Vacuum Interrupter",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "5 kV",
+        "amps": 1200.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "9355-15KVA-208V",
+      "series": "Eaton 9355",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 9355 Mid-Range 3-Phase UPS 15kVA / 13.5kW 208V",
+      "specs": {
+        "kw": 13.5,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "Internal VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "208Y/120V",
+        "amps": 42.0,
+        "kva": 15.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9355-30KVA-208V",
+      "series": "Eaton 9355",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 9355 Mid-Range 3-Phase UPS 30kVA / 27kW 208V",
+      "specs": {
+        "kw": 27.0,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "Internal VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "208Y/120V",
+        "amps": 83.0,
+        "kva": 30.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9395-1000KVA-480V",
+      "series": "Power Xpert 9395",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Power Xpert 9395 High-Power Industrial UPS 1000kVA / 900kW 480V",
+      "specs": {
+        "kw": 900.0,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "VRLA / Lithium-Ion",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "kva": 1000.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9395-1500KVA-480V",
+      "series": "Power Xpert 9395",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Power Xpert 9395 High-Power Industrial UPS 1500kVA / 1350kW 480V",
+      "specs": {
+        "kw": 1350.0,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "VRLA / Lithium-Ion",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 1800.0,
+        "kva": 1500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9395-500KVA-480V",
+      "series": "Power Xpert 9395",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Power Xpert 9395 High-Power Industrial UPS 500kVA / 450kW 480V",
+      "specs": {
+        "kw": 450.0,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "VRLA / Lithium-Ion",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 600.0,
+        "kva": 500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9395-750KVA-480V",
+      "series": "Power Xpert 9395",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Power Xpert 9395 High-Power Industrial UPS 750kVA / 675kW 480V",
+      "specs": {
+        "kw": 675.0,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "VRLA / Lithium-Ion",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 900.0,
+        "kva": 750.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "93PM-050KW-480V",
+      "series": "Eaton 93PM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 93PM 3-Phase Modular Scalable UPS 50kW / 50kVA 480V",
+      "specs": {
+        "kw": 50.0,
+        "efficiency": "99% Energy Saver System (ESS)",
+        "battery_type": "Lithium-Ion / VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 60.0,
+        "kva": 50.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "93PM-100KW-480V",
+      "series": "Eaton 93PM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 93PM 3-Phase Modular Scalable UPS 100kW / 100kVA 480V",
+      "specs": {
+        "kw": 100.0,
+        "efficiency": "99% Energy Saver System (ESS)",
+        "battery_type": "Lithium-Ion / VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 120.0,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "93PM-150KW-480V",
+      "series": "Eaton 93PM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 93PM 3-Phase Modular Scalable UPS 150kW / 150kVA 480V",
+      "specs": {
+        "kw": 150.0,
+        "efficiency": "99% Energy Saver System (ESS)",
+        "battery_type": "Lithium-Ion / VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 180.0,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "93PM-200KW-480V",
+      "series": "Eaton 93PM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 93PM 3-Phase Modular Scalable UPS 200kW / 200kVA 480V",
+      "specs": {
+        "kw": 200.0,
+        "efficiency": "99% Energy Saver System (ESS)",
+        "battery_type": "Lithium-Ion / VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 240.0,
+        "kva": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "93PM-300KW-480V",
+      "series": "Eaton 93PM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 93PM 3-Phase Modular Scalable UPS 300kW / 300kVA 480V",
+      "specs": {
+        "kw": 300.0,
+        "efficiency": "99% Energy Saver System (ESS)",
+        "battery_type": "Lithium-Ion / VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 360.0,
+        "kva": 300.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "93PM-400KW-480V",
+      "series": "Eaton 93PM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 93PM 3-Phase Modular Scalable UPS 400kW / 400kVA 480V",
+      "specs": {
+        "kw": 400.0,
+        "efficiency": "99% Energy Saver System (ESS)",
+        "battery_type": "Lithium-Ion / VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "480V",
+        "amps": 480.0,
+        "kva": 400.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9PX-11K-208V",
+      "series": "Eaton 9PX",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 9PX Heavy-Duty Rack/Tower UPS 11kVA / 10kW 208V",
+      "specs": {
+        "kw": 10.0,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "Hot-Swappable VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "208V",
+        "amps": 48.0,
+        "kva": 11.0,
+        "poles": "1P3W",
+        "phase": "1PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "9PX-6K-208V",
+      "series": "Eaton 9PX",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Uninterruptible Power Supply",
+      "description": "Eaton 9PX Heavy-Duty Rack/Tower UPS 6kVA / 5.4kW 208V",
+      "specs": {
+        "kw": 5.4,
+        "efficiency": "Double Conversion Online",
+        "battery_type": "Hot-Swappable VRLA",
+        "topology": "Double-Conversion Online",
+        "voltage": "208V",
+        "amps": 26.0,
+        "kva": 6.0,
+        "poles": "1P3W",
+        "phase": "1PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Eaton 3-Phase UPS",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/backup-power-ups/eaton-93pm-ups-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "AT300-100A-480V",
+      "series": "ATC-300+ Series",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton ATC-300+ Contactor ATS 100A 480V 3PH Open Transition NEMA 1",
+      "specs": {
+        "transition_type": "Open Transition",
+        "switching_mechanism": "Contactor",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "aic": 42.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "AT300-200A-480V",
+      "series": "ATC-300+ Series",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton ATC-300+ Contactor ATS 200A 480V 3PH Open Transition NEMA 3R",
+      "specs": {
+        "transition_type": "Open Transition",
+        "switching_mechanism": "Contactor",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480Y/277V",
+        "amps": 200.0,
+        "aic": 42.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "AT300-400A-480V",
+      "series": "ATC-300+ Series",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton ATC-300+ Contactor ATS 400A 480V 3PH Delayed Transition NEMA 3R",
+      "specs": {
+        "transition_type": "Delayed Transition",
+        "switching_mechanism": "Contactor",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "AT900-1200A-480V",
+      "series": "ATC-900 Series",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton ATC-900 Advanced ATS 1200A 480V Closed Transition Bypass Isolation",
+      "specs": {
+        "transition_type": "Closed Transition",
+        "switching_mechanism": "Bypass Isolation",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "AT900-600A-480V",
+      "series": "ATC-900 Series",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton ATC-900 Advanced ATS 600A 480V Closed Transition Bypass Isolation",
+      "specs": {
+        "transition_type": "Closed Transition",
+        "switching_mechanism": "Bypass Isolation",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "AT900-800A-480V",
+      "series": "ATC-900 Series",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton ATC-900 Advanced ATS 800A 480V Closed Transition Bypass Isolation",
+      "specs": {
+        "transition_type": "Closed Transition",
+        "switching_mechanism": "Bypass Isolation",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "ATV-MDS-1600A",
+      "series": "Magnum Breaker ATS",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton Magnum DS Breaker-Based ATS 1600A 480V Drawout 65kAIC",
+      "specs": {
+        "transition_type": "Open/Delayed Transition",
+        "switching_mechanism": "Drawout Power Breaker",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 1600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "ATV-MDS-2000A",
+      "series": "Magnum Breaker ATS",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton Magnum DS Breaker-Based ATS 2000A 480V Drawout 65kAIC",
+      "specs": {
+        "transition_type": "Open/Delayed Transition",
+        "switching_mechanism": "Drawout Power Breaker",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "ATV-MDS-3000A",
+      "series": "Magnum Breaker ATS",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton Magnum DS Breaker-Based ATS 3000A 480V Drawout 100kAIC",
+      "specs": {
+        "transition_type": "Open/Delayed Transition",
+        "switching_mechanism": "Drawout Power Breaker",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "ATV-MDS-4000A",
+      "series": "Magnum Breaker ATS",
+      "domain": "switches",
+      "type_tag": "ATS",
+      "type_name": "Automatic Transfer Switch",
+      "description": "Eaton Magnum DS Breaker-Based ATS 4000A 480V Drawout 100kAIC",
+      "specs": {
+        "transition_type": "Open/Delayed Transition",
+        "switching_mechanism": "Drawout Power Breaker",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/automatic-transfer-switches/atc-900/atc-900-transfer-switch-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "AVC-480V-1500KVA",
+      "series": "Active Voltage Conditioner",
+      "domain": "transformers",
+      "type_tag": "POWER_COND",
+      "type_name": "Industrial Power Conditioner",
+      "description": "Eaton AVC Active Voltage Conditioner 1500kVA 480V Industrial Process",
+      "specs": {
+        "capability": "Voltage Sag Correction to 90% Depth",
+        "response_time": "2 ms",
+        "voltage": "480V",
+        "amps": 1800.0,
+        "aic": 65.0,
+        "kva": 1500.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Quality Solutions",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/active-voltage-conditioner.html"
+      }
+    },
+    {
+      "part_number": "AVC-480V-150KVA",
+      "series": "Active Voltage Conditioner",
+      "domain": "transformers",
+      "type_tag": "POWER_COND",
+      "type_name": "Industrial Power Conditioner",
+      "description": "Eaton AVC Active Voltage Conditioner 150kVA 480V 90% Sag Ride-Through",
+      "specs": {
+        "capability": "Voltage Sag Correction to 90% Depth",
+        "response_time": "2 ms",
+        "voltage": "480V",
+        "amps": 180.0,
+        "aic": 65.0,
+        "kva": 150.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Quality Solutions",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/active-voltage-conditioner.html"
+      }
+    },
+    {
+      "part_number": "AVC-480V-300KVA",
+      "series": "Active Voltage Conditioner",
+      "domain": "transformers",
+      "type_tag": "POWER_COND",
+      "type_name": "Industrial Power Conditioner",
+      "description": "Eaton AVC Active Voltage Conditioner 300kVA 480V 90% Sag Ride-Through",
+      "specs": {
+        "capability": "Voltage Sag Correction to 90% Depth",
+        "response_time": "2 ms",
+        "voltage": "480V",
+        "amps": 360.0,
+        "aic": 65.0,
+        "kva": 300.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Quality Solutions",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/active-voltage-conditioner.html"
+      }
+    },
+    {
+      "part_number": "AVC-480V-600KVA",
+      "series": "Active Voltage Conditioner",
+      "domain": "transformers",
+      "type_tag": "POWER_COND",
+      "type_name": "Industrial Power Conditioner",
+      "description": "Eaton AVC Active Voltage Conditioner 600kVA 480V 90% Sag Ride-Through",
+      "specs": {
+        "capability": "Voltage Sag Correction to 90% Depth",
+        "response_time": "2 ms",
+        "voltage": "480V",
+        "amps": 720.0,
+        "aic": 65.0,
+        "kva": 600.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Quality Solutions",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/active-voltage-conditioner.html"
+      }
+    },
+    {
+      "part_number": "BR4242B225R-COM",
+      "series": "BR Series Commercial",
+      "domain": "panels",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Industrial/Commercial Load Center",
+      "description": "BR Commercial 225A 1PH 120/240V 42-Circuit Main Breaker Load Center NEMA 3R",
+      "specs": {
+        "bus_material": "Aluminum",
+        "catalog_volume": "Volume 1: Residential and Light Commercial (CA08100002E)",
+        "voltage": "120/240V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "1P3W",
+        "phase": "1PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100002E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/load-centers/ch-load-centers/ch-loadcenters-catalog-ca08100002e.pdf"
+      }
+    },
+    {
+      "part_number": "CH30L125R-COM",
+      "series": "CH Series Commercial",
+      "domain": "panels",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Industrial/Commercial Load Center",
+      "description": "CH Commercial 125A 3PH 208Y/120V 30-Circuit Main Lug Load Center NEMA 3R",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 1: Residential and Light Commercial (CA08100002E)",
+        "voltage": "208Y/120V",
+        "amps": 125.0,
+        "aic": 10.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100002E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/load-centers/ch-load-centers/ch-loadcenters-catalog-ca08100002e.pdf"
+      }
+    },
+    {
+      "part_number": "CH42B225R-COM",
+      "series": "CH Series Commercial",
+      "domain": "panels",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Industrial/Commercial Load Center",
+      "description": "CH Commercial 225A 3PH 208Y/120V 42-Circuit Main Breaker Load Center NEMA 3R",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 1: Residential and Light Commercial (CA08100002E)",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100002E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/load-centers/ch-load-centers/ch-loadcenters-catalog-ca08100002e.pdf"
+      }
+    },
+    {
+      "part_number": "CH42L225G-COM",
+      "series": "CH Series Commercial",
+      "domain": "panels",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Industrial/Commercial Load Center",
+      "description": "CH Commercial 225A 3PH 208Y/120V 42-Circuit Main Lug Load Center NEMA 1",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 1: Residential and Light Commercial (CA08100002E)",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100002E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/load-centers/ch-load-centers/ch-loadcenters-catalog-ca08100002e.pdf"
+      }
+    },
+    {
       "part_number": "DG221NGBLORED",
       "series": "DG Series General Duty Safety Switch",
       "domain": "switches",
@@ -1402,6 +2196,75 @@
       }
     },
     {
+      "part_number": "DH361UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 30A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH361URK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 30A 3P 600V Non-Fusible NEMA 3R",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH362FGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 60A 3P 600V Fusible Class R/J 200kAIC NEMA 1",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 60.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
       "part_number": "DH362NCK",
       "series": "DH Series Heavy Duty Safety Switch",
       "domain": "switches",
@@ -1442,6 +2305,236 @@
       }
     },
     {
+      "part_number": "DH362UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 60A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 60.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH363FRK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 100A 3P 600V Fusible Class R/J 200kAIC NEMA 3R",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH363UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 100A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH364FGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 200A 3P 600V Fusible Class R/J 200kAIC NEMA 1",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH364UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 200A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH364UWK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 200A 3P 600V Non-Fusible NEMA 4X 304 Stainless",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Stainless"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH365FGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 400A 3P 600V Fusible Class R/J 200kAIC NEMA 1",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH365UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 400A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH366FGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 600A 3P 600V Fusible Class R/J 200kAIC NEMA 1",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DH366UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 600A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
       "part_number": "DH367NWKW",
       "series": "DH Series Heavy Duty Safety Switch",
       "domain": "switches",
@@ -1462,6 +2555,29 @@
       }
     },
     {
+      "part_number": "DH367UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 800A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
       "part_number": "DH368NWK",
       "series": "DH Series Heavy Duty Safety Switch",
       "domain": "switches",
@@ -1479,6 +2595,29 @@
       "docs": {
         "cut_sheet": null,
         "upc": null
+      }
+    },
+    {
+      "part_number": "DH368UGK",
+      "series": "Heavy Duty Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Heavy Duty Safety Switch 1200A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
       }
     },
     {
@@ -1519,6 +2658,562 @@
       "docs": {
         "cut_sheet": null,
         "upc": null
+      }
+    },
+    {
+      "part_number": "DT363UGK",
+      "series": "Double Throw Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Double Throw Safety Switch 100A 3P 600V Non-Fusible NEMA 1",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DT364URK",
+      "series": "Double Throw Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Double Throw Safety Switch 200A 3P 600V Non-Fusible NEMA 3R",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "DT365URK",
+      "series": "Double Throw Safety Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Eaton Double Throw Safety Switch 400A 3P 600V Non-Fusible NEMA 3R",
+      "specs": {
+        "fusible": false,
+        "sccr_kaic": 10.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 10.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "F2100-1200A-480V",
+      "series": "Freedom 2100",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "Freedom 2100 Motor Control Center 1200A 480V 3PH 65kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": false,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1A Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "F2100-1600A-480V",
+      "series": "Freedom 2100",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "Freedom 2100 Motor Control Center 1600A 480V 3PH 100kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": false,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 1600.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1A Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "F2100-2000A-480V",
+      "series": "Freedom 2100",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "Freedom 2100 Motor Control Center 2000A 480V 3PH 100kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": false,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1A Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "F2100-2500A-480V",
+      "series": "Freedom 2100",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "Freedom 2100 Motor Control Center 2500A 480V 3PH 100kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": false,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 2500.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1A Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "F2100-600A-480V",
+      "series": "Freedom 2100",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "Freedom 2100 Motor Control Center 600A 480V 3PH 65kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": false,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1A Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "F2100-800A-480V",
+      "series": "Freedom 2100",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "Freedom 2100 Motor Control Center 800A 480V 3PH 65kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": false,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1A Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "FG2100-1200A-480V",
+      "series": "FlashGard Arc-Resistant",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "FlashGard Arc-Resistant Motor Control Center 1200A 480V 65kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": true,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Arc-Resistant"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "FG2100-2000A-480V",
+      "series": "FlashGard Arc-Resistant",
+      "domain": "motor_control",
+      "type_tag": "MCC",
+      "type_name": "Low-Voltage Motor Control Center",
+      "description": "FlashGard Arc-Resistant Motor Control Center 2000A 480V 100kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "arc_resistant": true,
+        "starter_sizes": "NEMA Size 1 through Size 6",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Arc-Resistant"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/motor-control-centers/freedom-2100/freedom-2100-mcc-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "IFS-1600A-480V",
+      "series": "Integrated Facility Systems",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "IFS Switchboard 1600A 480V Integrated Transformer & Sub-Panels",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 1600.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-808-3P-65K",
+      "series": "Magnum DS",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Magnum DS 800A Low-Voltage Power Circuit Breaker Drawout 65kAIC",
+      "specs": {
+        "frame_size": "Magnum 800A",
+        "trip_unit": "Digitrip 1150+ LSIG",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-816-3P-65K",
+      "series": "Magnum DS",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Magnum DS 1600A Low-Voltage Power Circuit Breaker Drawout 65kAIC",
+      "specs": {
+        "frame_size": "Magnum 1600A",
+        "trip_unit": "Digitrip 1150+ LSIG",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-820-3P-65K",
+      "series": "Magnum DS",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Magnum DS 2000A Low-Voltage Power Circuit Breaker Drawout 65kAIC",
+      "specs": {
+        "frame_size": "Magnum 2000A",
+        "trip_unit": "Digitrip 1150+ LSIG",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-832-3P-85K",
+      "series": "Magnum DS",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Magnum DS 3200A Low-Voltage Power Circuit Breaker Drawout 85kAIC",
+      "specs": {
+        "frame_size": "Magnum 3200A",
+        "trip_unit": "Digitrip 1150+ LSIG",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "600V",
+        "amps": 3200.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-C40-3P-100K",
+      "series": "Magnum DS",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Magnum DS 4000A Low-Voltage Power Circuit Breaker Drawout 100kAIC",
+      "specs": {
+        "frame_size": "Magnum 4000A",
+        "trip_unit": "Digitrip 1150+ LSIG",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-C50-3P-100K",
+      "series": "Magnum DS",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Magnum DS 5000A Low-Voltage Power Circuit Breaker Drawout 100kAIC",
+      "specs": {
+        "frame_size": "Magnum 5000A",
+        "trip_unit": "Digitrip 1150+ LSIG",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "600V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-LV-2000A",
+      "series": "Magnum DS Low-Voltage Switchgear",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "Magnum DS Low-Voltage Metal-Enclosed Switchgear 2000A 480V 65kAIC Drawout",
+      "specs": {
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 65.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-LV-3200A",
+      "series": "Magnum DS Low-Voltage Switchgear",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "Magnum DS Low-Voltage Metal-Enclosed Switchgear 3200A 480V 85kAIC Drawout",
+      "specs": {
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 85.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 3200.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-LV-4000A",
+      "series": "Magnum DS Low-Voltage Switchgear",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "Magnum DS Low-Voltage Metal-Enclosed Switchgear 4000A 480V 100kAIC Drawout",
+      "specs": {
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 100.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "MDS-LV-5000A",
+      "series": "Magnum DS Low-Voltage Switchgear",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "Magnum DS Low-Voltage Metal-Enclosed Switchgear 5000A 480V 100kAIC Drawout",
+      "specs": {
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 100.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "MHF-480V-100A",
+      "series": "Power Xpert MHF",
+      "domain": "transformers",
+      "type_tag": "POWER_COND",
+      "type_name": "Industrial Power Conditioner",
+      "description": "Power Xpert Multi-Harmonic Filter 100A 480V Active Harmonic Compensation",
+      "specs": {
+        "capability": "Active Harmonic Cancellation 2nd-51st",
+        "response_time": "< 1 ms",
+        "voltage": "480V",
+        "amps": 100.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Quality Solutions",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/active-voltage-conditioner.html"
+      }
+    },
+    {
+      "part_number": "MHF-480V-300A",
+      "series": "Power Xpert MHF",
+      "domain": "transformers",
+      "type_tag": "POWER_COND",
+      "type_name": "Industrial Power Conditioner",
+      "description": "Power Xpert Multi-Harmonic Filter 300A 480V Active Harmonic Compensation",
+      "specs": {
+        "capability": "Active Harmonic Cancellation 2nd-51st",
+        "response_time": "< 1 ms",
+        "voltage": "480V",
+        "amps": 300.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Quality Solutions",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/active-voltage-conditioner.html"
       }
     },
     {
@@ -2982,6 +4677,50 @@
       }
     },
     {
+      "part_number": "PDG13G0050TFFN",
+      "series": "Power Defense PD1",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD1 50A 3P 480V 35kAIC TMTU Breaker",
+      "specs": {
+        "frame_size": "PD1",
+        "trip_unit": "Fixed Thermal-Magnetic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 50.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "PDG13G0100TFFN",
+      "series": "Power Defense PD1",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD1 100A 3P 480V 35kAIC TMTU Breaker",
+      "specs": {
+        "frame_size": "PD1",
+        "trip_unit": "Fixed Thermal-Magnetic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 100.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
       "part_number": "PDG14C0045VFFN",
       "series": "Power Defense Frame 1",
       "domain": "breakers",
@@ -3114,6 +4853,28 @@
       }
     },
     {
+      "part_number": "PDG23G0150TFFN",
+      "series": "Power Defense PD2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD2 150A 3P 480V 35kAIC TMTU Breaker",
+      "specs": {
+        "frame_size": "PD2",
+        "trip_unit": "Fixed Thermal-Magnetic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 150.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
       "part_number": "PDG23K0015TFFL",
       "series": "Power Defense Frame 2",
       "domain": "breakers",
@@ -3133,6 +4894,28 @@
       "docs": {
         "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.PDG23K0015TFFL.html",
         "upc": null
+      }
+    },
+    {
+      "part_number": "PDG23M0225TFFN",
+      "series": "Power Defense PD2",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD2 225A 3P 480V 65kAIC TMTU Breaker",
+      "specs": {
+        "frame_size": "PD2",
+        "trip_unit": "Fixed Thermal-Magnetic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 225.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
       }
     },
     {
@@ -3532,6 +5315,28 @@
       }
     },
     {
+      "part_number": "PDG33G0250E2NN",
+      "series": "Power Defense PD3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD3 250A 3P 480V 35kAIC PXR20 Electronic LSI Breaker",
+      "specs": {
+        "frame_size": "PD3",
+        "trip_unit": "PXR20 LSI Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 250.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
       "part_number": "PDG33GH250E5ZK",
       "series": "Power Defense Frame 3",
       "domain": "breakers",
@@ -3573,6 +5378,28 @@
       "docs": {
         "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.PDG33GH400P3MN.html",
         "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33K0600E5NN",
+      "series": "Power Defense PD3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD3 600A 3P 480V 85kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD3",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
       }
     },
     {
@@ -3639,6 +5466,28 @@
       "docs": {
         "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.PDG33M0250P4YN.html",
         "upc": null
+      }
+    },
+    {
+      "part_number": "PDG33M0400E5NN",
+      "series": "Power Defense PD3",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD3 400A 3P 480V 65kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD3",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
       }
     },
     {
@@ -3818,6 +5667,28 @@
       }
     },
     {
+      "part_number": "PDG43M0800E5NN",
+      "series": "Power Defense PD4",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD4 800A 3P 480V 65kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD4",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
       "part_number": "PDG44K0600VFAL",
       "series": "Power Defense Frame 4",
       "domain": "breakers",
@@ -3840,6 +5711,50 @@
       }
     },
     {
+      "part_number": "PDG53K1200E5NN",
+      "series": "Power Defense PD5",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD5 1200A 3P 480V 85kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD5",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "PDG53M1000E5NN",
+      "series": "Power Defense PD5",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD5 1000A 3P 480V 65kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD5",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 1000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
       "part_number": "PDG54P1200FNNN",
       "series": "Power Defense Frame 5",
       "domain": "breakers",
@@ -3859,6 +5774,72 @@
       "docs": {
         "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.PDG54P1200FNNN.html",
         "upc": null
+      }
+    },
+    {
+      "part_number": "PDG63K2000E5NN",
+      "series": "Power Defense PD6",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD6 2000A 3P 480V 85kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD6",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "PDG63M1600E5NN",
+      "series": "Power Defense PD6",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD6 1600A 3P 480V 65kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD6",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 1600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
+      }
+    },
+    {
+      "part_number": "PDG63P2500E5NN",
+      "series": "Power Defense PD6",
+      "domain": "breakers",
+      "type_tag": "CB",
+      "type_name": "Industrial Circuit Breaker",
+      "description": "Power Defense PD6 2500A 3P 480V 100kAIC PXR25 Electronic LSIG Breaker",
+      "specs": {
+        "frame_size": "PD6",
+        "trip_unit": "PXR25 LSIG Electronic",
+        "catalog_volume": "Volume 4: Circuit Protection (CA08100005E)",
+        "voltage": "480V",
+        "amps": 2500.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "CA08100005E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/circuit-breakers/power-defense-mccb/power-defense-catalog-ca08100005e.pdf"
       }
     },
     {
@@ -5006,6 +6987,1444 @@
       }
     },
     {
+      "part_number": "PDU-050KVA-480-208",
+      "series": "Power Xpert PDU",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Power Xpert PDU 50kVA 480V to 208Y/120V Dual 42-Pole Panels",
+      "specs": {
+        "transformer_type": "K-20 Isolation",
+        "monitoring": "Branch Circuit Monitoring",
+        "voltage": "480V to 208Y/120V",
+        "amps": 480.0,
+        "kva": 50.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "PDU-100KVA-480-208",
+      "series": "Power Xpert PDU",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Power Xpert PDU 100kVA 480V to 208Y/120V Dual 42-Pole Panels",
+      "specs": {
+        "transformer_type": "K-20 Isolation",
+        "monitoring": "Branch Circuit Monitoring",
+        "voltage": "480V to 208Y/120V",
+        "amps": 480.0,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "PDU-150KVA-480-208",
+      "series": "Power Xpert PDU",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Power Xpert PDU 150kVA 480V to 208Y/120V Triple 42-Pole Panels",
+      "specs": {
+        "transformer_type": "K-20 Isolation",
+        "monitoring": "Branch Circuit Monitoring",
+        "voltage": "480V to 208Y/120V",
+        "amps": 480.0,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 126,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "PDU-225KVA-480-208",
+      "series": "Power Xpert PDU",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Power Xpert PDU 225kVA 480V to 208Y/120V Quad 42-Pole Panels",
+      "specs": {
+        "transformer_type": "K-20 Isolation",
+        "monitoring": "Branch Circuit Monitoring",
+        "voltage": "480V to 208Y/120V",
+        "amps": 480.0,
+        "kva": 225.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "PDU-300KVA-480-208",
+      "series": "Power Xpert PDU",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Power Xpert PDU 300kVA 480V to 208Y/120V Quad 42-Pole Panels",
+      "specs": {
+        "transformer_type": "K-20 Isolation",
+        "monitoring": "Branch Circuit Monitoring",
+        "voltage": "480V to 208Y/120V",
+        "amps": 480.0,
+        "kva": 300.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "PRF-CU-0225A-480V",
+      "series": "Pow-R-Flex",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Flex Low-Amp Busway 225A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 42.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "aic": 42.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRF-CU-0400A-480V",
+      "series": "Pow-R-Flex",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Flex Low-Amp Busway 400A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 42.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 42.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL-C-1200A-480V",
+      "series": "Pow-R-Line C",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "Pow-R-Line C Switchboard 1200A 480Y/277V 3PH 4W 65kAIC Front-Accessible",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL-C-2000A-480V",
+      "series": "Pow-R-Line C",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "Pow-R-Line C Switchboard 2000A 480Y/277V 3PH 4W 65kAIC Front-Accessible",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 2000.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL-C-3000A-480V",
+      "series": "Pow-R-Line C",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "Pow-R-Line C Switchboard 3000A 480Y/277V 3PH 4W 100kAIC Main Breaker",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL-C-4000A-480V",
+      "series": "Pow-R-Line C",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "Pow-R-Line C Switchboard 4000A 480Y/277V 3PH 4W 100kAIC Main Breaker",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL-C-5000A-480V",
+      "series": "Pow-R-Line C",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "Pow-R-Line C Switchboard 5000A 480Y/277V 3PH 4W 100kAIC High-Amp Bus",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL-C-6000A-480V",
+      "series": "Pow-R-Line C",
+      "domain": "switchboards",
+      "type_tag": "SWBD",
+      "type_name": "Commercial/Industrial Switchboard",
+      "description": "Pow-R-Line C Switchboard 6000A 480Y/277V 3PH 4W 100kAIC Main Service",
+      "specs": {
+        "bus_material": "Copper",
+        "accessibility": "Front-Accessible",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 6000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchboards/pow-r-line-c-switchboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL1A-18-100A",
+      "series": "Pow-R-Line 1a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 1a 100A 208Y/120V 18-Circuit Branch Lighting Panel",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "208Y/120V",
+        "amps": 100.0,
+        "aic": 10.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 18,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL1A-30-225A",
+      "series": "Pow-R-Line 1a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 1a 225A 208Y/120V 30-Circuit Lighting Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL1A-42-225A",
+      "series": "Pow-R-Line 1a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 1a 225A 208Y/120V 42-Circuit Lighting Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL1A-42-400A",
+      "series": "Pow-R-Line 1a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 1a 400A 208Y/120V 42-Circuit Heavy Lighting Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "208Y/120V",
+        "amps": 400.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL2A-30-100A",
+      "series": "Pow-R-Line 2a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 2a 100A 480Y/277V 30-Circuit Commercial Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 100.0,
+        "aic": 14.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL2A-42-225A",
+      "series": "Pow-R-Line 2a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 2a 225A 480Y/277V 42-Circuit Commercial Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL2A-42-400A",
+      "series": "Pow-R-Line 2a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 2a 400A 480Y/277V 42-Circuit Commercial Panelboard 65kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL2A-54-400A",
+      "series": "Pow-R-Line 2a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 2a 400A 480Y/277V 54-Circuit High-Density Commercial Panel",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 54,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL3A-42-400A",
+      "series": "Pow-R-Line 3a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 3a 400A 480V 3PH 42-Space Power Distribution Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL3A-42-600A",
+      "series": "Pow-R-Line 3a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 3a 600A 480V 3PH 42-Space Power Distribution Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL3A-42-800A",
+      "series": "Pow-R-Line 3a",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 3a 800A 480V 3PH 42-Space Power Distribution Panelboard 100kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL4B-1200A-480V",
+      "series": "Pow-R-Line 4b",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 4b 1200A 480V Heavy Industrial Distribution Panelboard 200kAIC",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 200.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRL4B-800A-480V",
+      "series": "Pow-R-Line 4b",
+      "domain": "panels",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Distribution Panelboard",
+      "description": "Pow-R-Line 4b 800A 480V Heavy Industrial Distribution Panelboard",
+      "specs": {
+        "bus_material": "Copper",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/panelboards/pow-r-line-panelboards-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-AL-1600A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 1600A 480V Aluminum 3P4W",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 1600.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-AL-2500A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 2500A 480V Aluminum 3P4W",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 2500.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-CU-0800A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 800A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-CU-1200A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 1200A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-CU-1600A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 1600A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 1600.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-CU-2000A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 2000A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 2000.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-CU-3000A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 3000A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 3000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PRW3-CU-4000A-480V",
+      "series": "Pow-R-Way III",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-in Busway",
+      "description": "Pow-R-Way III Sandwich Busway 4000A 480V Copper 3P4W",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "conductor_configuration": "3P4W",
+        "voltage": "480Y/277V",
+        "amps": 4000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/busway/pow-r-way-iii/pow-r-way-iii-busway-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PSG-13.8KV-2GEN",
+      "series": "Power Xpert MV-PSG",
+      "domain": "switchgear",
+      "type_tag": "PSG",
+      "type_name": "Generator Paralleling Switchgear",
+      "description": "Power Xpert 13.8kV Medium Voltage Paralleling Switchgear VacClad 50kAIC",
+      "specs": {
+        "generators_supported": 2,
+        "application": "Medium Voltage Turbine/Recip Paralleling",
+        "synchronization_control": "Woodward / PLC Master Synchronization",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "13.8 kV",
+        "amps": 2000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/paralleling-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PSG-480V-2GEN",
+      "series": "Power Xpert PSG",
+      "domain": "switchgear",
+      "type_tag": "PSG",
+      "type_name": "Generator Paralleling Switchgear",
+      "description": "Power Xpert Paralleling Switchgear 480V 2-Generator Master Sync 65kAIC",
+      "specs": {
+        "generators_supported": 2,
+        "application": "Emergency / Standby Paralleling",
+        "synchronization_control": "Woodward / PLC Master Synchronization",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/paralleling-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PSG-480V-3GEN",
+      "series": "Power Xpert PSG",
+      "domain": "switchgear",
+      "type_tag": "PSG",
+      "type_name": "Generator Paralleling Switchgear",
+      "description": "Power Xpert Paralleling Switchgear 480V 3-Generator Priority Shed 100kAIC",
+      "specs": {
+        "generators_supported": 3,
+        "application": "Prime Power / Multi-Source",
+        "synchronization_control": "Woodward / PLC Master Synchronization",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 6000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/paralleling-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PSG-480V-4GEN",
+      "series": "Power Xpert PSG",
+      "domain": "switchgear",
+      "type_tag": "PSG",
+      "type_name": "Generator Paralleling Switchgear",
+      "description": "Power Xpert Paralleling Switchgear 480V 4-Generator Utility Paralleling 100kAIC",
+      "specs": {
+        "generators_supported": 4,
+        "application": "Utility Co-generation & Peak Shaving",
+        "synchronization_control": "Woodward / PLC Master Synchronization",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "480V",
+        "amps": 8000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/paralleling-switchgear-catalog-ca08100004e.pdf"
+      }
+    },
+    {
+      "part_number": "PTX-160-480V",
+      "series": "Innovative Technology IT",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Innovative Technology Severe Industrial Surge Protector 160kA 480V",
+      "specs": {
+        "surge_current_per_phase_ka": 160.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480V",
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "QA-1633",
+      "series": "Pringle Bolted Pressure Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Pringle Bolted Pressure Contact Switch 1600A 3P 480V 200kAIC",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 1600.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "QA-2033",
+      "series": "Pringle Bolted Pressure Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Pringle Bolted Pressure Contact Switch 2000A 3P 480V 200kAIC",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "QA-3033",
+      "series": "Pringle Bolted Pressure Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Pringle Bolted Pressure Contact Switch 3000A 3P 480V 200kAIC",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "QA-4033",
+      "series": "Pringle Bolted Pressure Switch",
+      "domain": "switches",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Disconnect",
+      "description": "Pringle Bolted Pressure Contact Switch 4000A 3P 480V 200kAIC",
+      "specs": {
+        "fusible": true,
+        "sccr_kaic": 200.0,
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/safety-switches/heavy-duty-safety-switches-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "RPP-225A-84P",
+      "series": "Remote Power Panel",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Eaton Remote Power Panel 225A 208Y/120V Dual 42-Pole Panels RPP",
+      "specs": {
+        "transformer_type": "Direct Sub-feed",
+        "monitoring": "Integrated SPD",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "RPP-400A-84P",
+      "series": "Remote Power Panel",
+      "domain": "panels",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution System / PDU",
+      "description": "Eaton Remote Power Panel 400A 208Y/120V Dual 42-Pole Panels RPP",
+      "specs": {
+        "transformer_type": "Direct Sub-feed",
+        "monitoring": "Integrated SPD",
+        "voltage": "208Y/120V",
+        "amps": 400.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Distribution Systems",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/power-xpert-pdu.html"
+      }
+    },
+    {
+      "part_number": "S611-100HP-480V",
+      "series": "S611 Enclosed",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S611 Enclosed Industrial Soft Starter 125A 480V 100HP NEMA 12",
+      "specs": {
+        "horsepower": 100.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 125.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 12 Dust-Tight"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S611-250HP-480V",
+      "series": "S611 Enclosed",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S611 Enclosed Industrial Soft Starter 300A 480V 250HP NEMA 3R",
+      "specs": {
+        "horsepower": 250.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 300.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Rainproof"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S801+V10N3S",
+      "series": "S801+ Compact",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S801+ Compact Reduced Voltage Soft Starter 1000A 480V 900HP",
+      "specs": {
+        "horsepower": 900.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 1000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S811+N37P3S",
+      "series": "S811+ Series",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S811+ Reduced Voltage Soft Starter 37A 480V 25HP Integral Bypass",
+      "specs": {
+        "horsepower": 25.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 37.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S811+R65P3S",
+      "series": "S811+ Series",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S811+ Reduced Voltage Soft Starter 65A 480V 50HP Integral Bypass",
+      "specs": {
+        "horsepower": 50.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 65.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S811+T18P3S",
+      "series": "S811+ Series",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S811+ Reduced Voltage Soft Starter 180A 480V 150HP Integral Bypass",
+      "specs": {
+        "horsepower": 150.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 180.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S811+T30P3S",
+      "series": "S811+ Series",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S811+ Reduced Voltage Soft Starter 304A 480V 250HP Integral Bypass",
+      "specs": {
+        "horsepower": 250.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 304.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S811+U50P3S",
+      "series": "S811+ Series",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S811+ Reduced Voltage Soft Starter 500A 480V 400HP Integral Bypass",
+      "specs": {
+        "horsepower": 400.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 500.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "S811+V10P3S",
+      "series": "S811+ Series",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Motor Soft Starter",
+      "description": "S811+ Reduced Voltage Soft Starter 1000A 480V 900HP Integral Bypass",
+      "specs": {
+        "horsepower": 900.0,
+        "control_voltage": "24V DC",
+        "integral_bypass": true,
+        "catalog_volume": "Volume 6: Solid-State Motor Control (CA08100007E)",
+        "voltage": "480V",
+        "amps": 1000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "Open / Chassis"
+      },
+      "docs": {
+        "catalog_volume": "CA08100007E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/electrical-circuit-protection/motor-control-contactors-starters/s811-soft-starters/s811-soft-starter-catalog-ca08100007e.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-100K-480Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 100kA/Phase 480Y/277V Type 1/Type 2 NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 100.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-160K-208Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 160kA/Phase 208Y/120V Type 1/Type 2 NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 160.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "208Y/120V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-160K-480Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 160kA/Phase 480Y/277V Type 1/Type 2 NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 160.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-200K-480Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 200kA/Phase 480Y/277V Type 1/Type 2 NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 200.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-250K-208Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 250kA/Phase 208Y/120V Service Entrance Rated",
+      "specs": {
+        "surge_current_per_phase_ka": 250.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "208Y/120V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-250K-480Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 250kA/Phase 480Y/277V Service Entrance Rated",
+      "specs": {
+        "surge_current_per_phase_ka": 250.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-300K-480Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 300kA/Phase 480Y/277V Heavy Industrial Main",
+      "specs": {
+        "surge_current_per_phase_ka": 300.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
+      "part_number": "SPD-PX-400K-480Y",
+      "series": "Power Xpert SPD",
+      "domain": "power_quality",
+      "type_tag": "SPD",
+      "type_name": "Surge Protective Device",
+      "description": "Power Xpert SPD 400kA/Phase 480Y/277V Substation/Main Switchgear",
+      "specs": {
+        "surge_current_per_phase_ka": 400.0,
+        "sccr_kaic": 200.0,
+        "ul_1449_type": "Type 1 / Type 2",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X"
+      },
+      "docs": {
+        "bulletin": "Power Xpert SPD",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/backup-power-ups-surge-it-power-distribution/surge-suppression/power-xpert-spd-catalog.pdf"
+      }
+    },
+    {
       "part_number": "SPN6164YEAXX2F",
       "series": "1MP / 3MM Commercial & Residential Modular Metering",
       "domain": "panels",
@@ -5186,6 +8605,352 @@
       }
     },
     {
+      "part_number": "STS-100A-480V",
+      "series": "Power Xpert STS",
+      "domain": "switches",
+      "type_tag": "STS",
+      "type_name": "Static Transfer Switch",
+      "description": "Power Xpert Static Transfer Switch 100A 480V 3PH <4ms Transfer",
+      "specs": {
+        "transfer_time": "< 4 ms (1/4 Cycle)",
+        "switching_technology": "SCR Solid-State",
+        "triple_redundancy": true,
+        "voltage": "480V",
+        "amps": 100.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Xpert STS",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/eaton-static-transfer-switch.html"
+      }
+    },
+    {
+      "part_number": "STS-1200A-480V",
+      "series": "Power Xpert STS",
+      "domain": "switches",
+      "type_tag": "STS",
+      "type_name": "Static Transfer Switch",
+      "description": "Power Xpert Static Transfer Switch 1200A 480V 3PH <4ms Transfer",
+      "specs": {
+        "transfer_time": "< 4 ms (1/4 Cycle)",
+        "switching_technology": "SCR Solid-State",
+        "triple_redundancy": true,
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Xpert STS",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/eaton-static-transfer-switch.html"
+      }
+    },
+    {
+      "part_number": "STS-250A-480V",
+      "series": "Power Xpert STS",
+      "domain": "switches",
+      "type_tag": "STS",
+      "type_name": "Static Transfer Switch",
+      "description": "Power Xpert Static Transfer Switch 250A 480V 3PH <4ms Transfer",
+      "specs": {
+        "transfer_time": "< 4 ms (1/4 Cycle)",
+        "switching_technology": "SCR Solid-State",
+        "triple_redundancy": true,
+        "voltage": "480V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Xpert STS",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/eaton-static-transfer-switch.html"
+      }
+    },
+    {
+      "part_number": "STS-400A-480V",
+      "series": "Power Xpert STS",
+      "domain": "switches",
+      "type_tag": "STS",
+      "type_name": "Static Transfer Switch",
+      "description": "Power Xpert Static Transfer Switch 400A 480V 3PH <4ms Transfer",
+      "specs": {
+        "transfer_time": "< 4 ms (1/4 Cycle)",
+        "switching_technology": "SCR Solid-State",
+        "triple_redundancy": true,
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Xpert STS",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/eaton-static-transfer-switch.html"
+      }
+    },
+    {
+      "part_number": "STS-600A-480V",
+      "series": "Power Xpert STS",
+      "domain": "switches",
+      "type_tag": "STS",
+      "type_name": "Static Transfer Switch",
+      "description": "Power Xpert Static Transfer Switch 600A 480V 3PH <4ms Transfer",
+      "specs": {
+        "transfer_time": "< 4 ms (1/4 Cycle)",
+        "switching_technology": "SCR Solid-State",
+        "triple_redundancy": true,
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Xpert STS",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/eaton-static-transfer-switch.html"
+      }
+    },
+    {
+      "part_number": "STS-800A-480V",
+      "series": "Power Xpert STS",
+      "domain": "switches",
+      "type_tag": "STS",
+      "type_name": "Static Transfer Switch",
+      "description": "Power Xpert Static Transfer Switch 800A 480V 3PH <4ms Transfer",
+      "specs": {
+        "transfer_time": "< 4 ms (1/4 Cycle)",
+        "switching_technology": "SCR Solid-State",
+        "triple_redundancy": true,
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "bulletin": "Power Xpert STS",
+        "cut_sheet": "https://www.eaton.com/us/en-us/catalog/backup-power-ups-surge-it-power-distribution/eaton-static-transfer-switch.html"
+      }
+    },
+    {
+      "part_number": "SUB-1500KVA-13.8KV",
+      "series": "Liquid Substation Transformer",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton Liquid-Filled Substation Transformer 1500kVA 13.8kV-480Y/277V FR3",
+      "specs": {
+        "primary_voltage": "13.8 kV",
+        "secondary_voltage": "480Y/277V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "13.8 kV to 480Y/277V",
+        "kva": 1500.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Outdoor",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "SUB-2500KVA-13.8KV",
+      "series": "Liquid Substation Transformer",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton Liquid-Filled Substation Transformer 2500kVA 13.8kV-480Y/277V FR3",
+      "specs": {
+        "primary_voltage": "13.8 kV",
+        "secondary_voltage": "480Y/277V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "13.8 kV to 480Y/277V",
+        "kva": 2500.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Outdoor",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "SUB-3500KVA-13.8KV",
+      "series": "Liquid Substation Transformer",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton Liquid-Filled Substation Transformer 3500kVA 13.8kV-480Y/277V FR3",
+      "specs": {
+        "primary_voltage": "13.8 kV",
+        "secondary_voltage": "480Y/277V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "13.8 kV to 480Y/277V",
+        "kva": 3500.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Outdoor",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "SUB-5000KVA-13.8KV",
+      "series": "Liquid Substation Transformer",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton Liquid-Filled Substation Transformer 5000kVA 13.8kV-480Y/277V FR3",
+      "specs": {
+        "primary_voltage": "13.8 kV",
+        "secondary_voltage": "480Y/277V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "13.8 kV to 480Y/277V",
+        "kva": 5000.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 3R Outdoor",
+        "impedance_z": 6.0
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28K13-150K",
+      "series": "K-Factor 13 Harmonic",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton K-Factor 13 Harmonic Mitigating Transformer 150kVA 480V-208Y/120V",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 150.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28K13-300K",
+      "series": "K-Factor 13 Harmonic",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton K-Factor 13 Harmonic Mitigating Transformer 300kVA 480V-208Y/120V",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 300.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28K13-75K",
+      "series": "K-Factor 13 Harmonic",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton K-Factor 13 Harmonic Mitigating Transformer 75kVA 480V-208Y/120V",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 75.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T1016CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 1000kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 1000.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
       "part_number": "V48M28T112516",
       "series": "V48M Ventilated Transformer Series",
       "domain": "transformers",
@@ -5205,6 +8970,214 @@
       "docs": {
         "cut_sheet": null,
         "upc": null
+      }
+    },
+    {
+      "part_number": "V48M28T1216CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 112.5kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 112.5,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T1516CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 15kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 15.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T1516CU-HD",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 150kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 150.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T2216CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 225kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 225.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T3016CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 30kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 30.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T3316CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 300kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 300.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T4516CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 45kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 45.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T5016CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 500kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 500.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
       }
     },
     {
@@ -5230,6 +9203,58 @@
       }
     },
     {
+      "part_number": "V48M28T7516CU",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 75kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 75.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
+      "part_number": "V48M28T7516CU-LG",
+      "series": "Type DT-3 Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Industrial Power / Distribution Transformer",
+      "description": "Eaton DT-3 DOE 2016 Dry-Type Transformer 750kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V",
+        "secondary_voltage": "208Y/120V",
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant",
+        "catalog_volume": "Volume 2: Commercial Distribution (CA08100003E)",
+        "voltage": "480V to 208Y/120V",
+        "kva": 750.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2/3R",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "CA08100003E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/transformers/distribution-transformers/dry-type-distribution-transformers-catalog-ca08100003e.pdf"
+      }
+    },
+    {
       "part_number": "V48M28T75EE",
       "series": "V48M Ventilated Transformer Series",
       "domain": "transformers",
@@ -5252,234 +9277,99 @@
       }
     },
     {
-      "part_number": "BAB1015",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 1-Pole 15A 120/240V Bolt-On Branch Breaker",
+      "part_number": "VCW-15KV-1200A",
+      "series": "VacClad-W Medium Voltage",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "VacClad-W 15kV 1200A Metal-Clad Vacuum Switchgear 50kAIC Drawout 95kV BIL",
       "specs": {
-        "voltage": "120/240V",
-        "amps": 15.0,
-        "poles": 1,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 50.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "15 kV",
+        "amps": 1200.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
       },
       "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1015.html",
-        "upc": "786679301159"
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
       }
     },
     {
-      "part_number": "BAB1020",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 1-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "part_number": "VCW-15KV-2000A",
+      "series": "VacClad-W Medium Voltage",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "VacClad-W 15kV 2000A Metal-Clad Vacuum Switchgear 50kAIC Drawout 95kV BIL",
       "specs": {
-        "voltage": "120/240V",
-        "amps": 20.0,
-        "poles": 1,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 50.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "15 kV",
+        "amps": 2000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
       },
       "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1020.html",
-        "upc": "786679301203"
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
       }
     },
     {
-      "part_number": "BAB1030",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 1-Pole 30A 120/240V Bolt-On Branch Breaker",
+      "part_number": "VCW-15KV-3000A",
+      "series": "VacClad-W Medium Voltage",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "VacClad-W 15kV 3000A Metal-Clad Vacuum Switchgear 50kAIC Drawout 95kV BIL",
       "specs": {
-        "voltage": "120/240V",
-        "amps": 30.0,
-        "poles": 1,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 50.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "15 kV",
+        "amps": 3000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
       },
       "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB1030.html",
-        "upc": "786679301302"
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
       }
     },
     {
-      "part_number": "BAB2020",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 2-Pole 20A 120/240V Bolt-On Branch Breaker",
+      "part_number": "VCW-5KV-1200A",
+      "series": "VacClad-W Medium Voltage",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Industrial Metal-Enclosed / Metal-Clad Switchgear",
+      "description": "VacClad-W 5kV 1200A Metal-Clad Vacuum Switchgear 50kAIC Drawout",
       "specs": {
-        "voltage": "120/240V",
-        "amps": 20.0,
-        "poles": 2,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
+        "bus_material": "Copper",
+        "short_time_withstand_ka": 50.0,
+        "standard": "UL 1558 / IEEE C37.20.2",
+        "catalog_volume": "Volume 3: Power Distribution and Control Assemblies (CA08100004E)",
+        "voltage": "5 kV",
+        "amps": 1200.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
       },
       "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2020.html",
-        "upc": "786679302200"
-      }
-    },
-    {
-      "part_number": "BAB2030",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 2-Pole 30A 120/240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "120/240V",
-        "amps": 30.0,
-        "poles": 2,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2030.html",
-        "upc": "786679302309"
-      }
-    },
-    {
-      "part_number": "BAB2050",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 2-Pole 50A 120/240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "120/240V",
-        "amps": 50.0,
-        "poles": 2,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB2050.html",
-        "upc": "786679302507"
-      }
-    },
-    {
-      "part_number": "BAB3020",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 3-Pole 20A 240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "240V",
-        "amps": 20.0,
-        "poles": 3,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3020.html",
-        "upc": "786679303207"
-      }
-    },
-    {
-      "part_number": "BAB3030",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 3-Pole 30A 240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "240V",
-        "amps": 30.0,
-        "poles": 3,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3030.html",
-        "upc": "786679303306"
-      }
-    },
-    {
-      "part_number": "BAB3050",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 3-Pole 50A 240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "240V",
-        "amps": 50.0,
-        "poles": 3,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3050.html",
-        "upc": "786679303504"
-      }
-    },
-    {
-      "part_number": "BAB3060",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 3-Pole 60A 240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "240V",
-        "amps": 60.0,
-        "poles": 3,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3060.html",
-        "upc": "786679303603"
-      }
-    },
-    {
-      "part_number": "BAB3100",
-      "series": "Quicklag Industrial Bolt-On Series",
-      "domain": "breakers",
-      "type_tag": "CB",
-      "type_name": "Molded Case Circuit Breaker",
-      "description": "Eaton Quicklag BAB 3-Pole 100A 240V Bolt-On Branch Breaker",
-      "specs": {
-        "voltage": "240V",
-        "amps": 100.0,
-        "poles": 3,
-        "aic": 10.0,
-        "frame": "BAB Frame",
-        "trip_type": "Thermal Magnetic",
-        "nema_rating": "NEMA 1"
-      },
-      "docs": {
-        "cut_sheet": "https://www.eaton.com/us/en-us/skuPage.BAB3100.html",
-        "upc": "786679303993"
+        "catalog_volume": "CA08100004E",
+        "cut_sheet": "https://www.eaton.com/content/dam/eaton/products/low-voltage-power-distribution-control-systems/switchgear/magnum-ds-switchgear-catalog-ca08100004e.pdf"
       }
     }
   ]

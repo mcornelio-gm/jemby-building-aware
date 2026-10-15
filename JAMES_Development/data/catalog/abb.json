@@ -1,0 +1,4165 @@
+{
+  "manufacturer": "ABB",
+  "items": [
+    {
+      "part_number": "9T10A1001",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 15kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 18.0,
+        "secondary_amps": 41.6,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 41.6,
+        "kva": 15.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1001"
+      }
+    },
+    {
+      "part_number": "9T10A1002",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 30kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 36.1,
+        "secondary_amps": 83.3,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 83.3,
+        "kva": 30.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1002"
+      }
+    },
+    {
+      "part_number": "9T10A1003",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 45kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 54.1,
+        "secondary_amps": 124.9,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 124.9,
+        "kva": 45.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 4.8
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1003"
+      }
+    },
+    {
+      "part_number": "9T10A1004",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 75kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 90.2,
+        "secondary_amps": 208.2,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 208.2,
+        "kva": 75.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1004"
+      }
+    },
+    {
+      "part_number": "9T10A1005",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 112.5kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 135.3,
+        "secondary_amps": 312.3,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 312.3,
+        "kva": 112.5,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.2
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1005"
+      }
+    },
+    {
+      "part_number": "9T10A1006",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 150kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 180.4,
+        "secondary_amps": 416.4,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 416.4,
+        "kva": 150.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1006"
+      }
+    },
+    {
+      "part_number": "9T10A1007",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 225kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 270.6,
+        "secondary_amps": 624.5,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 624.5,
+        "kva": 225.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1007"
+      }
+    },
+    {
+      "part_number": "9T10A1008",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 300kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 360.8,
+        "secondary_amps": 832.7,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 832.7,
+        "kva": 300.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1008"
+      }
+    },
+    {
+      "part_number": "9T10A1009",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 500kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 601.4,
+        "secondary_amps": 1387.9,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 1387.9,
+        "kva": 500.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1009"
+      }
+    },
+    {
+      "part_number": "9T10A1010",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 750kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 902.1,
+        "secondary_amps": 2081.8,
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 2081.8,
+        "kva": 750.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1010"
+      }
+    },
+    {
+      "part_number": "9T10A1011",
+      "series": "Type QL DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL Low Voltage Dry-Type Transformer 1000kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 1202.8,
+        "secondary_amps": 2775.7,
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 2775.7,
+        "kva": 1000.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10A1011"
+      }
+    },
+    {
+      "part_number": "9T10C1004",
+      "series": "Type QL K-Factor",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL K-Factor K-13 Non-Linear Transformer 75kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 90.2,
+        "secondary_amps": 208.2,
+        "winding_material": "Copper",
+        "temperature_rise_c": 115.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 208.2,
+        "kva": 75.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10C1004"
+      }
+    },
+    {
+      "part_number": "9T10C1006",
+      "series": "Type QL K-Factor",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL K-Factor K-13 Non-Linear Transformer 150kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 180.4,
+        "secondary_amps": 416.4,
+        "winding_material": "Copper",
+        "temperature_rise_c": 115.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 416.4,
+        "kva": 150.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10C1006"
+      }
+    },
+    {
+      "part_number": "9T10C1008",
+      "series": "Type QL K-Factor",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Type QL K-Factor K-13 Non-Linear Transformer 300kVA 480V-208Y/120V Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 360.8,
+        "secondary_amps": 832.7,
+        "winding_material": "Copper",
+        "temperature_rise_c": 115.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 832.7,
+        "kva": 300.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/9T10C1008"
+      }
+    },
+    {
+      "part_number": "ABB-SUB-1500KVA",
+      "series": "Substation Liquid-Filled",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "ABB Primary Substation Liquid-Filled Transformer 1500kVA 13.8kV-480Y/277V",
+      "specs": {
+        "primary_voltage": "13.8kV Delta",
+        "secondary_voltage": "480Y/277V",
+        "primary_amps": 62.8,
+        "secondary_amps": 1804.2,
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "13.8kV Delta Pri / 480Y/277V Sec",
+        "amps": 1804.2,
+        "kva": 1500.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/ABB-SUB-1500KVA"
+      }
+    },
+    {
+      "part_number": "ABB-SUB-2500KVA",
+      "series": "Substation Liquid-Filled",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "ABB Primary Substation Liquid-Filled Transformer 2500kVA 13.8kV-480Y/277V",
+      "specs": {
+        "primary_voltage": "13.8kV Delta",
+        "secondary_voltage": "480Y/277V",
+        "primary_amps": 104.6,
+        "secondary_amps": 3007.0,
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "BuyLog Section 10: Transformers",
+        "voltage": "13.8kV Delta Pri / 480Y/277V Sec",
+        "amps": 3007.0,
+        "kva": 2500.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 10",
+        "cut_sheet": "https://electrification.us.abb.com/products/transformers/ABB-SUB-2500KVA"
+      }
+    },
+    {
+      "part_number": "AE330L125",
+      "series": "A-Series AE",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AE Distribution Panelboard 125A 3PH 4W 480Y/277VAC 30-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AE330L125"
+      }
+    },
+    {
+      "part_number": "AE342L250",
+      "series": "A-Series AE",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AE Distribution Panelboard 250A 3PH 4W 480Y/277VAC 42-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AE342L250"
+      }
+    },
+    {
+      "part_number": "AE342L400",
+      "series": "A-Series AE",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AE Distribution Panelboard 400A 3PH 4W 480Y/277VAC 42-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AE342L400"
+      }
+    },
+    {
+      "part_number": "AE342L600",
+      "series": "A-Series AE",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AE Distribution Panelboard 600A 3PH 4W 480Y/277VAC 42-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AE342L600"
+      }
+    },
+    {
+      "part_number": "AE342M250",
+      "series": "A-Series AE",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AE Distribution Panelboard 250A 3PH 4W 480Y/277VAC 42-Circuit Main Breaker",
+      "specs": {
+        "main_device_type": "Main Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AE342M250"
+      }
+    },
+    {
+      "part_number": "AMVAC-05-1200-25",
+      "series": "AMVAC MV",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "AMVAC Magnetically Actuated Medium Voltage Vacuum Breaker 1200A 4.76kV 25kAIC",
+      "specs": {
+        "trip_unit_type": "Magnetic Actuator Vacuum",
+        "frame_designation": "AMVAC 5kV",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "4.76kV",
+        "amps": 1200.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/AMVAC-05-1200-25"
+      }
+    },
+    {
+      "part_number": "AMVAC-15-1200-31",
+      "series": "AMVAC MV",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "AMVAC Magnetically Actuated Medium Voltage Vacuum Breaker 1200A 15kV 31.5kAIC",
+      "specs": {
+        "trip_unit_type": "Magnetic Actuator Vacuum",
+        "frame_designation": "AMVAC 15kV",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "15kV",
+        "amps": 1200.0,
+        "aic": 31.5,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/AMVAC-15-1200-31"
+      }
+    },
+    {
+      "part_number": "AMVAC-15-2000-40",
+      "series": "AMVAC MV",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "AMVAC Magnetically Actuated Medium Voltage Vacuum Breaker 2000A 15kV 40kAIC",
+      "specs": {
+        "trip_unit_type": "Magnetic Actuator Vacuum",
+        "frame_designation": "AMVAC 15kV",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "15kV",
+        "amps": 2000.0,
+        "aic": 40.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/AMVAC-15-2000-40"
+      }
+    },
+    {
+      "part_number": "AMVAC-15-3000-50",
+      "series": "AMVAC MV",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "AMVAC Magnetically Actuated Medium Voltage Vacuum Breaker 3000A 15kV 50kAIC",
+      "specs": {
+        "trip_unit_type": "Magnetic Actuator Vacuum",
+        "frame_designation": "AMVAC 15kV",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "15kV",
+        "amps": 3000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/AMVAC-15-3000-50"
+      }
+    },
+    {
+      "part_number": "AQ330L125",
+      "series": "A-Series AQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AQ Lighting Panelboard 125A 3PH 4W 240VAC 30-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "208Y/120V",
+        "amps": 125.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AQ330L125"
+      }
+    },
+    {
+      "part_number": "AQ342L225",
+      "series": "A-Series AQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AQ Lighting Panelboard 225A 3PH 4W 240VAC 42-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AQ342L225"
+      }
+    },
+    {
+      "part_number": "AQ342L400",
+      "series": "A-Series AQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AQ Lighting Panelboard 400A 3PH 4W 240VAC 42-Circuit Main Lugs",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "208Y/120V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AQ342L400"
+      }
+    },
+    {
+      "part_number": "AQ342M225",
+      "series": "A-Series AQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "Pro-Stock AQ Lighting Panelboard 225A 3PH 4W 240VAC 42-Circuit Main Breaker",
+      "specs": {
+        "main_device_type": "Main Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/AQ342M225"
+      }
+    },
+    {
+      "part_number": "CYB-PDU-100KVA-480-208",
+      "series": "Cyberex PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Precision Power Distribution Unit 100kVA 480V to 208Y/120V 84-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 277.6,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-PDU-100KVA-480-208"
+      }
+    },
+    {
+      "part_number": "CYB-PDU-150KVA-480-208",
+      "series": "Cyberex PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Precision Power Distribution Unit 150kVA 480V to 208Y/120V 168-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 416.4,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-PDU-150KVA-480-208"
+      }
+    },
+    {
+      "part_number": "CYB-PDU-225KVA-480-208",
+      "series": "Cyberex PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Precision Power Distribution Unit 225kVA 480V to 208Y/120V 168-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 624.5,
+        "kva": 225.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-PDU-225KVA-480-208"
+      }
+    },
+    {
+      "part_number": "CYB-PDU-300KVA-480-208",
+      "series": "Cyberex PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Precision Power Distribution Unit 300kVA 480V to 208Y/120V 168-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 832.7,
+        "kva": 300.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-PDU-300KVA-480-208"
+      }
+    },
+    {
+      "part_number": "CYB-PDU-50KVA-480-208",
+      "series": "Cyberex PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Precision Power Distribution Unit 50kVA 480V to 208Y/120V 84-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 138.8,
+        "kva": 50.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-PDU-50KVA-480-208"
+      }
+    },
+    {
+      "part_number": "CYB-RPP-225A-84P",
+      "series": "Cyberex RPP",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Remote Power Panel 225A Dual Feed 84-Circuit Data Center Server PDU",
+      "specs": {
+        "subsystem_type": "Dual Feed Remote Power Panel",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "kva": 75.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-RPP-225A-84P"
+      }
+    },
+    {
+      "part_number": "CYB-RPP-400A-168P",
+      "series": "Cyberex RPP",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "Cyberex Remote Power Panel 400A Dual Feed 168-Circuit Data Center Server PDU",
+      "specs": {
+        "subsystem_type": "Dual Feed Remote Power Panel",
+        "branch_monitoring": "Cyberex Advanced Branch Circuit Monitoring (BCM)",
+        "isolation_transformer": "K-13 / K-20 Shielded All-Copper Isolation Transformer",
+        "voltage": "208Y/120V",
+        "amps": 400.0,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex PDU Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-distribution/CYB-RPP-400A-168P"
+      }
+    },
+    {
+      "part_number": "DPA500-100K480",
+      "series": "Conceptpower DPA 500",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Conceptpower DPA 500 Modular UPS 100kW/100kVA 480V Hot-Swappable",
+      "specs": {
+        "power_rating_kw": 100.0,
+        "power_rating_kva": 100.0,
+        "efficiency_pct": 96.0,
+        "ups_architecture": "Hot-Swappable DPA Modules",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 120.3,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/DPA500-100K480"
+      }
+    },
+    {
+      "part_number": "DPA500-300K480",
+      "series": "Conceptpower DPA 500",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Conceptpower DPA 500 Modular UPS 300kW/300kVA 480V Hot-Swappable",
+      "specs": {
+        "power_rating_kw": 300.0,
+        "power_rating_kva": 300.0,
+        "efficiency_pct": 96.0,
+        "ups_architecture": "Hot-Swappable DPA Modules",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 360.8,
+        "kva": 300.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/DPA500-300K480"
+      }
+    },
+    {
+      "part_number": "E1.2B-0800A-3P",
+      "series": "Emax 2 E1.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E1.2 800A 3P 600V 42kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E1.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 42.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E1.2B-0800A-3P"
+      }
+    },
+    {
+      "part_number": "E2.2H-1600A-3P",
+      "series": "Emax 2 E2.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E2.2 1600A 3P 600V 85kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E2.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E2.2H-1600A-3P"
+      }
+    },
+    {
+      "part_number": "E2.2N-1200A-3P",
+      "series": "Emax 2 E2.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E2.2 1200A 3P 600V 65kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E2.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E2.2N-1200A-3P"
+      }
+    },
+    {
+      "part_number": "E2.2V-2000A-3P",
+      "series": "Emax 2 E2.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E2.2 2000A 3P 600V 100kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Hi-Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E2.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E2.2V-2000A-3P"
+      }
+    },
+    {
+      "part_number": "E4.2V-3200A-3P",
+      "series": "Emax 2 E4.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E4.2 3200A 3P 600V 100kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Hi-Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E4.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 3200.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E4.2V-3200A-3P"
+      }
+    },
+    {
+      "part_number": "E6.2X-4000A-3P",
+      "series": "Emax 2 E6.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E6.2 4000A 3P 600V 150kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Hi-Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E6.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 150.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E6.2X-4000A-3P"
+      }
+    },
+    {
+      "part_number": "E6.2X-5000A-3P",
+      "series": "Emax 2 E6.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E6.2 5000A 3P 600V 150kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Hi-Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E6.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 5000.0,
+        "aic": 150.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E6.2X-5000A-3P"
+      }
+    },
+    {
+      "part_number": "E6.2X-6000A-3P",
+      "series": "Emax 2 E6.2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Emax 2 E6.2 6000A 3P 600V 150kAIC Drawout Air Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Hi-Touch LSIG Electronic",
+        "frame_designation": "Emax 2 E6.2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 6000.0,
+        "aic": 150.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/E6.2X-6000A-3P"
+      }
+    },
+    {
+      "part_number": "EMAX2-ATS-2000A",
+      "series": "Emax 2 Breaker ATS",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Emax 2 Dual Breaker Automatic Transfer Switch Pair 2000A 480V Interlocked",
+      "specs": {
+        "transition_mode": "Electrically & Mechanically Interlocked",
+        "switching_mechanism": "Emax 2 E2.2 Breaker Pair",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/EMAX2-ATS-2000A"
+      }
+    },
+    {
+      "part_number": "EMAX2-ATS-3000A",
+      "series": "Emax 2 Breaker ATS",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Emax 2 Dual Breaker Automatic Transfer Switch Pair 3000A 480V Interlocked",
+      "specs": {
+        "transition_mode": "Electrically & Mechanically Interlocked",
+        "switching_mechanism": "Emax 2 E4.2 Breaker Pair",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/EMAX2-ATS-3000A"
+      }
+    },
+    {
+      "part_number": "EVO-SWBD-2000A",
+      "series": "Evolution Series",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "Evolution Commercial Service Entrance Switchboard 2000A 480V Utility Metering",
+      "specs": {
+        "bus_material": "Copper",
+        "switchboard_configuration": "Utility Metering Compartment + Emax 2 Main",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/EVO-SWBD-2000A"
+      }
+    },
+    {
+      "part_number": "EVO-SWBD-4000A",
+      "series": "Evolution Series",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "Evolution Commercial Service Entrance Switchboard 4000A 480V Utility Metering",
+      "specs": {
+        "bus_material": "Copper",
+        "switchboard_configuration": "Utility Metering Compartment + Emax 2 Main",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/EVO-SWBD-4000A"
+      }
+    },
+    {
+      "part_number": "HPC3608",
+      "series": "HPC Bolted Pressure",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "HPC High Pressure Contact Switch 800A 3P 600V Fusible Class L",
+      "specs": {
+        "fuse_type": "High Pressure Contact Class L",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Enclosed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/HPC3608"
+      }
+    },
+    {
+      "part_number": "HPC3620",
+      "series": "HPC Bolted Pressure",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "HPC High Pressure Contact Switch 2000A 3P 600V Fusible Class L",
+      "specs": {
+        "fuse_type": "High Pressure Contact Class L",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Enclosed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/HPC3620"
+      }
+    },
+    {
+      "part_number": "HPC3640",
+      "series": "HPC Bolted Pressure",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "HPC High Pressure Contact Switch 4000A 3P 600V Fusible Class L",
+      "specs": {
+        "fuse_type": "High Pressure Contact Class L",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Enclosed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/HPC3640"
+      }
+    },
+    {
+      "part_number": "MEGAFLEX-1000K480",
+      "series": "MegaFlex DPA",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "MegaFlex DPA Modular 3-Phase UPS 1000kW/1000kVA 480V 97.4% Efficiency",
+      "specs": {
+        "power_rating_kw": 1000.0,
+        "power_rating_kva": 1000.0,
+        "efficiency_pct": 97.4,
+        "ups_architecture": "Decentralized Parallel Architecture (DPA)",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 1202.8,
+        "kva": 1000.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/MEGAFLEX-1000K480"
+      }
+    },
+    {
+      "part_number": "MEGAFLEX-1500K480",
+      "series": "MegaFlex DPA",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "MegaFlex DPA Modular 3-Phase UPS 1500kW/1500kVA 480V 97.4% Efficiency",
+      "specs": {
+        "power_rating_kw": 1500.0,
+        "power_rating_kva": 1500.0,
+        "efficiency_pct": 97.4,
+        "ups_architecture": "Decentralized Parallel Architecture (DPA)",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 1804.2,
+        "kva": 1500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/MEGAFLEX-1500K480"
+      }
+    },
+    {
+      "part_number": "MEGAFLEX-250K480",
+      "series": "MegaFlex DPA",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "MegaFlex DPA Modular 3-Phase UPS 250kW/250kVA 480V 97.4% Efficiency",
+      "specs": {
+        "power_rating_kw": 250.0,
+        "power_rating_kva": 250.0,
+        "efficiency_pct": 97.4,
+        "ups_architecture": "Decentralized Parallel Architecture (DPA)",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 300.7,
+        "kva": 250.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/MEGAFLEX-250K480"
+      }
+    },
+    {
+      "part_number": "MEGAFLEX-500K480",
+      "series": "MegaFlex DPA",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "MegaFlex DPA Modular 3-Phase UPS 500kW/500kVA 480V 97.4% Efficiency",
+      "specs": {
+        "power_rating_kw": 500.0,
+        "power_rating_kva": 500.0,
+        "efficiency_pct": 97.4,
+        "ups_architecture": "Decentralized Parallel Architecture (DPA)",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 601.4,
+        "kva": 500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/MEGAFLEX-500K480"
+      }
+    },
+    {
+      "part_number": "MEGAFLEX-750K480",
+      "series": "MegaFlex DPA",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "MegaFlex DPA Modular 3-Phase UPS 750kW/750kVA 480V 97.4% Efficiency",
+      "specs": {
+        "power_rating_kw": 750.0,
+        "power_rating_kva": 750.0,
+        "efficiency_pct": 97.4,
+        "ups_architecture": "Decentralized Parallel Architecture (DPA)",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 902.1,
+        "kva": 750.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/MEGAFLEX-750K480"
+      }
+    },
+    {
+      "part_number": "OVR-100K-480Y",
+      "series": "OVR Facility Series",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "ABB OVR Surge Protective Device 100kA/Phase 480Y/277V NEMA 1 Enclosed",
+      "specs": {
+        "surge_current_per_phase_ka": 100.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "BuyLog Section 19: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 19",
+        "cut_sheet": "https://electrification.us.abb.com/products/surge-protection/OVR-100K-480Y"
+      }
+    },
+    {
+      "part_number": "OVR-200K-208Y",
+      "series": "OVR Facility Series",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "ABB OVR Surge Protective Device 200kA/Phase 208Y/120V NEMA 4X Enclosed",
+      "specs": {
+        "surge_current_per_phase_ka": 200.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "BuyLog Section 19: Surge Protective Devices",
+        "voltage": "208Y/120V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Non-Metallic"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 19",
+        "cut_sheet": "https://electrification.us.abb.com/products/surge-protection/OVR-200K-208Y"
+      }
+    },
+    {
+      "part_number": "PCS100-AVC-1000KVA",
+      "series": "PCS100 AVC",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Dynamic Voltage Conditioner",
+      "description": "PCS100 Active Voltage Conditioner 1000kVA 480V Continuous Sag Correction",
+      "specs": {
+        "filter_technology": "PCS100 Active Voltage Conditioner",
+        "mitigation_target": "Selective Harmonic Filtering up to 50th Order (THDi < 5%)",
+        "response_time_ms": "< 1/2 cycle instantaneous compensation",
+        "parallelable": "Modular master-slave paralleling up to 8 units",
+        "voltage": "480V",
+        "amps": 1202.8,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "TruWave / PCS100 Technical Specifications",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-conditioning/PCS100-AVC-1000KVA"
+      }
+    },
+    {
+      "part_number": "PCS100-AVC-300KVA",
+      "series": "PCS100 AVC",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Dynamic Voltage Conditioner",
+      "description": "PCS100 Active Voltage Conditioner 300kVA 480V Continuous Sag Correction",
+      "specs": {
+        "filter_technology": "PCS100 Active Voltage Conditioner",
+        "mitigation_target": "Selective Harmonic Filtering up to 50th Order (THDi < 5%)",
+        "response_time_ms": "< 1/2 cycle instantaneous compensation",
+        "parallelable": "Modular master-slave paralleling up to 8 units",
+        "voltage": "480V",
+        "amps": 360.8,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "TruWave / PCS100 Technical Specifications",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-conditioning/PCS100-AVC-300KVA"
+      }
+    },
+    {
+      "part_number": "PQFI-300A-480V",
+      "series": "TruWave PQFI",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Dynamic Voltage Conditioner",
+      "description": "TruWave PQFI Heavy Industrial Active Harmonic Filter 300A 480V 3PH Enclosed",
+      "specs": {
+        "filter_technology": "TruWave Active Harmonic Filter",
+        "mitigation_target": "Selective Harmonic Filtering up to 50th Order (THDi < 5%)",
+        "response_time_ms": "< 1/2 cycle instantaneous compensation",
+        "parallelable": "Modular master-slave paralleling up to 8 units",
+        "voltage": "480V",
+        "amps": 300.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "TruWave / PCS100 Technical Specifications",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-conditioning/PQFI-300A-480V"
+      }
+    },
+    {
+      "part_number": "PQFM-100A-480V",
+      "series": "TruWave PQFM",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Dynamic Voltage Conditioner",
+      "description": "TruWave PQFM Industrial Active Harmonic Filter 100A 208-480V 3PH Enclosed",
+      "specs": {
+        "filter_technology": "TruWave Active Harmonic Filter",
+        "mitigation_target": "Selective Harmonic Filtering up to 50th Order (THDi < 5%)",
+        "response_time_ms": "< 1/2 cycle instantaneous compensation",
+        "parallelable": "Modular master-slave paralleling up to 8 units",
+        "voltage": "480V",
+        "amps": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "TruWave / PCS100 Technical Specifications",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-conditioning/PQFM-100A-480V"
+      }
+    },
+    {
+      "part_number": "PQFM-150A-480V",
+      "series": "TruWave PQFM",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Dynamic Voltage Conditioner",
+      "description": "TruWave PQFM Industrial Active Harmonic Filter 150A 208-480V 3PH Enclosed",
+      "specs": {
+        "filter_technology": "TruWave Active Harmonic Filter",
+        "mitigation_target": "Selective Harmonic Filtering up to 50th Order (THDi < 5%)",
+        "response_time_ms": "< 1/2 cycle instantaneous compensation",
+        "parallelable": "Modular master-slave paralleling up to 8 units",
+        "voltage": "480V",
+        "amps": 150.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "TruWave / PCS100 Technical Specifications",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-conditioning/PQFM-150A-480V"
+      }
+    },
+    {
+      "part_number": "PQFS-060A-480V",
+      "series": "TruWave PQFS",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Dynamic Voltage Conditioner",
+      "description": "TruWave PQFS Compact Active Harmonic Filter 60A 208-480V 3PH Enclosed",
+      "specs": {
+        "filter_technology": "TruWave Active Harmonic Filter",
+        "mitigation_target": "Selective Harmonic Filtering up to 50th Order (THDi < 5%)",
+        "response_time_ms": "< 1/2 cycle instantaneous compensation",
+        "parallelable": "Modular master-slave paralleling up to 8 units",
+        "voltage": "480V",
+        "amps": 60.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "TruWave / PCS100 Technical Specifications",
+        "cut_sheet": "https://electrification.us.abb.com/products/power-conditioning/PQFS-060A-480V"
+      }
+    },
+    {
+      "part_number": "PSE105-600-70",
+      "series": "PSE Efficient",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSE Efficient Softstarter 105A 208-600V Built-In Bypass Torque Control",
+      "specs": {
+        "motor_hp_480v": 75.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 105.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSE105-600-70"
+      }
+    },
+    {
+      "part_number": "PSE370-600-70",
+      "series": "PSE Efficient",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSE Efficient Softstarter 370A 208-600V Built-In Bypass Torque Control",
+      "specs": {
+        "motor_hp_480v": 300.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 370.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSE370-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX105-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 105A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 75.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 105.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX105-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX1250-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 1250A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 1000.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 1250.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX1250-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX170-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 170A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 125.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 170.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX170-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX250-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 250A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 200.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 250.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX250-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX30-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 30A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 20.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 30.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX30-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX370-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 370A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 300.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 370.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX370-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX570-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 570A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 450.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 570.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX570-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX60-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 60A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 40.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 60.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX60-600-70"
+      }
+    },
+    {
+      "part_number": "PSTX840-600-70",
+      "series": "PSTX Advanced",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "PSTX Advanced Softstarter 840A 208-600V Built-In Bypass & Coated PCB",
+      "specs": {
+        "motor_hp_480v": 700.0,
+        "bypass_contactor": "Built-In Electrical Bypass Contactor",
+        "torque_control": "Eliminates Water Hammer in Pump Applications",
+        "fieldbus_support": "Modbus RTU / Anybus Fieldbus Modules",
+        "catalog_section": "BuyLog Section 5: Control Components & Softstarters",
+        "voltage": "480V",
+        "amps": 840.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 5",
+        "cut_sheet": "https://electrification.us.abb.com/products/softstarters/PSTX840-600-70"
+      }
+    },
+    {
+      "part_number": "RGB-AL-1000A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Aluminum Feeder Busway 1000A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-AL-1000A"
+      }
+    },
+    {
+      "part_number": "RGB-AL-1600A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Aluminum Feeder Busway 1600A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-AL-1600A"
+      }
+    },
+    {
+      "part_number": "RGB-AL-2500A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Aluminum Feeder Busway 2500A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 2500.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-AL-2500A"
+      }
+    },
+    {
+      "part_number": "RGB-AL-3000A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Aluminum Feeder Busway 3000A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 3000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-AL-3000A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-0800A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 800A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-0800A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-1200A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 1200A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-1200A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-1600A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 1600A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-1600A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-2000A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 2000A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-2000A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-3000A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 3000A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 3000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-3000A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-4000A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 4000A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-4000A"
+      }
+    },
+    {
+      "part_number": "RGB-CU-5000A",
+      "series": "ReliaGear Busway",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "ReliaGear Copper Feeder Busway 5000A 3P4W 600V with Internal Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "BuyLog Section 15: Busway",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 5000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP40"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 15",
+        "cut_sheet": "https://electrification.us.abb.com/products/busway/RGB-CU-5000A"
+      }
+    },
+    {
+      "part_number": "RGMCC-FVNR-SZ1-600A",
+      "series": "ReliaGear MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear MCC FVNR Starter Size 1 Tmax XT2 MCP 600A Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 1 (Up to 10 HP)",
+        "horse_power_rating": 10,
+        "horizontal_bus_rating_amps": 600.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-FVNR-SZ1-600A"
+      }
+    },
+    {
+      "part_number": "RGMCC-FVNR-SZ2-600A",
+      "series": "ReliaGear MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear MCC FVNR Starter Size 2 Tmax XT2 MCP 600A Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 2 (Up to 25 HP)",
+        "horse_power_rating": 25,
+        "horizontal_bus_rating_amps": 600.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-FVNR-SZ2-600A"
+      }
+    },
+    {
+      "part_number": "RGMCC-FVNR-SZ3-800A",
+      "series": "ReliaGear MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear MCC FVNR Starter Size 3 Tmax XT4 MCP 800A Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 3 (Up to 50 HP)",
+        "horse_power_rating": 50,
+        "horizontal_bus_rating_amps": 800.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-FVNR-SZ3-800A"
+      }
+    },
+    {
+      "part_number": "RGMCC-FVNR-SZ4-1200A",
+      "series": "ReliaGear MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear MCC FVNR Starter Size 4 Tmax XT5 MCP 1200A Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 4 (Up to 100 HP)",
+        "horse_power_rating": 100,
+        "horizontal_bus_rating_amps": 1200.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-FVNR-SZ4-1200A"
+      }
+    },
+    {
+      "part_number": "RGMCC-FVNR-SZ5-1600A",
+      "series": "ReliaGear MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear MCC FVNR Starter Size 5 Tmax XT6 MCP 1600A Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 5 (Up to 200 HP)",
+        "horse_power_rating": 200,
+        "horizontal_bus_rating_amps": 1600.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 1600.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-FVNR-SZ5-1600A"
+      }
+    },
+    {
+      "part_number": "RGMCC-MAIN-EMAX2-2500A",
+      "series": "ReliaGear MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear MCC 2500A Main Circuit Breaker Section Emax 2 Air Breaker",
+      "specs": {
+        "starter_type": "Main Incoming Section",
+        "horse_power_rating": 0,
+        "horizontal_bus_rating_amps": 2500.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 2500.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-MAIN-EMAX2-2500A"
+      }
+    },
+    {
+      "part_number": "RGMCC-SAFET-ARC-2000A",
+      "series": "ReliaGear SafeT MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear SafeT Arc-Resistant Industrial MCC Lineup 2000A Copper Bus",
+      "specs": {
+        "starter_type": "Master Feeder / Starter Lineup",
+        "horse_power_rating": 400,
+        "horizontal_bus_rating_amps": 2000.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "IEEE C37.20.7 Arc-Resistant"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-SAFET-ARC-2000A"
+      }
+    },
+    {
+      "part_number": "RGMCC-VFD-ACS580-100HP",
+      "series": "ReliaGear Smart MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "ReliaGear Smart MCC with ACS580 100HP General Purpose VFD Unit",
+      "specs": {
+        "starter_type": "ABB ACS580 Industrial VFD",
+        "horse_power_rating": 100,
+        "horizontal_bus_rating_amps": 1200.0,
+        "catalog_section": "BuyLog Section 13: Motor Control Centers",
+        "smart_relay": "ABB UMC100.3 Intelligent Motor Controller",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 13",
+        "cut_sheet": "https://electrification.us.abb.com/products/motor-control-centers/RGMCC-VFD-ACS580-100HP"
+      }
+    },
+    {
+      "part_number": "RGND-SWGR-2000A",
+      "series": "ReliaGear ND",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "ReliaGear ND Narrow Design Low Voltage Metal-Enclosed Switchgear 2000A Emax 2",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/RGND-SWGR-2000A"
+      }
+    },
+    {
+      "part_number": "RGND-SWGR-3200A",
+      "series": "ReliaGear ND",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "ReliaGear ND Narrow Design Low Voltage Metal-Enclosed Switchgear 3200A Emax 2",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "480V",
+        "amps": 3200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/RGND-SWGR-3200A"
+      }
+    },
+    {
+      "part_number": "RGND-SWGR-4000A",
+      "series": "ReliaGear ND",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "ReliaGear ND Narrow Design Low Voltage Metal-Enclosed Switchgear 4000A Emax 2",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/RGND-SWGR-4000A"
+      }
+    },
+    {
+      "part_number": "RGND-SWGR-5000A",
+      "series": "ReliaGear ND",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "ReliaGear ND Narrow Design Low Voltage Metal-Enclosed Switchgear 5000A Emax 2",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "480V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/RGND-SWGR-5000A"
+      }
+    },
+    {
+      "part_number": "RGSB-1200A-480V",
+      "series": "ReliaGear SB",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "ReliaGear SB Distribution Switchboard 1200A 480V 3PH 4W Tmax XT7 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "Tmax XT7 Main + ReliaGear neXT Feeders",
+        "short_circuit_rating_ka": 65.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/RGSB-1200A-480V"
+      }
+    },
+    {
+      "part_number": "RGSB-2000A-480V",
+      "series": "ReliaGear SB",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "ReliaGear SB Distribution Switchboard 2000A 480V 3PH 4W Emax 2 E2.2 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "Emax 2 E2.2 Main + Tmax XT Feeders",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/RGSB-2000A-480V"
+      }
+    },
+    {
+      "part_number": "RGSB-3000A-480V",
+      "series": "ReliaGear SB",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "ReliaGear SB Distribution Switchboard 3000A 480V 3PH 4W Emax 2 E4.2 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "Emax 2 E4.2 Main + Tmax XT Feeders",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/RGSB-3000A-480V"
+      }
+    },
+    {
+      "part_number": "RGSB-4000A-480V",
+      "series": "ReliaGear SB",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "ReliaGear SB Distribution Switchboard 4000A 480V 3PH 4W Emax 2 E6.2 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "Emax 2 E6.2 Main + Tmax XT Feeders",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/RGSB-4000A-480V"
+      }
+    },
+    {
+      "part_number": "RGSB-5000A-480V",
+      "series": "ReliaGear SB",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "ReliaGear SB Distribution Switchboard 5000A 480V 3PH 4W Emax 2 E6.2 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "Emax 2 E6.2 Main + Tmax XT Feeders",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/RGSB-5000A-480V"
+      }
+    },
+    {
+      "part_number": "RGSB-800A-480V",
+      "series": "ReliaGear SB",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front-Connected Distribution Switchboard",
+      "description": "ReliaGear SB Distribution Switchboard 800A 480V 3PH 4W Tmax XT7 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "Tmax XT7 Main + ReliaGear neXT Feeders",
+        "short_circuit_rating_ka": 65.0,
+        "catalog_section": "BuyLog Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchboards/RGSB-800A-480V"
+      }
+    },
+    {
+      "part_number": "RNX-1200A-480Y",
+      "series": "ReliaGear neXT",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "ReliaGear neXT Power Panelboard Interior 1200A 480Y/277V Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs / Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 72,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/RNX-1200A-480Y"
+      }
+    },
+    {
+      "part_number": "RNX-400A-480Y",
+      "series": "ReliaGear neXT",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "ReliaGear neXT Power Panelboard Interior 400A 480Y/277V Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs / Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/RNX-400A-480Y"
+      }
+    },
+    {
+      "part_number": "RNX-800A-480Y",
+      "series": "ReliaGear neXT",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Distribution Panelboard",
+      "description": "ReliaGear neXT Power Panelboard Interior 800A 480Y/277V Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs / Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "BuyLog Section 9: Panelboards",
+        "branch_breaker_family": "Tmax XT / THQB / TEY",
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 60,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 9",
+        "cut_sheet": "https://electrification.us.abb.com/products/panelboards/RNX-800A-480Y"
+      }
+    },
+    {
+      "part_number": "SAFEGEAR-05-1200A",
+      "series": "SafeGear Arc-Resistant",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "SafeGear Metal-Clad Arc-Resistant MV Switchgear 1200A 4.76kV ADVAC",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.7 Type 2B Arc-Resistant",
+        "short_time_withstand_ka": 40.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "4.76kV",
+        "amps": 1200.0,
+        "aic": 40.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/SAFEGEAR-05-1200A"
+      }
+    },
+    {
+      "part_number": "SAFEGEAR-15-1200A",
+      "series": "SafeGear Arc-Resistant",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "SafeGear Metal-Clad Arc-Resistant MV Switchgear 1200A 15kV AMVAC",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.7 Type 2B Arc-Resistant",
+        "short_time_withstand_ka": 31.5,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "15kV",
+        "amps": 1200.0,
+        "aic": 31.5,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/SAFEGEAR-15-1200A"
+      }
+    },
+    {
+      "part_number": "SAFEGEAR-15-2000A",
+      "series": "SafeGear Arc-Resistant",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "SafeGear Metal-Clad Arc-Resistant MV Switchgear 2000A 15kV AMVAC",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.7 Type 2B Arc-Resistant",
+        "short_time_withstand_ka": 40.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "15kV",
+        "amps": 2000.0,
+        "aic": 40.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/SAFEGEAR-15-2000A"
+      }
+    },
+    {
+      "part_number": "SAFEGEAR-15-3000A",
+      "series": "SafeGear Arc-Resistant",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "SafeGear Metal-Clad Arc-Resistant MV Switchgear 3000A 15kV AMVAC",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.7 Type 2B Arc-Resistant",
+        "short_time_withstand_ka": 50.0,
+        "catalog_section": "BuyLog Section 11 & Medium Voltage Switchgear",
+        "arc_resistant_rating": "IEEE C37.20.7 Accessibility Type 2B",
+        "voltage": "15kV",
+        "amps": 3000.0,
+        "aic": 50.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 11",
+        "cut_sheet": "https://electrification.us.abb.com/products/switchgear/SAFEGEAR-15-3000A"
+      }
+    },
+    {
+      "part_number": "SS4-100A-480V",
+      "series": "Cyberex SuperSwitch 4",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Cyberex SuperSwitch 4 Digital Static Transfer Switch 100A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Transfer Switch",
+        "control_logic": "Dual Redundant Digital DSP",
+        "maintenance_bypass": "Integrated Triple Breaker Bypass Isolation",
+        "voltage": "480V",
+        "amps": 100.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex SuperSwitch 4 Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/static-transfer-switches/SS4-100A-480V"
+      }
+    },
+    {
+      "part_number": "SS4-1200A-480V",
+      "series": "Cyberex SuperSwitch 4",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Cyberex SuperSwitch 4 Digital Static Transfer Switch 1200A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Transfer Switch",
+        "control_logic": "Dual Redundant Digital DSP",
+        "maintenance_bypass": "Integrated Triple Breaker Bypass Isolation",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex SuperSwitch 4 Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/static-transfer-switches/SS4-1200A-480V"
+      }
+    },
+    {
+      "part_number": "SS4-250A-480V",
+      "series": "Cyberex SuperSwitch 4",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Cyberex SuperSwitch 4 Digital Static Transfer Switch 250A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Transfer Switch",
+        "control_logic": "Dual Redundant Digital DSP",
+        "maintenance_bypass": "Integrated Triple Breaker Bypass Isolation",
+        "voltage": "480V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex SuperSwitch 4 Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/static-transfer-switches/SS4-250A-480V"
+      }
+    },
+    {
+      "part_number": "SS4-400A-480V",
+      "series": "Cyberex SuperSwitch 4",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Cyberex SuperSwitch 4 Digital Static Transfer Switch 400A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Transfer Switch",
+        "control_logic": "Dual Redundant Digital DSP",
+        "maintenance_bypass": "Integrated Triple Breaker Bypass Isolation",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex SuperSwitch 4 Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/static-transfer-switches/SS4-400A-480V"
+      }
+    },
+    {
+      "part_number": "SS4-600A-480V",
+      "series": "Cyberex SuperSwitch 4",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Cyberex SuperSwitch 4 Digital Static Transfer Switch 600A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Transfer Switch",
+        "control_logic": "Dual Redundant Digital DSP",
+        "maintenance_bypass": "Integrated Triple Breaker Bypass Isolation",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex SuperSwitch 4 Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/static-transfer-switches/SS4-600A-480V"
+      }
+    },
+    {
+      "part_number": "SS4-800A-480V",
+      "series": "Cyberex SuperSwitch 4",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Cyberex SuperSwitch 4 Digital Static Transfer Switch 800A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Transfer Switch",
+        "control_logic": "Dual Redundant Digital DSP",
+        "maintenance_bypass": "Integrated Triple Breaker Bypass Isolation",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Cyberex SuperSwitch 4 Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/static-transfer-switches/SS4-800A-480V"
+      }
+    },
+    {
+      "part_number": "TH3361",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 30A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3361"
+      }
+    },
+    {
+      "part_number": "TH3361SS",
+      "series": "Spec-Setter Stainless",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Switch 30A 3P 600V NEMA 4X 304 Stainless Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Stainless"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3361SS"
+      }
+    },
+    {
+      "part_number": "TH3362",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 60A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 60.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3362"
+      }
+    },
+    {
+      "part_number": "TH3363",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 100A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3363"
+      }
+    },
+    {
+      "part_number": "TH3364",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 200A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3364"
+      }
+    },
+    {
+      "part_number": "TH3364SS",
+      "series": "Spec-Setter Stainless",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Switch 200A 3P 600V NEMA 4X 304 Stainless Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Stainless"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3364SS"
+      }
+    },
+    {
+      "part_number": "TH3365",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 400A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3365"
+      }
+    },
+    {
+      "part_number": "TH3366",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 600A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3366"
+      }
+    },
+    {
+      "part_number": "TH3367",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 800A 3P 600V NEMA 1 Fusible Class L",
+      "specs": {
+        "fuse_type": "Fusible (Class L)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3367"
+      }
+    },
+    {
+      "part_number": "TH3368",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 1200A 3P 600V NEMA 1 Fusible Class L",
+      "specs": {
+        "fuse_type": "Fusible (Class L)",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/TH3368"
+      }
+    },
+    {
+      "part_number": "THN3361",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 30A 3P 600V NEMA 1 Non-Fusible",
+      "specs": {
+        "fuse_type": "Non-Fusible",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/THN3361"
+      }
+    },
+    {
+      "part_number": "THN3364",
+      "series": "Spec-Setter Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / High Pressure Contact Switch",
+      "description": "Spec-Setter Heavy Duty Safety Switch 200A 3P 600V NEMA 1 Non-Fusible",
+      "specs": {
+        "fuse_type": "Non-Fusible",
+        "catalog_section": "BuyLog Section 2: Enclosed Switches",
+        "duty_rating": "Heavy Duty / 200kA Withstand",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 2",
+        "cut_sheet": "https://electrification.us.abb.com/products/switches-disconnects/THN3364"
+      }
+    },
+    {
+      "part_number": "TLE-160K480",
+      "series": "TLE Series",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "ABB TLE Series Monolithic 3-Phase UPS 160kW/160kVA 480V High Power Factor",
+      "specs": {
+        "power_rating_kw": 160.0,
+        "power_rating_kva": 160.0,
+        "efficiency_pct": 96.5,
+        "ups_architecture": "Monolithic Double Conversion",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 192.5,
+        "kva": 160.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/TLE-160K480"
+      }
+    },
+    {
+      "part_number": "TLE-300K480",
+      "series": "TLE Series",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "ABB TLE Series Monolithic 3-Phase UPS 300kW/300kVA 480V High Power Factor",
+      "specs": {
+        "power_rating_kw": 300.0,
+        "power_rating_kva": 300.0,
+        "efficiency_pct": 96.5,
+        "ups_architecture": "Monolithic Double Conversion",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 360.8,
+        "kva": 300.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/TLE-300K480"
+      }
+    },
+    {
+      "part_number": "TLE-500K480",
+      "series": "TLE Series",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "ABB TLE Series Monolithic 3-Phase UPS 500kW/500kVA 480V High Power Factor",
+      "specs": {
+        "power_rating_kw": 500.0,
+        "power_rating_kva": 500.0,
+        "efficiency_pct": 96.5,
+        "ups_architecture": "Monolithic Double Conversion",
+        "battery_compatibility": "Lithium-Ion / VRLA Battery Cabinets",
+        "catalog_section": "ABB Critical Power & High Reliability UPS",
+        "voltage": "480V",
+        "amps": 601.4,
+        "kva": 500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "MegaFlex DPA / TLE Technical Catalog",
+        "cut_sheet": "https://electrification.us.abb.com/products/ups-power-conditioning/TLE-500K480"
+      }
+    },
+    {
+      "part_number": "TLM3212CLU",
+      "series": "PowerMark Gold Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "PowerMark Gold 125A 3PH 12-Circuit Main Lugs Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 125.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 12,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TLM3212CLU"
+      }
+    },
+    {
+      "part_number": "TLM3220CCU",
+      "series": "PowerMark Gold Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "PowerMark Gold 200A 3PH 24-Circuit Main Lugs Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 24,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TLM3220CCU"
+      }
+    },
+    {
+      "part_number": "TLM3220RCU",
+      "series": "PowerMark Gold Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "PowerMark Gold 200A 3PH 30-Circuit Main Lugs NEMA 3R Outdoor Load Center",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 3R Outdoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TLM3220RCU"
+      }
+    },
+    {
+      "part_number": "TLM3222CCU",
+      "series": "PowerMark Gold Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "PowerMark Gold 225A 3PH 42-Circuit Main Lugs Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TLM3222CCU"
+      }
+    },
+    {
+      "part_number": "TM3220CCU",
+      "series": "PowerMark Gold Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "PowerMark Gold 200A 3PH 30-Circuit Main Breaker Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TM3220CCU"
+      }
+    },
+    {
+      "part_number": "TM3222CCU",
+      "series": "PowerMark Gold Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "PowerMark Gold 225A 3PH 42-Circuit Main Breaker Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TM3222CCU"
+      }
+    },
+    {
+      "part_number": "TMP3220CCU",
+      "series": "ReliaGear Pro-Stock Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "ReliaGear Pro-Stock Commercial Load Center 200A 3PH 42-Circuit Main Breaker",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TMP3220CCU"
+      }
+    },
+    {
+      "part_number": "TMP3222CCU",
+      "series": "ReliaGear Pro-Stock Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "ReliaGear Pro-Stock Commercial Load Center 225A 3PH 42-Circuit Main Lug",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "100% Copper Bus Bars",
+        "catalog_section": "BuyLog Section 1: Load Centers",
+        "branch_breaker_family": "THQL / THQP Plug-In Breakers",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 1",
+        "cut_sheet": "https://electrification.us.abb.com/products/load-centers/TMP3222CCU"
+      }
+    },
+    {
+      "part_number": "TPME120480Y",
+      "series": "TPME Series",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "ABB TPME Surge Protective Device 120kA/Phase 480Y/277V NEMA 4X Metallic",
+      "specs": {
+        "surge_current_per_phase_ka": 120.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "BuyLog Section 19: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 19",
+        "cut_sheet": "https://electrification.us.abb.com/products/surge-protection/TPME120480Y"
+      }
+    },
+    {
+      "part_number": "TPME160480Y",
+      "series": "TPME Series",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "ABB TPME Surge Protective Device 160kA/Phase 480Y/277V NEMA 4X Metallic",
+      "specs": {
+        "surge_current_per_phase_ka": 160.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "BuyLog Section 19: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 19",
+        "cut_sheet": "https://electrification.us.abb.com/products/surge-protection/TPME160480Y"
+      }
+    },
+    {
+      "part_number": "TPME200480Y",
+      "series": "TPME Series",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "ABB TPME Surge Protective Device 200kA/Phase 480Y/277V NEMA 4X Metallic",
+      "specs": {
+        "surge_current_per_phase_ka": 200.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "BuyLog Section 19: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 19",
+        "cut_sheet": "https://electrification.us.abb.com/products/surge-protection/TPME200480Y"
+      }
+    },
+    {
+      "part_number": "TPME300480Y",
+      "series": "TPME Series",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "ABB TPME Surge Protective Device 300kA/Phase 480Y/277V NEMA 4X Metallic",
+      "specs": {
+        "surge_current_per_phase_ka": 300.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "BuyLog Section 19: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 19",
+        "cut_sheet": "https://electrification.us.abb.com/products/surge-protection/TPME300480Y"
+      }
+    },
+    {
+      "part_number": "XT1NU3030AFF000XXX",
+      "series": "Tmax XT1",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT1 30A 3P 600V 25kAIC Thermal-Magnetic Fixed Breaker",
+      "specs": {
+        "trip_unit_type": "TMD Thermal-Magnetic",
+        "frame_designation": "XT1",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT1NU3030AFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT1NU3060AFF000XXX",
+      "series": "Tmax XT1",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT1 60A 3P 600V 25kAIC Thermal-Magnetic Fixed Breaker",
+      "specs": {
+        "trip_unit_type": "TMD Thermal-Magnetic",
+        "frame_designation": "XT1",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 60.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT1NU3060AFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT2HU3125EFF000XXX",
+      "series": "Tmax XT2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT2 125A 3P 600V 65kAIC Ekip Touch LSI Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSI Electronic",
+        "frame_designation": "XT2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 125.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT2HU3125EFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT2NU3100EFF000XXX",
+      "series": "Tmax XT2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT2 100A 3P 600V 25kAIC Ekip Dip LSI Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Dip LSI Electronic",
+        "frame_designation": "XT2",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT2NU3100EFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT3NU3225AFF000XXX",
+      "series": "Tmax XT3",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT3 225A 3P 600V 25kAIC Thermal-Magnetic Fixed Breaker",
+      "specs": {
+        "trip_unit_type": "TMD Thermal-Magnetic",
+        "frame_designation": "XT3",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 225.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT3NU3225AFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT4HU3250EFF000XXX",
+      "series": "Tmax XT4",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT4 250A 3P 600V 65kAIC Ekip Touch LSI Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSI Electronic",
+        "frame_designation": "XT4",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT4HU3250EFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT4NU3250EFF000XXX",
+      "series": "Tmax XT4",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT4 250A 3P 600V 25kAIC Ekip Dip LSI Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Dip LSI Electronic",
+        "frame_designation": "XT4",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 250.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT4NU3250EFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT5HU3600BFF000XXX",
+      "series": "Tmax XT5",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT5 600A 3P 600V 65kAIC Ekip Touch LSIG Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSIG Electronic",
+        "frame_designation": "XT5",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT5HU3600BFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT5NU3400BFF000XXX",
+      "series": "Tmax XT5",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT5 400A 3P 600V 35kAIC Ekip Dip LS/I Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Dip LS/I Electronic",
+        "frame_designation": "XT5",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT5NU3400BFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT6NU3800BFF000XXX",
+      "series": "Tmax XT6",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT6 800A 3P 600V 35kAIC Ekip Dip LS/I Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Dip LS/I Electronic",
+        "frame_designation": "XT6",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT6NU3800BFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT7HU3100EFF000XXX",
+      "series": "Tmax XT7",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT7 1000A 3P 600V 65kAIC Ekip Touch LSIG Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Touch LSIG Electronic",
+        "frame_designation": "XT7",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1000.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT7HU3100EFF000XXX"
+      }
+    },
+    {
+      "part_number": "XT7HU3120EFF000XXX",
+      "series": "Tmax XT7",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "Tmax XT7 1200A 3P 600V 65kAIC Ekip Hi-Touch LSIG Breaker",
+      "specs": {
+        "trip_unit_type": "Ekip Hi-Touch LSIG Electronic",
+        "frame_designation": "XT7",
+        "catalog_section": "BuyLog Section 6: Molded Case Breakers & Section 7: Low Voltage Power Breakers",
+        "mounting": "Fixed / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 6 & 7",
+        "cut_sheet": "https://electrification.us.abb.com/products/circuit-breakers/XT7HU3120EFF000XXX"
+      }
+    },
+    {
+      "part_number": "ZEN-PSG-2GEN-2000A",
+      "series": "ABB Zenith PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Multi-Generator Paralleling Switchgear 2-Gen 2000A 480V Emax 2 Breakers",
+      "specs": {
+        "supported_generators": 2,
+        "automation_controller": "ABB AC500 Dual Redundant PLC",
+        "load_management": "Automated Priority Load Add/Drop & Random Access Sync",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Co-Generation Import/Export",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Zenith PSG Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/paralleling-switchgear/ZEN-PSG-2GEN-2000A"
+      }
+    },
+    {
+      "part_number": "ZEN-PSG-3GEN-3000A",
+      "series": "ABB Zenith PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Multi-Generator Paralleling Switchgear 3-Gen 3000A 480V Emax 2 Breakers",
+      "specs": {
+        "supported_generators": 3,
+        "automation_controller": "ABB AC500 Dual Redundant PLC",
+        "load_management": "Automated Priority Load Add/Drop & Random Access Sync",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Co-Generation Import/Export",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Zenith PSG Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/paralleling-switchgear/ZEN-PSG-3GEN-3000A"
+      }
+    },
+    {
+      "part_number": "ZEN-PSG-4GEN-4000A",
+      "series": "ABB Zenith PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Multi-Generator Paralleling Switchgear 4-Gen 4000A 480V Emax 2 Breakers",
+      "specs": {
+        "supported_generators": 4,
+        "automation_controller": "ABB AC500 Dual Redundant PLC",
+        "load_management": "Automated Priority Load Add/Drop & Random Access Sync",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Co-Generation Import/Export",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Zenith PSG Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/paralleling-switchgear/ZEN-PSG-4GEN-4000A"
+      }
+    },
+    {
+      "part_number": "ZEN-PSG-MV-15KV-2000A",
+      "series": "ABB Zenith SafeGear PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Medium Voltage 15kV Multi-Generator Paralleling Switchgear 2000A AMVAC",
+      "specs": {
+        "supported_generators": 4,
+        "automation_controller": "ABB AC500 Redundant Industrial PLC",
+        "load_management": "Automated Priority Load Add/Drop & Random Access Sync",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Co-Generation Import/Export",
+        "voltage": "15kV",
+        "amps": 2000.0,
+        "aic": 40.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Zenith PSG Technical Guide",
+        "cut_sheet": "https://electrification.us.abb.com/products/paralleling-switchgear/ZEN-PSG-MV-15KV-2000A"
+      }
+    },
+    {
+      "part_number": "ZTG0400-480V",
+      "series": "Zenith ZTG Standard",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTG Standard Automatic Transfer Switch 400A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "Zenith Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTG0400-480V"
+      }
+    },
+    {
+      "part_number": "ZTG0800-480V",
+      "series": "Zenith ZTG Standard",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTG Standard Automatic Transfer Switch 800A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "Zenith Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTG0800-480V"
+      }
+    },
+    {
+      "part_number": "ZTS0200-480V",
+      "series": "Zenith ZTS Heavy-Duty",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTS Heavy-Duty Automatic Transfer Switch 200A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "Zenith Heavy-Duty Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTS0200-480V"
+      }
+    },
+    {
+      "part_number": "ZTS0400-480V",
+      "series": "Zenith ZTS Heavy-Duty",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTS Heavy-Duty Automatic Transfer Switch 400A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "Zenith Heavy-Duty Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTS0400-480V"
+      }
+    },
+    {
+      "part_number": "ZTS0800-480V",
+      "series": "Zenith ZTS Heavy-Duty",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTS Heavy-Duty Automatic Transfer Switch 800A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "Zenith Heavy-Duty Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTS0800-480V"
+      }
+    },
+    {
+      "part_number": "ZTS1200-480V",
+      "series": "Zenith ZTS Heavy-Duty",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTS Heavy-Duty Automatic Transfer Switch 1200A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "Zenith Heavy-Duty Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTS1200-480V"
+      }
+    },
+    {
+      "part_number": "ZTS2000-480V-CT",
+      "series": "Zenith ZTS Heavy-Duty",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTS Heavy-Duty Automatic Transfer Switch 2000A 480V 3P Closed Transition",
+      "specs": {
+        "transition_mode": "Closed Transition",
+        "switching_mechanism": "Zenith Heavy-Duty Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTS2000-480V-CT"
+      }
+    },
+    {
+      "part_number": "ZTS3000-480V-CT",
+      "series": "Zenith ZTS Heavy-Duty",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "Zenith ZTS Heavy-Duty Automatic Transfer Switch 3000A 480V 3P Closed Transition",
+      "specs": {
+        "transition_mode": "Closed Transition",
+        "switching_mechanism": "Zenith Heavy-Duty Contactor",
+        "controller": "ABB Zenith MX350 Microprocessor Controller",
+        "catalog_section": "BuyLog Section 8: Automatic Transfer Switches",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "BuyLog Section 8",
+        "cut_sheet": "https://electrification.us.abb.com/products/automatic-transfer-switches/ZTS3000-480V-CT"
+      }
+    }
+  ]
+}

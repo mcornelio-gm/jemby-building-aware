@@ -64,3 +64,34 @@ def test_master_catalog_api_endpoints():
     assert single["part_number"] == "EE75T3H"
     assert single["specs"]["kva"] == 75.0
     assert single["specs"]["voltage"] == "480V : 208Y/120V"
+
+
+def test_master_catalog_import_from_jsonl(tmp_path):
+    """Verify MasterCatalogManager.import_from_jsonl directly ingests JSONL lines."""
+    import json
+    from pathlib import Path
+    from james_app.master_catalog import MasterCatalogManager
+
+    test_db = tmp_path / "test_import.db"
+    test_cat_dir = tmp_path / "catalog"
+    mgr = MasterCatalogManager(db_path=str(test_db), catalog_dir=str(test_cat_dir))
+
+    # Create dummy JSONL file
+    dummy_jsonl = tmp_path / "dummy.jsonl"
+    dummy_data = [
+        {"part_number": "DUMMY-001", "manufacturer": "TestMfg", "domain": "busway", "type_tag": "BUSWAY", "description": "Test Busway 800A", "specs": {"amps": 800.0}},
+        {"part_number": "DUMMY-002", "manufacturer": "TestMfg", "domain": "breakers", "type_tag": "CB", "description": "Test Breaker 100A", "specs": {"amps": 100.0}},
+    ]
+    with open(dummy_jsonl, "w", encoding="utf-8") as f:
+        for d in dummy_data:
+            f.write(json.dumps(d) + "\n")
+
+    res = mgr.import_from_jsonl(dummy_jsonl)
+    assert res["imported"] == 2
+    assert res["skipped"] == 0
+
+    item1 = mgr.get_item("DUMMY-001")
+    assert item1 is not None
+    assert item1["manufacturer"] == "TestMfg"
+    assert item1["specs"]["amps"] == 800.0
+

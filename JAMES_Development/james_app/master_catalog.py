@@ -473,6 +473,16 @@ class MasterCatalogManager:
             "total_catalog_count": len(self.get_all_items())
         }
 
+    def import_from_jsonl(self, jsonl_path: Any, overwrite: bool = True) -> Dict[str, Any]:
+        """Stream and bulk import items directly from a line-delimited JSONL file into SQLite."""
+        items = []
+        with open(str(jsonl_path), "r", encoding="utf-8") as f:
+            for line in f:
+                line_str = line.strip()
+                if line_str:
+                    items.append(json.loads(line_str))
+        return self.import_items(items, overwrite=overwrite)
+
     def export_items(
         self,
         domain: Optional[str] = None,

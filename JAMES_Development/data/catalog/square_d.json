@@ -1,0 +1,4535 @@
+{
+  "manufacturer": "Square D",
+  "items": [
+    {
+      "part_number": "4AUSA30400N5XC",
+      "series": "ASCO 4000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 4000 Series Commercial Transfer Switch 400A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "ASCO 4000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/4AUSA30400N5XC/"
+      }
+    },
+    {
+      "part_number": "4AUSA30800N5XC",
+      "series": "ASCO 4000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 4000 Series Commercial Transfer Switch 800A 480V 3P Open Transition",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "ASCO 4000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/4AUSA30800N5XC/"
+      }
+    },
+    {
+      "part_number": "7ACSA32000N5XC",
+      "series": "ASCO 7000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 7000 Series Automatic Transfer Switch 2000A 480V 3P Closed Transition NEMA 1",
+      "specs": {
+        "transition_mode": "Closed Transition",
+        "switching_mechanism": "ASCO 7000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/7ACSA32000N5XC/"
+      }
+    },
+    {
+      "part_number": "7ACSA33000N5XC",
+      "series": "ASCO 7000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 7000 Series Automatic Transfer Switch 3000A 480V 3P Closed Transition NEMA 1",
+      "specs": {
+        "transition_mode": "Closed Transition",
+        "switching_mechanism": "ASCO 7000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/7ACSA33000N5XC/"
+      }
+    },
+    {
+      "part_number": "7AUSA30200N5XC",
+      "series": "ASCO 7000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 7000 Series Automatic Transfer Switch 200A 480V 3P Open Transition NEMA 1",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "ASCO 7000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/7AUSA30200N5XC/"
+      }
+    },
+    {
+      "part_number": "7AUSA30400N5XC",
+      "series": "ASCO 7000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 7000 Series Automatic Transfer Switch 400A 480V 3P Open Transition NEMA 1",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "ASCO 7000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/7AUSA30400N5XC/"
+      }
+    },
+    {
+      "part_number": "7AUSA30800N5XC",
+      "series": "ASCO 7000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 7000 Series Automatic Transfer Switch 800A 480V 3P Open Transition NEMA 1",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "ASCO 7000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/7AUSA30800N5XC/"
+      }
+    },
+    {
+      "part_number": "7AUSA31200N5XC",
+      "series": "ASCO 7000 Series",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "ASCO 7000 Series Automatic Transfer Switch 1200A 480V 3P Open Transition NEMA 1",
+      "specs": {
+        "transition_mode": "Open Transition",
+        "switching_mechanism": "ASCO 7000 Contactor",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/7AUSA31200N5XC/"
+      }
+    },
+    {
+      "part_number": "AP2510G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Aluminum Feeder Busway 1000A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/AP2510G/"
+      }
+    },
+    {
+      "part_number": "AP2516G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Aluminum Feeder Busway 1600A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/AP2516G/"
+      }
+    },
+    {
+      "part_number": "AP2525G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Aluminum Feeder Busway 2500A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 2500.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/AP2525G/"
+      }
+    },
+    {
+      "part_number": "AP2530G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Aluminum Feeder Busway 3000A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Aluminum",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 3000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/AP2530G/"
+      }
+    },
+    {
+      "part_number": "ASCO-PCS-7000-2500A",
+      "series": "ASCO 7000 PCS",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "ASCO 7000 Power Control System Generator Paralleling Lineup 2500A 480V",
+      "specs": {
+        "supported_generators": 3,
+        "automation_controller": "ASCO Digital Master Synchronizer",
+        "load_management": "Automatic Priority Load Shedding / Peak Shaving",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Utility Interconnection",
+        "voltage": "480V",
+        "amps": 2500.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Control Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/ASCO-PCS-7000-2500A/"
+      }
+    },
+    {
+      "part_number": "ATS22C11Q",
+      "series": "Altistart 22",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 22 Softstarter 110A 230-440V Heavy Duty Industrial",
+      "specs": {
+        "motor_hp_480v": 75.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 110.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS22C11Q/"
+      }
+    },
+    {
+      "part_number": "ATS22C32Q",
+      "series": "Altistart 22",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 22 Softstarter 320A 230-440V Heavy Duty Industrial",
+      "specs": {
+        "motor_hp_480v": 250.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 320.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS22C32Q/"
+      }
+    },
+    {
+      "part_number": "ATS480C14Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 140A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 100.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 140.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480C14Y/"
+      }
+    },
+    {
+      "part_number": "ATS480C21Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 210A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 150.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 210.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480C21Y/"
+      }
+    },
+    {
+      "part_number": "ATS480C32Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 320A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 250.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 320.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480C32Y/"
+      }
+    },
+    {
+      "part_number": "ATS480C59Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 590A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 500.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 590.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480C59Y/"
+      }
+    },
+    {
+      "part_number": "ATS480D17Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 17A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 10.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 17.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480D17Y/"
+      }
+    },
+    {
+      "part_number": "ATS480D32Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 32A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 20.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 32.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480D32Y/"
+      }
+    },
+    {
+      "part_number": "ATS480D62Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 62A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 40.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 62.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480D62Y/"
+      }
+    },
+    {
+      "part_number": "ATS480D88Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 88A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 60.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 88.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480D88Y/"
+      }
+    },
+    {
+      "part_number": "ATS480M12Y",
+      "series": "Altistart 480",
+      "domain": "motor_control",
+      "type_tag": "SOFTSTART",
+      "type_name": "Solid-State Reduced Voltage Softstarter",
+      "description": "Altistart 480 Softstarter 1200A 208-690V Integrated Bypass Modbus",
+      "specs": {
+        "motor_hp_480v": 1000.0,
+        "bypass_contactor": "Integrated Internal Bypass",
+        "control_voltage": "110-230VAC / 24VDC",
+        "communication_protocol": "Modbus TCP / EtherNet/IP Optional",
+        "catalog_section": "Digest 179 Section 18: Variable Speed Drives & Softstarters",
+        "voltage": "480V",
+        "amps": 1200.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 18",
+        "cut_sheet": "https://www.se.com/us/en/product/ATS480M12Y/"
+      }
+    },
+    {
+      "part_number": "BP3612",
+      "series": "Bolt-Loc Bolted Pressure",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Bolt-Loc Bolted Pressure Contact Switch 1200A 3P 600V Fusible Class L",
+      "specs": {
+        "fuse_type": "Bolted Pressure Fusible Class L",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Enclosed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/BP3612/"
+      }
+    },
+    {
+      "part_number": "BP3620",
+      "series": "Bolt-Loc Bolted Pressure",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Bolt-Loc Bolted Pressure Contact Switch 2000A 3P 600V Fusible Class L",
+      "specs": {
+        "fuse_type": "Bolted Pressure Fusible Class L",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Enclosed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/BP3620/"
+      }
+    },
+    {
+      "part_number": "BP3640",
+      "series": "Bolt-Loc Bolted Pressure",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Bolt-Loc Bolted Pressure Contact Switch 4000A 3P 600V Fusible Class L",
+      "specs": {
+        "fuse_type": "Bolted Pressure Fusible Class L",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Enclosed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/BP3640/"
+      }
+    },
+    {
+      "part_number": "CP2508G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 800A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2508G/"
+      }
+    },
+    {
+      "part_number": "CP2512G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 1200A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2512G/"
+      }
+    },
+    {
+      "part_number": "CP2516G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 1600A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2516G/"
+      }
+    },
+    {
+      "part_number": "CP2520G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 2000A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 150.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2520G/"
+      }
+    },
+    {
+      "part_number": "CP2530G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 3000A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 3000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2530G/"
+      }
+    },
+    {
+      "part_number": "CP2540G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 4000A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2540G/"
+      }
+    },
+    {
+      "part_number": "CP2550G",
+      "series": "I-Line II",
+      "domain": "busway",
+      "type_tag": "BUSWAY",
+      "type_name": "Industrial Feeder & Plug-In Busway",
+      "description": "I-Line II Copper Feeder Busway 5000A 3P4W 600V with Ground",
+      "specs": {
+        "bus_material": "Copper",
+        "short_circuit_withstand_ka": 200.0,
+        "catalog_section": "Digest 179 Section 12: Busway Systems",
+        "conductor_configuration": "3P4W",
+        "voltage": "600V",
+        "amps": 5000.0,
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 12",
+        "cut_sheet": "https://www.se.com/us/en/product/CP2550G/"
+      }
+    },
+    {
+      "part_number": "DTU364",
+      "series": "Double-Throw Manual",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Double-Throw Manual Transfer Safety Switch 200A 3P 600V NEMA 1 Non-Fusible",
+      "specs": {
+        "fuse_type": "Double-Throw Manual Transfer",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/DTU364/"
+      }
+    },
+    {
+      "part_number": "E3MUPS100K480",
+      "series": "Easy UPS 3M",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Schneider Electric Easy UPS 3M 100kVA/100kW 480V Industrial 3-Phase UPS",
+      "specs": {
+        "power_rating_kw": 100.0,
+        "power_rating_kva": 100.0,
+        "efficiency_econversion_pct": 96.0,
+        "ups_architecture": "Double Conversion On-Line",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 120.3,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/E3MUPS100K480/"
+      }
+    },
+    {
+      "part_number": "EBA120208Y",
+      "series": "Surgelogic EBA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic EBA Surge Protective Device 120kA/Phase 208Y/120V NEMA 1",
+      "specs": {
+        "surge_current_per_phase_ka": 120.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "208Y/120V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/EBA120208Y/"
+      }
+    },
+    {
+      "part_number": "EMA120480Y",
+      "series": "Surgelogic EMA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic EMA Surge Protective Device 120kA/Phase 480Y/277V NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 120.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/EMA120480Y/"
+      }
+    },
+    {
+      "part_number": "EMA160480Y",
+      "series": "Surgelogic EMA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic EMA Surge Protective Device 160kA/Phase 480Y/277V NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 160.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/EMA160480Y/"
+      }
+    },
+    {
+      "part_number": "EMA240480Y",
+      "series": "Surgelogic EMA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic EMA Surge Protective Device 240kA/Phase 480Y/277V NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 240.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/EMA240480Y/"
+      }
+    },
+    {
+      "part_number": "EMA320480Y",
+      "series": "Surgelogic EMA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic EMA Surge Protective Device 320kA/Phase 480Y/277V NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 320.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/EMA320480Y/"
+      }
+    },
+    {
+      "part_number": "EMA480480Y",
+      "series": "Surgelogic EMA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic EMA Surge Protective Device 480kA/Phase 480Y/277V NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 480.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Metallic"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/EMA480480Y/"
+      }
+    },
+    {
+      "part_number": "EX1000T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 1000kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 1202.8,
+        "secondary_amps": 2775.7,
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 2775.7,
+        "kva": 1000.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX1000T3H/"
+      }
+    },
+    {
+      "part_number": "EX112T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 112.5kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 135.3,
+        "secondary_amps": 312.3,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 312.3,
+        "kva": 112.5,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.2
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX112T3H/"
+      }
+    },
+    {
+      "part_number": "EX150T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 150kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 180.4,
+        "secondary_amps": 416.4,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 416.4,
+        "kva": 150.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX150T3H/"
+      }
+    },
+    {
+      "part_number": "EX150T3HK13",
+      "series": "EX K-Factor",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX K-Factor K-13 Non-Linear Transformer 150kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 180.4,
+        "secondary_amps": 416.4,
+        "winding_material": "Copper",
+        "temperature_rise_c": 115.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 416.4,
+        "kva": 150.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX150T3HK13/"
+      }
+    },
+    {
+      "part_number": "EX15T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 15kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 18.0,
+        "secondary_amps": 41.6,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 41.6,
+        "kva": 15.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX15T3H/"
+      }
+    },
+    {
+      "part_number": "EX225T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 225kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 270.6,
+        "secondary_amps": 624.5,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 624.5,
+        "kva": 225.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.5
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX225T3H/"
+      }
+    },
+    {
+      "part_number": "EX300T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 300kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 360.8,
+        "secondary_amps": 832.7,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 832.7,
+        "kva": 300.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX300T3H/"
+      }
+    },
+    {
+      "part_number": "EX300T3HK13",
+      "series": "EX K-Factor",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX K-Factor K-13 Non-Linear Transformer 300kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 360.8,
+        "secondary_amps": 832.7,
+        "winding_material": "Copper",
+        "temperature_rise_c": 115.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 832.7,
+        "kva": 300.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX300T3HK13/"
+      }
+    },
+    {
+      "part_number": "EX30T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 30kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 36.1,
+        "secondary_amps": 83.3,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 83.3,
+        "kva": 30.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 4.5
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX30T3H/"
+      }
+    },
+    {
+      "part_number": "EX45T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 45kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 54.1,
+        "secondary_amps": 124.9,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 124.9,
+        "kva": 45.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 4.8
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX45T3H/"
+      }
+    },
+    {
+      "part_number": "EX500T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 500kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 601.4,
+        "secondary_amps": 1387.9,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 1387.9,
+        "kva": 500.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX500T3H/"
+      }
+    },
+    {
+      "part_number": "EX750T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 750kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 902.1,
+        "secondary_amps": 2081.8,
+        "winding_material": "Copper",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 2081.8,
+        "kva": 750.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX750T3H/"
+      }
+    },
+    {
+      "part_number": "EX75T3H",
+      "series": "EX Series DOE 2016",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX Low Voltage Dry-Type Transformer 75kVA 480V-208Y/120V 3PH Aluminum",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 90.2,
+        "secondary_amps": 208.2,
+        "winding_material": "Aluminum",
+        "temperature_rise_c": 150.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 208.2,
+        "kva": 75.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX75T3H/"
+      }
+    },
+    {
+      "part_number": "EX75T3HK13",
+      "series": "EX K-Factor",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "EX K-Factor K-13 Non-Linear Transformer 75kVA 480V-208Y/120V 3PH Copper",
+      "specs": {
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "primary_amps": 90.2,
+        "secondary_amps": 208.2,
+        "winding_material": "Copper",
+        "temperature_rise_c": 115.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "480V Delta Pri / 208Y/120V Sec",
+        "amps": 208.2,
+        "kva": 75.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.0
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/EX75T3HK13/"
+      }
+    },
+    {
+      "part_number": "GVMUPS160K480",
+      "series": "Galaxy VM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VM 3-Phase UPS 160kW/160kVA 480V ECOnversion Technology",
+      "specs": {
+        "power_rating_kw": 160.0,
+        "power_rating_kva": 160.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "Integrated Battery / Lithium",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 192.5,
+        "kva": 160.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVMUPS160K480/"
+      }
+    },
+    {
+      "part_number": "GVMUPS225K480",
+      "series": "Galaxy VM",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VM 3-Phase UPS 225kW/225kVA 480V ECOnversion Technology",
+      "specs": {
+        "power_rating_kw": 225.0,
+        "power_rating_kva": 225.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "Integrated Battery / Lithium",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 270.6,
+        "kva": 225.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVMUPS225K480/"
+      }
+    },
+    {
+      "part_number": "GVSUPS100K480",
+      "series": "Galaxy VS",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VS 3-Phase UPS 100kW/100kVA 480V EcoStruxure Connected",
+      "specs": {
+        "power_rating_kw": 100.0,
+        "power_rating_kva": 100.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "Modular Hot-Scalable",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 120.3,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVSUPS100K480/"
+      }
+    },
+    {
+      "part_number": "GVSUPS150K480",
+      "series": "Galaxy VS",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VS 3-Phase UPS 150kW/150kVA 480V EcoStruxure Connected",
+      "specs": {
+        "power_rating_kw": 150.0,
+        "power_rating_kva": 150.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "Modular Hot-Scalable",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 180.4,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVSUPS150K480/"
+      }
+    },
+    {
+      "part_number": "GVSUPS20K480",
+      "series": "Galaxy VS",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VS 3-Phase UPS 20kW/20kVA 480V EcoStruxure Connected",
+      "specs": {
+        "power_rating_kw": 20.0,
+        "power_rating_kva": 20.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "Modular Hot-Scalable",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 24.1,
+        "kva": 20.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVSUPS20K480/"
+      }
+    },
+    {
+      "part_number": "GVSUPS50K480",
+      "series": "Galaxy VS",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VS 3-Phase UPS 50kW/50kVA 480V EcoStruxure Connected",
+      "specs": {
+        "power_rating_kw": 50.0,
+        "power_rating_kva": 50.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "Modular Hot-Scalable",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 60.2,
+        "kva": 50.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVSUPS50K480/"
+      }
+    },
+    {
+      "part_number": "GVXUPS1000K480",
+      "series": "Galaxy VX",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VX Megawatt-Class 3-Phase UPS 1000kW 480V 4-Level Inverter",
+      "specs": {
+        "power_rating_kw": 1000.0,
+        "power_rating_kva": 1000.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "4-Level Inverter Redundant",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 1202.8,
+        "kva": 1000.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVXUPS1000K480/"
+      }
+    },
+    {
+      "part_number": "GVXUPS1500K480",
+      "series": "Galaxy VX",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VX Megawatt-Class 3-Phase UPS 1500kW 480V 4-Level Inverter",
+      "specs": {
+        "power_rating_kw": 1500.0,
+        "power_rating_kva": 1500.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "4-Level Inverter Redundant",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 1804.2,
+        "kva": 1500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVXUPS1500K480/"
+      }
+    },
+    {
+      "part_number": "GVXUPS500K480",
+      "series": "Galaxy VX",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VX Megawatt-Class 3-Phase UPS 500kW 480V 4-Level Inverter",
+      "specs": {
+        "power_rating_kw": 500.0,
+        "power_rating_kva": 500.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "4-Level Inverter Redundant",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 601.4,
+        "kva": 500.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVXUPS500K480/"
+      }
+    },
+    {
+      "part_number": "GVXUPS750K480",
+      "series": "Galaxy VX",
+      "domain": "power_quality",
+      "type_tag": "UPS",
+      "type_name": "Industrial 3-Phase On-Line Uninterruptible Power Supply",
+      "description": "Galaxy VX Megawatt-Class 3-Phase UPS 750kW 480V 4-Level Inverter",
+      "specs": {
+        "power_rating_kw": 750.0,
+        "power_rating_kva": 750.0,
+        "efficiency_econversion_pct": 99.0,
+        "ups_architecture": "4-Level Inverter Redundant",
+        "battery_compatibility": "Lithium-Ion / VRLA",
+        "catalog_section": "Schneider Electric Secure Power & Galaxy UPS",
+        "voltage": "480V",
+        "amps": 902.1,
+        "kva": 750.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "Galaxy V-Series Technical Specifications",
+        "cut_sheet": "https://www.se.com/us/en/product/GVXUPS750K480/"
+      }
+    },
+    {
+      "part_number": "H361",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 30A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H361/"
+      }
+    },
+    {
+      "part_number": "H361DS",
+      "series": "Class 3110 Stainless",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 30A 3P 600V NEMA 4X 304 Stainless Steel Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Stainless"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H361DS/"
+      }
+    },
+    {
+      "part_number": "H362",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 60A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 60.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H362/"
+      }
+    },
+    {
+      "part_number": "H363",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 100A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H363/"
+      }
+    },
+    {
+      "part_number": "H364",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 200A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H364/"
+      }
+    },
+    {
+      "part_number": "H364DS",
+      "series": "Class 3110 Stainless",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 200A 3P 600V NEMA 4X 304 Stainless Steel Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Stainless"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H364DS/"
+      }
+    },
+    {
+      "part_number": "H365",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 400A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H365/"
+      }
+    },
+    {
+      "part_number": "H366",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 600A 3P 600V NEMA 1 Fusible",
+      "specs": {
+        "fuse_type": "Fusible (Class R/J)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H366/"
+      }
+    },
+    {
+      "part_number": "H367",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 800A 3P 600V NEMA 1 Fusible Class L",
+      "specs": {
+        "fuse_type": "Fusible (Class L)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H367/"
+      }
+    },
+    {
+      "part_number": "H368",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 1200A 3P 600V NEMA 1 Fusible Class L",
+      "specs": {
+        "fuse_type": "Fusible (Class L)",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/H368/"
+      }
+    },
+    {
+      "part_number": "HCP328612",
+      "series": "I-Line HCP",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "I-Line HCP Distribution Panelboard Interior 1200A 3PH 600VAC Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs / Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 36,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/HCP328612/"
+      }
+    },
+    {
+      "part_number": "HCP32868",
+      "series": "I-Line HCP",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "I-Line HCP Distribution Panelboard Interior 800A 3PH 600VAC Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs / Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 36,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/HCP32868/"
+      }
+    },
+    {
+      "part_number": "HDA36030",
+      "series": "PowerPact H",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact H-Frame 30A 3P 600V 14kAIC Thermal-Magnetic I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "Thermal-Magnetic",
+        "frame_designation": "H-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 18.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/HDA36030/"
+      }
+    },
+    {
+      "part_number": "HDA36060",
+      "series": "PowerPact H",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact H-Frame 60A 3P 600V 14kAIC Thermal-Magnetic I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "Thermal-Magnetic",
+        "frame_designation": "H-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 60.0,
+        "aic": 18.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/HDA36060/"
+      }
+    },
+    {
+      "part_number": "HGA36100",
+      "series": "PowerPact H",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact H-Frame 100A 3P 600V 35kAIC Thermal-Magnetic I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "Thermal-Magnetic",
+        "frame_designation": "H-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 100.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/HGA36100/"
+      }
+    },
+    {
+      "part_number": "HJA36150",
+      "series": "PowerPact H",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact H-Frame 150A 3P 600V 65kAIC Thermal-Magnetic I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "Thermal-Magnetic",
+        "frame_designation": "H-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 150.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/HJA36150/"
+      }
+    },
+    {
+      "part_number": "HOM3060L225PC",
+      "series": "Homeline Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "Homeline 225A 3PH 30-Space 60-Circuit Main Lugs Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/HOM3060L225PC/"
+      }
+    },
+    {
+      "part_number": "HOM4284M200PC",
+      "series": "Homeline Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "Homeline 200A 3PH 42-Space 84-Circuit Main Breaker Commercial Load Center",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/HOM4284M200PC/"
+      }
+    },
+    {
+      "part_number": "HU361",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 30A 3P 600V NEMA 1 Non-Fusible",
+      "specs": {
+        "fuse_type": "Non-Fusible",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 30.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/HU361/"
+      }
+    },
+    {
+      "part_number": "HU364",
+      "series": "Class 3110 Heavy Duty",
+      "domain": "disconnect",
+      "type_tag": "DISC",
+      "type_name": "Heavy-Duty Safety Switch / Bolted Pressure Contact Switch",
+      "description": "Heavy Duty Safety Switch 200A 3P 600V NEMA 1 Non-Fusible",
+      "specs": {
+        "fuse_type": "Non-Fusible",
+        "catalog_section": "Digest 179 Section 3: Safety Switches",
+        "duty_rating": "Heavy Duty / Continuous",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 3",
+        "cut_sheet": "https://www.se.com/us/en/product/HU364/"
+      }
+    },
+    {
+      "part_number": "HWA100480Y",
+      "series": "Surgelogic HWA",
+      "domain": "surge_protection",
+      "type_tag": "SPD",
+      "type_name": "Industrial Surge Protective Device (Type 1 / Type 2)",
+      "description": "Surgelogic HWA Hardwired Surge Protective Device 100kA/Phase 480Y/277V NEMA 4X",
+      "specs": {
+        "surge_current_per_phase_ka": 100.0,
+        "nominal_discharge_current_in_ka": 20.0,
+        "short_circuit_current_rating_ka": 200.0,
+        "ul_1449_type": "UL 1449 4th Edition Type 1 / Type 2",
+        "catalog_section": "Digest 179 Section 6: Surge Protective Devices",
+        "voltage": "480Y/277V",
+        "aic": 200.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 4X Non-Metallic"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 6",
+        "cut_sheet": "https://www.se.com/us/en/product/HWA100480Y/"
+      }
+    },
+    {
+      "part_number": "JGA36200",
+      "series": "PowerPact J",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact J-Frame 200A 3P 600V 35kAIC Thermal-Magnetic I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "Thermal-Magnetic",
+        "frame_designation": "J-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 200.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/JGA36200/"
+      }
+    },
+    {
+      "part_number": "JJA36250",
+      "series": "PowerPact J",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact J-Frame 250A 3P 600V 65kAIC Thermal-Magnetic I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "Thermal-Magnetic",
+        "frame_designation": "J-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/JJA36250/"
+      }
+    },
+    {
+      "part_number": "JLA36250U31X",
+      "series": "PowerPact J",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact J-Frame 250A 3P 600V 100kAIC Micrologic 3.2 Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 3.2 Standard Electronic",
+        "frame_designation": "J-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 250.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/JLA36250U31X/"
+      }
+    },
+    {
+      "part_number": "LGA36400U31X",
+      "series": "PowerPact L",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact L-Frame 400A 3P 600V 35kAIC Micrologic 3.3 Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 3.3 Electronic",
+        "frame_designation": "L-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 400.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/LGA36400U31X/"
+      }
+    },
+    {
+      "part_number": "LJA36600U31X",
+      "series": "PowerPact L",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact L-Frame 600A 3P 600V 65kAIC Micrologic 3.3 Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 3.3 Electronic",
+        "frame_designation": "L-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/LJA36600U31X/"
+      }
+    },
+    {
+      "part_number": "LLA36600U53X",
+      "series": "PowerPact L",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact L-Frame 600A 3P 600V 100kAIC Micrologic 5.3E Energy Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 5.3E Energy Electronic",
+        "frame_designation": "L-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 600.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/LLA36600U53X/"
+      }
+    },
+    {
+      "part_number": "M6-ARCBLOCK-2000A",
+      "series": "Model 6 ArcBlock",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 ArcBlock Arc-Resistant Industrial MCC 2000A Main Bus",
+      "specs": {
+        "starter_type": "Master Feeder / Starter Lineup",
+        "horse_power_rating": 400,
+        "horizontal_bus_rating_amps": 2000.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Arc-Resistant"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-ARCBLOCK-2000A/"
+      }
+    },
+    {
+      "part_number": "M6-FVNR-SZ1-600A",
+      "series": "Model 6",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 MCC FVNR Starter Size 1 with MCP 600A Main Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 1 (Up to 10 HP)",
+        "horse_power_rating": 10,
+        "horizontal_bus_rating_amps": 600.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-FVNR-SZ1-600A/"
+      }
+    },
+    {
+      "part_number": "M6-FVNR-SZ2-600A",
+      "series": "Model 6",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 MCC FVNR Starter Size 2 with MCP 600A Main Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 2 (Up to 25 HP)",
+        "horse_power_rating": 25,
+        "horizontal_bus_rating_amps": 600.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-FVNR-SZ2-600A/"
+      }
+    },
+    {
+      "part_number": "M6-FVNR-SZ3-800A",
+      "series": "Model 6",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 MCC FVNR Starter Size 3 with MCP 800A Main Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 3 (Up to 50 HP)",
+        "horse_power_rating": 50,
+        "horizontal_bus_rating_amps": 800.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-FVNR-SZ3-800A/"
+      }
+    },
+    {
+      "part_number": "M6-FVNR-SZ4-1200A",
+      "series": "Model 6",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 MCC FVNR Starter Size 4 with MCP 1200A Main Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 4 (Up to 100 HP)",
+        "horse_power_rating": 100,
+        "horizontal_bus_rating_amps": 1200.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-FVNR-SZ4-1200A/"
+      }
+    },
+    {
+      "part_number": "M6-FVNR-SZ5-1600A",
+      "series": "Model 6",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 MCC FVNR Starter Size 5 with MCP 1600A Main Bus NEMA 1",
+      "specs": {
+        "starter_type": "Size 5 (Up to 200 HP)",
+        "horse_power_rating": 200,
+        "horizontal_bus_rating_amps": 1600.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 1600.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-FVNR-SZ5-1600A/"
+      }
+    },
+    {
+      "part_number": "M6-MAINS-2500A",
+      "series": "Model 6",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 Industrial MCC 2500A Main Circuit Breaker Section PowerPact R",
+      "specs": {
+        "starter_type": "Main Incoming Section",
+        "horse_power_rating": 0,
+        "horizontal_bus_rating_amps": 2500.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 2500.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-MAINS-2500A/"
+      }
+    },
+    {
+      "part_number": "M6-VFD-ATV630-100HP",
+      "series": "Model 6 Smart MCC",
+      "domain": "mcc",
+      "type_tag": "MCC",
+      "type_name": "Industrial Motor Control Center Lineup / Unit",
+      "description": "Model 6 Smart MCC with Altivar Process ATV630 100HP VFD Unit",
+      "specs": {
+        "starter_type": "Altivar Process ATV630 VFD",
+        "horse_power_rating": 100,
+        "horizontal_bus_rating_amps": 1200.0,
+        "catalog_section": "Digest 179 Section 17: Motor Control Centers",
+        "arc_resistant_available": true,
+        "voltage": "480V",
+        "amps": 1200.0,
+        "aic": 100.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Gasketed"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 17",
+        "cut_sheet": "https://www.se.com/us/en/product/M6-VFD-ATV630-100HP/"
+      }
+    },
+    {
+      "part_number": "MCLAD-05-1200A",
+      "series": "MasterClad Metal-Clad",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "MasterClad Medium Voltage Metal-Clad Switchgear 1200A 4.76kV VR Breakers",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.2 Metal-Clad",
+        "short_time_withstand_ka": 40.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "4.76kV",
+        "amps": 1200.0,
+        "aic": 40.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/MCLAD-05-1200A/"
+      }
+    },
+    {
+      "part_number": "MCLAD-15-1200A",
+      "series": "MasterClad Metal-Clad",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "MasterClad Medium Voltage Metal-Clad Switchgear 1200A 15kV VR Breakers",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.2 Metal-Clad",
+        "short_time_withstand_ka": 31.5,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "15kV",
+        "amps": 1200.0,
+        "aic": 31.5,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/MCLAD-15-1200A/"
+      }
+    },
+    {
+      "part_number": "MCLAD-15-2000A",
+      "series": "MasterClad Metal-Clad",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "MasterClad Medium Voltage Metal-Clad Switchgear 2000A 15kV VR Breakers",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.2 Metal-Clad",
+        "short_time_withstand_ka": 40.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "15kV",
+        "amps": 2000.0,
+        "aic": 40.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/MCLAD-15-2000A/"
+      }
+    },
+    {
+      "part_number": "MCLAD-ARC-15-3000A",
+      "series": "MasterClad Arc-Resistant",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "MasterClad Type 2B Arc-Resistant Medium Voltage Switchgear 3000A 15kV",
+      "specs": {
+        "switchgear_standard": "IEEE C37.20.7 Type 2B Arc-Resistant",
+        "short_time_withstand_ka": 50.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "15kV",
+        "amps": 3000.0,
+        "aic": 50.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/MCLAD-ARC-15-3000A/"
+      }
+    },
+    {
+      "part_number": "MGA36800",
+      "series": "PowerPact M",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact M-Frame 800A 3P 600V 35kAIC Electronic ET 1.0 I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "ET 1.0 Basic Electronic",
+        "frame_designation": "M-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MGA36800/"
+      }
+    },
+    {
+      "part_number": "MJA36800",
+      "series": "PowerPact M",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact M-Frame 800A 3P 600V 65kAIC Electronic ET 1.0 I-Line Breaker",
+      "specs": {
+        "trip_unit_type": "ET 1.0 Basic Electronic",
+        "frame_designation": "M-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MJA36800/"
+      }
+    },
+    {
+      "part_number": "MTZ-ATS-2000A",
+      "series": "MasterPact Breaker ATS",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "MasterPact MTZ Dual Breaker Automatic Transfer Switch Pair 2000A 480V",
+      "specs": {
+        "transition_mode": "Electrically & Mechanically Interlocked",
+        "switching_mechanism": "MasterPact MTZ2 Breaker Pair",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ-ATS-2000A/"
+      }
+    },
+    {
+      "part_number": "MTZ-ATS-3000A",
+      "series": "MasterPact Breaker ATS",
+      "domain": "transfer_switch",
+      "type_tag": "ATS",
+      "type_name": "Industrial Automatic Transfer Switch",
+      "description": "MasterPact MTZ Dual Breaker Automatic Transfer Switch Pair 3000A 480V",
+      "specs": {
+        "transition_mode": "Electrically & Mechanically Interlocked",
+        "switching_mechanism": "MasterPact MTZ2 Breaker Pair",
+        "controller": "ASCO Group 5 Controller / EcoStruxure Power ATS",
+        "catalog_section": "ASCO Power Technologies / Schneider Electric ATS",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "ASCO 7000 / MasterPact ATS",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ-ATS-3000A/"
+      }
+    },
+    {
+      "part_number": "MTZ208H1",
+      "series": "MasterPact MTZ2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ2 800A 3P 600V 65kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ2",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ208H1/"
+      }
+    },
+    {
+      "part_number": "MTZ216H1",
+      "series": "MasterPact MTZ2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ2 1600A 3P 600V 65kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ2",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ216H1/"
+      }
+    },
+    {
+      "part_number": "MTZ220H2",
+      "series": "MasterPact MTZ2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ2 2000A 3P 600V 85kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ2",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ220H2/"
+      }
+    },
+    {
+      "part_number": "MTZ230H2",
+      "series": "MasterPact MTZ2",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ2 3000A 3P 600V 85kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ2",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 3000.0,
+        "aic": 85.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ230H2/"
+      }
+    },
+    {
+      "part_number": "MTZ340H2",
+      "series": "MasterPact MTZ3",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ3 4000A 3P 600V 100kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ3",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ340H2/"
+      }
+    },
+    {
+      "part_number": "MTZ350H2",
+      "series": "MasterPact MTZ3",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ3 5000A 3P 600V 100kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ3",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ350H2/"
+      }
+    },
+    {
+      "part_number": "MTZ360H2",
+      "series": "MasterPact MTZ3",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterPact MTZ3 6000A 3P 600V 100kAIC Drawout Power Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic X Control Unit",
+        "frame_designation": "MTZ3",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 6000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/MTZ360H2/"
+      }
+    },
+    {
+      "part_number": "NF430L125",
+      "series": "NF",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NF Panelboard Interior 125A 3PH 4W 480Y/277VAC 30-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "480Y/277V",
+        "amps": 125.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NF430L125/"
+      }
+    },
+    {
+      "part_number": "NF442L250C",
+      "series": "NF",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NF Panelboard Interior 250A 3PH 4W 480Y/277VAC 42-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NF442L250C/"
+      }
+    },
+    {
+      "part_number": "NF442L400C",
+      "series": "NF",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NF Panelboard Interior 400A 3PH 4W 480Y/277VAC 42-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NF442L400C/"
+      }
+    },
+    {
+      "part_number": "NF442M250",
+      "series": "NF",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NF Panelboard Interior 250A 3PH 4W 480Y/277VAC 42-Circuit Main Breaker PowerPact J",
+      "specs": {
+        "main_device_type": "Main Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "480Y/277V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NF442M250/"
+      }
+    },
+    {
+      "part_number": "NF484L800C",
+      "series": "NF",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NF Panelboard Interior 800A 3PH 4W 480Y/277VAC 84-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NF484L800C/"
+      }
+    },
+    {
+      "part_number": "NQ430L100",
+      "series": "NQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NQ Panelboard Interior 100A 3PH 4W 240VAC 30-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "208Y/120V",
+        "amps": 100.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NQ430L100/"
+      }
+    },
+    {
+      "part_number": "NQ442L225C",
+      "series": "NQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NQ Panelboard Interior 225A 3PH 4W 240VAC 42-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NQ442L225C/"
+      }
+    },
+    {
+      "part_number": "NQ442L400",
+      "series": "NQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NQ Panelboard Interior 400A 3PH 4W 240VAC 42-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "208Y/120V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NQ442L400/"
+      }
+    },
+    {
+      "part_number": "NQ442L600",
+      "series": "NQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NQ Panelboard Interior 600A 3PH 4W 240VAC 42-Circuit Main Lugs Copper Bus",
+      "specs": {
+        "main_device_type": "Main Lugs",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "208Y/120V",
+        "amps": 600.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NQ442L600/"
+      }
+    },
+    {
+      "part_number": "NQ442M225",
+      "series": "NQ",
+      "domain": "panelboard",
+      "type_tag": "PANEL",
+      "type_name": "Industrial Lighting & Power Distribution Panelboard",
+      "description": "NQ Panelboard Interior 225A 3PH 4W 240VAC 42-Circuit Main Breaker PowerPact Q",
+      "specs": {
+        "main_device_type": "Main Breaker",
+        "bus_material": "Copper",
+        "catalog_section": "Digest 179 Section 9: Panelboards",
+        "mounting": "Surface / Flush Mount",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 / 3R Compatible"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 9",
+        "cut_sheet": "https://www.se.com/us/en/product/NQ442M225/"
+      }
+    },
+    {
+      "part_number": "PCSP060D5N1",
+      "series": "AccuSine PCS+",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Electronic VAR Compensator",
+      "description": "AccuSine PCS+ Active Harmonic Filter 60A 380-480V 3PH NEMA 1 Enclosed",
+      "specs": {
+        "filter_technology": "AccuSine PCS+ Active Harmonic Filter",
+        "mitigation_target": "Cancels 2nd to 51st Harmonic Orders (THDi < 3%)",
+        "response_time_ms": "< 2 cycles ultra-fast mitigation",
+        "parallelable": "Up to 10 units in parallel for 3000A compensation",
+        "voltage": "480V",
+        "amps": 60.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "AccuSine Technical Catalog",
+        "cut_sheet": "https://www.se.com/us/en/product/PCSP060D5N1/"
+      }
+    },
+    {
+      "part_number": "PCSP120D5N1",
+      "series": "AccuSine PCS+",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Electronic VAR Compensator",
+      "description": "AccuSine PCS+ Active Harmonic Filter 120A 380-480V 3PH NEMA 1 Enclosed",
+      "specs": {
+        "filter_technology": "AccuSine PCS+ Active Harmonic Filter",
+        "mitigation_target": "Cancels 2nd to 51st Harmonic Orders (THDi < 3%)",
+        "response_time_ms": "< 2 cycles ultra-fast mitigation",
+        "parallelable": "Up to 10 units in parallel for 3000A compensation",
+        "voltage": "480V",
+        "amps": 120.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "AccuSine Technical Catalog",
+        "cut_sheet": "https://www.se.com/us/en/product/PCSP120D5N1/"
+      }
+    },
+    {
+      "part_number": "PCSP200D5N1",
+      "series": "AccuSine PCS+",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Electronic VAR Compensator",
+      "description": "AccuSine PCS+ Active Harmonic Filter 200A 380-480V 3PH NEMA 1 Enclosed",
+      "specs": {
+        "filter_technology": "AccuSine PCS+ Active Harmonic Filter",
+        "mitigation_target": "Cancels 2nd to 51st Harmonic Orders (THDi < 3%)",
+        "response_time_ms": "< 2 cycles ultra-fast mitigation",
+        "parallelable": "Up to 10 units in parallel for 3000A compensation",
+        "voltage": "480V",
+        "amps": 200.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "AccuSine Technical Catalog",
+        "cut_sheet": "https://www.se.com/us/en/product/PCSP200D5N1/"
+      }
+    },
+    {
+      "part_number": "PCSP300D5N1",
+      "series": "AccuSine PCS+",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Electronic VAR Compensator",
+      "description": "AccuSine PCS+ Active Harmonic Filter 300A 380-480V 3PH NEMA 1 Enclosed",
+      "specs": {
+        "filter_technology": "AccuSine PCS+ Active Harmonic Filter",
+        "mitigation_target": "Cancels 2nd to 51st Harmonic Orders (THDi < 3%)",
+        "response_time_ms": "< 2 cycles ultra-fast mitigation",
+        "parallelable": "Up to 10 units in parallel for 3000A compensation",
+        "voltage": "480V",
+        "amps": 300.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "AccuSine Technical Catalog",
+        "cut_sheet": "https://www.se.com/us/en/product/PCSP300D5N1/"
+      }
+    },
+    {
+      "part_number": "PFVP100D5N1",
+      "series": "AccuSine PFV+",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Electronic VAR Compensator",
+      "description": "AccuSine PFV+ Electronic VAR Compensator 100kVAR 380-480V 3PH NEMA 1",
+      "specs": {
+        "filter_technology": "AccuSine PFV+ Electronic VAR Compensator",
+        "mitigation_target": "Cancels 2nd to 51st Harmonic Orders (THDi < 3%)",
+        "response_time_ms": "< 2 cycles ultra-fast mitigation",
+        "parallelable": "Up to 10 units in parallel for 3000A compensation",
+        "voltage": "480V",
+        "amps": 120.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "AccuSine Technical Catalog",
+        "cut_sheet": "https://www.se.com/us/en/product/PFVP100D5N1/"
+      }
+    },
+    {
+      "part_number": "PFVP200D5N1",
+      "series": "AccuSine PFV+",
+      "domain": "power_quality",
+      "type_tag": "POWER_COND",
+      "type_name": "Active Harmonic Filter & Electronic VAR Compensator",
+      "description": "AccuSine PFV+ Electronic VAR Compensator 200kVAR 380-480V 3PH NEMA 1",
+      "specs": {
+        "filter_technology": "AccuSine PFV+ Electronic VAR Compensator",
+        "mitigation_target": "Cancels 2nd to 51st Harmonic Orders (THDi < 3%)",
+        "response_time_ms": "< 2 cycles ultra-fast mitigation",
+        "parallelable": "Up to 10 units in parallel for 3000A compensation",
+        "voltage": "480V",
+        "amps": 240.0,
+        "poles": "3P",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / IP20"
+      },
+      "docs": {
+        "catalog_volume": "AccuSine Technical Catalog",
+        "cut_sheet": "https://www.se.com/us/en/product/PFVP200D5N1/"
+      }
+    },
+    {
+      "part_number": "PGA361000U31A",
+      "series": "PowerPact P",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact P-Frame 1000A 3P 600V 35kAIC Micrologic 3.0 Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 3.0 Electronic",
+        "frame_designation": "P-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1000.0,
+        "aic": 35.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/PGA361000U31A/"
+      }
+    },
+    {
+      "part_number": "PJA361200U54A",
+      "series": "PowerPact P",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact P-Frame 1200A 3P 600V 65kAIC Micrologic 5.0P Power Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 5.0P Power Electronic",
+        "frame_designation": "P-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/PJA361200U54A/"
+      }
+    },
+    {
+      "part_number": "QED2-1200A-480V",
+      "series": "QED-2",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-2 Low Voltage Distribution Switchboard 1200A 480V Front-Connected PowerPact P",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "PowerPact P Main + I-Line Distribution",
+        "short_circuit_rating_ka": 65.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 1200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED2-1200A-480V/"
+      }
+    },
+    {
+      "part_number": "QED2-2000A-480V",
+      "series": "QED-2",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-2 Low Voltage Distribution Switchboard 2000A 480V Front-Connected PowerPact R",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "PowerPact R Main + I-Line Distribution",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED2-2000A-480V/"
+      }
+    },
+    {
+      "part_number": "QED2-3000A-480V",
+      "series": "QED-2",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-2 Low Voltage Distribution Switchboard 3000A 480V MasterPact MTZ2 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "MasterPact MTZ2 Drawout Main",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED2-3000A-480V/"
+      }
+    },
+    {
+      "part_number": "QED2-4000A-480V",
+      "series": "QED-2",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-2 Low Voltage Distribution Switchboard 4000A 480V MasterPact MTZ3 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "MasterPact MTZ3 Drawout Main",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED2-4000A-480V/"
+      }
+    },
+    {
+      "part_number": "QED2-5000A-480V",
+      "series": "QED-2",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-2 Low Voltage Distribution Switchboard 5000A 480V MasterPact MTZ3 Main",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "MasterPact MTZ3 Drawout Main",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED2-5000A-480V/"
+      }
+    },
+    {
+      "part_number": "QED6-2000A-480V",
+      "series": "QED-6",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-6 Rear-Connected Low Voltage Power Switchboard 2000A 480V MasterPact MTZ2",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "MasterPact MTZ2 Drawout Feeders",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED6-2000A-480V/"
+      }
+    },
+    {
+      "part_number": "QED6-4000A-480V",
+      "series": "QED-6",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "QED-6 Rear-Connected Low Voltage Power Switchboard 4000A 480V MasterPact MTZ3",
+      "specs": {
+        "bus_material": "Silver-Plated Copper",
+        "switchboard_configuration": "MasterPact MTZ3 Drawout Feeders",
+        "short_circuit_rating_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED6-4000A-480V/"
+      }
+    },
+    {
+      "part_number": "QED6-SWGR-2000A",
+      "series": "QED-6 Metal-Enclosed",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "QED-6 Low Voltage Metal-Enclosed Switchgear 2000A 480V UL 1558 MTZ2",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED6-SWGR-2000A/"
+      }
+    },
+    {
+      "part_number": "QED6-SWGR-3200A",
+      "series": "QED-6 Metal-Enclosed",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "QED-6 Low Voltage Metal-Enclosed Switchgear 3200A 480V UL 1558 MTZ3",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "480V",
+        "amps": 3200.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED6-SWGR-3200A/"
+      }
+    },
+    {
+      "part_number": "QED6-SWGR-4000A",
+      "series": "QED-6 Metal-Enclosed",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "QED-6 Low Voltage Metal-Enclosed Switchgear 4000A 480V UL 1558 MTZ3",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED6-SWGR-4000A/"
+      }
+    },
+    {
+      "part_number": "QED6-SWGR-5000A",
+      "series": "QED-6 Metal-Enclosed",
+      "domain": "switchgear",
+      "type_tag": "SWGR",
+      "type_name": "Low-Voltage / Medium-Voltage Metal-Enclosed Switchgear",
+      "description": "QED-6 Low Voltage Metal-Enclosed Switchgear 5000A 480V UL 1558 MTZ3",
+      "specs": {
+        "switchgear_standard": "UL 1558 LV Switchgear",
+        "short_time_withstand_ka": 100.0,
+        "catalog_section": "Digest 179 Section 11 & Medium Voltage Distribution",
+        "voltage": "480V",
+        "amps": 5000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Metal-Clad"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/QED6-SWGR-5000A/"
+      }
+    },
+    {
+      "part_number": "QO324L125G",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 125A 3PH 24-Circuit Main Lugs Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 125.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 24,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO324L125G/"
+      }
+    },
+    {
+      "part_number": "QO330L200G",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 200A 3PH 30-Circuit Main Lugs Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO330L200G/"
+      }
+    },
+    {
+      "part_number": "QO330MQ100",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 100A 3PH 30-Circuit Main Breaker Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 100.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO330MQ100/"
+      }
+    },
+    {
+      "part_number": "QO330MQ150",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 150A 3PH 30-Circuit Main Breaker Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 150.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 30,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO330MQ150/"
+      }
+    },
+    {
+      "part_number": "QO342L225G",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 225A 3PH 42-Circuit Main Lugs Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO342L225G/"
+      }
+    },
+    {
+      "part_number": "QO342L225RBD",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 225A 3PH 42-Circuit Main Lugs Load Center NEMA 3R Outdoor",
+      "specs": {
+        "main_device_type": "Main Lug Only",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 3R Outdoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO342L225RBD/"
+      }
+    },
+    {
+      "part_number": "QO342MQ200",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 200A 3PH 42-Circuit Main Breaker Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 200.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO342MQ200/"
+      }
+    },
+    {
+      "part_number": "QO342MQ225",
+      "series": "QO Commercial",
+      "domain": "load_center",
+      "type_tag": "LOAD_CENTER",
+      "type_name": "Commercial/Industrial 3-Phase Load Center",
+      "description": "QO 225A 3PH 42-Circuit Main Breaker Load Center NEMA 1",
+      "specs": {
+        "main_device_type": "Main Breaker Included",
+        "bus_material": "Tin-Plated Copper / Shielded Aluminum",
+        "catalog_section": "Digest 179 Section 1: Load Centers",
+        "branch_breaker_family": "QO Plug-On / Homeline",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "aic": 22.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 42,
+        "nema_rating": "NEMA 1 Indoor"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 1",
+        "cut_sheet": "https://www.se.com/us/en/product/QO342MQ225/"
+      }
+    },
+    {
+      "part_number": "RGF361600U54A",
+      "series": "PowerPact R",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact R-Frame 1600A 3P 600V 65kAIC Micrologic 5.0P Electronic Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 5.0P Electronic",
+        "frame_designation": "R-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 1600.0,
+        "aic": 65.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/RGF361600U54A/"
+      }
+    },
+    {
+      "part_number": "RJF362000U64AE1",
+      "series": "PowerPact R",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact R-Frame 2000A 3P 600V 100kAIC Micrologic 6.0A Ammeter Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 6.0A Ammeter",
+        "frame_designation": "R-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/RJF362000U64AE1/"
+      }
+    },
+    {
+      "part_number": "RJF362500U64AE1",
+      "series": "PowerPact R",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact R-Frame 2500A 3P 600V 100kAIC Micrologic 6.0A Ammeter Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 6.0A Ammeter",
+        "frame_designation": "R-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 2500.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/RJF362500U64AE1/"
+      }
+    },
+    {
+      "part_number": "RJF363000U64AE1",
+      "series": "PowerPact R",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "PowerPact R-Frame 3000A 3P 600V 100kAIC Micrologic 6.0A Ammeter Breaker",
+      "specs": {
+        "trip_unit_type": "Micrologic 6.0A Ammeter",
+        "frame_designation": "R-Frame",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "600V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/RJF363000U64AE1/"
+      }
+    },
+    {
+      "part_number": "SE-PDU-100KVA-480-208",
+      "series": "PowerLogic PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Precision Power Distribution Unit 100kVA 480V to 208Y/120V 84-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 277.6,
+        "kva": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PDU-100KVA-480-208/"
+      }
+    },
+    {
+      "part_number": "SE-PDU-150KVA-480-208",
+      "series": "PowerLogic PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Precision Power Distribution Unit 150kVA 480V to 208Y/120V 168-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 416.4,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PDU-150KVA-480-208/"
+      }
+    },
+    {
+      "part_number": "SE-PDU-225KVA-480-208",
+      "series": "PowerLogic PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Precision Power Distribution Unit 225kVA 480V to 208Y/120V 168-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 624.5,
+        "kva": 225.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PDU-225KVA-480-208/"
+      }
+    },
+    {
+      "part_number": "SE-PDU-300KVA-480-208",
+      "series": "PowerLogic PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Precision Power Distribution Unit 300kVA 480V to 208Y/120V 168-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 832.7,
+        "kva": 300.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PDU-300KVA-480-208/"
+      }
+    },
+    {
+      "part_number": "SE-PDU-50KVA-480-208",
+      "series": "PowerLogic PDU",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Precision Power Distribution Unit 50kVA 480V to 208Y/120V 84-Pole",
+      "specs": {
+        "subsystem_type": "K-13 Copper Isolation XFMR + BCM",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "480V to 208Y/120V",
+        "amps": 138.8,
+        "kva": 50.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PDU-50KVA-480-208/"
+      }
+    },
+    {
+      "part_number": "SE-PSG-2GEN-2000A",
+      "series": "Schneider MasterPact PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Multi-Generator Paralleling Switchgear 2-Gen 2000A 480V MasterPact MTZ",
+      "specs": {
+        "supported_generators": 2,
+        "automation_controller": "Schneider Modicon M580 Redundant PLC",
+        "load_management": "Automatic Priority Load Shedding / Peak Shaving",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Utility Interconnection",
+        "voltage": "480V",
+        "amps": 2000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Control Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PSG-2GEN-2000A/"
+      }
+    },
+    {
+      "part_number": "SE-PSG-3GEN-3000A",
+      "series": "Schneider MasterPact PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Multi-Generator Paralleling Switchgear 3-Gen 3000A 480V MasterPact MTZ",
+      "specs": {
+        "supported_generators": 3,
+        "automation_controller": "Schneider Modicon M580 Redundant PLC",
+        "load_management": "Automatic Priority Load Shedding / Peak Shaving",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Utility Interconnection",
+        "voltage": "480V",
+        "amps": 3000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Control Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PSG-3GEN-3000A/"
+      }
+    },
+    {
+      "part_number": "SE-PSG-4GEN-4000A",
+      "series": "Schneider MasterPact PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Multi-Generator Paralleling Switchgear 4-Gen 4000A 480V MasterPact MTZ",
+      "specs": {
+        "supported_generators": 4,
+        "automation_controller": "Schneider Modicon M580 Redundant PLC",
+        "load_management": "Automatic Priority Load Shedding / Peak Shaving",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Utility Interconnection",
+        "voltage": "480V",
+        "amps": 4000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Control Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PSG-4GEN-4000A/"
+      }
+    },
+    {
+      "part_number": "SE-PSG-MV-15KV-2000A",
+      "series": "Schneider MasterClad PSG",
+      "domain": "paralleling_switchgear",
+      "type_tag": "PSG",
+      "type_name": "Multi-Generator Emergency Paralleling Switchgear",
+      "description": "Medium Voltage 15kV Multi-Generator Paralleling Switchgear 2000A VR Breakers",
+      "specs": {
+        "supported_generators": 4,
+        "automation_controller": "Modicon Quantum / M580 Redundant PLC",
+        "load_management": "Automatic Priority Load Shedding / Peak Shaving",
+        "paralleling_modes": "Emergency Standby / Isolated Bus / Utility Interconnection",
+        "voltage": "15kV",
+        "amps": 2000.0,
+        "aic": 40.0,
+        "poles": "3P3W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Indoor Industrial"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Control Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-PSG-MV-15KV-2000A/"
+      }
+    },
+    {
+      "part_number": "SE-RPP-225A-84P",
+      "series": "PowerLogic RPP",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Remote Power Panel 225A Dual Feed 84-Circuit Data Distribution",
+      "specs": {
+        "subsystem_type": "Dual Feed Remote Power Panel",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "208Y/120V",
+        "amps": 225.0,
+        "kva": 75.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 84,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-RPP-225A-84P/"
+      }
+    },
+    {
+      "part_number": "SE-RPP-400A-168P",
+      "series": "PowerLogic RPP",
+      "domain": "power_distribution",
+      "type_tag": "PDS",
+      "type_name": "Power Distribution Unit (PDU) & Remote Power Panel (RPP)",
+      "description": "PowerLogic Remote Power Panel 400A Dual Feed 168-Circuit Data Distribution",
+      "specs": {
+        "subsystem_type": "Dual Feed Remote Power Panel",
+        "branch_monitoring": "PowerLogic Branch Circuit Power Metering (BCPM)",
+        "isolation_transformer": "K-13 / K-20 Shielded Isolation Transformer",
+        "voltage": "208Y/120V",
+        "amps": 400.0,
+        "kva": 150.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "total_slots": 168,
+        "nema_rating": "NEMA 1 Indoor Data Center Enclosure"
+      },
+      "docs": {
+        "catalog_volume": "Schneider Power Distribution Systems",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-RPP-400A-168P/"
+      }
+    },
+    {
+      "part_number": "SE-STS-1000A-480V",
+      "series": "Schneider STS",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Schneider Electric High-Speed Static Transfer Switch 1000A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Bypass",
+        "control_logic": "Dual DSP Redundant",
+        "maintenance_bypass": "Triple Breaker Wrap-Around Maintenance Bypass",
+        "voltage": "480V",
+        "amps": 1000.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Schneider STS Technical Guide",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-STS-1000A-480V/"
+      }
+    },
+    {
+      "part_number": "SE-STS-100A-480V",
+      "series": "Schneider STS",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Schneider Electric High-Speed Static Transfer Switch 100A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Bypass",
+        "control_logic": "Dual DSP Redundant",
+        "maintenance_bypass": "Triple Breaker Wrap-Around Maintenance Bypass",
+        "voltage": "480V",
+        "amps": 100.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Schneider STS Technical Guide",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-STS-100A-480V/"
+      }
+    },
+    {
+      "part_number": "SE-STS-250A-480V",
+      "series": "Schneider STS",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Schneider Electric High-Speed Static Transfer Switch 250A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Bypass",
+        "control_logic": "Dual DSP Redundant",
+        "maintenance_bypass": "Triple Breaker Wrap-Around Maintenance Bypass",
+        "voltage": "480V",
+        "amps": 250.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Schneider STS Technical Guide",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-STS-250A-480V/"
+      }
+    },
+    {
+      "part_number": "SE-STS-400A-480V",
+      "series": "Schneider STS",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Schneider Electric High-Speed Static Transfer Switch 400A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Bypass",
+        "control_logic": "Dual DSP Redundant",
+        "maintenance_bypass": "Triple Breaker Wrap-Around Maintenance Bypass",
+        "voltage": "480V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Schneider STS Technical Guide",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-STS-400A-480V/"
+      }
+    },
+    {
+      "part_number": "SE-STS-600A-480V",
+      "series": "Schneider STS",
+      "domain": "transfer_switch",
+      "type_tag": "STS",
+      "type_name": "Solid-State Static Transfer Switch (<4ms)",
+      "description": "Schneider Electric High-Speed Static Transfer Switch 600A 480V 3P4W <4ms",
+      "specs": {
+        "transfer_time": "< 4ms (< 1/4 cycle)",
+        "switch_architecture": "True SCR Solid-State Static Bypass",
+        "control_logic": "Dual DSP Redundant",
+        "maintenance_bypass": "Triple Breaker Wrap-Around Maintenance Bypass",
+        "voltage": "480V",
+        "amps": 600.0,
+        "aic": 100.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 Industrial Floor Standing"
+      },
+      "docs": {
+        "catalog_volume": "Schneider STS Technical Guide",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-STS-600A-480V/"
+      }
+    },
+    {
+      "part_number": "SE-SUB-1500KVA",
+      "series": "Substation Liquid-Filled",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Square D Substation Liquid-Filled Transformer 1500kVA 13.8kV-480Y/277V FR3",
+      "specs": {
+        "primary_voltage": "13.8kV Delta",
+        "secondary_voltage": "480Y/277V",
+        "primary_amps": 62.8,
+        "secondary_amps": 1804.2,
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "13.8kV Delta Pri / 480Y/277V Sec",
+        "amps": 1804.2,
+        "kva": 1500.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-SUB-1500KVA/"
+      }
+    },
+    {
+      "part_number": "SE-SUB-2500KVA",
+      "series": "Substation Liquid-Filled",
+      "domain": "transformer",
+      "type_tag": "XFMR",
+      "type_name": "Low-Voltage Ventilated / Liquid Substation Transformer",
+      "description": "Square D Substation Liquid-Filled Transformer 2500kVA 13.8kV-480Y/277V FR3",
+      "specs": {
+        "primary_voltage": "13.8kV Delta",
+        "secondary_voltage": "480Y/277V",
+        "primary_amps": 104.6,
+        "secondary_amps": 3007.0,
+        "winding_material": "Copper",
+        "temperature_rise_c": 65.0,
+        "efficiency_standard": "DOE 2016 Compliant (10 CFR Part 431)",
+        "catalog_section": "Digest 179 Section 14: Transformers",
+        "voltage": "13.8kV Delta Pri / 480Y/277V Sec",
+        "amps": 3007.0,
+        "kva": 2500.0,
+        "poles": "3PH",
+        "phase": "3PH",
+        "nema_rating": "NEMA 2 / 3R Weathershield",
+        "impedance_z": 5.75
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 14",
+        "cut_sheet": "https://www.se.com/us/en/product/SE-SUB-2500KVA/"
+      }
+    },
+    {
+      "part_number": "SPEED-D-400A-480V",
+      "series": "Speed-D",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "Speed-D Commercial Service Entrance Switchboard 400A 480Y/277V 3PH 4W",
+      "specs": {
+        "bus_material": "Copper",
+        "switchboard_configuration": "Utility Metering + PowerPact Main",
+        "short_circuit_rating_ka": 65.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 400.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/SPEED-D-400A-480V/"
+      }
+    },
+    {
+      "part_number": "SPEED-D-800A-480V",
+      "series": "Speed-D",
+      "domain": "switchboard",
+      "type_tag": "SWBD",
+      "type_name": "Industrial Front/Rear Connected Distribution Switchboard",
+      "description": "Speed-D Commercial Service Entrance Switchboard 800A 480Y/277V 3PH 4W",
+      "specs": {
+        "bus_material": "Copper",
+        "switchboard_configuration": "Utility Metering + PowerPact M Main",
+        "short_circuit_rating_ka": 65.0,
+        "catalog_section": "Digest 179 Section 11: Switchboards",
+        "standards": "UL 891 / NEMA PB2",
+        "voltage": "480Y/277V",
+        "amps": 800.0,
+        "aic": 65.0,
+        "poles": "3P4W",
+        "phase": "3PH",
+        "nema_rating": "NEMA 1 / 3R"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 11",
+        "cut_sheet": "https://www.se.com/us/en/product/SPEED-D-800A-480V/"
+      }
+    },
+    {
+      "part_number": "VR-05-1200-25",
+      "series": "MasterClad VR",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterClad VR 1200A 4.76kV 25kAIC Vacuum Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Vacuum Interrupter Drawout",
+        "frame_designation": "VR 5kV",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "4.76kV",
+        "amps": 1200.0,
+        "aic": 25.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/VR-05-1200-25/"
+      }
+    },
+    {
+      "part_number": "VR-15-1200-31",
+      "series": "MasterClad VR",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterClad VR 1200A 15kV 31.5kAIC Vacuum Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Vacuum Interrupter Drawout",
+        "frame_designation": "VR 15kV",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "15kV",
+        "amps": 1200.0,
+        "aic": 31.5,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/VR-15-1200-31/"
+      }
+    },
+    {
+      "part_number": "VR-15-2000-40",
+      "series": "MasterClad VR",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterClad VR 2000A 15kV 40kAIC Vacuum Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Vacuum Interrupter Drawout",
+        "frame_designation": "VR 15kV",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "15kV",
+        "amps": 2000.0,
+        "aic": 40.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/VR-15-2000-40/"
+      }
+    },
+    {
+      "part_number": "VR-15-3000-50",
+      "series": "MasterClad VR",
+      "domain": "circuit_breaker",
+      "type_tag": "CB",
+      "type_name": "Industrial Molded Case / Low-Voltage Power Breaker",
+      "description": "MasterClad VR 3000A 15kV 50kAIC Vacuum Circuit Breaker",
+      "specs": {
+        "trip_unit_type": "Vacuum Interrupter Drawout",
+        "frame_designation": "VR 15kV",
+        "catalog_section": "Digest 179 Section 7: Circuit Breakers",
+        "mounting": "I-Line / Plug-in / Drawout",
+        "voltage": "15kV",
+        "amps": 3000.0,
+        "aic": 50.0,
+        "poles": "3P",
+        "phase": "3PH"
+      },
+      "docs": {
+        "catalog_volume": "Digest 179 Section 7",
+        "cut_sheet": "https://www.se.com/us/en/product/VR-15-3000-50/"
+      }
+    },
+    {
+      "part_number": "75T3HNV",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 75 kVA Dry-Type Distribution Transformer (Ventilated dry-type, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": null,
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE112T3HFISNLP",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 112 kVA Dry-Type Distribution Transformer (NEMA 1, isolated, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 112.5,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": null,
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE150T3HFISNLP",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 150 kVA Dry-Type Distribution Transformer (NEMA 1, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 150.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": null,
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE225T3H",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 225 kVA Dry-Type Distribution Transformer (Standard Ventilated Dry-Type 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 225.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": null,
+        "upc": null
+      }
+    },
+    {
+      "part_number": "EE75T3H",
+      "series": "EE Series Low Voltage Dry-Type",
+      "domain": "transformers",
+      "type_tag": "XFMR",
+      "type_name": "Dry-Type Step-Down Transformer",
+      "description": "Square D 75 kVA Dry-Type Distribution Transformer (150\u00b0C rise, 20 taps, 480V Delta - 208Y/120V)",
+      "specs": {
+        "kva": 75.0,
+        "primary_voltage": "480V Delta",
+        "secondary_voltage": "208Y/120V",
+        "voltage": "480V : 208Y/120V",
+        "phase": "3\u00d8",
+        "impedance_z": 4.5,
+        "winding": "Aluminum",
+        "temp_rise": "150\u00b0C",
+        "nema_rating": "NEMA 1 (Indoor Ventilated)"
+      },
+      "docs": {
+        "cut_sheet": null,
+        "upc": null
+      }
+    }
+  ]
+}
