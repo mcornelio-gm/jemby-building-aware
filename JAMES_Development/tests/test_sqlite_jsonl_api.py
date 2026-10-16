@@ -290,6 +290,120 @@ def test_api_custom_breakers_tracking():
     client.delete(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes/panel_custom_test")
 
 
+def test_node_customized_attributes_and_voltage_persistence():
+    """Verify that customized voltage, ratings, room, enclosure, and attributes persist and round-trip cleanly."""
+    original_node = {
+        "id": "node_custom_lp_1",
+        "tag": "LP-CUSTOM-1",
+        "name": "Custom Lighting Panel 1",
+        "domain": "panels",
+        "object_class": "LightingBranchPanelObject",
+        "type_tag": "panel",
+        "type_name": "Lighting Panel",
+        "room": "Electrical Room B",
+        "fed_from": "MDP-1",
+        "voltage": "208Y/120V 3Ø 4W",
+        "amps": 225.0,
+        "aic": 22.0,
+        "is_panel": True,
+        "slots": 42,
+        "attributes": {
+            "tag": "LP-CUSTOM-1",
+            "voltage": "208Y/120V 3Ø 4W",
+            "amps": 225.0,
+            "aic": 22.0,
+            "room": "Electrical Room B",
+            "enclosure": "NEMA 3R",
+            "main_type": "MLO",
+            "mounting": "Flush",
+            "manufacturer": "Square D",
+            "model_no": "NQ442L225",
+            "vendor_attrs": {
+                "copper_bus": "Yes",
+                "special_ground": "Isolated Ground"
+            },
+            "upstream_sources": ["MDP-1"],
+            "schedule": [
+                {
+                    "rowIdx": 0,
+                    "leftSlot": 1,
+                    "leftDesc": "Critical Circuit 1",
+                    "leftTrip": "20",
+                    "leftPoles": 1
+                }
+            ]
+        }
+    }
+
+    # 1. Post original customized equipment
+    res1 = client.post(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes", json=original_node)
+    assert res1.status_code == 200
+
+    # 2. Verify stored attributes in SQLite
+    res_get1 = client.get(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes")
+    assert res_get1.status_code == 200
+    nodes = res_get1.json()
+    item1 = next((n for n in nodes if n["tag"] == "LP-CUSTOM-1"), None)
+    assert item1 is not None
+    assert item1["voltage"] == "208Y/120V 3Ø 4W"
+    assert item1["amps"] == 225.0
+    assert item1["aic"] == 22.0
+    assert item1["room"] == "Electrical Room B"
+    attrs1 = item1.get("attributes", {})
+    assert attrs1.get("enclosure") == "NEMA 3R"
+    assert attrs1.get("main_type") == "MLO"
+    assert attrs1.get("mounting") == "Flush"
+    assert attrs1.get("vendor_attrs", {}).get("copper_bus") == "Yes"
+
+    # 3. Simulate duplicating the asset with sequential tag and cloned custom specs
+    duplicated_node = {
+        "id": "node_custom_lp_2",
+        "tag": "LP-CUSTOM-2",
+        "name": "Custom Lighting Panel 2",
+        "domain": item1["domain"],
+        "object_class": item1["object_class"],
+        "type_tag": item1["type_tag"],
+        "type_name": item1["type_name"],
+        "room": item1["room"],
+        "fed_from": item1["fed_from"],
+        "voltage": item1["voltage"],
+        "amps": item1["amps"],
+        "aic": item1["aic"],
+        "is_panel": item1["is_panel"],
+        "slots": item1["slots"],
+        "attributes": {
+            **attrs1,
+            "tag": "LP-CUSTOM-2",
+            "name": "Custom Lighting Panel 2"
+        }
+    }
+
+    res2 = client.post(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes", json=duplicated_node)
+    assert res2.status_code == 200
+
+    # 4. Verify duplicated asset in SQLite retains all custom specs
+    res_get2 = client.get(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes")
+    nodes2 = res_get2.json()
+    item2 = next((n for n in nodes2 if n["tag"] == "LP-CUSTOM-2"), None)
+    assert item2 is not None
+    assert item2["voltage"] == "208Y/120V 3Ø 4W"
+    assert item2["amps"] == 225.0
+    assert item2["aic"] == 22.0
+    assert item2["room"] == "Electrical Room B"
+    attrs2 = item2.get("attributes", {})
+    assert attrs2.get("enclosure") == "NEMA 3R"
+    assert attrs2.get("main_type") == "MLO"
+    assert attrs2.get("mounting") == "Flush"
+    assert attrs2.get("vendor_attrs", {}).get("copper_bus") == "Yes"
+    assert len(attrs2.get("schedule", [])) == 1
+    assert attrs2["schedule"][0]["leftDesc"] == "Critical Circuit 1"
+
+    # Cleanup
+    client.delete(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes/node_custom_lp_1")
+    client.delete(f"/api/clients/{TEST_CLIENT_ID}/facilities/{TEST_FACILITY_ID}/nodes/node_custom_lp_2")
+
+
+
 
 
 

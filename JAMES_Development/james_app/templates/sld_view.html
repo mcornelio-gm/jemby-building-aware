@@ -2191,6 +2191,7 @@
         selectedDomain: null,
         selectedType: null,
         customAttrsList: [],
+        customVoltageMode: false,
         stagedPhotos: [],
         newNoteText: '',
         editingNoteId: null,
@@ -2515,17 +2516,17 @@
             object_class: this.editingNode.object_class || '',
             type_tag: this.editingNode.type_tag || '',
             type_name: this.editingNode.type_name || this.editingNode.name || '',
-            room: this.editingNode.room || '',
+            room: this.editingNode.room || attrs.room || '',
             fed_from: sources[0] || '',
             upstream_sources: sources,
-            voltage: this.editingNode.voltage || attrs.voltage || '480V',
-            amps: this.editingNode.amps || attrs.amps || 225,
-            aic: this.editingNode.aic || attrs.aic || 22,
-            enclosure: attrs.enclosure || 'NEMA 1',
+            voltage: this.editingNode.voltage || attrs.voltage || '480Y/277V 3Ø 4W',
+            amps: (this.editingNode.amps !== undefined && this.editingNode.amps !== null && this.editingNode.amps !== '') ? this.editingNode.amps : (attrs.amps || 225),
+            aic: (this.editingNode.aic !== undefined && this.editingNode.aic !== null && this.editingNode.aic !== '') ? this.editingNode.aic : (attrs.aic || 22),
+            enclosure: attrs.enclosure || this.editingNode.enclosure || 'NEMA 1',
             is_panel: isPanel ? 1 : 0,
             slots: isPanel ? (Number(this.editingNode.slots || attrs.slots) || 42) : 0,
-            main_type: attrs.main_type || 'MCB',
-            mounting: attrs.mounting || 'Surface',
+            main_type: attrs.main_type || this.editingNode.main_type || 'MCB',
+            mounting: attrs.mounting || this.editingNode.mounting || 'Surface',
             manufacturer: attrs.manufacturer || '',
             model_no: attrs.model_no || '',
             asset_tag: attrs.asset_tag || '',
@@ -3642,6 +3643,13 @@
               ...attrs,
               tag: tag,
               fed_from: primaryFedFrom,
+              voltage: this.form.voltage || '',
+              amps: this.form.amps || '',
+              aic: this.form.aic || '',
+              room: this.form.room || '',
+              enclosure: this.form.enclosure || 'NEMA 1',
+              main_type: this.form.main_type || 'MCB',
+              mounting: this.form.mounting || 'Surface',
               upstream_sources: cleanedSources,
               emergency_source: emergencySource,
               slots: isPanel ? (Number(this.form.slots) || 42) : 0,
@@ -3651,7 +3659,6 @@
               asset_tag: this.form.asset_tag || '',
               serial_no: this.form.serial_no || '',
               year_installed: this.form.year_installed || null,
-              mounting: this.form.mounting || 'Surface',
               criticality: this.form.criticality || 'Medium',
               condition: this.form.condition || '1',
               environment: this.form.environment || 'Clean',
@@ -3710,6 +3717,193 @@
         openInSurveyWorkbench() {
           const targetParam = encodeURIComponent(this.form.tag || this.form.id || (this.editingNode && (this.editingNode.tag || this.editingNode.id)) || '');
           window.location.href = `/survey?client=${encodeURIComponent(this.client)}&facility=${encodeURIComponent(this.facility)}&edit=${targetParam}`;
+        },
+
+        getNextAvailableTag(defaultTag) {
+          if (!defaultTag) return 'EQ-1';
+          const usedTags = new Set(
+            (this.allNodes || []).map(n => String(n.tag || '').trim().toUpperCase())
+          );
+
+          // Regex matching: (PREFIX)-(NUMBER) e.g. "LP-1" -> prefix="LP", num=1
+          const match = defaultTag.trim().match(/^(.*?)(?:-(\d+))?$/);
+          const prefix = (match && match[1]) ? match[1].trim() : defaultTag.trim();
+          let baseNum = (match && match[2]) ? parseInt(match[2], 10) : 1;
+
+          if (match && match[2]) {
+            let nextNum = baseNum + 1;
+            while (usedTags.has(`${prefix}-${nextNum}`.toUpperCase())) {
+              nextNum++;
+            }
+            return `${prefix}-${nextNum}`;
+          }
+
+          let n = 2;
+          while (usedTags.has(`${prefix}-${n}`.toUpperCase())) {
+            n++;
+          }
+          return `${prefix}-${n}`;
+        },
+
+        async duplicateAsset(item) {
+          if (!item) return;
+          const nextTag = this.getNextAvailableTag(item.tag);
+          const newId = 's_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
+
+          const clone = JSON.parse(JSON.stringify(item));
+          clone.id = newId;
+          clone.tag = nextTag;
+
+          if (item.name) {
+            clone.name = item.name.includes(item.tag) 
+              ? item.name.replace(item.tag, nextTag) 
+              : `${item.name} (${nextTag})`;
+          } else {
+            clone.name = nextTag;
+          }
+
+          const itemAttrs = (item.attributes && typeof item.attributes === 'object') ? item.attributes : {};
+          const voltage = item.voltage || itemAttrs.voltage || '480Y/277V 3Ø 4W';
+          const amps = (item.amps !== undefined && item.amps !== null && item.amps !== '') ? item.amps : (itemAttrs.amps || 225);
+          const aic = (item.aic !== undefined && item.aic !== null && item.aic !== '') ? item.aic : (itemAttrs.aic || 22);
+          const isPanel = item.is_panel ? 1 : (itemAttrs.is_panel ? 1 : 0);
+          const slots = item.slots || itemAttrs.slots || (isPanel ? 42 : 0);
+          const room = item.room || itemAttrs.room || '';
+          const fedFrom = item.fed_from || itemAttrs.fed_from || '';
+
+          clone.voltage = voltage;
+          clone.amps = amps;
+          clone.aic = aic;
+          clone.is_panel = isPanel;
+          clone.slots = slots;
+          clone.room = room;
+          clone.fed_from = fedFrom;
+
+          clone.attributes = {
+            ...itemAttrs,
+            tag: nextTag,
+            name: clone.name,
+            voltage: voltage,
+            amps: amps,
+            aic: aic,
+            room: room,
+            fed_from: fedFrom,
+            is_panel: isPanel,
+            slots: slots,
+            schedule: (isPanel && Array.isArray(itemAttrs.schedule)) 
+              ? JSON.parse(JSON.stringify(itemAttrs.schedule)) 
+              : (itemAttrs.schedule || []),
+            vendor_attrs: itemAttrs.vendor_attrs 
+              ? JSON.parse(JSON.stringify(itemAttrs.vendor_attrs)) 
+              : {},
+            upstream_sources: Array.isArray(itemAttrs.upstream_sources) 
+              ? [...itemAttrs.upstream_sources] 
+              : (fedFrom ? [fedFrom] : ['']),
+            emergency_source: itemAttrs.emergency_source || null,
+            manufacturer: itemAttrs.manufacturer || item.manufacturer || '',
+            model_no: itemAttrs.model_no || item.model_no || '',
+            mounting: itemAttrs.mounting || item.mounting || 'Surface',
+            enclosure: itemAttrs.enclosure || item.enclosure || 'NEMA 1',
+            main_type: itemAttrs.main_type || item.main_type || 'MCB',
+            criticality: itemAttrs.criticality || 'Medium',
+            condition: itemAttrs.condition || '1',
+            environment: itemAttrs.environment || 'Clean',
+            operational_status: itemAttrs.operational_status || 'Active',
+            inspection_freq: itemAttrs.inspection_freq || 'Annual',
+            arc_flash_date: itemAttrs.arc_flash_date || '',
+            infrared_date: itemAttrs.infrared_date || '',
+            torque_check_date: itemAttrs.torque_check_date || '',
+            megger_phase_a: itemAttrs.megger_phase_a || '',
+            megger_phase_b: itemAttrs.megger_phase_b || '',
+            megger_phase_c: itemAttrs.megger_phase_c || '',
+            checklists: itemAttrs.checklists 
+              ? JSON.parse(JSON.stringify(itemAttrs.checklists)) 
+              : {},
+            checklist_signoff: itemAttrs.checklist_signoff 
+              ? JSON.parse(JSON.stringify(itemAttrs.checklist_signoff)) 
+              : null,
+            notes: []
+          };
+
+          this.allNodes.push(clone);
+          this.toast(`📑 Duplicating [${item.tag}] as [${clone.tag}]...`);
+
+          try {
+            const res = await fetch(`/api/clients/${encodeURIComponent(this.client)}/facilities/${encodeURIComponent(this.facility)}/nodes`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(clone)
+            });
+            if (res.ok) {
+              this.toast(`✓ Duplicated [${item.tag}] as [${clone.tag}] with all custom ratings & schedule!`);
+              setTimeout(() => {
+                window.location.reload();
+              }, 400);
+            } else {
+              const err = await res.json().catch(() => ({}));
+              this.toast(`⚠️ Duplicated locally, but backend save failed: ${err.message || 'error'}`);
+            }
+          } catch (e) {
+            console.error('Error saving duplicated asset:', e);
+            this.toast(`⚠️ Duplicated in view. Click Save to persist.`);
+          }
+        },
+
+        async duplicateCurrentAsset() {
+          if (!this.form || !this.form.tag) return;
+          this.updateCustomAttrsFromList();
+          const isPanel = this.isPanelEquipment() ? 1 : 0;
+          const cleanedSources = (this.form.upstream_sources || []).map(s => (s ? String(s).trim() : '')).filter(s => s.length > 0);
+          const primaryFedFrom = (this.form.domain === 'sources') ? null : (cleanedSources[0] || (this.form.fed_from ? this.form.fed_from.trim() : null) || null);
+          const emergencySource = (this.isDualSourceEquipment() && cleanedSources.length > 1) ? cleanedSources[1] : null;
+
+          const currentItem = {
+            id: this.form.id,
+            tag: this.form.tag,
+            name: this.form.name || this.form.tag,
+            domain: this.form.domain || 'panels',
+            object_class: this.form.object_class || '',
+            type_tag: this.form.type_tag || '',
+            type_name: this.form.type_name || this.form.name || this.form.tag,
+            room: this.form.room || '',
+            fed_from: primaryFedFrom,
+            voltage: this.form.voltage || '',
+            amps: this.form.amps || '',
+            aic: this.form.aic || '',
+            is_panel: isPanel,
+            slots: isPanel ? (Number(this.form.slots) || 42) : 0,
+            attributes: {
+              ...((this.editingNode && this.editingNode.attributes) || {}),
+              tag: this.form.tag,
+              name: this.form.name || this.form.tag,
+              room: this.form.room || '',
+              fed_from: primaryFedFrom,
+              voltage: this.form.voltage || '',
+              amps: this.form.amps || '',
+              aic: this.form.aic || '',
+              is_panel: isPanel,
+              slots: isPanel ? (Number(this.form.slots) || 42) : 0,
+              enclosure: this.form.enclosure || 'NEMA 1',
+              main_type: this.form.main_type || 'MCB',
+              mounting: this.form.mounting || 'Surface',
+              manufacturer: this.form.manufacturer || '',
+              model_no: this.form.model_no || '',
+              asset_tag: this.form.asset_tag || '',
+              serial_no: this.form.serial_no || '',
+              year_installed: this.form.year_installed || null,
+              criticality: this.form.criticality || 'Medium',
+              condition: this.form.condition || '1',
+              environment: this.form.environment || 'Clean',
+              operational_status: this.form.operational_status || 'Active',
+              inspection_freq: this.form.inspection_freq || 'Annual',
+              schedule: isPanel ? (this.scheduleRows || []) : [],
+              vendor_attrs: this.form.vendor_attrs || {},
+              upstream_sources: cleanedSources,
+              emergency_source: emergencySource
+            }
+          };
+
+          await this.duplicateAsset(currentItem);
         },
 
         toast(msg) {
@@ -4230,6 +4424,15 @@
               </div>
 
               <div class="flex items-center gap-2">
+                <button 
+                  type="button" 
+                  @click="duplicateCurrentAsset()" 
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 border border-indigo-200 dark:border-indigo-800 transition flex items-center gap-1.5 cursor-pointer"
+                  title="Duplicate this item with all current customized specs (voltage, schedule, ratings)"
+                >
+                  <span>📑</span>
+                  <span>Duplicate</span>
+                </button>
                 <!-- Deep Link Handoff Button -->
                 <button 
                   type="button" 
@@ -4257,13 +4460,23 @@
 
             <!-- Drawer Footer -->
             <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between shrink-0">
-              <button 
-                type="button" 
-                @click="requestCloseEditDrawer()" 
-                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
-              >
-                Cancel
-              </button>
+              <div class="flex items-center gap-2">
+                <button 
+                  type="button" 
+                  @click="requestCloseEditDrawer()" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  @click="duplicateCurrentAsset()" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 border border-indigo-200 dark:border-indigo-800 transition flex items-center gap-1.5 cursor-pointer"
+                  title="Duplicate this item with all current customized specs"
+                >
+                  <span>📑 Duplicate Item</span>
+                </button>
+              </div>
 
               <div class="flex items-center gap-2">
                 <button 
