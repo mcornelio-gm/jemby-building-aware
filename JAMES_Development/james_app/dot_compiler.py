@@ -202,7 +202,7 @@ def _build_cluster_title(n: Dict[str, Any]) -> str:
         if aic_str:
             line3_parts.append(aic_str)
 
-    elif domain == "sources" or type_tag in ["UTIL", "GEN", "PV"]:
+    elif domain == "sources" or type_tag in ["UTIL", "GEN"]:
         if amps_str or volts:
             line2_parts.append(f"{amps_str} {volts}".strip())
         if aic_str:
@@ -454,9 +454,18 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed",
                         tail_parts.append("Feeder Out")
                 elif parent_domain == "transformers" or parent_type in ["XFMR", "PAD"]:
                     tail_parts.append("Secondary Out")
-                elif parent_domain == "sources" or parent_type in ["UTIL", "GEN", "PV"]:
-                    port_label = "Mtr / Main Out" if parent_type == "UTIL" else ("Gen Breaker" if parent_type == "GEN" else "Inverter Out")
+                elif parent_domain == "sources" or parent_type in ["UTIL", "GEN"]:
+                    port_label = "Mtr / Main Out" if parent_type == "UTIL" else "Gen Breaker"
                     tail_parts.append(port_label)
+                elif parent_domain == "renewables" or parent_type in ["BESS", "SOLAR", "BATTERY", "PV", "PV-MOD"]:
+                    if parent_type in ["PV", "INVERTER"]:
+                        tail_parts.append("Inverter AC Out")
+                    elif parent_type in ["PV-MOD", "SOLAR_ARRAY", "PANEL"]:
+                        tail_parts.append("DC Array Out")
+                    elif parent_type in ["BESS", "BATTERY"]:
+                        tail_parts.append("DC Discharge Out")
+                    else:
+                        tail_parts.append("Renewable Out")
                 elif parent_domain == "switches" or parent_type in ["ATS", "MTS", "DISC"]:
                     tail_parts.append("Load Out")
                 elif parent_domain == "power_quality" or parent_type == "UPS":
@@ -484,8 +493,15 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed",
                     head_parts.append("Disconnect / Lugs")
                 elif child_domain == "metering" or type_tag in ["METER", "MTR"]:
                     head_parts.append("CT / Voltage Sense In")
-                elif child_domain == "renewables" or type_tag in ["BESS", "SOLAR"]:
-                    head_parts.append("Bi-Directional AC In/Out")
+                elif child_domain == "renewables" or type_tag in ["BESS", "SOLAR", "PV", "PV-MOD"]:
+                    if type_tag in ["PV", "INVERTER"]:
+                        head_parts.append("DC Solar In")
+                    elif type_tag in ["PV-MOD", "SOLAR_ARRAY", "PANEL"]:
+                        head_parts.append("PV String In")
+                    elif type_tag in ["BESS", "BATTERY"]:
+                        head_parts.append("Battery In")
+                    else:
+                        head_parts.append("Bi-Directional AC In/Out")
                 elif child_domain == "cables" or type_tag in ["CABLE", "FEEDER"]:
                     head_parts.append("Line In")
                 else:
@@ -550,17 +566,34 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed",
         palette = DOMAIN_CONFIG.get(domain, DOMAIN_CONFIG["generic"])
 
         # Cluster by Equipment Archetype with Pastel BG + Black text + Dark Gray Ports with White text
-        if type_tag in ["BESS", "BATTERY"] or domain == "renewables" or type_tag in ["SOLAR"]:
+        if type_tag in ["BESS", "BATTERY"] or domain == "renewables" or type_tag in ["SOLAR", "PV", "PV-MOD"]:
             palette = DOMAIN_CONFIG.get("renewables", DOMAIN_CONFIG["generic"])
             is_battery = type_tag in ["BESS", "BATTERY"]
-            in_port_label = "Battery DC Terminals" if is_battery else "Bi-Directional AC In/Out"
+            is_solar_mod = type_tag in ["PV-MOD", "SOLAR_ARRAY", "PANEL"]
+            is_pv_inverter = type_tag in ["PV", "INVERTER"]
+            if is_battery:
+                in_port_label = "Battery DC Terminals"
+            elif is_solar_mod:
+                in_port_label = "PV String Input"
+            elif is_pv_inverter:
+                in_port_label = "DC Array / Solar Input"
+            else:
+                in_port_label = "Bi-Directional AC In/Out"
+
             has_downstream = any(
                 other.get("fed_from") in [tag, n.get("id")] or
                 tag in (other.get("attributes") or {}).get("upstream_sources", [])
                 for other in nodes
             )
             if has_downstream:
-                out_port_label = "DC Discharge Out" if is_battery else "Inverter Out"
+                if is_battery:
+                    out_port_label = "DC Discharge Out"
+                elif is_solar_mod:
+                    out_port_label = "DC Array Output"
+                elif is_pv_inverter:
+                    out_port_label = "Inverter AC Out"
+                else:
+                    out_port_label = "Output Terminals"
                 dot_lines.extend([
                     f'    subgraph cluster_{node_id} {{',
                     f'        label = "";',
@@ -593,9 +626,9 @@ def compile_facility_to_dot(nodes: List[Dict[str, Any]], mode: str = "detailed",
                     ''
                 ])
 
-        elif domain == "sources" or type_tag in ["UTIL", "GEN", "PV"]:
+        elif domain == "sources" or type_tag in ["UTIL", "GEN"]:
             palette = DOMAIN_CONFIG["sources"]
-            port_label = "Mtr / Main Out" if type_tag == "UTIL" else ("Gen Breaker" if type_tag == "GEN" else "Inverter Out")
+            port_label = "Mtr / Main Out" if type_tag == "UTIL" else "Gen Breaker"
             has_upstream = bool(_get_node_upstream_sources(n, nodes))
             if has_upstream:
                 dot_lines.extend([

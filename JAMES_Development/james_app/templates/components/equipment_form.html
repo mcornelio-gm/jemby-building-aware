@@ -13,7 +13,19 @@
       </div>
       <div>
         <h3 class="font-bold text-sm text-slate-900 dark:text-white" x-text="(selectedType && selectedType.name) || form.type_name || form.name || 'Electrical Device'"></h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="'Domain: ' + ((selectedDomain && selectedDomain.name) || form.domain || 'Equipment')"></p>
+        <div class="flex items-center gap-1.5 mt-1">
+          <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Domain:</span>
+          <select 
+            :value="(selectedDomain && selectedDomain.id) || form.domain || 'generic'" 
+            @change="promptChangeDomain($event.target.value, $event)"
+            class="h-6 px-2 py-0 text-xs font-semibold rounded-md bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-800 text-indigo-900 dark:text-indigo-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer shadow-2xs font-mono"
+            title="Click to change equipment domain (with confirmation)"
+          >
+            <template x-for="d in domains" :key="d.id">
+              <option :value="d.id" x-text="(d.icon ? d.icon + ' ' : '') + d.name" :selected="((selectedDomain && selectedDomain.id) || form.domain) === d.id"></option>
+            </template>
+          </select>
+        </div>
       </div>
     </div>
     <span 
@@ -84,10 +96,10 @@
         </div>
 
         <!-- Header Status / Add Source Button -->
-        <template x-if="selectedDomain && selectedDomain.id === 'sources'">
+        <template x-if="isPrimarySourceDomain()">
           <span class="text-[10px] text-slate-400 dark:text-slate-500 italic">Primary Source (No Upstream)</span>
         </template>
-        <template x-if="!(selectedDomain && selectedDomain.id === 'sources')">
+        <template x-if="!isPrimarySourceDomain()">
           <button 
             type="button" 
             @click="addUpstreamSource()" 
@@ -100,14 +112,14 @@
       </div>
 
       <!-- Disabled Primary Source message -->
-      <template x-if="selectedDomain && selectedDomain.id === 'sources'">
+      <template x-if="isPrimarySourceDomain()">
         <div class="w-full h-9 px-3 text-xs rounded-lg bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center text-slate-400 dark:text-slate-500 font-mono italic">
           -- Top-Level Source (Service Entrance / Generator / Utility) --
         </div>
       </template>
 
       <!-- Dynamic Source Dropdowns -->
-      <template x-if="!(selectedDomain && selectedDomain.id === 'sources')">
+      <template x-if="!isPrimarySourceDomain()">
         <div class="space-y-2">
           <template x-for="(src, sIdx) in (form.upstream_sources || [''])" :key="sIdx">
             <div class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-1.5">

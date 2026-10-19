@@ -691,7 +691,7 @@
 
     function inferDomain(typeTag) {
       const tag = String(typeTag || '').toUpperCase();
-      if (['UTIL', 'GEN', 'PV'].includes(tag)) return 'sources';
+      if (['UTIL', 'GEN'].includes(tag)) return 'sources';
       if (['XFMR', 'PAD', 'XFMR-D', 'XFMR-O', 'XFMR-K'].includes(tag)) return 'transformers';
       if (['ATS', 'MTS', 'DISC', 'STS'].includes(tag)) return 'switches';
       if (['LP', 'MDP', 'MCC', 'PP', 'REC', 'PDU', 'MSB', 'DP', 'RP', 'SUB'].includes(tag)) return 'panels';
@@ -699,7 +699,7 @@
       if (['HVAC', 'MOTOR', 'EV', 'PUMP', 'CHLR', 'AHU', 'EVC', 'MTR', 'LOAD'].includes(tag)) return 'loads';
       if (['CABLE', 'FEEDER', 'BUS', 'WAY', 'DISTRIBUTION'].includes(tag)) return 'cables';
       if (['METER', 'MTR-REV'].includes(tag)) return 'metering';
-      if (['BESS', 'SOLAR', 'BATTERY'].includes(tag)) return 'renewables';
+      if (['BESS', 'SOLAR', 'BATTERY', 'PV', 'PV-MOD'].includes(tag)) return 'renewables';
       return 'generic';
     }
 

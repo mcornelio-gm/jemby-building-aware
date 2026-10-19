@@ -23,7 +23,6 @@
       sources: [
         { tag: 'UTIL', name: 'Utility Service Entrance', desc: 'Primary electric utility service termination', volts: '480Y/277V 3Ø 4W', amps: 2500, aic: 100, defaultTag: 'UTIL-1' },
         { tag: 'GEN', name: 'Emergency Diesel Generator', desc: 'On-site standby emergency generator', volts: '480Y/277V', amps: 1200, aic: 35, defaultTag: 'GEN-1' },
-        { tag: 'PV', name: 'Solar PV Inverter', desc: 'Commercial solar photovoltaic inverter array', volts: '480V 3Ø', amps: 200, aic: 22, defaultTag: 'PV-1' },
       ],
       switches: [
         { tag: 'ATS', name: 'Automatic Transfer Switch (ATS)', desc: 'Automatic switching between Normal & Emergency sources', volts: '480Y/277V', amps: 400, aic: 65, defaultTag: 'ATS-1' },
@@ -63,6 +62,8 @@
         { tag: 'METER', name: 'Digital Power Meter', desc: 'Multi-function tenant revenue submeter', volts: '480V 3Ø', amps: 5, aic: 10, defaultTag: 'MTR-1' },
       ],
       renewables: [
+        { tag: 'PV-MOD', name: 'Solar PV Array / Panels', desc: 'Roof/ground-mounted photovoltaic DC string array', volts: '600V DC / 1000V DC', amps: 50, aic: 10, defaultTag: 'PV-MOD-1' },
+        { tag: 'PV', name: 'Solar PV Inverter', desc: 'Commercial solar photovoltaic inverter', volts: '480V 3Ø', amps: 125, aic: 22, defaultTag: 'PV-1' },
         { tag: 'BESS', name: 'Battery Energy Storage System', desc: 'Utility scale grid-tied battery storage', volts: '480V 3Ø', amps: 400, aic: 65, defaultTag: 'BESS-1' },
       ],
       generic: [
@@ -345,6 +346,74 @@
     },
 
     /**
+     * Check if current equipment domain is top-level primary source.
+     */
+    isPrimarySourceDomain() {
+      const d = (this.form && this.form.domain) || (this.selectedDomain ? this.selectedDomain.id : '');
+      return (d || '').toLowerCase() === 'sources';
+    },
+
+    /**
+     * Interactive Domain Change with Confirmation Dialogue
+     * Allows user to safely reclassify an asset between digital twin domains.
+     */
+    promptChangeDomain(newDomainId, event) {
+      if (!newDomainId) return false;
+      const currentDomainId = (this.form && this.form.domain) || (this.selectedDomain ? this.selectedDomain.id : 'generic');
+      if (newDomainId === currentDomainId) return false;
+
+      const oldDomObj = (this.domains || []).find(d => d.id === currentDomainId) || { id: currentDomainId, name: currentDomainId };
+      const newDomObj = (this.domains || []).find(d => d.id === newDomainId) || { id: newDomainId, name: newDomainId };
+
+      const assetTag = (this.form && (this.form.tag || this.form.name)) ? `"${this.form.tag || this.form.name}"` : 'this equipment';
+      const confirmMsg = `Are you sure you want to change the domain of ${assetTag} from [${oldDomObj.name}] to [${newDomObj.name}]?\n\nChanging the domain updates electrical classification and upstream feeder hierarchy. Existing ratings, vendor specs, and inspection checklists will be preserved.`;
+
+      if (!window.confirm(confirmMsg)) {
+        if (event && event.target) {
+          event.target.value = currentDomainId;
+        }
+        return false;
+      }
+
+      // Update form domain and selectedDomain
+      if (this.form) {
+        this.form.domain = newDomainId;
+        if (newDomainId === 'sources') {
+          this.form.fed_from = null;
+          this.form.upstream_sources = [];
+        } else {
+          if (!this.form.upstream_sources || this.form.upstream_sources.length === 0) {
+            this.form.upstream_sources = this.form.fed_from ? [this.form.fed_from] : [''];
+          }
+        }
+      }
+      this.selectedDomain = newDomObj;
+
+      // Update editingNode if present (SLD view)
+      if (this.editingNode) {
+        this.editingNode.domain = newDomainId;
+        if (newDomainId === 'sources') {
+          this.editingNode.fed_from = null;
+          if (this.editingNode.attributes) {
+            this.editingNode.attributes.fed_from = null;
+            this.editingNode.attributes.upstream_sources = [];
+          }
+        }
+      }
+
+      // Reload domain checklists for the new domain
+      if (typeof this.loadDomainChecklists === 'function') {
+        const typeTag = (this.form && this.form.type_tag) || (this.selectedType ? this.selectedType.tag : '');
+        this.loadDomainChecklists(newDomainId, typeTag);
+      }
+
+      if (typeof this.toast === 'function') {
+        this.toast(`✅ Domain changed to ${newDomObj.name}`);
+      }
+      return true;
+    },
+
+    /**
      * Check if current equipment is dual-source (ATS, MTS, STS).
      */
     isDualSourceEquipment() {
@@ -541,20 +610,23 @@
         if (item.type_tag === 'METER') return false;
 
         // 4. Domain-specific physical upstream rules:
+        if (currentDomain === 'renewables') {
+          return ['renewables', 'sources', 'panels', 'switches', 'transformers'].includes(item.domain);
+        }
         if (currentDomain === 'switches') {
-          return ['sources', 'transformers', 'panels', 'power_quality', 'switches'].includes(item.domain);
+          return ['sources', 'transformers', 'panels', 'power_quality', 'switches', 'renewables'].includes(item.domain);
         }
         if (currentDomain === 'transformers') {
-          return ['sources', 'switches', 'panels', 'transformers', 'power_quality'].includes(item.domain);
+          return ['sources', 'switches', 'panels', 'transformers', 'power_quality', 'renewables'].includes(item.domain);
         }
         if (currentDomain === 'panels') {
-          return ['sources', 'switches', 'transformers', 'panels', 'power_quality'].includes(item.domain);
+          return ['sources', 'switches', 'transformers', 'panels', 'power_quality', 'renewables'].includes(item.domain);
         }
         if (currentDomain === 'power_quality') {
-          return ['sources', 'switches', 'transformers', 'panels'].includes(item.domain);
+          return ['sources', 'switches', 'transformers', 'panels', 'renewables'].includes(item.domain);
         }
         if (currentDomain === 'loads') {
-          return ['panels', 'transformers', 'switches', 'power_quality', 'sources'].includes(item.domain);
+          return ['panels', 'transformers', 'switches', 'power_quality', 'sources', 'renewables'].includes(item.domain);
         }
         return true;
       });

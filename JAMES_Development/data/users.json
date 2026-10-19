@@ -14,7 +14,7 @@
     ],
     "is_active": true,
     "created_at": "2026-10-02 14:40:33",
-    "last_login_at": "2026-10-14 15:18:00"
+    "last_login_at": "2026-10-19 12:40:02"
   },
   {
     "id": "usr_mcornelio",
@@ -31,7 +31,7 @@
     ],
     "is_active": true,
     "created_at": "2026-10-02 14:40:33",
-    "last_login_at": "2026-10-14 15:18:00"
+    "last_login_at": "2026-10-19 12:40:02"
   },
   {
     "id": "usr_stostado",
@@ -48,7 +48,7 @@
     ],
     "is_active": true,
     "created_at": "2026-10-02 14:40:33",
-    "last_login_at": "2026-10-14 15:18:00"
+    "last_login_at": "2026-10-19 12:40:02"
   },
   {
     "id": "usr_jcortes",
@@ -56,8 +56,8 @@
     "username": "jcortes",
     "name": "J. Cortes",
     "role": "engineer",
-    "password_hash": "2de77ce1ccf8bc36b39e316d31f5ce7584ba1addfd2c0f846847eaad25900d2b",
-    "password_salt": "8234c7b1e212989d",
+    "password_hash": "89cce9a69427cf2300e6e87ebfe4f18eb94f488dedf172bc2887c98b38f08679",
+    "password_salt": "a167a6b7a3f2957a",
     "google_id": null,
     "avatar_url": null,
     "client_access": [
@@ -65,7 +65,7 @@
     ],
     "is_active": true,
     "created_at": "2026-10-02 14:40:33",
-    "last_login_at": "2026-10-14 15:18:00"
+    "last_login_at": "2026-10-19 12:40:02"
   },
   {
     "id": "usr_admin",
@@ -82,7 +82,7 @@
     ],
     "is_active": true,
     "created_at": "2026-10-02 14:40:33",
-    "last_login_at": "2026-10-14 15:18:00"
+    "last_login_at": "2026-10-19 12:40:02"
   },
   {
     "id": "usr_engineer",
@@ -99,7 +99,7 @@
     ],
     "is_active": true,
     "created_at": "2026-10-02 14:40:33",
-    "last_login_at": "2026-10-14 15:18:00"
+    "last_login_at": "2026-10-19 12:40:02"
   },
   {
     "id": "usr_demo",
