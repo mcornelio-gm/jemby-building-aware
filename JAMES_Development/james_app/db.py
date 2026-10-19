@@ -78,9 +78,22 @@ class PanelScheduleRecord(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
+def sanitize_identifier(val: str, default: str = "default") -> str:
+    """Sanitize client or facility identifier into a safe filesystem slug, rejecting phantom template expressions."""
+    if not val:
+        return default
+    clean = str(val).strip().lower()
+    if "${" in clean or clean.startswith("$"):
+        clean = re.sub(r'[\$\{\}\(\)]', '', clean)
+    clean = re.sub(r'[^a-zA-Z0-9_\-]', '_', clean).strip('_')
+    return clean or default
+
+
 def get_facility_dir(client_id: str, facility_id: str) -> Path:
     """Return and ensure directory path for a client facility."""
-    path = CLIENTS_DATA_DIR / client_id / facility_id
+    clean_c = sanitize_identifier(client_id, "default_client")
+    clean_f = sanitize_identifier(facility_id, "main_facility")
+    path = CLIENTS_DATA_DIR / clean_c / clean_f
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -446,10 +459,18 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
         if not client_dir.is_dir() or client_dir.name.startswith("."):
             continue
         
+        # Skip phantom or invalid template directories (e.g. '${c}' or containing '${')
+        if "${" in client_dir.name or client_dir.name.startswith("$") or not re.match(r'^[a-zA-Z0-9_\-]+$', client_dir.name):
+            continue
+        
         client_id = client_dir.name
         facilities = []
         for fac_dir in sorted(client_dir.iterdir()):
             if not fac_dir.is_dir() or fac_dir.name.startswith("."):
+                continue
+            
+            # Skip phantom or invalid facility directories
+            if "${" in fac_dir.name or fac_dir.name.startswith("$") or not re.match(r'^[a-zA-Z0-9_\-]+$', fac_dir.name):
                 continue
             
             facility_id = fac_dir.name
@@ -480,7 +501,7 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
                 "modified_at": mod_time,
             })
 
-        if facilities or True:  # Include client even if empty so folders show
+        if facilities:
             clients_map[client_id] = {
                 "client_id": client_id,
                 "client_name": client_id.replace("_", " ").title(),
@@ -493,12 +514,8 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
 
 def create_client_facility(client_id: str, facility_id: str, seed: bool = False) -> Dict[str, Any]:
     """Create a new client/facility directory and initialize its SQLite database."""
-    clean_client = re.sub(r'[^a-zA-Z0-9_\-]', '_', client_id.strip().lower())
-    clean_facility = re.sub(r'[^a-zA-Z0-9_\-]', '_', facility_id.strip().lower())
-    if not clean_client:
-        clean_client = "default_client"
-    if not clean_facility:
-        clean_facility = "main_facility"
+    clean_client = sanitize_identifier(client_id, "default_client")
+    clean_facility = sanitize_identifier(facility_id, "main_facility")
 
     get_facility_dir(clean_client, clean_facility)
     get_engine(clean_client, clean_facility)
@@ -525,11 +542,19 @@ def create_client_facility(client_id: str, facility_id: str, seed: bool = False)
 def delete_client_facility(client_id: str, facility_id: str) -> bool:
     """Delete a facility directory and its databases."""
     import shutil
-    clean_client = re.sub(r'[^a-zA-Z0-9_\-]', '_', client_id.strip().lower())
-    clean_facility = re.sub(r'[^a-zA-Z0-9_\-]', '_', facility_id.strip().lower())
-    target_dir = CLIENTS_DATA_DIR / clean_client / clean_facility
-    if target_dir.exists():
+    # Try exact match first (allows removing phantom paths if needed)
+    target_dir = CLIENTS_DATA_DIR / client_id / facility_id
+    if not target_dir.exists():
+        clean_client = sanitize_identifier(client_id, "")
+        clean_facility = sanitize_identifier(facility_id, "")
+        if clean_client and clean_facility:
+            target_dir = CLIENTS_DATA_DIR / clean_client / clean_facility
+
+    if target_dir.exists() and target_dir.is_dir():
         shutil.rmtree(target_dir, ignore_errors=True)
+        parent = target_dir.parent
+        if parent.exists() and parent != CLIENTS_DATA_DIR and not any(parent.iterdir()):
+            shutil.rmtree(parent, ignore_errors=True)
         return True
     return False
 

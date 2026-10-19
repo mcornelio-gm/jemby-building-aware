@@ -152,3 +152,22 @@ def test_api_delete_workspace_facility():
     assert demo_del.status_code == 400
 
 
+def test_phantom_template_directories_filtered():
+    """Verify that accidental un-interpolated template directories (like '${c}') are excluded from finder."""
+    phantom_dir = Path("data/clients/${encodeURIComponent(c)}/${encodeURIComponent(f)}")
+    phantom_dir.mkdir(parents=True, exist_ok=True)
+    (phantom_dir / "model.db").touch()
+
+    try:
+        clients = db.list_all_client_facilities()
+        client_ids = [c["client_id"] for c in clients]
+        assert "${encodeURIComponent(c)}" not in client_ids
+        for c in clients:
+            assert not c["client_id"].startswith("$")
+            assert "${" not in c["client_id"]
+    finally:
+        import shutil
+        shutil.rmtree(Path("data/clients/${encodeURIComponent(c)}"), ignore_errors=True)
+
+
+
