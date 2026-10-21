@@ -70,74 +70,52 @@
             </select>
           </div>
 
-          <!-- Sheet Size Selector (36x24 vs 42x30) -->
-          <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800/90 shadow-2xs overflow-hidden text-xs">
-            <button 
-              type="button" 
-              @click="setCadSheetSize('36x24')" 
-              class="px-2.5 py-1 text-[11px] font-mono transition cursor-pointer"
-              :class="cadSheetSize === '36x24' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
-              title="Standard ANSI D (36″ × 24″ / 864mm × 558mm)"
-            >
-              36×24
-            </button>
-            <button 
-              type="button" 
-              @click="setCadSheetSize('42x30')" 
-              class="px-2.5 py-1 text-[11px] font-mono transition cursor-pointer border-l border-slate-700"
-              :class="cadSheetSize === '42x30' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
-              title="Large ARCH E1 (42″ × 30″ / 1067mm × 762mm)"
-            >
-              42×30
-            </button>
-          </div>
+          <!-- Sheet Size Toggle (36x24 vs 42x30 Single Button) -->
+          <button 
+            type="button" 
+            @click="if (typeof toggleCadSheetSize === 'function') { toggleCadSheetSize(); } else { cadSheetSize = (cadSheetSize === '42x30' ? '36x24' : '42x30'); try { localStorage.setItem('cad_sld_size', cadSheetSize); } catch(e){}; fetchCadSvg(); }" 
+            class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            :class="cadSheetSize === '42x30' ? 'bg-indigo-600/20 text-indigo-300 border-indigo-500/40 hover:bg-indigo-600/30' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'"
+            :title="cadSheetSize === '42x30' ? 'Sheet Size: 42″ × 30″ (ARCH E1) — Click to switch to 36″ × 24″ (ANSI D)' : 'Sheet Size: 36″ × 24″ (ANSI D) — Click to switch to 42″ × 30″ (ARCH E1)'"
+          >
+            <span>📐</span>
+            <span class="font-mono text-[11px]" x-text="cadSheetSize === '42x30' ? '42×30' : '36×24'"></span>
+          </button>
 
-          <!-- Label Format Selector (Linear vs Stacked) -->
-          <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800/90 shadow-2xs overflow-hidden text-xs">
-            <button 
-              type="button" 
-              @click="if (typeof setCadLabelFormat === 'function') { setCadLabelFormat('linear'); } else { cadLabelFormat = 'linear'; try { localStorage.setItem('cad_sld_labels', 'linear'); } catch(e){}; fetchCadSvg(); }" 
-              class="px-2.5 py-1 text-[11px] font-mono transition cursor-pointer flex items-center gap-1"
-              :class="cadLabelFormat === 'linear' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
-              title="Linear equipment and bus annotations (single line)"
-            >
-              <span>═</span>
-              <span>Linear</span>
-            </button>
-            <button 
-              type="button" 
-              @click="if (typeof setCadLabelFormat === 'function') { setCadLabelFormat('stacked'); } else { cadLabelFormat = 'stacked'; try { localStorage.setItem('cad_sld_labels', 'stacked'); } catch(e){}; fetchCadSvg(); }" 
-              class="px-2.5 py-1 text-[11px] font-mono transition cursor-pointer border-l border-slate-700 flex items-center gap-1"
-              :class="cadLabelFormat === 'stacked' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
-              title="Stacked multi-line equipment and bus annotations (compact footprint)"
-            >
-              <span>☰</span>
-              <span>Stacked</span>
-            </button>
-          </div>
+          <!-- Label Format Toggle (Linear vs Stacked Single Button) -->
+          <button 
+            type="button" 
+            @click="if (typeof toggleCadLabelFormat === 'function') { toggleCadLabelFormat(); } else { cadLabelFormat = (cadLabelFormat === 'stacked' ? 'linear' : 'stacked'); try { localStorage.setItem('cad_sld_labels', cadLabelFormat); } catch(e){}; fetchCadSvg(); }" 
+            class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            :class="cadLabelFormat === 'stacked' ? 'bg-indigo-600/20 text-indigo-300 border-indigo-500/40 hover:bg-indigo-600/30' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'"
+            :title="cadLabelFormat === 'stacked' ? 'Label Format: Stacked — Click to switch to Linear' : 'Label Format: Linear — Click to switch to Stacked'"
+          >
+            <span x-text="cadLabelFormat === 'stacked' ? '☰' : '═'"></span>
+            <span class="text-[11px]" x-text="cadLabelFormat === 'stacked' ? 'Stacked' : 'Linear'"></span>
+          </button>
 
-          <!-- Theme Toggle (Light / Dark Mode) -->
+          <!-- Theme Toggle (Light / Dark Mode Single Button) -->
           <button 
             type="button" 
             @click="if (typeof toggleCadTheme === 'function') { toggleCadTheme(); } else { cadTheme = cadTheme === 'light' ? 'dark' : 'light'; try { localStorage.setItem('cad_sld_theme', cadTheme); } catch(e){}; fetchCadSvg(); }" 
             class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
             :class="cadTheme === 'light' ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 hover:bg-amber-500/25' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'"
-            :title="cadTheme === 'light' ? 'Switch to Dark CAD Blueprint' : 'Switch to Light Architectural Print'"
+            :title="cadTheme === 'light' ? 'Theme: Light — Click for Dark Blueprint' : 'Theme: Dark — Click for Light Architectural Print'"
           >
             <span x-text="cadTheme === 'light' ? '☀️' : '🌙'"></span>
-            <span class="hidden md:inline text-[11px]" x-text="cadTheme === 'light' ? 'Light' : 'Dark'"></span>
+            <span class="text-[11px]" x-text="cadTheme === 'light' ? 'Light' : 'Dark'"></span>
           </button>
 
-          <!-- High Contrast Toggle (Monochrome White/Black) -->
+          <!-- High Contrast Toggle (Monochrome White/Black Single Button) -->
           <button 
             type="button" 
             @click="if (typeof toggleCadHighContrast === 'function') { toggleCadHighContrast(); } else { cadHighContrast = !cadHighContrast; try { localStorage.setItem('cad_sld_contrast', cadHighContrast ? 'high' : 'standard'); } catch(e){}; fetchCadSvg(); }" 
             class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
             :class="cadHighContrast ? 'bg-white text-slate-950 font-bold border-white ring-2 ring-indigo-400' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'"
-            :title="cadHighContrast ? 'Disable High Contrast (restore AIA color palette)' : 'Enable High Contrast (pure white on black / black on white)'"
+            :title="cadHighContrast ? 'High Contrast: ON — Click to switch OFF' : 'High Contrast: OFF — Click to switch ON'"
           >
             <span>☯</span>
-            <span class="text-[11px]" x-text="cadHighContrast ? 'High Contrast: ON' : 'High Contrast'"></span>
+            <span class="text-[11px] font-mono font-bold" x-text="cadHighContrast ? 'ON' : 'OFF'"></span>
           </button>
 
           <!-- Zoom Stepper Controls -->

@@ -55,6 +55,13 @@
         await this.fetchCadSvg();
       };
 
+      app.toggleCadLabelFormat = async function() {
+        this.cadLabelFormat = (this.cadLabelFormat === 'stacked' ? 'linear' : 'stacked');
+        try { localStorage.setItem('cad_sld_labels', this.cadLabelFormat); } catch(e) {}
+        console.log('[CAD SLD] Toggled Label Format to:', this.cadLabelFormat);
+        await this.fetchCadSvg();
+      };
+
       app.setCadSheetSize = async function(newSize) {
         this.cadSheetSize = newSize;
         try { localStorage.setItem('cad_sld_size', this.cadSheetSize); } catch(e) {}
@@ -62,6 +69,16 @@
         this.cadPanX = 0;
         this.cadPanY = 0;
         console.log('[CAD SLD] Set Sheet Size to:', this.cadSheetSize);
+        await this.fetchCadSvg();
+      };
+
+      app.toggleCadSheetSize = async function() {
+        this.cadSheetSize = (this.cadSheetSize === '42x30' ? '36x24' : '42x30');
+        try { localStorage.setItem('cad_sld_size', this.cadSheetSize); } catch(e) {}
+        this.cadZoomScale = 1.0;
+        this.cadPanX = 0;
+        this.cadPanY = 0;
+        console.log('[CAD SLD] Toggled Sheet Size to:', this.cadSheetSize);
         await this.fetchCadSvg();
       };
 
@@ -195,6 +212,20 @@
     const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
     if (appInstance && typeof appInstance.setCadSheetSize === 'function') {
       appInstance.setCadSheetSize(size);
+    }
+  };
+
+  window.toggleCadSheetSize = function() {
+    const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
+    if (appInstance && typeof appInstance.toggleCadSheetSize === 'function') {
+      appInstance.toggleCadSheetSize();
+    }
+  };
+
+  window.toggleCadLabelFormat = function() {
+    const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
+    if (appInstance && typeof appInstance.toggleCadLabelFormat === 'function') {
+      appInstance.toggleCadLabelFormat();
     }
   };
 })();
