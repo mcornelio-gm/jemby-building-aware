@@ -1689,7 +1689,14 @@ def api_get_cad_sheets(client_id: str, facility_id: str):
 
 
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/cad/dxf")
-def api_export_cad_dxf(client_id: str, facility_id: str, sheet: str = "all"):
+def api_export_cad_dxf(
+    client_id: str,
+    facility_id: str,
+    sheet: str = "all",
+    size: str = "36x24",
+    labels: str = "linear",
+    contrast: str = "standard"
+):
     """Generate and download an IEEE 315 / ANSI standard AutoCAD DXF Single-Line Diagram."""
     clean_c = client_id.strip().lower()
     clean_f = facility_id.strip().lower()
@@ -1729,9 +1736,22 @@ def api_export_cad_dxf(client_id: str, facility_id: str, sheet: str = "all"):
     finally:
         session.close()
 
-    compiler = SingleLineCadCompiler(nodes=nodes, edges=edges, client_id=clean_c, facility_id=clean_f, sheet_id=sheet)
+    is_hc = contrast.lower() in ("high", "true", "1", "hc", "monochrome")
+    compiler = SingleLineCadCompiler(
+        nodes=nodes,
+        edges=edges,
+        client_id=clean_c,
+        facility_id=clean_f,
+        sheet_id=sheet,
+        sheet_size=size,
+        label_format=labels,
+        high_contrast=is_hc
+    )
     dxf_bytes = compiler.compile_dxf_bytes()
-    filename = f"{clean_c}_{clean_f}_single_line.dxf" if sheet == "all" else f"{clean_c}_{clean_f}_{sheet}_single_line.dxf"
+    clean_size = (size or "36x24").lower().replace(" ", "").replace("×", "x")
+    size_tag = f"_{clean_size}" if clean_size != "36x24" else ""
+    hc_tag = "_mono" if is_hc else ""
+    filename = f"{clean_c}_{clean_f}{size_tag}{hc_tag}_single_line.dxf" if sheet == "all" else f"{clean_c}_{clean_f}_{sheet}{size_tag}{hc_tag}_single_line.dxf"
     return Response(
         content=dxf_bytes,
         media_type="application/dxf",
@@ -1740,7 +1760,15 @@ def api_export_cad_dxf(client_id: str, facility_id: str, sheet: str = "all"):
 
 
 @app.get("/api/clients/{client_id}/facilities/{facility_id}/cad/svg", response_class=Response)
-def api_export_cad_svg(client_id: str, facility_id: str, sheet: str = "all"):
+def api_export_cad_svg(
+    client_id: str,
+    facility_id: str,
+    sheet: str = "all",
+    theme: str = "dark",
+    size: str = "36x24",
+    labels: str = "linear",
+    contrast: str = "standard"
+):
     """Generate high-fidelity vector SVG preview of the IEEE standard Single-Line Diagram."""
     clean_c = client_id.strip().lower()
     clean_f = facility_id.strip().lower()
@@ -1780,8 +1808,18 @@ def api_export_cad_svg(client_id: str, facility_id: str, sheet: str = "all"):
     finally:
         session.close()
 
-    compiler = SingleLineCadCompiler(nodes=nodes, edges=edges, client_id=clean_c, facility_id=clean_f, sheet_id=sheet)
-    svg_str = compiler.compile_svg_string()
+    is_hc = contrast.lower() in ("high", "true", "1", "hc", "monochrome")
+    compiler = SingleLineCadCompiler(
+        nodes=nodes,
+        edges=edges,
+        client_id=clean_c,
+        facility_id=clean_f,
+        sheet_id=sheet,
+        sheet_size=size,
+        label_format=labels,
+        high_contrast=is_hc
+    )
+    svg_str = compiler.compile_svg_string(theme=theme, high_contrast=is_hc)
     return Response(content=svg_str, media_type="image/svg+xml")
 
 

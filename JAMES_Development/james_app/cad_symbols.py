@@ -18,8 +18,8 @@ def register_all_cad_symbols(doc: Drawing) -> None:
     if "SYM_JUNCTION_DOT" not in blocks:
         blk = blocks.new(name="SYM_JUNCTION_DOT")
         blk.add_circle((0, 0), radius=1.0, dxfattribs={"layer": "E-ELEC-BUS"})
-        # Hatch / solid fill
-        hatch = blk.add_hatch(color=4, dxfattribs={"layer": "E-ELEC-BUS"})
+        # Hatch / solid fill (BYLAYER = 256 so it follows E-ELEC-BUS theme color)
+        hatch = blk.add_hatch(color=256, dxfattribs={"layer": "E-ELEC-BUS"})
         hatch.paths.add_polyline_path([(-1.0, 0), (0, 1.0), (1.0, 0), (0, -1.0)], is_closed=True)
 
     # -------------------------------------------------------------

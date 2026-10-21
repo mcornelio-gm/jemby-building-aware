@@ -17,6 +17,10 @@
       app.cadPanStartY = 0;
       app.cadSheets = [];
       app.selectedCadSheet = 'all';
+      app.cadTheme = localStorage.getItem('cad_sld_theme') || 'dark';
+      app.cadSheetSize = localStorage.getItem('cad_sld_size') || '36x24';
+      app.cadHighContrast = localStorage.getItem('cad_sld_contrast') === 'high';
+      app.cadLabelFormat = localStorage.getItem('cad_sld_labels') || 'linear';
 
       app.openCadSldModal = async function() {
         this.showCadModal = true;
@@ -29,6 +33,35 @@
 
       app.closeCadSldModal = function() {
         this.showCadModal = false;
+      };
+
+      app.toggleCadTheme = async function() {
+        this.cadTheme = this.cadTheme === 'light' ? 'dark' : 'light';
+        try { localStorage.setItem('cad_sld_theme', this.cadTheme); } catch(e) {}
+        await this.fetchCadSvg();
+      };
+
+      app.toggleCadHighContrast = async function() {
+        this.cadHighContrast = !this.cadHighContrast;
+        try { localStorage.setItem('cad_sld_contrast', this.cadHighContrast ? 'high' : 'standard'); } catch(e) {}
+        await this.fetchCadSvg();
+      };
+
+      app.setCadLabelFormat = async function(newFormat) {
+        if (this.cadLabelFormat === newFormat) return;
+        this.cadLabelFormat = newFormat;
+        try { localStorage.setItem('cad_sld_labels', this.cadLabelFormat); } catch(e) {}
+        await this.fetchCadSvg();
+      };
+
+      app.setCadSheetSize = async function(newSize) {
+        if (this.cadSheetSize === newSize) return;
+        this.cadSheetSize = newSize;
+        try { localStorage.setItem('cad_sld_size', this.cadSheetSize); } catch(e) {}
+        this.cadZoomScale = 1.0;
+        this.cadPanX = 0;
+        this.cadPanY = 0;
+        await this.fetchCadSvg();
       };
 
       app.loadCadSheets = async function() {
@@ -62,7 +95,11 @@
           const client = this.client || 'zoetis';
           const facility = this.facility || 'b4';
           const sheet = this.selectedCadSheet || 'all';
-          const resp = await fetch(`/api/clients/${encodeURIComponent(client)}/facilities/${encodeURIComponent(facility)}/cad/svg?sheet=${encodeURIComponent(sheet)}&t=${Date.now()}`);
+          const theme = this.cadTheme || 'dark';
+          const size = this.cadSheetSize || '36x24';
+          const contrast = this.cadHighContrast ? 'high' : 'standard';
+          const labels = this.cadLabelFormat || 'linear';
+          const resp = await fetch(`/api/clients/${encodeURIComponent(client)}/facilities/${encodeURIComponent(facility)}/cad/svg?sheet=${encodeURIComponent(sheet)}&theme=${encodeURIComponent(theme)}&size=${encodeURIComponent(size)}&contrast=${encodeURIComponent(contrast)}&labels=${encodeURIComponent(labels)}&t=${Date.now()}`);
           if (!resp.ok) throw new Error('Failed to compile CAD Single-Line Diagram');
           this.cadSvgContent = await resp.text();
         } catch (err) {
@@ -77,7 +114,10 @@
         const client = this.client || 'zoetis';
         const facility = this.facility || 'b4';
         const sheet = this.selectedCadSheet || 'all';
-        window.location.href = `/api/clients/${encodeURIComponent(client)}/facilities/${encodeURIComponent(facility)}/cad/dxf?sheet=${encodeURIComponent(sheet)}`;
+        const size = this.cadSheetSize || '36x24';
+        const contrast = this.cadHighContrast ? 'high' : 'standard';
+        const labels = this.cadLabelFormat || 'linear';
+        window.location.href = `/api/clients/${encodeURIComponent(client)}/facilities/${encodeURIComponent(facility)}/cad/dxf?sheet=${encodeURIComponent(sheet)}&size=${encodeURIComponent(size)}&contrast=${encodeURIComponent(contrast)}&labels=${encodeURIComponent(labels)}`;
       };
 
       app.zoomInCad = function() {

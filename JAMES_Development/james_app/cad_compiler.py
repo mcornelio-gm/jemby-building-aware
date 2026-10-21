@@ -12,13 +12,28 @@ from ezdxf.document import Drawing
 from ezdxf.enums import TextEntityAlignment
 from ezdxf.addons.drawing import Frontend, RenderContext, layout
 from ezdxf.addons.drawing.svg import SVGBackend
+from ezdxf.addons.drawing.config import Configuration, BackgroundPolicy, ColorPolicy
 
 from james_app.cad_symbols import register_all_cad_symbols
 from james_app.core.feeder_calculator import suggest_feeder_conductors
 
-# Strict Industry Standard ANSI D Paper Dimensions (in millimeters)
-ANSI_D_WIDTH = 864.0   # 36 inches
-ANSI_D_HEIGHT = 558.0  # 24 inches
+# Industry Standard CAD Sheet Dimensions (in millimeters)
+SHEET_SIZES = {
+    "36x24": {
+        "name": "36x24",
+        "width": 864.0,   # ANSI D: 36" x 24" (864mm x 558mm)
+        "height": 558.0,
+        "label": "ANSI D (24\" × 36\")"
+    },
+    "42x30": {
+        "name": "42x30",
+        "width": 1066.8,  # ARCH E1: 42" x 30" (1066.8mm x 762mm)
+        "height": 762.0,
+        "label": "ARCH E1 (30\" × 42\")"
+    }
+}
+ANSI_D_WIDTH = SHEET_SIZES["36x24"]["width"]
+ANSI_D_HEIGHT = SHEET_SIZES["36x24"]["height"]
 
 
 def _format_feeder_callout(trip_str: Any) -> str:
@@ -147,12 +162,24 @@ class SingleLineCadCompiler:
         client_id: str = "Client",
         facility_id: str = "Facility",
         facility_title: Optional[str] = None,
-        sheet_id: str = "all"
+        sheet_id: str = "all",
+        sheet_size: str = "36x24",
+        label_format: str = "linear",
+        high_contrast: bool = False
     ):
         self.client_id = client_id.upper()
         self.facility_id = facility_id.upper()
         self.facility_title = facility_title or f"{self.client_id} / {self.facility_id}"
         self.sheet_id = sheet_id or "all"
+        self.label_format = (label_format or "linear").lower().strip()
+        self.high_contrast = bool(high_contrast)
+
+        norm_size = (sheet_size or "36x24").lower().replace(" ", "").replace("×", "x")
+        self.sheet_cfg = SHEET_SIZES.get(norm_size, SHEET_SIZES["36x24"])
+        self.sheet_size = self.sheet_cfg["name"]
+        self.sheet_size_label = self.sheet_cfg["label"]
+        self.sheet_width = self.sheet_cfg["width"]
+        self.sheet_height = self.sheet_cfg["height"]
 
         # Normalize nodes input
         self.raw_nodes: List[Dict[str, Any]] = []
@@ -306,14 +333,25 @@ class SingleLineCadCompiler:
 
     def _setup_layers(self) -> None:
         """Create standard AIA / NCS CAD layers with standardized colors and lineweights."""
-        layer_defs = [
-            ("E-ELEC-BUS", 4, 70, "Main Switchgear & Panel Power Buses"),         # Cyan (0.70mm)
-            ("E-ELEC-FEED", 7, 35, "Feeder Conductors, Cable Runs & Drops"),      # White (0.35mm)
-            ("E-ELEC-SYMB", 2, 35, "IEEE Standard Electrical Equipment Symbols"), # Yellow (0.35mm)
-            ("E-ANNO-TEXT", 3, 25, "Equipment Ratings, Tags & kVA Annotation"),   # Green (0.25mm)
-            ("E-ANNO-CABL", 1, 18, "Conductor & Conduit Size Schedules"),         # Red (0.18mm)
-            ("E-TTLB", 7, 50, "Title Block & Border Framing")                     # White (0.50mm)
-        ]
+        if self.high_contrast:
+            # Universal Monochrome plot style (all layers ACI 7: white in dark modelspace, plots black on white paper)
+            layer_defs = [
+                ("E-ELEC-BUS", 7, 70, "Main Switchgear & Panel Power Buses"),
+                ("E-ELEC-FEED", 7, 35, "Feeder Conductors, Cable Runs & Drops"),
+                ("E-ELEC-SYMB", 7, 35, "IEEE Standard Electrical Equipment Symbols"),
+                ("E-ANNO-TEXT", 7, 25, "Equipment Ratings, Tags & kVA Annotation"),
+                ("E-ANNO-CABL", 7, 18, "Conductor & Conduit Size Schedules"),
+                ("E-TTLB", 7, 50, "Title Block & Border Framing")
+            ]
+        else:
+            layer_defs = [
+                ("E-ELEC-BUS", 4, 70, "Main Switchgear & Panel Power Buses"),         # Cyan (0.70mm)
+                ("E-ELEC-FEED", 7, 35, "Feeder Conductors, Cable Runs & Drops"),      # White (0.35mm)
+                ("E-ELEC-SYMB", 2, 35, "IEEE Standard Electrical Equipment Symbols"), # Yellow (0.35mm)
+                ("E-ANNO-TEXT", 3, 25, "Equipment Ratings, Tags & kVA Annotation"),   # Green (0.25mm)
+                ("E-ANNO-CABL", 1, 18, "Conductor & Conduit Size Schedules"),         # Red (0.18mm)
+                ("E-TTLB", 7, 50, "Title Block & Border Framing")                     # White (0.50mm)
+            ]
         for name, color, weight, desc in layer_defs:
             if name not in self.doc.layers:
                 layer = self.doc.layers.add(name, color=color, lineweight=weight)
@@ -468,24 +506,24 @@ class SingleLineCadCompiler:
         content_w = max(10.0, max_x - min_x)
         content_h = max(10.0, max_y - min_y)
 
-        # ANSI D Printable Area Bounds (in mm)
+        # Sheet Printable Area Bounds (in mm)
         margin_x = 40.0
         margin_top = 48.0
         margin_bottom = 80.0
-        avail_w = ANSI_D_WIDTH - (margin_x * 2.0)         # 784.0 mm
-        avail_h = ANSI_D_HEIGHT - margin_top - margin_bottom # 430.0 mm
+        avail_w = self.sheet_width - (margin_x * 2.0)
+        avail_h = self.sheet_height - margin_top - margin_bottom
 
-        # Auto-fit scale factor to guarantee ANSI D sheet containment while maximizing full-page utilization
+        # Auto-fit scale factor to guarantee sheet containment while maximizing full-page utilization
         if content_w > avail_w or content_h > avail_h:
             self.draw_scale = min(avail_w / content_w, avail_h / content_h) * 0.96
         else:
             self.draw_scale = 1.0
 
-        # Center horizontally and vertically within ANSI D drawing canvas
+        # Center horizontally and vertically within drawing canvas
         scaled_w = content_w * self.draw_scale
         scaled_h = content_h * self.draw_scale
         start_x = margin_x + (avail_w - scaled_w) / 2.0
-        start_y = (ANSI_D_HEIGHT - margin_top) - ((avail_h - scaled_h) / 4.0)
+        start_y = (self.sheet_height - margin_top) - ((avail_h - scaled_h) / 4.0)
 
         shift_x = start_x - (min_x * self.draw_scale)
         shift_y = start_y - (max_y * self.draw_scale)
@@ -498,8 +536,8 @@ class SingleLineCadCompiler:
         # Render AutoCAD entities
         self._render_elements()
 
-        # Draw Strict ANSI D Sheet Border & Engineering Title Block (24" x 36")
-        self._draw_title_block(sheet_w=ANSI_D_WIDTH, sheet_h=ANSI_D_HEIGHT)
+        # Draw Strict Sheet Border & Engineering Title Block
+        self._draw_title_block(sheet_w=self.sheet_width, sheet_h=self.sheet_height)
 
         return self.doc
 
@@ -517,7 +555,7 @@ class SingleLineCadCompiler:
                 self.msp.add_text(
                     self.incoming_stub,
                     dxfattribs={"layer": "E-ANNO-TEXT", "height": max(2.2, 2.8 * s)}
-                ).set_placement((rx + 8.0 * s, ry + 20.0 * s), align=TextEntityAlignment.LEFT)
+                ).set_placement((rx + 10.0 * s, ry + 20.0 * s), align=TextEntityAlignment.LEFT)
 
         for tag, pos in self.node_coords.items():
             node = self.node_map.get(tag, {})
@@ -536,7 +574,7 @@ class SingleLineCadCompiler:
                 self.msp.add_text(
                     ref_txt,
                     dxfattribs={"layer": "E-ANNO-TEXT", "height": max(1.8, 2.4 * s)}
-                ).set_placement((nx + 6.0 * s, ny - 3.0 * s), align=TextEntityAlignment.LEFT)
+                ).set_placement((nx + 8.0 * s, ny - 3.0 * s), align=TextEntityAlignment.LEFT)
                 continue
 
             # -------------------------------------------------------------
@@ -556,14 +594,36 @@ class SingleLineCadCompiler:
                 self.msp.add_line((bus_left, ny), (bus_right, ny), dxfattribs={"layer": "E-ELEC-BUS"})
                 self.msp.add_line((bus_left, ny - 0.5 * s), (bus_right, ny - 0.5 * s), dxfattribs={"layer": "E-ELEC-BUS"})
 
-                amps = node.get("amps") or ""
+                amps = node.get("amps") or node.get("rating") or node.get("amp_rating") or ""
                 volts = node.get("voltage") or ""
-                spec_str = f" • {amps}" if amps else ""
-                if volts: spec_str += f" • {volts}"
-                self.msp.add_text(
-                    f"{tag}{spec_str}",
-                    dxfattribs={"layer": "E-ANNO-TEXT", "height": max(2.2, 2.8 * s)}
-                ).set_placement((bus_left, ny + 3.0 * s), align=TextEntityAlignment.BOTTOM_LEFT)
+                aic = node.get("aic") or node.get("aic_rating") or ""
+
+                if self.label_format == "stacked":
+                    lines = [str(tag)]
+                    if amps: lines.append(str(amps))
+                    if volts: lines.append(str(volts))
+                    if aic:
+                        aic_str = f"{aic} kAIC" if not str(aic).upper().endswith("AIC") else str(aic)
+                        lines.append(aic_str)
+
+                    line_step = max(2.6, 3.2 * s)
+                    text_h = max(1.8, 2.2 * s)
+                    # Stack lines from bottom up: top line is tag, bottom line is closest to bus with 5.5*s margin
+                    for l_idx, line_txt in enumerate(reversed(lines)):
+                        is_tag_line = (l_idx == len(lines) - 1)
+                        h = max(2.2, 2.8 * s) if is_tag_line else text_h
+                        y_pos = ny + (5.5 * s) + (l_idx * line_step)
+                        self.msp.add_text(
+                            line_txt,
+                            dxfattribs={"layer": "E-ANNO-TEXT", "height": h}
+                        ).set_placement((bus_left, y_pos), align=TextEntityAlignment.BOTTOM_LEFT)
+                else:
+                    spec_str = f" • {amps}" if amps else ""
+                    if volts: spec_str += f" • {volts}"
+                    self.msp.add_text(
+                        f"{tag}{spec_str}",
+                        dxfattribs={"layer": "E-ANNO-TEXT", "height": max(2.2, 2.8 * s)}
+                    ).set_placement((bus_left, ny + 5.5 * s), align=TextEntityAlignment.BOTTOM_LEFT)
 
                 is_leaf_panel = self._is_leaf_panel(tag)
 
@@ -589,7 +649,7 @@ class SingleLineCadCompiler:
                     self.msp.add_text(
                         f"{trip_amps}/3P",
                         dxfattribs={"layer": "E-ANNO-TEXT", "height": max(1.5, 1.8 * s)}
-                    ).set_placement((cx + 2.5 * s, brk_y), align=TextEntityAlignment.LEFT)
+                    ).set_placement((cx + 3.8 * s, brk_y), align=TextEntityAlignment.LEFT)
 
                     # 3. Drop Line down to child incomer
                     target_node = self.node_map.get(c, {})
@@ -612,25 +672,58 @@ class SingleLineCadCompiler:
                     self.msp.add_text(
                         cabl_callout,
                         dxfattribs={"layer": "E-ANNO-CABL", "height": max(1.3, 1.5 * s), "rotation": 90}
-                    ).set_placement((cx + 1.8 * s, (brk_y + child_top_y) / 2.0), align=TextEntityAlignment.LEFT)
+                    ).set_placement((cx + 3.2 * s, (brk_y + child_top_y) / 2.0), align=TextEntityAlignment.LEFT)
 
             # -------------------------------------------------------------
             # Case 3: Equipment Symbol (Transformer, Motor, Generator, etc.)
             # -------------------------------------------------------------
             else:
                 self.msp.add_blockref(sym, (nx, ny), dxfattribs={"layer": "E-ELEC-SYMB", "xscale": s, "yscale": s})
-                lbl = tag
-                if dom == "transformers" or "XFMR" in ttag:
-                    kva = node.get("kva") or ""
-                    lbl = f"{tag} {kva}".strip()
-                elif dom == "loads" or "MOTOR" in sym:
-                    hp = node.get("hp") or node.get("amps") or ""
-                    lbl = f"{tag} {hp}".strip()
+                if self.label_format == "stacked":
+                    lines = [str(tag)]
+                    if dom == "transformers" or "XFMR" in ttag:
+                        kva = node.get("kva") or node.get("rating") or ""
+                        volts_p = node.get("voltage_primary") or ""
+                        volts_s = node.get("voltage_secondary") or node.get("voltage") or ""
+                        if kva: lines.append(str(kva))
+                        if volts_p and volts_s:
+                            lines.append(f"{volts_p} / {volts_s}")
+                        elif volts_s:
+                            lines.append(str(volts_s))
+                    elif dom == "loads" or "MOTOR" in sym:
+                        hp = node.get("hp") or node.get("rating") or ""
+                        amps = node.get("amps") or ""
+                        if hp: lines.append(str(hp))
+                        if amps and amps != hp: lines.append(str(amps))
+                    else:
+                        amps = node.get("amps") or node.get("rating") or node.get("amp_rating") or ""
+                        volts = node.get("voltage") or ""
+                        if amps: lines.append(str(amps))
+                        if volts: lines.append(str(volts))
 
-                self.msp.add_text(
-                    lbl,
-                    dxfattribs={"layer": "E-ANNO-TEXT", "height": max(1.8, 2.2 * s)}
-                ).set_placement((nx, ny - 8.0 * s), align=TextEntityAlignment.TOP_CENTER)
+                    line_step = max(2.4, 3.0 * s)
+                    text_h = max(1.6, 2.0 * s)
+                    for l_idx, line_txt in enumerate(lines):
+                        is_tag_line = (l_idx == 0)
+                        h = max(1.8, 2.2 * s) if is_tag_line else text_h
+                        y_pos = ny - (11.0 * s) - (l_idx * line_step)
+                        self.msp.add_text(
+                            line_txt,
+                            dxfattribs={"layer": "E-ANNO-TEXT", "height": h}
+                        ).set_placement((nx, y_pos), align=TextEntityAlignment.TOP_CENTER)
+                else:
+                    lbl = tag
+                    if dom == "transformers" or "XFMR" in ttag:
+                        kva = node.get("kva") or node.get("rating") or ""
+                        lbl = f"{tag} {kva}".strip()
+                    elif dom == "loads" or "MOTOR" in sym:
+                        hp = node.get("hp") or node.get("rating") or node.get("amps") or ""
+                        lbl = f"{tag} {hp}".strip()
+
+                    self.msp.add_text(
+                        lbl,
+                        dxfattribs={"layer": "E-ANNO-TEXT", "height": max(1.8, 2.2 * s)}
+                    ).set_placement((nx, ny - 11.0 * s), align=TextEntityAlignment.TOP_CENTER)
 
                 # Transformer Secondary Feeder Distribution
                 if (dom == "transformers" or "XFMR" in ttag) and ch_list:
@@ -652,8 +745,10 @@ class SingleLineCadCompiler:
                             self.msp.add_blockref("SYM_JUNCTION_DOT", (cx, mid_y), dxfattribs={"layer": "E-ELEC-FEED", "xscale": s, "yscale": s})
                             self.msp.add_line((cx, mid_y), (cx, cy), dxfattribs={"layer": "E-ELEC-FEED"})
 
-    def _draw_title_block(self, sheet_w: float = ANSI_D_WIDTH, sheet_h: float = ANSI_D_HEIGHT) -> None:
-        """Draws standard IEEE / ANSI D sheet border (24" x 36") and engineering title block."""
+    def _draw_title_block(self, sheet_w: Optional[float] = None, sheet_h: Optional[float] = None) -> None:
+        """Draws standard IEEE / ANSI / ARCH sheet border and engineering title block."""
+        sheet_w = sheet_w or self.sheet_width
+        sheet_h = sheet_h or self.sheet_height
         margin = 15.0
         # Outer Border
         self.msp.add_lwpolyline(
@@ -690,38 +785,147 @@ class SingleLineCadCompiler:
         self.msp.add_text(f"CLIENT: {self.client_id}", dxfattribs={"layer": "E-TTLB", "height": 2.8}).set_placement((tb_x + 5, tb_y + 30))
         self.msp.add_text(f"FACILITY: {self.facility_id}", dxfattribs={"layer": "E-TTLB", "height": 2.8}).set_placement((tb_x + 5, tb_y + 24))
 
-        self.msp.add_text("SIZE: ANSI D (24\" × 36\") • N.T.S.", dxfattribs={"layer": "E-TTLB", "height": 2.2}).set_placement((tb_x + 5, tb_y + 10))
+        self.msp.add_text(f"SIZE: {self.sheet_size_label} • N.T.S.", dxfattribs={"layer": "E-TTLB", "height": 2.2}).set_placement((tb_x + 5, tb_y + 10))
         self.msp.add_text(f"DWG: {self.sheet_no}", dxfattribs={"layer": "E-TTLB", "height": 4.0}).set_placement((tb_x + 145, tb_y + 10))
 
     def compile_dxf_bytes(self) -> bytes:
-        """Compile the SLD into AutoCAD DXF ASCII/binary data stream locked to ANSI D."""
+        """Compile the SLD into AutoCAD DXF ASCII/binary data stream locked to sheet dimensions."""
         self.build_cad_drawing()
         stream = io.StringIO()
         self.doc.write(stream)
         return stream.getvalue().encode("utf-8")
 
-    def compile_svg_string(self) -> str:
-        """Compile the SLD into high-fidelity vector SVG preview locked to ANSI D (864mm x 558mm)."""
+    def compile_svg_string(self, theme: str = "dark", high_contrast: Optional[bool] = None) -> str:
+        """Compile the SLD into high-fidelity vector SVG preview locked to sheet dimensions."""
         self.build_cad_drawing()
         backend = SVGBackend()
         ctx = RenderContext(self.doc)
-        frontend = Frontend(ctx, backend)
+
+        is_hc = self.high_contrast if high_contrast is None else bool(high_contrast)
+        theme_lower = (theme or "dark").strip().lower()
+
+        if is_hc:
+            if theme_lower == "light":
+                # High Contrast Light: 100% crisp black on pure white paper
+                HC_LIGHT = {
+                    "E-ELEC-BUS": "#000000",
+                    "E-ELEC-FEED": "#000000",
+                    "E-ELEC-SYMB": "#000000",
+                    "E-ANNO-TEXT": "#000000",
+                    "E-ANNO-CABL": "#000000",
+                    "E-TTLB": "#000000"
+                }
+                def override_props(layers):
+                    for l in layers:
+                        l.color = HC_LIGHT.get(l.layer, "#000000")
+                        l.has_aci_color_7 = False
+                ctx.set_layer_properties_override(override_props)
+                cfg = Configuration(
+                    background_policy=BackgroundPolicy.CUSTOM,
+                    custom_bg_color="#FFFFFF",
+                    color_policy=ColorPolicy.COLOR
+                )
+            else:
+                # High Contrast Dark: 100% pure white on pitch-black canvas
+                HC_DARK = {
+                    "E-ELEC-BUS": "#FFFFFF",
+                    "E-ELEC-FEED": "#FFFFFF",
+                    "E-ELEC-SYMB": "#FFFFFF",
+                    "E-ANNO-TEXT": "#FFFFFF",
+                    "E-ANNO-CABL": "#FFFFFF",
+                    "E-TTLB": "#FFFFFF"
+                }
+                def override_props(layers):
+                    for l in layers:
+                        l.color = HC_DARK.get(l.layer, "#FFFFFF")
+                        l.has_aci_color_7 = False
+                ctx.set_layer_properties_override(override_props)
+                cfg = Configuration(
+                    background_policy=BackgroundPolicy.CUSTOM,
+                    custom_bg_color="#000000",
+                    color_policy=ColorPolicy.COLOR
+                )
+        elif theme_lower == "light":
+            # Architectural white paper palette with high contrast linework
+            LIGHT_PALETTE = {
+                "E-ELEC-BUS": "#0284C7",   # Deep Cyan / Blue for power buses
+                "E-ELEC-FEED": "#0F172A",  # Dark Slate (replaces white feeders/lines)
+                "E-ELEC-SYMB": "#D97706",  # High-contrast Amber / Gold
+                "E-ANNO-TEXT": "#15803D",  # Forest Green
+                "E-ANNO-CABL": "#DC2626",  # Crimson Red
+                "E-TTLB": "#0F172A"        # Dark Slate for titleblock and sheet borders
+            }
+            def override_props(layers):
+                for l in layers:
+                    if l.layer in LIGHT_PALETTE:
+                        l.color = LIGHT_PALETTE[l.layer]
+                        l.has_aci_color_7 = False
+            ctx.set_layer_properties_override(override_props)
+            cfg = Configuration(
+                background_policy=BackgroundPolicy.CUSTOM,
+                custom_bg_color="#FFFFFF",
+                color_policy=ColorPolicy.COLOR
+            )
+        else:
+            # High-contrast CAD blueprint dark theme
+            cfg = Configuration(
+                background_policy=BackgroundPolicy.CUSTOM,
+                custom_bg_color="#070A12",
+                color_policy=ColorPolicy.COLOR
+            )
+
+        frontend = Frontend(ctx, backend, config=cfg)
         frontend.draw_layout(self.msp)
-        page = layout.Page(ANSI_D_WIDTH, ANSI_D_HEIGHT, layout.Units.mm, layout.Margins.all(0))
+        page = layout.Page(self.sheet_width, self.sheet_height, layout.Units.mm, layout.Margins.all(0))
         return backend.get_string(page)
 
 
-def export_facility_dxf(project_data: Dict[str, Any], client: str, facility: str, sheet_id: str = "all") -> bytes:
-    """Convenience helper to export a facility's project data as ANSI D DXF."""
+def export_facility_dxf(
+    project_data: Dict[str, Any],
+    client: str,
+    facility: str,
+    sheet_id: str = "all",
+    sheet_size: str = "36x24",
+    label_format: str = "linear",
+    high_contrast: bool = False
+) -> bytes:
+    """Convenience helper to export a facility's project data as DXF."""
     nodes = project_data.get("nodes") or project_data.get("stack") or []
     edges = project_data.get("edges") or []
-    compiler = SingleLineCadCompiler(nodes=nodes, edges=edges, client_id=client, facility_id=facility, sheet_id=sheet_id)
+    compiler = SingleLineCadCompiler(
+        nodes=nodes,
+        edges=edges,
+        client_id=client,
+        facility_id=facility,
+        sheet_id=sheet_id,
+        sheet_size=sheet_size,
+        label_format=label_format,
+        high_contrast=high_contrast
+    )
     return compiler.compile_dxf_bytes()
 
 
-def export_facility_svg(project_data: Dict[str, Any], client: str, facility: str, sheet_id: str = "all") -> str:
-    """Convenience helper to export a facility's project data as ANSI D SVG."""
+def export_facility_svg(
+    project_data: Dict[str, Any],
+    client: str,
+    facility: str,
+    sheet_id: str = "all",
+    theme: str = "dark",
+    sheet_size: str = "36x24",
+    label_format: str = "linear",
+    high_contrast: bool = False
+) -> str:
+    """Convenience helper to export a facility's project data as SVG."""
     nodes = project_data.get("nodes") or project_data.get("stack") or []
     edges = project_data.get("edges") or []
-    compiler = SingleLineCadCompiler(nodes=nodes, edges=edges, client_id=client, facility_id=facility, sheet_id=sheet_id)
-    return compiler.compile_svg_string()
+    compiler = SingleLineCadCompiler(
+        nodes=nodes,
+        edges=edges,
+        client_id=client,
+        facility_id=facility,
+        sheet_id=sheet_id,
+        sheet_size=sheet_size,
+        label_format=label_format,
+        high_contrast=high_contrast
+    )
+    return compiler.compile_svg_string(theme=theme, high_contrast=high_contrast)

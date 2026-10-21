@@ -53,15 +53,15 @@
           </div>
         </div>
 
-        <!-- Header Actions: Sheet Selector, Zoom Stepper & Download DXF -->
-        <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Header Actions: Sheet Selector, Size Toggle, Theme Toggle, Zoom Stepper & Download DXF -->
+        <div class="flex items-center gap-2 sm:gap-2.5">
           <!-- Drawing Sheet Selector Dropdown (Multi-Sheet Sets) -->
           <div class="flex items-center gap-1.5" x-show="cadSheets && cadSheets.length > 1">
             <span class="text-[11px] text-slate-400 font-mono hidden xl:inline">Sheet:</span>
             <select 
               x-model="selectedCadSheet" 
               @change="onCadSheetChange($event.target.value)"
-              class="bg-slate-800 border border-slate-700 hover:border-slate-600 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-indigo-500 font-mono shadow-2xs transition cursor-pointer max-w-[240px] sm:max-w-[280px] truncate"
+              class="bg-slate-800 border border-slate-700 hover:border-slate-600 text-slate-200 text-xs rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-indigo-500 font-mono shadow-2xs transition cursor-pointer max-w-[200px] sm:max-w-[240px] truncate"
               title="Select Drawing Sheet"
             >
               <template x-for="s in cadSheets" :key="s.sheet_id">
@@ -69,6 +69,76 @@
               </template>
             </select>
           </div>
+
+          <!-- Sheet Size Selector (36x24 vs 42x30) -->
+          <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800/90 shadow-2xs overflow-hidden text-xs">
+            <button 
+              type="button" 
+              @click="setCadSheetSize('36x24')" 
+              class="px-2.5 py-1 text-[11px] font-mono transition cursor-pointer"
+              :class="cadSheetSize === '36x24' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
+              title="Standard ANSI D (36″ × 24″ / 864mm × 558mm)"
+            >
+              36×24
+            </button>
+            <button 
+              type="button" 
+              @click="setCadSheetSize('42x30')" 
+              class="px-2.5 py-1 text-[11px] font-mono transition cursor-pointer border-l border-slate-700"
+              :class="cadSheetSize === '42x30' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
+              title="Large ARCH E1 (42″ × 30″ / 1067mm × 762mm)"
+            >
+              42×30
+            </button>
+          </div>
+
+          <!-- Label Format Selector (Linear vs Stacked) -->
+          <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800/90 shadow-2xs overflow-hidden text-xs">
+            <button 
+              type="button" 
+              @click="setCadLabelFormat('linear')" 
+              class="px-2 py-1 text-[11px] font-mono transition cursor-pointer flex items-center gap-1"
+              :class="cadLabelFormat === 'linear' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
+              title="Linear equipment and bus annotations (single line)"
+            >
+              <span>═</span>
+              <span class="hidden xl:inline">Linear</span>
+            </button>
+            <button 
+              type="button" 
+              @click="setCadLabelFormat('stacked')" 
+              class="px-2 py-1 text-[11px] font-mono transition cursor-pointer border-l border-slate-700 flex items-center gap-1"
+              :class="cadLabelFormat === 'stacked' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-700'"
+              title="Stacked multi-line equipment and bus annotations (compact footprint)"
+            >
+              <span>☰</span>
+              <span class="hidden xl:inline">Stacked</span>
+            </button>
+          </div>
+
+          <!-- Theme Toggle (Light / Dark Mode) -->
+          <button 
+            type="button" 
+            @click="toggleCadTheme()" 
+            class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            :class="cadTheme === 'light' ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 hover:bg-amber-500/25' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'"
+            :title="cadTheme === 'light' ? 'Switch to Dark CAD Blueprint' : 'Switch to Light Architectural Print'"
+          >
+            <span x-text="cadTheme === 'light' ? '☀️' : '🌙'"></span>
+            <span class="hidden md:inline text-[11px]" x-text="cadTheme === 'light' ? 'Light' : 'Dark'"></span>
+          </button>
+
+          <!-- High Contrast Toggle (Monochrome White/Black) -->
+          <button 
+            type="button" 
+            @click="toggleCadHighContrast()" 
+            class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            :class="cadHighContrast ? 'bg-white text-slate-950 font-bold border-white ring-2 ring-indigo-400' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'"
+            :title="cadHighContrast ? 'Disable High Contrast (restore AIA color palette)' : 'Enable High Contrast (pure white on black / black on white)'"
+          >
+            <span>☯</span>
+            <span class="hidden lg:inline text-[11px]" x-text="cadHighContrast ? 'High Contrast: ON' : 'High Contrast'"></span>
+          </button>
 
           <!-- Zoom Stepper Controls -->
           <div class="flex items-center rounded-lg border border-slate-700 bg-slate-800/90 shadow-2xs overflow-hidden text-xs">
@@ -107,7 +177,7 @@
             title="Re-compile from facility digital twin"
           >
             <span :class="{'animate-spin': cadLoading}">🔄</span>
-            <span class="hidden md:inline">Re-compile</span>
+            <span class="hidden lg:inline">Re-compile</span>
           </button>
 
           <!-- Download DXF Button (AutoCAD Native) -->
@@ -139,8 +209,9 @@
 
       <!-- Main CAD Drawing Viewport Canvas -->
       <div 
-        class="relative flex-1 bg-[#070A12] overflow-hidden flex items-center justify-center p-6 select-none cursor-grab active:cursor-grabbing"
-        style="background-image: radial-gradient(#1E293B 1px, transparent 1px); background-size: 24px 24px;"
+        class="relative flex-1 overflow-hidden flex items-center justify-center p-6 select-none cursor-grab active:cursor-grabbing transition-colors duration-200"
+        :class="cadHighContrast ? (cadTheme === 'light' ? 'bg-[#FFFFFF]' : 'bg-[#000000]') : (cadTheme === 'light' ? 'bg-[#E2E8F0]' : 'bg-[#070A12]')"
+        :style="cadHighContrast ? '' : (cadTheme === 'light' ? 'background-image: radial-gradient(#94A3B8 1px, transparent 1px); background-size: 24px 24px;' : 'background-image: radial-gradient(#1E293B 1px, transparent 1px); background-size: 24px 24px;')"
         @mousedown="startCadPan($event)"
         @mousemove="doCadPan($event)"
         @mouseup="endCadPan()"
@@ -148,14 +219,15 @@
         @wheel.prevent="onCadWheel($event)"
       >
         <!-- Loading Overlay -->
-        <div x-show="cadLoading" class="absolute inset-0 bg-slate-950/70 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20">
+        <div x-show="cadLoading" class="absolute inset-0 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20" :class="cadTheme === 'light' ? 'bg-slate-200/80' : 'bg-slate-950/70'">
           <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <span class="text-xs font-mono text-indigo-300">Generating IEEE CAD Geometry & Layer Vectors...</span>
+          <span class="text-xs font-mono font-medium" :class="cadTheme === 'light' ? 'text-indigo-800' : 'text-indigo-300'">Generating IEEE CAD Geometry & Layer Vectors...</span>
         </div>
 
         <!-- SVG Container with dynamic Zoom & Pan Transform -->
         <div 
-          class="transition-transform duration-75 origin-center flex items-center justify-center pointer-events-none"
+          class="transition-transform duration-75 origin-center flex items-center justify-center pointer-events-none rounded-xs"
+          :class="cadTheme === 'light' ? 'shadow-2xl shadow-slate-500/50 border border-slate-300' : 'shadow-2xl shadow-black/80 border border-slate-800'"
           :style="`transform: translate(${cadPanX}px, ${cadPanY}px) scale(${cadZoomScale}); max-width: 95%; max-height: 90%;`"
           x-html="cadSvgContent"
         ></div>
@@ -165,14 +237,31 @@
       <div class="px-4 sm:px-6 py-2 bg-slate-950/90 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-slate-400 shrink-0 select-none">
         <div class="flex items-center gap-3">
           <span class="font-bold text-slate-300 uppercase">AIA CAD Layers:</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span> E-ELEC-BUS</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-white"></span> E-ELEC-FEED</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span> E-ELEC-SYMB</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> E-ANNO-TEXT</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> E-ANNO-CABL</span>
+          <!-- Dynamic colors based on active theme & high contrast -->
+          <span class="flex items-center gap-1">
+            <span class="w-2.5 h-2.5 rounded-full" :class="cadHighContrast ? (cadTheme === 'light' ? 'bg-black border border-slate-400' : 'bg-white') : (cadTheme === 'light' ? 'bg-[#0284C7]' : 'bg-cyan-400')"></span> E-ELEC-BUS
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="w-2.5 h-2.5 rounded-full" :class="cadHighContrast ? (cadTheme === 'light' ? 'bg-black border border-slate-400' : 'bg-white') : (cadTheme === 'light' ? 'bg-[#0F172A] border border-slate-500' : 'bg-white')"></span> E-ELEC-FEED
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="w-2.5 h-2.5 rounded-full" :class="cadHighContrast ? (cadTheme === 'light' ? 'bg-black border border-slate-400' : 'bg-white') : (cadTheme === 'light' ? 'bg-[#D97706]' : 'bg-yellow-400')"></span> E-ELEC-SYMB
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="w-2.5 h-2.5 rounded-full" :class="cadHighContrast ? (cadTheme === 'light' ? 'bg-black border border-slate-400' : 'bg-white') : (cadTheme === 'light' ? 'bg-[#15803D]' : 'bg-emerald-400')"></span> E-ANNO-TEXT
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="w-2.5 h-2.5 rounded-full" :class="cadHighContrast ? (cadTheme === 'light' ? 'bg-black border border-slate-400' : 'bg-white') : (cadTheme === 'light' ? 'bg-[#DC2626]' : 'bg-rose-400')"></span> E-ANNO-CABL
+          </span>
         </div>
-        <div class="text-[10px] text-slate-500">
-          Sheet: ANSI D (24" × 36") • Format: AutoCAD R2018
+        <div class="text-[10px] text-slate-500 flex items-center gap-2">
+          <span>Sheet: <strong class="text-slate-400" x-text="cadSheetSize === '42x30' ? 'ARCH E1 (30″ × 42″)' : 'ANSI D (24″ × 36″)'"></strong></span>
+          <span>•</span>
+          <span>Labels: <strong class="text-slate-400" x-text="cadLabelFormat === 'stacked' ? 'Stacked' : 'Linear'"></strong></span>
+          <span>•</span>
+          <span>Mode: <strong class="text-slate-400" x-text="cadHighContrast ? (cadTheme === 'light' ? 'High Contrast (Black on White)' : 'High Contrast (White on Black)') : (cadTheme === 'light' ? 'Architectural Print (Light)' : 'CAD Blueprint (Dark)')"></strong></span>
+          <span>•</span>
+          <span>AutoCAD R2018</span>
         </div>
       </div>
     </div>

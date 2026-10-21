@@ -152,3 +152,176 @@ def test_cad_export_api_endpoints():
     assert resp_sheet_svg.status_code == 200
     assert "<svg" in resp_sheet_svg.text
 
+
+def test_cad_compiler_sheet_sizes():
+    """Verify 36x24 (ANSI D) and 42x30 (ARCH E1) dimensions and title block annotations."""
+    mock_nodes = [
+        {"id": "UTIL_1", "tag": "UTIL-1", "domain": "sources"},
+        {"id": "SWBD_1", "tag": "MSB-1", "domain": "distribution", "fed_from": "UTIL-1"}
+    ]
+    mock_edges = [{"source": "UTIL_1", "target": "SWBD_1"}]
+
+    # 1. Test 36x24 ANSI D
+    c_36 = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges, sheet_size="36x24")
+    assert c_36.sheet_width == 864.0
+    assert c_36.sheet_height == 558.0
+    assert "ANSI D" in c_36.sheet_size_label
+    dxf_36 = c_36.compile_dxf_bytes().decode("utf-8")
+    assert "ANSI D" in dxf_36
+
+    # 2. Test 42x30 ARCH E1
+    c_42 = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges, sheet_size="42x30")
+    assert c_42.sheet_width == 1066.8
+    assert c_42.sheet_height == 762.0
+    assert "ARCH E1" in c_42.sheet_size_label
+    dxf_42 = c_42.compile_dxf_bytes().decode("utf-8")
+    assert "ARCH E1" in dxf_42
+
+
+def test_cad_compiler_themes():
+    """Verify light architectural print and dark CAD blueprint SVG rendering."""
+    mock_nodes = [
+        {"id": "UTIL_1", "tag": "UTIL-1", "domain": "sources"},
+        {"id": "SWBD_1", "tag": "MSB-1", "domain": "distribution", "fed_from": "UTIL-1"}
+    ]
+    mock_edges = [{"source": "UTIL_1", "target": "SWBD_1"}]
+
+    compiler = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges)
+
+    # 1. Dark Theme
+    svg_dark = compiler.compile_svg_string(theme="dark")
+    assert 'fill="#070A12"' in svg_dark or 'fill="#070a12"' in svg_dark
+
+    # 2. Light Theme
+    compiler_light = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges)
+    svg_light = compiler_light.compile_svg_string(theme="light")
+    assert 'fill="#FFFFFF"' in svg_light or 'fill="#ffffff"' in svg_light
+    # Check light theme palette colors
+    assert "#0284C7" in svg_light or "#0284c7" in svg_light  # Bus
+    assert "#0F172A" in svg_light or "#0f172a" in svg_light  # Feed / TTLB
+
+
+def test_cad_api_theme_and_size_parameters():
+    """Test API query parameters for theme (light/dark) and sheet size (36x24/42x30)."""
+    from fastapi.testclient import TestClient
+    from james_app.main import app
+
+    client = TestClient(app)
+
+    # 1. Test SVG with light theme and 42x30 size
+    resp_svg = client.get("/api/clients/zoetis/facilities/b4/cad/svg?theme=light&size=42x30")
+    assert resp_svg.status_code == 200
+    assert "image/svg+xml" in resp_svg.headers["content-type"]
+    svg_text = resp_svg.text
+    assert "<svg" in svg_text
+    assert 'fill="#FFFFFF"' in svg_text or 'fill="#ffffff"' in svg_text
+    assert '1066.8mm' in svg_text
+    assert '762mm' in svg_text
+
+    # 2. Test DXF download with 42x30 size
+    resp_dxf = client.get("/api/clients/zoetis/facilities/b4/cad/dxf?size=42x30")
+    assert resp_dxf.status_code == 200
+    assert "application/dxf" in resp_dxf.headers["content-type"]
+    assert "zoetis_b4_42x30_single_line.dxf" in resp_dxf.headers.get("content-disposition", "")
+    dxf_content = resp_dxf.content.decode("utf-8")
+    assert "ARCH E1" in dxf_content
+
+
+def test_cad_high_contrast_mode():
+    """Verify high contrast monochrome rendering (white on black and black on white)."""
+    mock_nodes = [
+        {"id": "UTIL_1", "tag": "UTIL-1", "domain": "sources"},
+        {"id": "SWBD_1", "tag": "MSB-1", "domain": "distribution", "fed_from": "UTIL-1", "rating": "2000A", "voltage": "480V"}
+    ]
+    mock_edges = [{"source": "UTIL_1", "target": "SWBD_1"}]
+
+    # 1. High Contrast Dark: #000000 bg with #FFFFFF linework
+    compiler_hc_dark = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges, high_contrast=True)
+    svg_hc_dark = compiler_hc_dark.compile_svg_string(theme="dark", high_contrast=True)
+    assert 'fill="#000000"' in svg_hc_dark or 'fill="#000"' in svg_hc_dark
+    assert '#FFFFFF' in svg_hc_dark or '#ffffff' in svg_hc_dark
+
+    # 2. High Contrast Light: #FFFFFF bg with #000000 linework
+    compiler_hc_light = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges, high_contrast=True)
+    svg_hc_light = compiler_hc_light.compile_svg_string(theme="light", high_contrast=True)
+    assert 'fill="#FFFFFF"' in svg_hc_light or 'fill="#ffffff"' in svg_hc_light
+    assert '#000000' in svg_hc_light or '#000' in svg_hc_light
+
+    # 3. DXF monochrome layer ACI 7
+    dxf_hc = compiler_hc_dark.compile_dxf_bytes().decode("utf-8")
+    assert "E-ELEC-BUS" in dxf_hc
+
+
+def test_cad_label_formatting():
+    """Verify linear and stacked equipment and bus label formatting."""
+    mock_nodes = [
+        {
+            "id": "UTIL_1",
+            "tag": "UTIL-1",
+            "domain": "sources",
+            "voltage": "13.8kV",
+            "source_type": "utility"
+        },
+        {
+            "id": "SWBD_1",
+            "tag": "MSB-1",
+            "domain": "distribution",
+            "fed_from": "UTIL-1",
+            "rating": "3000A",
+            "voltage": "480Y/277V",
+            "aic_rating": "65kAIC"
+        },
+        {
+            "id": "XFMR_1",
+            "tag": "T-1",
+            "domain": "distribution",
+            "fed_from": "SWBD_1",
+            "type": "transformer",
+            "rating": "1500kVA",
+            "primary_voltage": "13.8kV",
+            "secondary_voltage": "480V"
+        }
+    ]
+    mock_edges = [
+        {"source": "UTIL_1", "target": "SWBD_1"},
+        {"source": "SWBD_1", "target": "XFMR_1"}
+    ]
+
+    # 1. Linear format
+    compiler_linear = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges, label_format="linear")
+    dxf_linear = compiler_linear.compile_dxf_bytes().decode("utf-8")
+    assert "MSB-1" in dxf_linear
+    assert "T-1" in dxf_linear
+
+    # 2. Stacked format
+    compiler_stacked = SingleLineCadCompiler(nodes=mock_nodes, edges=mock_edges, label_format="stacked")
+    dxf_stacked = compiler_stacked.compile_dxf_bytes().decode("utf-8")
+    assert "MSB-1" in dxf_stacked
+    assert "3000A" in dxf_stacked
+    assert "T-1" in dxf_stacked
+    assert "1500kVA" in dxf_stacked
+
+
+def test_cad_api_contrast_and_label_parameters():
+    """Test API query parameters for contrast and label formatting."""
+    from fastapi.testclient import TestClient
+    from james_app.main import app
+
+    client = TestClient(app)
+
+    # 1. Test SVG with high contrast and stacked labels
+    resp_svg = client.get("/api/clients/zoetis/facilities/b4/cad/svg?contrast=high&labels=stacked&theme=dark")
+    assert resp_svg.status_code == 200
+    assert "image/svg+xml" in resp_svg.headers["content-type"]
+    svg_text = resp_svg.text
+    assert "<svg" in svg_text
+    assert 'fill="#000000"' in svg_text or 'fill="#000"' in svg_text
+
+    # 2. Test DXF download with high contrast (appends _mono to filename)
+    resp_dxf = client.get("/api/clients/zoetis/facilities/b4/cad/dxf?contrast=high&labels=stacked")
+    assert resp_dxf.status_code == 200
+    assert "application/dxf" in resp_dxf.headers["content-type"]
+    assert "zoetis_b4_mono_single_line.dxf" in resp_dxf.headers.get("content-disposition", "")
+
+
+
