@@ -44,23 +44,24 @@
       app.toggleCadHighContrast = async function() {
         this.cadHighContrast = !this.cadHighContrast;
         try { localStorage.setItem('cad_sld_contrast', this.cadHighContrast ? 'high' : 'standard'); } catch(e) {}
+        console.log('[CAD SLD] Toggled High Contrast. Active:', this.cadHighContrast);
         await this.fetchCadSvg();
       };
 
       app.setCadLabelFormat = async function(newFormat) {
-        if (this.cadLabelFormat === newFormat) return;
         this.cadLabelFormat = newFormat;
         try { localStorage.setItem('cad_sld_labels', this.cadLabelFormat); } catch(e) {}
+        console.log('[CAD SLD] Set Label Format to:', this.cadLabelFormat);
         await this.fetchCadSvg();
       };
 
       app.setCadSheetSize = async function(newSize) {
-        if (this.cadSheetSize === newSize) return;
         this.cadSheetSize = newSize;
         try { localStorage.setItem('cad_sld_size', this.cadSheetSize); } catch(e) {}
         this.cadZoomScale = 1.0;
         this.cadPanX = 0;
         this.cadPanY = 0;
+        console.log('[CAD SLD] Set Sheet Size to:', this.cadSheetSize);
         await this.fetchCadSvg();
       };
 
@@ -166,6 +167,34 @@
     const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance || window.__catalogAppInstance;
     if (appInstance && typeof appInstance.openCadSldModal === 'function') {
       appInstance.openCadSldModal();
+    }
+  };
+
+  window.toggleCadHighContrast = function() {
+    const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
+    if (appInstance && typeof appInstance.toggleCadHighContrast === 'function') {
+      appInstance.toggleCadHighContrast();
+    }
+  };
+
+  window.setCadLabelFormat = function(fmt) {
+    const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
+    if (appInstance && typeof appInstance.setCadLabelFormat === 'function') {
+      appInstance.setCadLabelFormat(fmt);
+    }
+  };
+
+  window.toggleCadTheme = function() {
+    const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
+    if (appInstance && typeof appInstance.toggleCadTheme === 'function') {
+      appInstance.toggleCadTheme();
+    }
+  };
+
+  window.setCadSheetSize = function(size) {
+    const appInstance = window.alpineApp || window.__sldAppInstance || window.__surveyAppInstance;
+    if (appInstance && typeof appInstance.setCadSheetSize === 'function') {
+      appInstance.setCadSheetSize(size);
     }
   };
 })();
