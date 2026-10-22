@@ -78,6 +78,60 @@ class PanelScheduleRecord(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
+class SiteConfigRecord(Base):
+    """SQLAlchemy model storing site profile and electrical service configuration."""
+    __tablename__ = "site_config"
+
+    id = Column(Integer, primary_key=True, default=1)
+    client_id = Column(String(64), index=True, nullable=False)
+    facility_id = Column(String(64), index=True, nullable=False)
+
+    # Facility Identity & Location
+    facility_name = Column(String(128), nullable=False)
+    street_address = Column(String(256), nullable=True, default="")
+    city = Column(String(64), nullable=True, default="")
+    state = Column(String(32), nullable=True, default="")
+    postal_code = Column(String(32), nullable=True, default="")
+    country = Column(String(64), default="USA")
+
+    # Electrical Service Configuration
+    service_voltage = Column(String(64), default="480Y/277V 3Ø 4W")
+    service_amperage = Column(Float, default=3000.0)
+    service_phase = Column(Integer, default=3)
+    service_wires = Column(Integer, default=4)
+    service_frequency = Column(String(16), default="60 Hz")
+    service_type = Column(String(64), default="Underground Pad-Mounted")
+    main_disconnect_type = Column(String(64), default="Main Circuit Breaker (MCB)")
+    available_fault_current_ka = Column(Float, default=65.0)
+
+    # Utility Provider
+    utility_name = Column(String(128), nullable=True, default="")
+    utility_account_number = Column(String(64), nullable=True, default="")
+    utility_meter_number = Column(String(64), nullable=True, default="")
+    utility_transformer_id = Column(String(64), nullable=True, default="")
+
+    # Key Contacts
+    primary_contact_name = Column(String(128), nullable=True, default="")
+    primary_contact_title = Column(String(128), nullable=True, default="")
+    primary_contact_email = Column(String(128), nullable=True, default="")
+    primary_contact_phone = Column(String(64), nullable=True, default="")
+    emergency_contact_name = Column(String(128), nullable=True, default="")
+    emergency_contact_phone = Column(String(64), nullable=True, default="")
+    facility_operating_hours = Column(String(64), default="24/7 Operations")
+
+    # Compliance & Safety
+    nec_edition = Column(String(32), default="NEC 2023")
+    arc_flash_study_date = Column(String(32), nullable=True, default="")
+    arc_flash_status = Column(String(64), default="Verified / Compliant")
+    notes = Column(Text, nullable=True, default="")
+
+    # Raw JSON payload for extended dynamic fields
+    attributes = Column(JSON, default=dict)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
 def sanitize_identifier(val: str, default: str = "default") -> str:
     """Sanitize client or facility identifier into a safe filesystem slug, rejecting phantom template expressions."""
     if not val:
@@ -106,6 +160,12 @@ def get_db_path(client_id: str, facility_id: str) -> Path:
 def get_jsonl_path(client_id: str, facility_id: str) -> Path:
     """Return path to client facility companion JSONL file."""
     return get_facility_dir(client_id, facility_id) / "model.jsonl"
+
+
+def get_site_config_path(client_id: str, facility_id: str) -> Path:
+    """Return path to client facility companion site_config.json file."""
+    return get_facility_dir(client_id, facility_id) / "site_config.json"
+
 
 
 def get_engine(client_id: str, facility_id: str):
@@ -419,12 +479,491 @@ def get_verified_demo_assets() -> List[Dict[str, Any]]:
     ]
 
 
+def get_208v_site_seed_assets() -> List[Dict[str, Any]]:
+    """Return realistic 208Y/120V 3Ø 4W electrical digital twin equipment stack with no 480V step-down transformer."""
+    return [
+        {
+            "id": "s1", "tag": "UTIL-1", "name": "Utility Grid Service Entrance (208Y/120V)",
+            "object_class": "UtilityServiceSource", "domain": "sources", "type_tag": "UTIL",
+            "type_name": "Utility Grid Service Entrance", "room": "Main Electrical Service Room",
+            "fed_from": None, "voltage": "208Y/120V 3Ø 4W", "amps": 800.0, "aic": 65.0,
+            "is_panel": 0, "slots": 0, "survey_sequence": 1, "status": "VERIFIED",
+            "attributes": {
+                "service_mva": 100.0,
+                "transformer_type": "Utility Network Transformer",
+                "utility_name": "Local Electric Utility",
+                "service_voltage": "208Y/120V",
+                "meter_number": "MTR-208-800A"
+            }
+        },
+        {
+            "id": "s2", "tag": "MSB-1", "name": "Main Service Switchboard (208Y/120V)",
+            "object_class": "MainDistributionPanelObject", "domain": "panels", "type_tag": "MDP",
+            "type_name": "Main Service Switchboard", "room": "Main Electrical Service Room",
+            "fed_from": "UTIL-1", "voltage": "208Y/120V 3Ø 4W", "amps": 800.0, "aic": 42.0,
+            "is_panel": 1, "slots": 42, "survey_sequence": 2, "status": "VERIFIED",
+            "attributes": {
+                "bus_rating_a": 800.0,
+                "main_device": "MCB",
+                "main_type": "MCB (Main Breaker)",
+                "schedule": [
+                    {
+                        "leftSlot": 1, "leftDesc": "Feeder to Lighting Panel LP-1", "leftTrip": "225", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "4/0 AWG Cu", "leftTargetLoad": "LP-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
+                    },
+                    {
+                        "leftSlot": 3, "leftDesc": "↳ Ganged with Slot #1 (Phase B)", "leftTrip": "225", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "4/0 AWG Cu", "leftTargetLoad": "LP-1", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
+                    },
+                    {
+                        "leftSlot": 5, "leftDesc": "↳ Ganged with Slot #1 (Phase C)", "leftTrip": "225", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "4/0 AWG Cu", "leftTargetLoad": "LP-1", "leftParentSlot": 1, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
+                    },
+                    {
+                        "leftSlot": 7, "leftDesc": "Feeder to Power Panel PP-1", "leftTrip": "225", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "4/0 AWG Cu", "leftTargetLoad": "PP-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
+                    },
+                    {
+                        "leftSlot": 9, "leftDesc": "↳ Ganged with Slot #7 (Phase B)", "leftTrip": "225", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "4/0 AWG Cu", "leftTargetLoad": "PP-1", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
+                    },
+                    {
+                        "leftSlot": 11, "leftDesc": "↳ Ganged with Slot #7 (Phase C)", "leftTrip": "225", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "4/0 AWG Cu", "leftTargetLoad": "PP-1", "leftParentSlot": 7, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
+                    },
+                    {
+                        "leftSlot": 13, "leftDesc": "Feeder to Rooftop HVAC RTU-1", "leftTrip": "60", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "6 AWG Cu", "leftTargetLoad": "RTU-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
+                    },
+                    {
+                        "leftSlot": 15, "leftDesc": "↳ Ganged with Slot #13 (Phase B)", "leftTrip": "60", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "6 AWG Cu", "leftTargetLoad": "RTU-1", "leftParentSlot": 13, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
+                    },
+                    {
+                        "leftSlot": 17, "leftDesc": "↳ Ganged with Slot #13 (Phase C)", "leftTrip": "60", "leftPoles": 3,
+                        "leftType": "MCCB", "leftWire": "6 AWG Cu", "leftTargetLoad": "RTU-1", "leftParentSlot": 13, "leftIsGanged": True,
+                        "phase": "C", "phaseColor": "text-emerald-500"
+                    },
+                    {
+                        "leftSlot": 19, "leftDesc": "Domestic Water Heater WH-1", "leftTrip": "30", "leftPoles": 2,
+                        "leftType": "MCCB", "leftWire": "10 AWG Cu", "leftTargetLoad": "WH-1", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500"
+                    },
+                    {
+                        "leftSlot": 21, "leftDesc": "↳ Ganged with Slot #19 (Phase B)", "leftTrip": "30", "leftPoles": 2,
+                        "leftType": "MCCB", "leftWire": "10 AWG Cu", "leftTargetLoad": "WH-1", "leftParentSlot": 19, "leftIsGanged": True,
+                        "phase": "B", "phaseColor": "text-blue-500"
+                    }
+                ],
+                "notes": [
+                    {"id": "n1", "text": "Direct 208Y/120V service entrance switchboard - No 480V step-down transformer required.", "date": "10/21 10:00", "author": "Site Profile"}
+                ]
+            }
+        },
+        {
+            "id": "s3", "tag": "LP-1", "name": "Lighting & Branch Panel",
+            "object_class": "LightingBranchPanelObject", "domain": "panels", "type_tag": "LP",
+            "type_name": "Lighting & Appliance Branch Panel", "room": "Electrical Closet A",
+            "fed_from": "MSB-1", "voltage": "208Y/120V 3Ø 4W", "amps": 225.0, "aic": 22.0,
+            "is_panel": 1, "slots": 42, "survey_sequence": 3, "status": "VERIFIED",
+            "attributes": {
+                "bus_rating_a": 225.0,
+                "main_device": "MLO",
+                "main_type": "MLO (Main Lugs)",
+                "schedule": [
+                    {
+                        "leftSlot": 1, "leftDesc": "Office Lighting - West Wing", "leftTrip": "20", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500",
+                        "rightSlot": 2, "rightDesc": "Office Lighting - East Wing", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
+                    },
+                    {
+                        "leftSlot": 3, "leftDesc": "Corridor & Restroom Lighting", "leftTrip": "20", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "B", "phaseColor": "text-blue-500",
+                        "rightSlot": 4, "rightDesc": "Exterior & Canopy Lighting", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
+                    },
+                    {
+                        "leftSlot": 5, "leftDesc": "Emergency Exit Signage & Egress", "leftTrip": "20", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "C", "phaseColor": "text-emerald-500",
+                        "rightSlot": 6, "rightDesc": "Conference Room Lighting & Controls", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
+                    }
+                ]
+            }
+        },
+        {
+            "id": "s4", "tag": "PP-1", "name": "Receptacle & Equipment Power Panel",
+            "object_class": "LightingBranchPanelObject", "domain": "panels", "type_tag": "LP",
+            "type_name": "Power Panelboard", "room": "Electrical Closet B",
+            "fed_from": "MSB-1", "voltage": "208Y/120V 3Ø 4W", "amps": 225.0, "aic": 22.0,
+            "is_panel": 1, "slots": 42, "survey_sequence": 4, "status": "VERIFIED",
+            "attributes": {
+                "bus_rating_a": 225.0,
+                "main_device": "MLO",
+                "main_type": "MLO (Main Lugs)",
+                "schedule": [
+                    {
+                        "leftSlot": 1, "leftDesc": "General Receptacles West", "leftTrip": "20", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "A", "phaseColor": "text-red-500",
+                        "rightSlot": 2, "rightDesc": "General Receptacles East", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
+                    },
+                    {
+                        "leftSlot": 3, "leftDesc": "Server & IT Network Rack (Dedicated)", "leftTrip": "20", "leftPoles": 1, "leftType": "MCCB", "leftWire": "12 AWG Cu", "leftTargetLoad": "", "leftParentSlot": None, "leftIsGanged": False,
+                        "phase": "B", "phaseColor": "text-blue-500",
+                        "rightSlot": 4, "rightDesc": "Breakroom Microwave & Coffee", "rightTrip": "20", "rightPoles": 1, "rightType": "MCCB", "rightWire": "12 AWG Cu", "rightTargetLoad": "", "rightParentSlot": None, "rightIsGanged": False
+                    }
+                ]
+            }
+        },
+        {
+            "id": "s5", "tag": "RTU-1", "name": "Packaged Rooftop HVAC Unit RTU-1",
+            "object_class": "HvacEquipmentObject", "domain": "loads", "type_tag": "HVAC",
+            "type_name": "Packaged Rooftop Unit", "room": "Roof Level",
+            "fed_from": "MSB-1", "voltage": "208V 3Ø", "amps": 48.0, "aic": 22.0,
+            "is_panel": 0, "slots": 0, "survey_sequence": 5, "status": "VERIFIED",
+            "attributes": {
+                "mca": 48.0,
+                "mocp": 60.0,
+                "tonnage": 10.0,
+                "refrigerant": "R-410A"
+            }
+        },
+        {
+            "id": "s6", "tag": "WH-1", "name": "Commercial Water Heater WH-1",
+            "object_class": "GenericEquipmentObject", "domain": "loads", "type_tag": "HEATER",
+            "type_name": "Electric Storage Water Heater", "room": "Mechanical / Janitor Room",
+            "fed_from": "MSB-1", "voltage": "208V 1Ø", "amps": 24.0, "aic": 22.0,
+            "is_panel": 0, "slots": 0, "survey_sequence": 6, "status": "VERIFIED",
+            "attributes": {
+                "kw": 5.0,
+                "tank_gal": 80.0,
+                "element_type": "Dual Incoloy Elements"
+            }
+        }
+    ]
+
+
+DEFAULT_ZOETIS_B4_CONFIG: Dict[str, Any] = {
+    "client_id": "zoetis",
+    "facility_id": "b4",
+    "facility_name": "Zoetis Building 4 (Manufacturing & Lab Facility)",
+    "street_address": "100 Campus Drive",
+    "city": "Florham Park",
+    "state": "NJ",
+    "postal_code": "07932",
+    "country": "USA",
+    "full_address": "100 Campus Drive, Florham Park, NJ 07932",
+    "service_voltage": "480Y/277V 3Ø 4W",
+    "service_amperage": 3000.0,
+    "service_phase": 3,
+    "service_wires": 4,
+    "service_frequency": "60 Hz",
+    "service_type": "Underground Pad-Mounted",
+    "main_disconnect_type": "Main Circuit Breaker (MCB)",
+    "available_fault_current_ka": 65.0,
+    "utility_name": "Jersey Central Power & Light (JCP&L)",
+    "utility_account_number": "JCP-994820-04",
+    "utility_meter_number": "MTR-3000-B4",
+    "utility_transformer_id": "TX-PAD-B4-01",
+    "primary_contact_name": "Benjie Craig",
+    "primary_contact_title": "Senior Electrical Facilities Manager",
+    "primary_contact_email": "benjie.craig@zoetis.com",
+    "primary_contact_phone": "(973) 555-0142",
+    "emergency_contact_name": "Facilities Emergency Response Desk",
+    "emergency_contact_phone": "(973) 555-0911",
+    "facility_operating_hours": "24/7 Operations",
+    "nec_edition": "NEC 2023",
+    "arc_flash_study_date": "2024-06-15",
+    "arc_flash_status": "Verified / Compliant",
+    "notes": "Primary pharmaceutical R&D and critical pilot manufacturing facility.",
+    "attributes": {}
+}
+
+
+def _site_config_record_to_dict(rec: SiteConfigRecord) -> Dict[str, Any]:
+    """Serialize SiteConfigRecord SQLAlchemy model into JSON dictionary."""
+    address_parts = [p for p in [rec.street_address, rec.city, f"{rec.state} {rec.postal_code}".strip()] if p]
+    address_str = ", ".join(address_parts) if address_parts else ""
+    return {
+        "client_id": rec.client_id,
+        "facility_id": rec.facility_id,
+        "facility_name": rec.facility_name or f"{rec.client_id} - {rec.facility_id}".upper(),
+        "street_address": rec.street_address or "",
+        "city": rec.city or "",
+        "state": rec.state or "",
+        "postal_code": rec.postal_code or "",
+        "country": rec.country or "USA",
+        "full_address": address_str,
+        "service_voltage": rec.service_voltage or "480Y/277V 3Ø 4W",
+        "service_amperage": float(rec.service_amperage or 2000.0),
+        "service_phase": int(rec.service_phase or 3),
+        "service_wires": int(rec.service_wires or 4),
+        "service_frequency": rec.service_frequency or "60 Hz",
+        "service_type": rec.service_type or "Underground Pad-Mounted",
+        "main_disconnect_type": rec.main_disconnect_type or "Main Circuit Breaker (MCB)",
+        "available_fault_current_ka": float(rec.available_fault_current_ka or 65.0),
+        "utility_name": rec.utility_name or "",
+        "utility_account_number": rec.utility_account_number or "",
+        "utility_meter_number": rec.utility_meter_number or "",
+        "utility_transformer_id": rec.utility_transformer_id or "",
+        "primary_contact_name": rec.primary_contact_name or "",
+        "primary_contact_title": rec.primary_contact_title or "",
+        "primary_contact_email": rec.primary_contact_email or "",
+        "primary_contact_phone": rec.primary_contact_phone or "",
+        "emergency_contact_name": rec.emergency_contact_name or "",
+        "emergency_contact_phone": rec.emergency_contact_phone or "",
+        "facility_operating_hours": rec.facility_operating_hours or "24/7 Operations",
+        "nec_edition": rec.nec_edition or "NEC 2023",
+        "arc_flash_study_date": rec.arc_flash_study_date or "",
+        "arc_flash_status": rec.arc_flash_status or "Verified / Compliant",
+        "notes": rec.notes or "",
+        "attributes": rec.attributes if isinstance(rec.attributes, dict) else {},
+        "updated_at": rec.updated_at.isoformat() if rec.updated_at else datetime.utcnow().isoformat()
+    }
+
+
+def get_site_config(client_id: str, facility_id: str) -> Dict[str, Any]:
+    """Retrieve site configuration from SQLite model.db (falling back to JSON or defaults)."""
+    clean_c = sanitize_identifier(client_id, "default_client")
+    clean_f = sanitize_identifier(facility_id, "main_facility")
+
+    get_facility_dir(clean_c, clean_f)
+    get_engine(clean_c, clean_f)
+
+    # 1. Try querying SQLite
+    try:
+        with get_session(clean_c, clean_f) as session:
+            rec = session.query(SiteConfigRecord).filter_by(id=1).first()
+            if rec:
+                return _site_config_record_to_dict(rec)
+    except Exception:
+        pass
+
+    # 2. Try loading companion site_config.json
+    cfg_file = get_site_config_path(clean_c, clean_f)
+    if cfg_file.exists():
+        try:
+            with open(cfg_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    # Persist into DB for subsequent fast queries
+                    save_site_config(clean_c, clean_f, data)
+                    return data
+        except Exception:
+            pass
+
+    # 3. Default fallback
+    if clean_c == "zoetis" and clean_f == "b4":
+        default_data = dict(DEFAULT_ZOETIS_B4_CONFIG)
+    else:
+        default_data = {
+            "client_id": clean_c,
+            "facility_id": clean_f,
+            "facility_name": f"{clean_c.replace('_', ' ').title()} - {clean_f.upper()}",
+            "street_address": "",
+            "city": "",
+            "state": "",
+            "postal_code": "",
+            "country": "USA",
+            "full_address": "",
+            "service_voltage": "480Y/277V 3Ø 4W",
+            "service_amperage": 2000.0,
+            "service_phase": 3,
+            "service_wires": 4,
+            "service_frequency": "60 Hz",
+            "service_type": "Underground Pad-Mounted",
+            "main_disconnect_type": "Main Circuit Breaker (MCB)",
+            "available_fault_current_ka": 65.0,
+            "utility_name": "Local Electric Utility",
+            "utility_account_number": "",
+            "utility_meter_number": "",
+            "utility_transformer_id": "",
+            "primary_contact_name": "",
+            "primary_contact_title": "Facility Electrical Lead",
+            "primary_contact_email": "",
+            "primary_contact_phone": "",
+            "emergency_contact_name": "",
+            "emergency_contact_phone": "",
+            "facility_operating_hours": "Standard Commercial (7am - 6pm)",
+            "nec_edition": "NEC 2023",
+            "arc_flash_study_date": "",
+            "arc_flash_status": "Survey Pending",
+            "notes": "",
+            "attributes": {}
+        }
+
+    # Auto-save defaults to initialize DB and file
+    try:
+        save_site_config(clean_c, clean_f, default_data)
+    except Exception:
+        pass
+    return default_data
+
+
+def save_site_config(client_id: str, facility_id: str, config_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Upsert site configuration into SQLite model.db and mirror to site_config.json."""
+    clean_c = sanitize_identifier(client_id, "default_client")
+    clean_f = sanitize_identifier(facility_id, "main_facility")
+
+    get_facility_dir(clean_c, clean_f)
+    get_engine(clean_c, clean_f)
+
+    # Sanitize and extract fields
+    fac_name = str(config_data.get("facility_name") or f"{clean_c.replace('_', ' ').title()} - {clean_f.upper()}").strip()
+    street = str(config_data.get("street_address") or "").strip()
+    city = str(config_data.get("city") or "").strip()
+    state = str(config_data.get("state") or "").strip()
+    postal = str(config_data.get("postal_code") or "").strip()
+    country = str(config_data.get("country") or "USA").strip()
+
+    voltage = str(config_data.get("service_voltage") or "480Y/277V 3Ø 4W").strip()
+    try:
+        amps = float(config_data.get("service_amperage") or 2000.0)
+    except (ValueError, TypeError):
+        amps = 2000.0
+
+    try:
+        phase = int(config_data.get("service_phase") or 3)
+    except (ValueError, TypeError):
+        phase = 3
+
+    try:
+        wires = int(config_data.get("service_wires") or 4)
+    except (ValueError, TypeError):
+        wires = 4
+
+    freq = str(config_data.get("service_frequency") or "60 Hz").strip()
+    svc_type = str(config_data.get("service_type") or "Underground Pad-Mounted").strip()
+    disconnect = str(config_data.get("main_disconnect_type") or "Main Circuit Breaker (MCB)").strip()
+
+    try:
+        ka = float(config_data.get("available_fault_current_ka") or 65.0)
+    except (ValueError, TypeError):
+        ka = 65.0
+
+    util_name = str(config_data.get("utility_name") or "").strip()
+    util_acct = str(config_data.get("utility_account_number") or "").strip()
+    util_mtr = str(config_data.get("utility_meter_number") or "").strip()
+    util_xfmr = str(config_data.get("utility_transformer_id") or "").strip()
+
+    c_name = str(config_data.get("primary_contact_name") or "").strip()
+    c_title = str(config_data.get("primary_contact_title") or "").strip()
+    c_email = str(config_data.get("primary_contact_email") or "").strip()
+    c_phone = str(config_data.get("primary_contact_phone") or "").strip()
+
+    e_name = str(config_data.get("emergency_contact_name") or "").strip()
+    e_phone = str(config_data.get("emergency_contact_phone") or "").strip()
+    hours = str(config_data.get("facility_operating_hours") or "24/7 Operations").strip()
+
+    nec = str(config_data.get("nec_edition") or "NEC 2023").strip()
+    af_date = str(config_data.get("arc_flash_study_date") or "").strip()
+    af_status = str(config_data.get("arc_flash_status") or "Verified / Compliant").strip()
+    notes = str(config_data.get("notes") or "").strip()
+    attrs = config_data.get("attributes") if isinstance(config_data.get("attributes"), dict) else {}
+
+    result_dict: Dict[str, Any] = {}
+    with get_session(clean_c, clean_f) as session:
+        rec = session.query(SiteConfigRecord).filter_by(id=1).first()
+        if not rec:
+            rec = SiteConfigRecord(
+                id=1,
+                client_id=clean_c,
+                facility_id=clean_f,
+                facility_name=fac_name,
+                street_address=street,
+                city=city,
+                state=state,
+                postal_code=postal,
+                country=country,
+                service_voltage=voltage,
+                service_amperage=amps,
+                service_phase=phase,
+                service_wires=wires,
+                service_frequency=freq,
+                service_type=svc_type,
+                main_disconnect_type=disconnect,
+                available_fault_current_ka=ka,
+                utility_name=util_name,
+                utility_account_number=util_acct,
+                utility_meter_number=util_mtr,
+                utility_transformer_id=util_xfmr,
+                primary_contact_name=c_name,
+                primary_contact_title=c_title,
+                primary_contact_email=c_email,
+                primary_contact_phone=c_phone,
+                emergency_contact_name=e_name,
+                emergency_contact_phone=e_phone,
+                facility_operating_hours=hours,
+                nec_edition=nec,
+                arc_flash_study_date=af_date,
+                arc_flash_status=af_status,
+                notes=notes,
+                attributes=attrs,
+                updated_at=datetime.utcnow()
+            )
+            session.add(rec)
+        else:
+            rec.facility_name = fac_name
+            rec.street_address = street
+            rec.city = city
+            rec.state = state
+            rec.postal_code = postal
+            rec.country = country
+            rec.service_voltage = voltage
+            rec.service_amperage = amps
+            rec.service_phase = phase
+            rec.service_wires = wires
+            rec.service_frequency = freq
+            rec.service_type = svc_type
+            rec.main_disconnect_type = disconnect
+            rec.available_fault_current_ka = ka
+            rec.utility_name = util_name
+            rec.utility_account_number = util_acct
+            rec.utility_meter_number = util_mtr
+            rec.utility_transformer_id = util_xfmr
+            rec.primary_contact_name = c_name
+            rec.primary_contact_title = c_title
+            rec.primary_contact_email = c_email
+            rec.primary_contact_phone = c_phone
+            rec.emergency_contact_name = e_name
+            rec.emergency_contact_phone = e_phone
+            rec.facility_operating_hours = hours
+            rec.nec_edition = nec
+            rec.arc_flash_study_date = af_date
+            rec.arc_flash_status = af_status
+            rec.notes = notes
+            rec.attributes = attrs
+            rec.updated_at = datetime.utcnow()
+
+        session.commit()
+        result_dict = _site_config_record_to_dict(rec)
+
+    # Mirror to site_config.json
+    cfg_file = get_site_config_path(clean_c, clean_f)
+    try:
+        with open(cfg_file, "w", encoding="utf-8") as f:
+            json.dump(result_dict, f, indent=2, default=str)
+    except Exception:
+        pass
+
+    return result_dict
+
+
 def seed_demo_facility(client_id: str = "zoetis", facility_id: str = "b4") -> None:
     """Seed sample facility with realistic equipment stack if empty."""
     clean_c = client_id.strip().lower()
     clean_f = facility_id.strip().lower()
     get_facility_dir(clean_c, clean_f)
     get_engine(clean_c, clean_f)
+
+    # Ensure site configuration exists
+    get_site_config(clean_c, clean_f)
 
     with get_session(clean_c, clean_f) as session:
         if session.query(NodeRecord).count() > 0:
@@ -486,6 +1025,23 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
             except Exception:
                 pass
 
+            # Fast site config extraction
+            site_cfg = None
+            cfg_file = fac_dir / "site_config.json"
+            if cfg_file.exists():
+                try:
+                    with open(cfg_file, "r", encoding="utf-8") as f:
+                        site_cfg = json.load(f)
+                except Exception:
+                    pass
+            if not site_cfg and client_id == "zoetis" and facility_id == "b4":
+                site_cfg = DEFAULT_ZOETIS_B4_CONFIG
+            
+            facility_display_name = (site_cfg.get("facility_name") if site_cfg else None) or facility_id.replace("_", " ").title()
+            service_voltage = (site_cfg.get("service_voltage") if site_cfg else "480Y/277V 3Ø 4W")
+            utility_name = (site_cfg.get("utility_name") if site_cfg else "")
+            address_str = (site_cfg.get("full_address") if site_cfg else "") or (site_cfg.get("street_address") if site_cfg else "")
+
             stat = db_file.stat()
             size_kb = max(1, round(stat.st_size / 1024))
             size_str = f"{size_kb} KB" if size_kb < 1024 else f"{round(size_kb / 1024, 1)} MB"
@@ -493,7 +1049,10 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
 
             facilities.append({
                 "facility_id": facility_id,
-                "facility_name": facility_id.replace("_", " ").title(),
+                "facility_name": facility_display_name,
+                "service_voltage": service_voltage,
+                "utility_name": utility_name,
+                "address": address_str,
                 "db_path": f"data/clients/{client_id}/{facility_id}/model.db",
                 "asset_count": asset_count,
                 "file_size_bytes": stat.st_size,
@@ -512,18 +1071,37 @@ def list_all_client_facilities() -> List[Dict[str, Any]]:
     return list(clients_map.values())
 
 
-def create_client_facility(client_id: str, facility_id: str, seed: bool = False) -> Dict[str, Any]:
-    """Create a new client/facility directory and initialize its SQLite database."""
+def create_client_facility(
+    client_id: str, 
+    facility_id: str, 
+    seed: bool = False,
+    site_config: Optional[Dict[str, Any]] = None,
+    service_voltage: Optional[str] = None
+) -> Dict[str, Any]:
+    """Create a new client/facility directory, save initial site profile, and initialize its SQLite database."""
     clean_client = sanitize_identifier(client_id, "default_client")
     clean_facility = sanitize_identifier(facility_id, "main_facility")
 
     get_facility_dir(clean_client, clean_facility)
     get_engine(clean_client, clean_facility)
+
+    # Initialize site config
+    cfg_to_save = dict(site_config or {})
+    if service_voltage:
+        cfg_to_save["service_voltage"] = service_voltage
+    saved_config = save_site_config(clean_client, clean_facility, cfg_to_save)
     
     asset_count = 0
     with get_session(clean_client, clean_facility) as session:
         if seed and session.query(NodeRecord).count() == 0:
-            for item in get_verified_demo_assets():
+            volts = (saved_config.get("service_voltage") or "").strip()
+            # If 208V/120V service is chosen, seed realistic 208V equipment (NO 480V step-down transformer)
+            if "208" in volts or "120/208" in volts:
+                assets = get_208v_site_seed_assets()
+            else:
+                assets = get_verified_demo_assets()
+
+            for item in assets:
                 session.add(NodeRecord(**item))
             session.commit()
         asset_count = session.query(NodeRecord).count()
@@ -535,8 +1113,10 @@ def create_client_facility(client_id: str, facility_id: str, seed: bool = False)
         "facility_id": clean_facility,
         "db_path": f"data/clients/{clean_client}/{clean_facility}/model.db",
         "asset_count": asset_count,
-        "seeded": seed
+        "seeded": seed,
+        "site_config": saved_config
     }
+
 
 
 def delete_client_facility(client_id: str, facility_id: str) -> bool:

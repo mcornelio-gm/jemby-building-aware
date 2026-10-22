@@ -50,6 +50,8 @@
   <script src="/static/js/admin_user_logic.js?v=1.0.2"></script>
   <!-- CAD Single-Line Diagram Logic -->
   <script src="/static/js/cad_sld_logic.js?v=2.2.0"></script>
+  <!-- Site Configuration & Voltage Profile Logic (Task #49) -->
+  <script src="/static/js/site_config_logic.js?v=2.3.0"></script>
 
   <!-- Early Theme & Font Scale Sync Script (FOUC Prevention) -->
   <script>
@@ -194,6 +196,17 @@
       >
         <span>📐</span>
         <span class="hidden lg:inline">CAD SLD</span>
+      </button>
+
+      <!-- [ ⚙️ Site Profile ] Facility Site Configuration & Voltage -->
+      <button 
+        type="button" 
+        @click="openSiteConfigModal()" 
+        class="px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer select-none"
+        title="Edit Facility Site Profile, Incoming Voltage, Utility Company & Onsite Contacts"
+      >
+        <span>⚙️</span>
+        <span class="hidden lg:inline">Site Profile</span>
       </button>
 
       <!-- [ 🧰 Tools ] Bento Box Popover Trigger -->
@@ -797,6 +810,23 @@
             />
             <p class="text-[10px] text-slate-400 mt-1">Directory created at <code class="font-mono text-indigo-500">data/clients/<span x-text="finderNewClient || '{client}'"></span>/<span x-text="finderNewFacility || '{facility}'"></span>/model.db</code></p>
           </div>
+
+          <!-- Incoming Service Voltage Selector (Task #49) -->
+          <div>
+            <label class="block text-[10px] font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1">Incoming Service Voltage</label>
+            <select 
+              x-model="finderNewVoltage" 
+              class="w-full text-xs rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-2.5 py-1.5 font-medium"
+            >
+              <option value="480Y/277V 3Ø 4W">480Y/277V 3Ø 4W (Commercial / Industrial Standard)</option>
+              <option value="208Y/120V 3Ø 4W">208Y/120V 3Ø 4W (Pure 120/208V — No 480V Transformer)</option>
+              <option value="120/240V 1Ø 3W">120/240V 1Ø 3W (Single Phase Commercial / Residential)</option>
+              <option value="600Y/347V 3Ø 4W">600Y/347V 3Ø 4W (Heavy Industrial / Canada)</option>
+            </select>
+            <p x-show="finderNewVoltage.includes('208')" class="text-[10px] text-amber-500 font-semibold mt-1">
+              ⚡ Pure 120/208V Site: Seed will create direct 208V service entrance without 480V step-down transformers.
+            </p>
+          </div>
         </div>
 
         <!-- Seeding Options & Submit Button -->
@@ -1045,6 +1075,7 @@
         finderNewMode: false,
         finderNewClient: '{{ client }}',
         finderNewFacility: '',
+        finderNewVoltage: '480Y/277V 3Ø 4W',
         finderSeedData: false,
         finderCreating: false,
         finderIsCustomClient: false,
@@ -2244,7 +2275,8 @@
               body: JSON.stringify({
                 client_id: client,
                 facility_id: facility,
-                seed: !!this.finderSeedData
+                seed: !!this.finderSeedData,
+                service_voltage: this.finderNewVoltage
               })
             });
             const data = await res.json();
@@ -2325,6 +2357,9 @@
       if (window.CadSldModalLogic) {
         window.CadSldModalLogic.attachTo(app);
       }
+      if (window.SiteConfigModalLogic) {
+        window.SiteConfigModalLogic.attachTo(app);
+      }
       window.alpineApp = app;
       window.__surveyAppInstance = app;
 
@@ -2334,5 +2369,6 @@
 
   {% include 'components/admin_user_modal.html' %}
   {% include 'components/cad_sld_modal.html' %}
+  {% include 'components/site_config_modal.html' %}
 </body>
 </html>

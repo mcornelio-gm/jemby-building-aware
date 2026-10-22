@@ -68,7 +68,7 @@
               <span class="text-[10px] text-slate-400 font-mono" x-text="(client || 'zoetis').toUpperCase() + ' / ' + (facility || 'b4').toUpperCase()"></span>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
               <a 
                 :href="'/survey?client=' + encodeURIComponent(client || 'zoetis') + '&facility=' + encodeURIComponent(facility || 'b4')"
                 class="p-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer shadow-2xs group"
@@ -92,6 +92,16 @@
                 <span class="text-base group-hover:scale-110 transition-transform">📖</span>
                 <span class="truncate font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300">Catalog Studio</span>
               </a>
+
+              <button 
+                type="button" 
+                @click="showToolboxModal = false; openSiteConfigModal();"
+                class="p-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white transition flex flex-col items-center justify-center text-center gap-1 cursor-pointer shadow-2xs group"
+                title="Configure Site Address, Incoming Voltage & Utility Provider"
+              >
+                <span class="text-base group-hover:scale-110 transition-transform">⚙️</span>
+                <span class="truncate font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300">Site Profile</span>
+              </button>
 
               <button 
                 type="button" 
@@ -213,14 +223,25 @@
               </div>
             </div>
 
-            <button 
-              type="button" 
-              @click="showToolboxModal = false; openFinderModal();"
-              class="w-full py-2.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
-            >
-              <span>Switch or Create Facility</span>
-              <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">(⌘O)</span>
-            </button>
+            <div class="flex flex-col gap-1.5">
+              <button 
+                type="button" 
+                @click="showToolboxModal = false; openSiteConfigModal();"
+                class="w-full py-2 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-slate-700 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer group"
+              >
+                <span>⚙️</span>
+                <span class="group-hover:text-emerald-600 dark:group-hover:text-emerald-300 font-bold">Site Profile & Voltage</span>
+              </button>
+
+              <button 
+                type="button" 
+                @click="showToolboxModal = false; openFinderModal();"
+                class="w-full py-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300/80 dark:border-slate-700/80 transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Switch Facility</span>
+                <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">(⌘O)</span>
+              </button>
+            </div>
           </div>
 
           <!-- BENTO 4: 📋 Export & Report Downloads Tile -->

@@ -1,0 +1,633 @@
+<!-- Site Configuration & Electrical Profile Modal (Task #49) -->
+<div 
+  x-show="showSiteConfigModal" 
+  x-cloak 
+  class="fixed inset-0 z-50 overflow-y-auto"
+  aria-labelledby="site-config-modal-title" 
+  role="dialog" 
+  aria-modal="true"
+>
+  <!-- Glassmorphic Backdrop -->
+  <div 
+    x-show="showSiteConfigModal"
+    x-transition:enter="ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-slate-950/75 backdrop-blur-xs transition-opacity"
+    @click="closeSiteConfigModal()"
+  ></div>
+
+  <div class="flex min-h-full items-center justify-center p-3 sm:p-6">
+    <div 
+      x-show="showSiteConfigModal"
+      x-transition:enter="ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+      x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+      x-transition:leave="ease-in duration-150"
+      x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+      x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
+      class="relative transform overflow-hidden rounded-2xl bg-white dark:bg-[#0E1626] border border-slate-200 dark:border-slate-800 text-left shadow-2xl transition-all w-full max-w-3xl max-h-[92vh] flex flex-col select-none"
+    >
+      <!-- Modal Header -->
+      <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/60 flex items-center justify-center text-base font-bold shadow-2xs">
+            ⚙️
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="site-config-modal-title" class="text-sm font-bold text-slate-900 dark:text-white leading-none">
+                Site Configuration & Electrical Profile
+              </h3>
+              <span 
+                class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase border"
+                :class="is208vOnlySite() ? 'bg-amber-500/10 text-amber-400 border-amber-500/30' : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'"
+                x-text="siteConfig.service_voltage || 'Service Pending'"
+              ></span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" x-text="'Client: ' + (client || 'zoetis').toUpperCase() + ' • Facility: ' + (facility || 'b4').toUpperCase()"></p>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          @click="closeSiteConfigModal()" 
+          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Tab Navigation Bar -->
+      <div class="px-5 bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 flex items-center gap-1 overflow-x-auto text-xs shrink-0 py-1.5">
+        <button 
+          type="button" 
+          @click="siteConfigTab = 'identity'"
+          :class="siteConfigTab === 'identity' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 font-bold shadow-2xs border-slate-300 dark:border-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-transparent'"
+          class="px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+        >
+          <span>📍</span>
+          <span>Identity & Address</span>
+        </button>
+
+        <button 
+          type="button" 
+          @click="siteConfigTab = 'electrical'"
+          :class="siteConfigTab === 'electrical' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 font-bold shadow-2xs border-slate-300 dark:border-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-transparent'"
+          class="px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+        >
+          <span>⚡</span>
+          <span>Electrical Service</span>
+        </button>
+
+        <button 
+          type="button" 
+          @click="siteConfigTab = 'utility'"
+          :class="siteConfigTab === 'utility' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 font-bold shadow-2xs border-slate-300 dark:border-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-transparent'"
+          class="px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+        >
+          <span>🏢</span>
+          <span>Utility Company</span>
+        </button>
+
+        <button 
+          type="button" 
+          @click="siteConfigTab = 'contacts'"
+          :class="siteConfigTab === 'contacts' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 font-bold shadow-2xs border-slate-300 dark:border-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-transparent'"
+          class="px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+        >
+          <span>👤</span>
+          <span>Onsite Contacts</span>
+        </button>
+
+        <button 
+          type="button" 
+          @click="siteConfigTab = 'safety'"
+          :class="siteConfigTab === 'safety' ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 font-bold shadow-2xs border-slate-300 dark:border-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border-transparent'"
+          class="px-3 py-1.5 rounded-lg border transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+        >
+          <span>🛡️</span>
+          <span>Codes & Safety</span>
+        </button>
+      </div>
+
+      <!-- Feedback / Alert Notifications -->
+      <template x-if="siteConfigSuccessMsg">
+        <div class="px-5 py-2.5 bg-emerald-500/10 dark:bg-emerald-500/20 border-b border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+          <span>✓</span>
+          <span x-text="siteConfigSuccessMsg"></span>
+        </div>
+      </template>
+
+      <template x-if="siteConfigErrorMsg">
+        <div class="px-5 py-2.5 bg-rose-500/10 dark:bg-rose-500/20 border-b border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
+          <span>⚠️</span>
+          <span x-text="siteConfigErrorMsg"></span>
+        </div>
+      </template>
+
+      <!-- Modal Body (Tab Panels) -->
+      <div class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 text-xs">
+        
+        <!-- ================================================================= -->
+        <!-- TAB 1: IDENTITY & ADDRESS                                         -->
+        <!-- ================================================================= -->
+        <div x-show="siteConfigTab === 'identity'" class="space-y-4">
+          <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <span>📍</span>
+              <span>Facility Identification & Physical Location</span>
+            </h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Specifies the official facility nomenclature and geographical location printed on IEEE AutoCAD drawings and inspection reports.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Facility Name / Building Description *</label>
+              <input 
+                type="text" 
+                x-model="siteConfig.facility_name" 
+                placeholder="e.g. Zoetis Building 4 (Manufacturing & Lab Facility)" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Street Address</label>
+              <input 
+                type="text" 
+                x-model="siteConfig.street_address" 
+                placeholder="e.g. 100 Campus Drive" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">City</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.city" 
+                  placeholder="e.g. Florham Park" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">State / Province</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.state" 
+                  placeholder="e.g. NJ" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Postal / ZIP Code</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.postal_code" 
+                  placeholder="e.g. 07932" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Country</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.country" 
+                  placeholder="USA" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Facility Operating Schedule</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.facility_operating_hours" 
+                  placeholder="e.g. 24/7 Operations or M-F 7am - 6pm" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- TAB 2: ELECTRICAL SERVICE & VOLTAGE (Task #49 Core)               -->
+        <!-- ================================================================= -->
+        <div x-show="siteConfigTab === 'electrical'" class="space-y-4">
+          <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Incoming Service Voltage & Disconnect Ratings</span>
+            </h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Configure incoming utility voltage. Some facilities are pure 120/208V without any 480V service or step-down distribution transformers.
+            </p>
+          </div>
+
+          <!-- Quick Presets -->
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1.5">Voltage Standard Presets</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button 
+                type="button" 
+                @click="applyVoltagePreset('480Y/277V 3Ø 4W')"
+                :class="siteConfig.service_voltage === '480Y/277V 3Ø 4W' ? 'bg-indigo-600 text-white font-bold ring-2 ring-indigo-400' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'"
+                class="p-2 rounded-lg text-center transition cursor-pointer text-[11px]"
+              >
+                <div class="font-bold">480Y/277V</div>
+                <div class="text-[10px] opacity-80">3Ø 4W Commercial</div>
+              </button>
+
+              <button 
+                type="button" 
+                @click="applyVoltagePreset('208Y/120V 3Ø 4W')"
+                :class="siteConfig.service_voltage === '208Y/120V 3Ø 4W' ? 'bg-amber-600 text-white font-bold ring-2 ring-amber-400' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'"
+                class="p-2 rounded-lg text-center transition cursor-pointer text-[11px]"
+              >
+                <div class="font-bold">208Y/120V</div>
+                <div class="text-[10px] opacity-80">3Ø 4W Pure Network</div>
+              </button>
+
+              <button 
+                type="button" 
+                @click="applyVoltagePreset('120/240V 1Ø 3W')"
+                :class="siteConfig.service_voltage === '120/240V 1Ø 3W' ? 'bg-indigo-600 text-white font-bold ring-2 ring-indigo-400' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'"
+                class="p-2 rounded-lg text-center transition cursor-pointer text-[11px]"
+              >
+                <div class="font-bold">120/240V</div>
+                <div class="text-[10px] opacity-80">1Ø 3W Single Phase</div>
+              </button>
+
+              <button 
+                type="button" 
+                @click="applyVoltagePreset('600Y/347V 3Ø 4W')"
+                :class="siteConfig.service_voltage === '600Y/347V 3Ø 4W' ? 'bg-indigo-600 text-white font-bold ring-2 ring-indigo-400' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700'"
+                class="p-2 rounded-lg text-center transition cursor-pointer text-[11px]"
+              >
+                <div class="font-bold">600Y/347V</div>
+                <div class="text-[10px] opacity-80">3Ø 4W Industrial/CAN</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 208V Pure Callout -->
+          <template x-if="is208vOnlySite()">
+            <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
+              <span class="text-base leading-none">💡</span>
+              <div>
+                <span class="font-bold">Pure 120/208V Service Facility:</span>
+                <span>This site receives 208Y/120V directly from the utility and does not require step-down distribution transformers (T-1) or 480V switchgear. Branch panels feed directly from the 208V main switchboard.</span>
+              </div>
+            </div>
+          </template>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Incoming Service Voltage *</label>
+              <input 
+                type="text" 
+                x-model="siteConfig.service_voltage" 
+                placeholder="e.g. 208Y/120V 3Ø 4W" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Main Service Amperage (Amps) *</label>
+              <input 
+                type="number" 
+                x-model.number="siteConfig.service_amperage" 
+                placeholder="2000" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Phases</label>
+              <select 
+                x-model.number="siteConfig.service_phase" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              >
+                <option :value="3">3 Phase (Standard Commercial)</option>
+                <option :value="1">1 Phase (Single Phase)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Wires</label>
+              <select 
+                x-model.number="siteConfig.service_wires" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              >
+                <option :value="4">4 Wire (With Neutral)</option>
+                <option :value="3">3 Wire (Delta / Ungrounded)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Available Fault Current (kAIC)</label>
+              <input 
+                type="number" 
+                x-model.number="siteConfig.available_fault_current_ka" 
+                placeholder="65" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Main Service Disconnect Type</label>
+              <select 
+                x-model="siteConfig.main_disconnect_type" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              >
+                <option value="Main Circuit Breaker (MCB)">Main Circuit Breaker (MCB)</option>
+                <option value="Fused Disconnect Switch">Fused Disconnect Switch</option>
+                <option value="Bolted Pressure Switch">Bolted Pressure Switch</option>
+                <option value="Main Lugs Only (MLO)">Main Lugs Only (MLO)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Service Entrance Type</label>
+              <select 
+                x-model="siteConfig.service_type" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              >
+                <option value="Underground Pad-Mounted">Underground Pad-Mounted Transformer</option>
+                <option value="Overhead Mast Lateral">Overhead Service Mast / Weatherhead</option>
+                <option value="Underground Vault Network">Underground Vault Network</option>
+                <option value="Substation Primary Feeder">Substation Primary Feeder</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- TAB 3: UTILITY PROVIDER (Task #49 Core)                            -->
+        <!-- ================================================================= -->
+        <div x-show="siteConfigTab === 'utility'" class="space-y-4">
+          <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <span>🏢</span>
+              <span>Electric Utility Provider & Grid Metering</span>
+            </h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Details the serving electric utility company, billing account, revenue meter, and transformer identification.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Serving Utility Company Name *</label>
+              <input 
+                type="text" 
+                x-model="siteConfig.utility_name" 
+                placeholder="e.g. Jersey Central Power & Light (JCP&L) or ConEd" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Utility Account Number</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.utility_account_number" 
+                  placeholder="e.g. 1000-4820-9182" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Utility Revenue Meter Number</label>
+                <input 
+                  type="text" 
+                  x-model="siteConfig.utility_meter_number" 
+                  placeholder="e.g. MTR-3000-B4" 
+                  class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Utility Transformer / Vault / Pad Number</label>
+              <input 
+                type="text" 
+                x-model="siteConfig.utility_transformer_id" 
+                placeholder="e.g. TX-PAD-B4-01 or VLT-1092" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- TAB 4: PRIMARY ONSITE CONTACTS (Task #49 Core)                     -->
+        <!-- ================================================================= -->
+        <div x-show="siteConfigTab === 'contacts'" class="space-y-4">
+          <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <span>👤</span>
+              <span>Onsite Facility Engineering Contacts</span>
+            </h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Designates the primary facility contact onsite responsible for electrical operations, lock-out/tag-out, and survey access.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-3">
+              <span class="text-[10px] uppercase font-bold text-indigo-600 dark:text-indigo-400 tracking-wider flex items-center gap-1">
+                <span>⭐</span>
+                <span>Primary Facility Contact (Onsite Lead)</span>
+              </span>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Contact Full Name *</label>
+                  <input 
+                    type="text" 
+                    x-model="siteConfig.primary_contact_name" 
+                    placeholder="e.g. Benjie Craig" 
+                    class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                  />
+                </div>
+
+                <div>
+                  <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Professional Title</label>
+                  <input 
+                    type="text" 
+                    x-model="siteConfig.primary_contact_title" 
+                    placeholder="e.g. Senior Electrical Facilities Manager" 
+                    class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                  <input 
+                    type="email" 
+                    x-model="siteConfig.primary_contact_email" 
+                    placeholder="e.g. benjie.craig@company.com" 
+                    class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                  />
+                </div>
+
+                <div>
+                  <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Phone Number *</label>
+                  <input 
+                    type="tel" 
+                    x-model="siteConfig.primary_contact_phone" 
+                    placeholder="e.g. (973) 555-0142" 
+                    class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Emergency / Operations Desk -->
+            <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-3">
+              <span class="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 tracking-wider flex items-center gap-1">
+                <span>🚨</span>
+                <span>24/7 Security & Emergency Dispatch</span>
+              </span>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Emergency Desk / Officer Name</label>
+                  <input 
+                    type="text" 
+                    x-model="siteConfig.emergency_contact_name" 
+                    placeholder="e.g. Facilities Control Center" 
+                    class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                  />
+                </div>
+
+                <div>
+                  <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Emergency Dispatch Phone</label>
+                  <input 
+                    type="tel" 
+                    x-model="siteConfig.emergency_contact_phone" 
+                    placeholder="e.g. (973) 555-0911" 
+                    class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- TAB 5: CODES & SAFETY                                             -->
+        <!-- ================================================================= -->
+        <div x-show="siteConfigTab === 'safety'" class="space-y-4">
+          <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+            <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <span>🛡️</span>
+              <span>Regulatory Codes, Arc Flash Study & Field Notes</span>
+            </h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Specifies the governing National Electrical Code (NEC) cycle and arc flash incident energy safety status.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Governing NEC Edition</label>
+              <select 
+                x-model="siteConfig.nec_edition" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              >
+                <option value="NEC 2023">NEC 2023 (NFPA 70)</option>
+                <option value="NEC 2020">NEC 2020 (NFPA 70)</option>
+                <option value="NEC 2017">NEC 2017 (NFPA 70)</option>
+                <option value="NEC 2014">NEC 2014 (NFPA 70)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Arc Flash Study Date</label>
+              <input 
+                type="date" 
+                x-model="siteConfig.arc_flash_study_date" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Arc Flash Status</label>
+              <select 
+                x-model="siteConfig.arc_flash_status" 
+                class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+              >
+                <option value="Verified / Compliant">Verified / Compliant</option>
+                <option value="Survey Pending">Survey Pending</option>
+                <option value="Recertification Due">Recertification Due</option>
+                <option value="Non-Compliant">Non-Compliant</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Site Engineering Notes</label>
+            <textarea 
+              rows="3" 
+              x-model="siteConfig.notes" 
+              placeholder="Enter special site notes, access protocols, or electrical characteristics..." 
+              class="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-indigo-500 outline-hidden"
+            ></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-5 py-3.5 bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <button 
+          type="button" 
+          @click="closeSiteConfigModal()" 
+          class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            @click="saveSiteConfig()" 
+            :disabled="siteConfigSaving"
+            class="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+          >
+            <template x-if="siteConfigSaving">
+              <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+            </template>
+            <template x-if="!siteConfigSaving">
+              <span>💾</span>
+            </template>
+            <span x-text="siteConfigSaving ? 'Saving Profile...' : 'Save Site Profile'"></span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

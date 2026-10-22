@@ -1831,7 +1831,7 @@ def api_list_workspace_facilities():
 
 @app.post("/api/workspace/facilities")
 async def api_create_workspace_facility(request: Request):
-    """Create a new client company folder, facility folder, and initialize model.db."""
+    """Create a new client company folder, facility folder, and initialize model.db with optional site config."""
     try:
         data = await request.json()
     except Exception:
@@ -1839,12 +1839,46 @@ async def api_create_workspace_facility(request: Request):
     client_id = str(data.get("client_id", "")).strip()
     facility_id = str(data.get("facility_id", "")).strip()
     seed = bool(data.get("seed", False))
+    site_config = data.get("site_config") if isinstance(data.get("site_config"), dict) else None
+    service_voltage = str(data.get("service_voltage", "")).strip() or None
 
     if not client_id or not facility_id:
         raise HTTPException(status_code=400, detail="client_id and facility_id are required.")
 
-    result = db.create_client_facility(client_id, facility_id, seed=seed)
+    result = db.create_client_facility(
+        client_id, 
+        facility_id, 
+        seed=seed, 
+        site_config=site_config, 
+        service_voltage=service_voltage
+    )
     return result
+
+
+@app.get("/api/clients/{client_id}/facilities/{facility_id}/config")
+def api_get_facility_site_config(client_id: str, facility_id: str):
+    """Retrieve the authoritative site configuration, address, utility provider, and electrical service profile."""
+    clean_c = db.sanitize_identifier(client_id, "default_client")
+    clean_f = db.sanitize_identifier(facility_id, "main_facility")
+    return db.get_site_config(clean_c, clean_f)
+
+
+@app.put("/api/clients/{client_id}/facilities/{facility_id}/config")
+async def api_save_facility_site_config(client_id: str, facility_id: str, request: Request):
+    """Update and persist site profile attributes (address, incoming voltage, utility provider, contacts)."""
+    clean_c = db.sanitize_identifier(client_id, "default_client")
+    clean_f = db.sanitize_identifier(facility_id, "main_facility")
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON payload.")
+
+    saved = db.save_site_config(clean_c, clean_f, data)
+    return {
+        "status": "success",
+        "message": f"Site configuration for {clean_c}/{clean_f} saved successfully.",
+        "config": saved
+    }
 
 
 @app.delete("/api/workspace/facilities/{client_id}/{facility_id}")
@@ -1859,6 +1893,7 @@ def api_delete_workspace_facility(client_id: str, facility_id: str):
     if not deleted:
         raise HTTPException(status_code=404, detail=f"Facility '{clean_f}' under client '{clean_c}' not found.")
     return {"status": "success", "message": f"Facility '{clean_f}' deleted successfully."}
+
 
 
 # =============================================================================

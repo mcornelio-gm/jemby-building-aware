@@ -44,3 +44,46 @@ class EquipmentSchema(BaseModel):
     name: str
     symbol_code: str
     fields: Dict[str, FieldSchema]
+
+
+class SiteConfig(BaseModel):
+    """Configuration model for site profile and electrical service characteristics."""
+    facility_name: str = Field(default="")
+    street_address: Optional[str] = Field(default="")
+    city: Optional[str] = Field(default="")
+    state: Optional[str] = Field(default="")
+    postal_code: Optional[str] = Field(default="")
+    country: Optional[str] = Field(default="USA")
+
+    # Electrical Service
+    service_voltage: str = Field(default="480Y/277V 3Ø 4W")
+    service_amperage: float = Field(default=3000.0)
+    service_phase: int = Field(default=3)
+    service_wires: int = Field(default=4)
+    service_frequency: str = Field(default="60 Hz")
+    service_type: str = Field(default="Underground Pad-Mounted")
+    main_disconnect_type: str = Field(default="Main Circuit Breaker (MCB)")
+    available_fault_current_ka: float = Field(default=65.0)
+
+    # Utility Provider
+    utility_name: Optional[str] = Field(default="")
+    utility_account_number: Optional[str] = Field(default="")
+    utility_meter_number: Optional[str] = Field(default="")
+    utility_transformer_id: Optional[str] = Field(default="")
+
+    # Key Contacts
+    primary_contact_name: Optional[str] = Field(default="")
+    primary_contact_title: Optional[str] = Field(default="")
+    primary_contact_email: Optional[str] = Field(default="")
+    primary_contact_phone: Optional[str] = Field(default="")
+    emergency_contact_name: Optional[str] = Field(default="")
+    emergency_contact_phone: Optional[str] = Field(default="")
+    facility_operating_hours: str = Field(default="24/7 Operations")
+
+    # Compliance & Safety
+    nec_edition: str = Field(default="NEC 2023")
+    arc_flash_study_date: Optional[str] = Field(default="")
+    arc_flash_status: str = Field(default="Verified / Compliant")
+    notes: Optional[str] = Field(default="")
+    attributes: Dict[str, Any] = Field(default_factory=dict)
+

@@ -165,7 +165,8 @@ class SingleLineCadCompiler:
         sheet_id: str = "all",
         sheet_size: str = "36x24",
         label_format: str = "linear",
-        high_contrast: bool = False
+        high_contrast: bool = False,
+        site_config: Optional[Dict[str, Any]] = None
     ):
         self.client_id = client_id.upper()
         self.facility_id = facility_id.upper()
@@ -174,8 +175,17 @@ class SingleLineCadCompiler:
         self.label_format = (label_format or "linear").lower().strip()
         self.high_contrast = bool(high_contrast)
 
+        self.site_config = site_config
+        if self.site_config is None:
+            try:
+                from james_app.db import get_site_config
+                self.site_config = get_site_config(client_id, facility_id)
+            except Exception:
+                self.site_config = {}
+
         norm_size = (sheet_size or "36x24").lower().replace(" ", "").replace("×", "x")
         self.sheet_cfg = SHEET_SIZES.get(norm_size, SHEET_SIZES["36x24"])
+
         self.sheet_size = self.sheet_cfg["name"]
         self.sheet_size_label = self.sheet_cfg["label"]
         self.sheet_width = self.sheet_cfg["width"]
@@ -764,9 +774,9 @@ class SingleLineCadCompiler:
             dxfattribs={"layer": "E-TTLB"}
         )
 
-        # Title Block Box (Bottom Right Corner: 220mm x 60mm)
-        tb_w = 220.0
-        tb_h = 60.0
+        # Title Block Box (Bottom Right Corner: 230mm x 66mm)
+        tb_w = 230.0
+        tb_h = 66.0
         tb_x = sheet_w - inner_m - tb_w
         tb_y = inner_m
 
@@ -775,18 +785,46 @@ class SingleLineCadCompiler:
             close=True,
             dxfattribs={"layer": "E-TTLB"}
         )
-        self.msp.add_line((tb_x, tb_y + 40), (tb_x + tb_w, tb_y + 40), dxfattribs={"layer": "E-TTLB"})
-        self.msp.add_line((tb_x, tb_y + 20), (tb_x + tb_w, tb_y + 20), dxfattribs={"layer": "E-TTLB"})
-        self.msp.add_line((tb_x + 140, tb_y), (tb_x + 140, tb_y + 20), dxfattribs={"layer": "E-TTLB"})
+        self.msp.add_line((tb_x, tb_y + 46), (tb_x + tb_w, tb_y + 46), dxfattribs={"layer": "E-TTLB"})
+        self.msp.add_line((tb_x, tb_y + 18), (tb_x + tb_w, tb_y + 18), dxfattribs={"layer": "E-TTLB"})
+        self.msp.add_line((tb_x + 155, tb_y), (tb_x + 155, tb_y + 18), dxfattribs={"layer": "E-TTLB"})
 
-        self.msp.add_text("BUILDING AWARE • ELECTRICAL DIGITAL TWIN", dxfattribs={"layer": "E-TTLB", "height": 3.0}).set_placement((tb_x + 5, tb_y + 48))
-        self.msp.add_text(self.sheet_title, dxfattribs={"layer": "E-TTLB", "height": 3.4}).set_placement((tb_x + 5, tb_y + 42))
+        # Top Header Area
+        self.msp.add_text("BUILDING AWARE • ELECTRICAL DIGITAL TWIN", dxfattribs={"layer": "E-TTLB", "height": 2.8}).set_placement((tb_x + 5, tb_y + 56))
+        self.msp.add_text(self.sheet_title, dxfattribs={"layer": "E-TTLB", "height": 3.4}).set_placement((tb_x + 5, tb_y + 49))
 
-        self.msp.add_text(f"CLIENT: {self.client_id}", dxfattribs={"layer": "E-TTLB", "height": 2.8}).set_placement((tb_x + 5, tb_y + 30))
-        self.msp.add_text(f"FACILITY: {self.facility_id}", dxfattribs={"layer": "E-TTLB", "height": 2.8}).set_placement((tb_x + 5, tb_y + 24))
+        # Middle Metadata Area: Site Configuration
+        cfg = self.site_config or {}
+        fac_name = cfg.get("facility_name") or f"{self.client_id} - {self.facility_id}"
+        if len(fac_name) > 42:
+            fac_name = fac_name[:40] + "..."
+        addr = cfg.get("full_address") or cfg.get("street_address") or ""
+        if len(addr) > 50:
+            addr = addr[:48] + "..."
+        
+        svc_v = cfg.get("service_voltage") or "480Y/277V 3Ø 4W"
+        svc_a = int(cfg.get("service_amperage") or 0)
+        svc_str = f"SERVICE: {svc_v}" + (f" • {svc_a}A" if svc_a else "")
+        util_str = f"UTILITY: {cfg.get('utility_name')}" if cfg.get("utility_name") else ""
+        contact_str = f"CONTACT: {cfg.get('primary_contact_name')}" if cfg.get("primary_contact_name") else ""
+        if cfg.get("primary_contact_phone"):
+            contact_str += f" ({cfg.get('primary_contact_phone')})"
 
-        self.msp.add_text(f"SIZE: {self.sheet_size_label} • N.T.S.", dxfattribs={"layer": "E-TTLB", "height": 2.2}).set_placement((tb_x + 5, tb_y + 10))
-        self.msp.add_text(f"DWG: {self.sheet_no}", dxfattribs={"layer": "E-TTLB", "height": 4.0}).set_placement((tb_x + 145, tb_y + 10))
+        self.msp.add_text(f"FACILITY: {fac_name}", dxfattribs={"layer": "E-TTLB", "height": 2.6}).set_placement((tb_x + 5, tb_y + 38))
+        if addr:
+            self.msp.add_text(f"ADDRESS: {addr}", dxfattribs={"layer": "E-TTLB", "height": 2.2}).set_placement((tb_x + 5, tb_y + 31))
+        
+        line3 = f"{svc_str}" + (f"  |  {util_str}" if util_str else "")
+        if len(line3) > 90:
+            line3 = line3[:88] + "..."
+        self.msp.add_text(line3, dxfattribs={"layer": "E-TTLB", "height": 2.1}).set_placement((tb_x + 5, tb_y + 24))
+
+        # Bottom Area: Size, Code, Sheet Number
+        nec = cfg.get("nec_edition") or "NEC 2023"
+        self.msp.add_text(f"SIZE: {self.sheet_size_label} • N.T.S.  |  {nec}", dxfattribs={"layer": "E-TTLB", "height": 2.1}).set_placement((tb_x + 5, tb_y + 8))
+        self.msp.add_text(f"DWG: {self.sheet_no}", dxfattribs={"layer": "E-TTLB", "height": 4.0}).set_placement((tb_x + 160, tb_y + 7))
+
+
 
     def compile_dxf_bytes(self) -> bytes:
         """Compile the SLD into AutoCAD DXF ASCII/binary data stream locked to sheet dimensions."""
