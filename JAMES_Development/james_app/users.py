@@ -233,16 +233,16 @@ def list_users() -> List[User]:
 
 
 def _sync_users_to_json() -> None:
-    """Dump all users to users.json for human-readable state inspection and sync to GCS."""
+    """Dump all users to users.json for human-readable state inspection and synchronously sync to GCS."""
     users = list_users()
     data = [u.model_dump() for u in users]
     with open(USERS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
     try:
-        from james_app.gcs_sync import sync_file_to_gcs_async
-        sync_file_to_gcs_async(USERS_DB)
-        sync_file_to_gcs_async(USERS_FILE)
+        from james_app.gcs_sync import sync_file_to_gcs_sync
+        sync_file_to_gcs_sync(USERS_DB)
+        sync_file_to_gcs_sync(USERS_FILE)
     except Exception:
         pass
 

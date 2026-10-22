@@ -14,3 +14,9 @@ scratch/
 .env
 .idea
 .vscode
+data/users.db
+data/users.json
+data/audit.jsonl
+*.sqlite3-journal
+*.db-shm
+*.db-wal

@@ -53,7 +53,9 @@ def _get_gcs_bucket():
 
 def hydrate_from_gcs() -> int:
     """
-    On app startup: Download all persistent files from GCS if not present or newer.
+    On app startup: Download all persistent files from GCS.
+    In ephemeral container runtimes (Cloud Run), any non-empty remote object in GCS
+    is the authoritative durable state and overrides local container image seeds.
     Returns the count of hydrated files.
     """
     bucket = _get_gcs_bucket()
@@ -74,17 +76,9 @@ def hydrate_from_gcs() -> int:
             target_file = DATA_DIR / rel_name
             target_file.parent.mkdir(parents=True, exist_ok=True)
 
-            # Download if local file doesn't exist or remote blob is larger/newer
-            should_download = False
-            if not target_file.exists():
-                should_download = True
-            else:
-                local_stat = target_file.stat()
-                # If remote file exists and is newer or different size
-                if blob.size and local_stat.st_size == 0 and blob.size > 0:
-                    should_download = True
-
-            if should_download:
+            # In Cloud Run, GCS is the authoritative source of truth.
+            # Download any non-empty blob so container image defaults never clobber production data.
+            if blob.size and blob.size > 0:
                 blob.download_to_filename(str(target_file))
                 downloaded_count += 1
                 logger.info(f"Hydrated from GCS: {rel_name} ({blob.size} bytes)")
@@ -96,40 +90,54 @@ def hydrate_from_gcs() -> int:
     return downloaded_count
 
 
+def sync_file_to_gcs_sync(local_path: Path) -> bool:
+    """
+    Synchronously push a single mutated file to GCS.
+    Essential for Cloud Run request handlers where background threads are frozen
+    by CPU throttling immediately after HTTP responses finish.
+    """
+    try:
+        bucket = _get_gcs_bucket()
+        if not bucket:
+            return False
+        if not local_path.exists():
+            return False
+
+        try:
+            rel_path = local_path.relative_to(DATA_DIR)
+        except ValueError:
+            rel_path = local_path.name
+
+        blob_name = f"data/{rel_path}"
+        blob = bucket.blob(blob_name)
+        blob.upload_from_filename(str(local_path))
+        logger.info(f"Synchronously persisted to GCS: {blob_name}")
+        return True
+    except Exception as e:
+        logger.warning(f"Failed to synchronously sync {local_path} to GCS: {e}")
+        return False
+
+
 def sync_file_to_gcs_async(local_path: Path) -> None:
     """Non-blocking background thread to push a single mutated file to GCS."""
     def _upload():
-        try:
-            bucket = _get_gcs_bucket()
-            if not bucket:
-                return
-            if not local_path.exists():
-                return
-
-            try:
-                rel_path = local_path.relative_to(DATA_DIR)
-            except ValueError:
-                rel_path = local_path.name
-
-            blob_name = f"data/{rel_path}"
-            blob = bucket.blob(blob_name)
-            blob.upload_from_filename(str(local_path))
-            logger.debug(f"Pushed to GCS: {blob_name}")
-        except Exception as e:
-            logger.warning(f"Failed to sync {local_path} to GCS: {e}")
+        sync_file_to_gcs_sync(local_path)
 
     threading.Thread(target=_upload, daemon=True).start()
 
 
-def sync_client_facility_to_gcs(client_id: str, facility_id: str) -> None:
-    """Synchronize an entire client facility SQLite db and JSONL companion file."""
+def sync_client_facility_to_gcs(client_id: str, facility_id: str, synchronous: bool = True) -> None:
+    """Synchronize an entire client facility SQLite db and companion files to GCS."""
     facility_dir = DATA_DIR / "clients" / client_id / facility_id
     if not facility_dir.exists():
         return
 
     for item in facility_dir.glob("*"):
         if item.is_file() and not item.name.endswith("-journal") and not item.name.endswith("-wal"):
-            sync_file_to_gcs_async(item)
+            if synchronous:
+                sync_file_to_gcs_sync(item)
+            else:
+                sync_file_to_gcs_async(item)
 
 
 def sync_all_data_to_gcs() -> None:

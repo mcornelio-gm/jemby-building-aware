@@ -952,6 +952,13 @@ def save_site_config(client_id: str, facility_id: str, config_data: Dict[str, An
     except Exception:
         pass
 
+    try:
+        from james_app.gcs_sync import sync_file_to_gcs_sync
+        sync_file_to_gcs_sync(cfg_file)
+        sync_file_to_gcs_sync(get_db_path(clean_c, clean_f))
+    except Exception:
+        pass
+
     return result_dict
 
 
