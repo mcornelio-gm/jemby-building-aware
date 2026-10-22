@@ -141,7 +141,7 @@ def sync_client_facility_to_gcs(client_id: str, facility_id: str, synchronous: b
 
 
 def sync_all_data_to_gcs() -> None:
-    """Full synchronization sweep of all data files to GCS."""
+    """Full synchronization sweep of all data files to GCS sequentially."""
     bucket = _get_gcs_bucket()
     if not bucket or not DATA_DIR.exists():
         return
@@ -150,15 +150,15 @@ def sync_all_data_to_gcs() -> None:
         if path.is_file():
             if path.name.endswith("-journal") or path.name.endswith("-wal") or path.name.startswith("."):
                 continue
-            sync_file_to_gcs_async(path)
+            sync_file_to_gcs_sync(path)
 
 
-async def background_gcs_sync_worker(interval_seconds: int = 45):
+async def background_gcs_sync_worker(interval_seconds: int = 300):
     """Periodic background task that periodically ensures all files are mirrored to GCS."""
     while True:
         try:
             await asyncio.sleep(interval_seconds)
-            sync_all_data_to_gcs()
+            await asyncio.to_thread(sync_all_data_to_gcs)
         except asyncio.CancelledError:
             break
         except Exception as e:
